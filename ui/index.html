@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Roster Engine UI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="startScreen" class="startScreen">
+    <div class="startupPanel">
+      <h1>Roster Builder</h1>
+      <p>Loading offline rules data...</p>
+      <div class="startupBar" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <div id="builderShell" hidden>
+    <header class="builderHeader">
+      <div class="rosterTitleBlock">
+        <input id="rosterName" class="rosterNameInput" placeholder="List name">
+        <div class="rosterPoints"><span id="pointsTotal">0</span> pts</div>
+      </div>
+
+      <div class="headerActions">
+        <button id="showLibrary">Lists</button>
+        <button id="openNewRoster">New List</button>
+        <button id="saveRoster">Save</button>
+        <button id="importJson">Import JSON</button>
+        <input id="importJsonFile" type="file" accept=".json,application/json" hidden>
+        <select id="rosterSaves" aria-label="Saved rosters"></select>
+        <div class="exportMenu">
+          <button id="exportMenuToggle" aria-expanded="false">Export</button>
+          <div id="exportMenuPanel" class="exportMenuPanel" hidden>
+            <button id="exportJson">Export JSON</button>
+            <button class="exportTextFormat" data-format="NR">Export NR Text</button>
+            <button class="exportTextFormat" data-format="WTC-Compact">Export WTC-Compact</button>
+            <button class="exportTextFormat" data-format="WTC">Export WTC</button>
+            <button class="exportTextFormat" data-format="GW">Export GW</button>
+            <button id="openDiscordExport">Discord</button>
+            <button id="printUnitSheets">Unit Sheets</button>
+            <button id="printCrusadeSheets">Crusade Sheets</button>
+          </div>
+        </div>
+        <button id="deleteRoster" class="dangerButton">Delete List</button>
+      </div>
+
+      <div class="builderSettings">
+        <label>
+          Faction
+          <span id="factionReference" class="readonlyField">-</span>
+          <select id="factionSelect" hidden aria-hidden="true" tabindex="-1"></select>
+        </label>
+
+        <label id="subfactionControl" hidden>
+          Chapter / Army
+          <span id="subfactionReference" class="readonlyField">-</span>
+          <select id="subfactionSelect" hidden aria-hidden="true" tabindex="-1"></select>
+        </label>
+
+        <label>
+          Points Limit
+          <input id="pointsLimit" type="number" value="1000">
+        </label>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section>
+        <div class="sectionTitleRow">
+          <h2>Available Units</h2>
+          <input id="unitSearch" placeholder="Search units or keywords">
+        </div>
+        <div id="unitList"></div>
+      </section>
+
+      <section>
+        <h2>Roster</h2>
+        <div id="rosterList"></div>
+      </section>
+
+      <section>
+        <h2>Sidebar</h2>
+        <div id="details">Click a unit.</div>
+      </section>
+    </div>
+  </div>
+
+  <div id="newRosterModal" class="modalBackdrop" hidden>
+    <div class="modalPanel" role="dialog" aria-modal="true" aria-labelledby="newRosterTitle">
+      <h2 id="newRosterTitle">New roster</h2>
+      <div id="newRosterForm"></div>
+    </div>
+  </div>
+
+  <div id="deleteRosterModal" class="modalBackdrop" hidden>
+    <div class="modalPanel confirmPanel" role="dialog" aria-modal="true" aria-labelledby="deleteRosterTitle">
+      <h2 id="deleteRosterTitle">Delete list?</h2>
+      <p id="deleteRosterMessage"></p>
+      <div class="modalActions">
+        <button id="cancelDeleteRoster">Cancel</button>
+        <button id="confirmDeleteRoster" class="dangerButton">Delete List</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="discordExportModal" class="modalBackdrop" hidden>
+    <div class="modalPanel discordExportPanel" role="dialog" aria-modal="true" aria-labelledby="discordExportTitle">
+      <div class="modalTitleRow">
+        <h2 id="discordExportTitle">Discord Export</h2>
+        <button id="closeDiscordExport" aria-label="Close Discord export">Close</button>
+      </div>
+      <div class="discordExportLayout">
+        <section class="discordOptionsPanel">
+          <h3>List Options</h3>
+          <label>
+            List Style
+            <select id="discordListStyle">
+              <option value="discord-extended">Discord (Extended)</option>
+              <option value="discord-compact">Discord (Compact)</option>
+              <option value="plain-compact">Plain Text</option>
+              <option value="plain-extended">Plain Text (Extended)</option>
+            </select>
+          </label>
+          <label class="toggleRow">
+            <input id="discordMultilineHeader" type="checkbox">
+            Multiline Header
+          </label>
+          <label class="toggleRow">
+            <input id="discordCombineIdentical" type="checkbox">
+            Combine Identical Units
+          </label>
+          <label class="toggleRow">
+            <input id="discordHideSubunits" type="checkbox">
+            Hide Subunits
+          </label>
+          <label class="toggleRow">
+            <input id="discordHideBullets" type="checkbox">
+            Hide Bullets
+          </label>
+          <label class="toggleRow">
+            <input id="discordHidePoints" type="checkbox">
+            Hide Points
+          </label>
+          <fieldset class="discordColorOptions">
+            <legend>Colors</legend>
+            <label><input type="radio" name="discordColorMode" value="faction" checked> Faction Colors</label>
+            <label><input type="radio" name="discordColorMode" value="none"> No Color</label>
+            <label><input type="radio" name="discordColorMode" value="custom"> Custom Colors</label>
+            <div id="discordCustomColors" class="discordCustomColors" hidden>
+              <label>
+                Names
+                <select id="discordUnitColor">
+                  <option value="37">White</option>
+                  <option value="30">Gray</option>
+                  <option value="31">Red</option>
+                  <option value="33">Yellow</option>
+                  <option value="34">Blue</option>
+                  <option value="36">Cyan</option>
+                  <option value="32">Green</option>
+                  <option value="35">Magenta</option>
+                </select>
+              </label>
+              <label>
+                Points
+                <select id="discordPointsColor">
+                  <option value="33">Yellow</option>
+                  <option value="37">White</option>
+                  <option value="30">Gray</option>
+                  <option value="31">Red</option>
+                  <option value="34">Blue</option>
+                  <option value="36">Cyan</option>
+                  <option value="32">Green</option>
+                  <option value="35">Magenta</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+        </section>
+        <section class="discordPreviewPanel">
+          <h3>Preview</h3>
+          <pre id="discordExportPreview" class="discordExportPreview"></pre>
+        </section>
+      </div>
+      <div class="modalActions">
+        <button id="copyDiscordExport">Copy</button>
+        <button id="downloadDiscordExport">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="engine-data-manifest.js"></script>
+  <script defer src="engine-runtime.js?v=milestone3"></script>
+  <script defer src="../src/domain/army.js?v=milestone26"></script>
+  <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
+  <script defer src="../src/domain/sheets.js?v=milestone2"></script>
+  <script defer src="catalogue-sections.js?v=milestone2"></script>
+  <script defer src="engine-app.js?v=milestone7"></script>
+</body>
+</html>

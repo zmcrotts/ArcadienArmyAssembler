@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rosterbuilder.local/schemas/army-definition.schema.json",
+  "title": "ArmyDefinition",
+  "type": "object",
+  "required": ["schemaVersion", "rulesetId", "id", "faction", "source", "allowedSelectionKeys", "detachments", "enhancements"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "rulesetId": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "faction": { "type": "string", "minLength": 1 },
+    "source": { "type": "object" },
+    "stratagemSource": { "type": ["object", "null"] },
+    "allowedSelectionKeys": { "type": "array", "items": { "type": "string" } },
+    "coreStratagems": { "type": "array" },
+    "detachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "points", "rules", "stratagems"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "points": { "type": "number" },
+          "detachmentPoints": { "type": "number" },
+          "rules": { "type": "array" },
+          "stratagems": { "type": "array" }
+        }
+      }
+    },
+    "enhancements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "points", "detachmentIds", "eligibleSelectionKeys"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "points": { "type": "number" },
+          "detachmentIds": { "type": "array", "items": { "type": "string" } },
+          "eligibleSelectionKeys": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

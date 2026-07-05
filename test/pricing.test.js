@@ -1,0 +1,107 @@
+"use strict";
+
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const path = require("path");
+const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
+const { calculateEntryPoints } = require("../src/domain/pricing");
+const { createDefaultRosterEntry } = require("../src/domain/loadout");
+
+const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
+const extracted = extractUnitDefinitions(BSDATA);
+
+function unit(faction, name) {
+  const found = extracted.definitions.find(item => item.faction === faction && item.name === name);
+  assert.ok(found, `Missing fixture unit: ${faction} / ${name}`);
+  return found;
+}
+
+function entryFor(definition, counts = {}) {
+  return {
+    schemaVersion: 1,
+    instanceId: "test-entry",
+    unitId: definition.id,
+    selections: Object.fromEntries(
+      definition.composition.map(item => [item.id, counts[item.id] ?? item.defaultCount ?? 0])
+    )
+  };
+}
+
+test("Arco-Flagellants use BSData base price at three models", () => {
+  const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
+  const model = definition.composition.find(item => item.name === "Arco-Flagellant");
+  const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 3 }));
+  assert.equal(result.points, 45);
+});
+
+test("Arco-Flagellants apply the BSData conditional price above three models", () => {
+  const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
+  const model = definition.composition.find(item => item.name === "Arco-Flagellant");
+  const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 10 }));
+  assert.equal(result.points, 140);
+  assert.equal(result.applied.at(-1).operation, "set");
+});
+
+test("composition limits reject illegal model counts", () => {
+  const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
+  const model = definition.composition.find(item => item.name === "Arco-Flagellant");
+  assert.throws(
+    () => calculateEntryPoints(definition, entryFor(definition, { [model.id]: 2 })),
+    error => error.code === "INVALID_ROSTER_ENTRY"
+  );
+});
+
+test("per-model BSData costs are included for units without a unit-level base", () => {
+  const definition = unit("Imperium - Adeptus Mechanicus", "Ironstrider Ballistarii");
+  const model = definition.composition[0];
+  const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 1 }));
+  assert.equal(result.points, 85);
+});
+
+test("aggregate model-count modifiers support mixed model selections", () => {
+  const definition = unit("Xenos - Aeldari", "Windriders");
+  const counts = Object.fromEntries(definition.composition.map((item, index) => [item.id, index === 0 ? 6 : 0]));
+  const result = calculateEntryPoints(definition, entryFor(definition, counts));
+  assert.equal(result.points, 160);
+});
+
+test("point modifiers can multiply a base value", () => {
+  const definition = {
+    schemaVersion: 1,
+    id: "multiply-fixture",
+    source: {},
+    composition: [],
+    compositionConstraints: [],
+    pricing: {
+      base: 50,
+      baseSource: "fixture",
+      modifiers: [{
+        operation: "multiply",
+        value: 2,
+        supported: true,
+        source: "fixture",
+        when: { kind: "all", conditions: [] }
+      }]
+    }
+  };
+  const result = calculateEntryPoints(definition, {
+    schemaVersion: 1,
+    instanceId: "multiply-entry",
+    unitId: "multiply-fixture",
+    selections: {}
+  });
+
+  assert.equal(result.points, 100);
+  assert.equal(result.applied.at(-1).operation, "multiply");
+});
+
+test("generated entries bridge occurrence IDs into composition validation", () => {
+  for (const definition of [
+    unit("Xenos - Tyranids", "Barbgaunts"),
+    unit("Xenos - Tyranids", "Barbed Hierodule [Legends]")
+  ]) {
+    const result = calculateEntryPoints(definition, createDefaultRosterEntry(definition), { allowInvalid: true });
+    assert.deepEqual(result.validationErrors, []);
+    if (definition.name === "Barbed Hierodule [Legends]") assert.equal(result.points, 340);
+  }
+});

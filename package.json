@@ -1,0 +1,58 @@
+{
+  "name": "my-own-rosterbuilder",
+  "version": "1.0.0",
+  "description": "Offline Warhammer 40,000 roster builder.",
+  "main": "electron/main.js",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "build:user": "node scripts/build-user-runtime.js",
+    "desktop": "npm.cmd run build:user && electron .",
+    "dist:dir": "npm.cmd run build:user && node scripts/build-electron-dir.js",
+    "dist:local-installer": "npm.cmd run dist:dir && node scripts/build-local-installer.js",
+    "dist:win": "npm.cmd run build:user && electron-builder --win nsis",
+    "audit:bsdata-pricing": "node scripts/audit-bsdata-unit-pricing.js",
+    "audit:bsdata-loadouts": "node scripts/audit-bsdata-loadouts.js",
+    "audit:bsdata-armies": "node scripts/audit-bsdata-armies.js",
+    "audit:ruleset-source": "node scripts/audit-ruleset-source.js",
+    "health": "node scripts/project-health.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "fast-xml-parser": "^5.9.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "local.rosterbuilder.app",
+    "productName": "Roster Builder",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/main.js",
+      "dist-user/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Roster Builder"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rosterbuilder.local/schemas/unit-definition.schema.json",
+  "title": "UnitDefinition",
+  "type": "object",
+  "required": ["schemaVersion", "id", "selectionKey", "name", "faction", "source", "categories", "keywords", "roles", "rosterRules", "composition", "compositionConstraints", "selectionTree", "pricing"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "selectionKey": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "faction": { "type": "string", "minLength": 1 },
+    "source": { "type": "object" },
+    "categories": { "type": "array", "items": { "type": "string" } },
+    "keywords": { "type": "array", "items": { "type": "string" } },
+    "roles": { "type": "object" },
+    "rosterRules": {
+      "type": "object",
+      "properties": {
+        "canBeWarlord": { "type": "boolean" },
+        "maxCopies": { "type": "number" },
+        "leaderTargetNames": { "type": "array", "items": { "type": "string" } },
+        "leaderTargetSelectionKeys": { "type": "array", "items": { "type": "string" } },
+        "allowsAdditionalLeader": { "type": "boolean" },
+        "allowsMultipleLeadersAsBodyguard": { "type": "boolean" }
+      }
+    },
+    "composition": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "min", "max", "defaultCount"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "min": { "type": ["number", "null"] },
+          "max": { "type": ["number", "null"] },
+          "defaultCount": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "compositionConstraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "selectionIds", "min", "max"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "selectionIds": { "type": "array", "items": { "type": "string" } },
+          "min": { "type": ["number", "null"] },
+          "max": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "selectionTree": {
+      "$ref": "#/$defs/selectionNode"
+    },
+    "pricing": {
+      "type": "object",
+      "required": ["base", "baseSource", "modifiers"],
+      "properties": {
+        "base": { "type": "number" },
+        "baseSource": { "type": "string" },
+        "modifiers": { "type": "array" }
+      }
+    }
+  },
+  "$defs": {
+    "selectionNode": {
+      "type": "object",
+      "required": ["id", "name", "kind", "constraints", "modifiers", "profiles", "children"],
+      "properties": {
+        "id": { "type": "string" },
+        "sourceId": { "type": ["string", "null"] },
+        "definitionId": { "type": ["string", "null"] },
+        "name": { "type": "string" },
+        "kind": { "enum": ["unit", "group", "model", "upgrade"] },
+        "constraints": { "type": "array" },
+        "modifiers": { "type": "array" },
+        "profiles": { "type": "array" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/selectionNode" }
+        }
+      }
+    }
+  }
+}

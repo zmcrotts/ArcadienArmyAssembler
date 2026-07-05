@@ -1,0 +1,4361 @@
+{
+  "schemaVersion": 1,
+  "source": "https://mfm.warhammer-community.com/en",
+  "generatedAt": "2026-07-04T13:03:04.808Z",
+  "factions": [
+    {
+      "name": "Adepta Sororitas",
+      "slug": "adepta-sororitas",
+      "url": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "attachments": [
+        {
+          "unitName": "AESTRED THURGA AND AGATHAE DOLAN",
+          "role": "LEADER",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "CANONESS",
+          "role": "LEADER",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "CANONESS WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "SERAPHIM SQUAD",
+            "ZEPHYRIM SQUAD"
+          ]
+        },
+        {
+          "unitName": "DIALOGUS",
+          "role": "SUPPORT",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "DOGMATA",
+          "role": "SUPPORT",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "HOSPITALLER",
+          "role": "SUPPORT",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "IMAGIFIER",
+          "role": "SUPPORT",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "JUNITH ERUITA",
+          "role": "LEADER",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "MINISTORUM PRIEST",
+          "role": "LEADER",
+          "targets": [
+            "ARCO-FLAGELLANTS",
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "DOMINION SQUAD",
+            "SANCTIFIERS",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "MORVENN VAHL",
+          "role": "LEADER",
+          "targets": [
+            "PARAGON WARSUITS"
+          ]
+        },
+        {
+          "unitName": "PALATINE",
+          "role": "LEADER",
+          "targets": [
+            "BATTLE SISTERS SQUAD",
+            "CELESTIAN INSIDIANTS",
+            "CELESTIAN SACRESANTS",
+            "DOMINION SQUAD",
+            "RETRIBUTOR SQUAD",
+            "SISTERS NOVITIATE SQUAD"
+          ]
+        },
+        {
+          "unitName": "SAINT CELESTINE",
+          "role": "LEADER",
+          "targets": [
+            "SERAPHIM SQUAD",
+            "ZEPHYRIM SQUAD"
+          ]
+        },
+        {
+          "unitName": "TRIUMPH OF SAINT KATHERINE",
+          "role": "LEADER",
+          "targets": [
+            "BATTLE SISTERS SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Adeptus Custodes",
+      "slug": "adeptus-custodes",
+      "url": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "attachments": [
+        {
+          "unitName": "ALEYA",
+          "role": "LEADER",
+          "targets": [
+            "PROSECUTORS",
+            "VIGILATORS",
+            "WITCHSEEKERS"
+          ]
+        },
+        {
+          "unitName": "BLADE CHAMPION",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD",
+            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS"
+          ]
+        },
+        {
+          "unitName": "KNIGHT-CENTURA",
+          "role": "LEADER",
+          "targets": [
+            "PROSECUTORS",
+            "VIGILATORS",
+            "WITCHSEEKERS"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD",
+            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN IN ALLARUS TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ALLARUS CUSTODIANS",
+            "AQUILON CUSTODIANS"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN ON DAWNEAGLE JETBIKE",
+          "role": "LEADER",
+          "targets": [
+            "AGAMATUS CUSTODIANS",
+            "VERTUS PRAETORS"
+          ]
+        },
+        {
+          "unitName": "TRAJANN VALORIS",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD",
+            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS"
+          ]
+        },
+        {
+          "unitName": "VALERIAN",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD",
+            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Adeptus Mechanicus",
+      "slug": "adeptus-mechanicus",
+      "url": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "attachments": [
+        {
+          "unitName": "CYBERNETICA DATASMITH",
+          "role": "SUPPORT",
+          "targets": [
+            "KASTELAN ROBOTS"
+          ]
+        },
+        {
+          "unitName": "SKITARII MARSHAL",
+          "role": "SUPPORT",
+          "targets": [
+            "HASTARII EXTERMINATORS",
+            "HASTARII FUSILIERS",
+            "SKITARII RANGERS",
+            "SKITARII VANGUARD"
+          ]
+        },
+        {
+          "unitName": "TECHNOARCHEOLOGIST",
+          "role": "SUPPORT",
+          "targets": [
+            "CORPUSCARII ELECTRO-PRIESTS",
+            "FULGURITE ELECTRO-PRIESTS",
+            "HASTARII EXTERMINATORS",
+            "HASTARII FUSILIERS",
+            "KATAPHRON BREACHERS",
+            "KATAPHRON DESTROYERS",
+            "SERVITOR BATTLECLADE",
+            "SKITARII RANGERS",
+            "SKITARII VANGUARD"
+          ]
+        },
+        {
+          "unitName": "TECH-PRIEST DOMINUS",
+          "role": "LEADER",
+          "targets": [
+            "CORPUSCARII ELECTRO-PRIESTS",
+            "FULGURITE ELECTRO-PRIESTS",
+            "HASTARII EXTERMINATORS",
+            "HASTARII FUSILIERS",
+            "KATAPHRON BREACHERS",
+            "KATAPHRON DESTROYERS",
+            "SERVITOR BATTLECLADE",
+            "SKITARII RANGERS",
+            "SKITARII VANGUARD"
+          ]
+        },
+        {
+          "unitName": "TECH-PRIEST ENGINSEER",
+          "role": "LEADER",
+          "targets": [
+            "CORPUSCARII ELECTRO-PRIESTS",
+            "FULGURITE ELECTRO-PRIESTS",
+            "KATAPHRON BREACHERS",
+            "KATAPHRON DESTROYERS",
+            "SKITARII RANGERS",
+            "SKITARII VANGUARD"
+          ]
+        },
+        {
+          "unitName": "TECH-PRIEST MANIPULUS",
+          "role": "LEADER",
+          "targets": [
+            "CORPUSCARII ELECTRO-PRIESTS",
+            "FULGURITE ELECTRO-PRIESTS",
+            "HASTARII EXTERMINATORS",
+            "HASTARII FUSILIERS",
+            "KATAPHRON BREACHERS",
+            "KATAPHRON DESTROYERS",
+            "SERVITOR BATTLECLADE",
+            "SKITARII RANGERS",
+            "SKITARII VANGUARD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Aeldari",
+      "slug": "aeldari",
+      "url": "https://mfm.warhammer-community.com/en/aeldari",
+      "attachments": [
+        {
+          "unitName": "ASURMEN",
+          "role": "LEADER",
+          "targets": [
+            "DIRE AVENGERS"
+          ]
+        },
+        {
+          "unitName": "AUTARCH",
+          "role": "LEADER",
+          "targets": [
+            "DARK REAPERS",
+            "DIRE AVENGERS",
+            "FIRE DRAGONS",
+            "GUARDIAN DEFENDERS",
+            "HOWLING BANSHEES",
+            "STORM GUARDIANS",
+            "STRIKING SCORPIONS"
+          ]
+        },
+        {
+          "unitName": "AUTARCH WAYLEAPER",
+          "role": "LEADER",
+          "targets": [
+            "SWOOPING HAWKS",
+            "WARP SPIDERS"
+          ]
+        },
+        {
+          "unitName": "BAHARROTH",
+          "role": "LEADER",
+          "targets": [
+            "SWOOPING HAWKS"
+          ]
+        },
+        {
+          "unitName": "ELDRAD ULTHRAN",
+          "role": "LEADER",
+          "targets": [
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS",
+            "WARLOCK CONCLAVE"
+          ]
+        },
+        {
+          "unitName": "FARSEER",
+          "role": "LEADER",
+          "targets": [
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS",
+            "WARLOCK CONCLAVE"
+          ]
+        },
+        {
+          "unitName": "FARSEER SKYRUNNER",
+          "role": "LEADER",
+          "targets": [
+            "WARLOCK SKYRUNNERS",
+            "WINDRIDERS"
+          ]
+        },
+        {
+          "unitName": "FUEGAN",
+          "role": "LEADER",
+          "targets": [
+            "FIRE DRAGONS"
+          ]
+        },
+        {
+          "unitName": "JAIN ZAR",
+          "role": "LEADER",
+          "targets": [
+            "HOWLING BANSHEES"
+          ]
+        },
+        {
+          "unitName": "KHARSETH",
+          "role": "LEADER",
+          "targets": [
+            "CORSAIR VOIDREAVERS",
+            "CORSAIR VOIDSCARRED"
+          ]
+        },
+        {
+          "unitName": "LHYKHIS",
+          "role": "LEADER",
+          "targets": [
+            "WARP SPIDERS"
+          ]
+        },
+        {
+          "unitName": "MAUGAN RA",
+          "role": "LEADER",
+          "targets": [
+            "DARK REAPERS"
+          ]
+        },
+        {
+          "unitName": "PRINCE YRIEL",
+          "role": "LEADER",
+          "targets": [
+            "CORSAIR VOIDREAVERS",
+            "CORSAIR VOIDSCARRED"
+          ]
+        },
+        {
+          "unitName": "WARLOCK",
+          "role": "SUPPORT",
+          "targets": [
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS"
+          ]
+        },
+        {
+          "unitName": "WARLOCK CONCLAVE",
+          "role": "LEADER",
+          "targets": [
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS"
+          ]
+        },
+        {
+          "unitName": "WARLOCK SKYRUNNERS",
+          "role": "LEADER",
+          "targets": [
+            "WINDRIDERS"
+          ]
+        },
+        {
+          "unitName": "SHADOWSEER",
+          "role": "LEADER",
+          "targets": [
+            "TROUPE"
+          ]
+        },
+        {
+          "unitName": "THE VISARCH",
+          "role": "LEADER",
+          "targets": [
+            "CORSAIR VOIDREAVERS",
+            "CORSAIR VOIDSCARRED",
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS",
+            "YNNARI INCUBI",
+            "YNNARI KABALITE WARRIORS",
+            "YNNARI WYCHES"
+          ]
+        },
+        {
+          "unitName": "YNNARI ARCHON",
+          "role": "LEADER",
+          "targets": [
+            "YNNARI INCUBI",
+            "YNNARI KABALITE WARRIORS"
+          ]
+        },
+        {
+          "unitName": "TROUPE MASTER",
+          "role": "LEADER",
+          "targets": [
+            "TROUPE"
+          ]
+        },
+        {
+          "unitName": "YNNARI SUCCUBUS",
+          "role": "LEADER",
+          "targets": [
+            "YNNARI WYCHES"
+          ]
+        },
+        {
+          "unitName": "YVRAINE",
+          "role": "LEADER",
+          "targets": [
+            "CORSAIR VOIDREAVERS",
+            "CORSAIR VOIDSCARRED",
+            "GUARDIAN DEFENDERS",
+            "STORM GUARDIANS",
+            "YNNARI INCUBI",
+            "YNNARI KABALITE WARRIORS",
+            "YNNARI WYCHES"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Astra Militarum",
+      "slug": "astra-militarum",
+      "url": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "attachments": [
+        {
+          "unitName": "CADIAN CASTELLAN",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "KASRKIN"
+          ]
+        },
+        {
+          "unitName": "CADIAN COMMAND SQUAD",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS"
+          ]
+        },
+        {
+          "unitName": "CATACHAN COMMAND SQUAD",
+          "role": "LEADER",
+          "targets": [
+            "CATACHAN JUNGLE FIGHTERS"
+          ]
+        },
+        {
+          "unitName": "COMMISSAR",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS",
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "COMMISSAR GRAVES ON FOOT",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS",
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "COMMISSAR YARRICK",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS",
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "KRIEG COMMAND SQUAD",
+          "role": "LEADER",
+          "targets": [
+            "DEATH KORPS OF KRIEG",
+            "KRIEG COMBAT ENGINEERS"
+          ]
+        },
+        {
+          "unitName": "LORD MARSHAL DREIR",
+          "role": "LEADER",
+          "targets": [
+            "DEATH RIDERS"
+          ]
+        },
+        {
+          "unitName": "LORD SOLAR LEONTUS",
+          "role": "LEADER",
+          "targets": [
+            "ATTILAN ROUGH RIDERS",
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "DEATH RIDERS",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS"
+          ]
+        },
+        {
+          "unitName": "MILITARUM TEMPESTUS COMMAND SQUAD",
+          "role": "LEADER",
+          "targets": [
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "MINISTORUM PRIEST",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS",
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "PRIMARIS PSYKER",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS",
+            "TEMPESTUS SCIONS"
+          ]
+        },
+        {
+          "unitName": "TECH-PRIEST ENGINSEER",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "CATACHAN JUNGLE FIGHTERS",
+            "DEATH KORPS OF KRIEG",
+            "KASRKIN",
+            "KRIEG COMBAT ENGINEERS"
+          ]
+        },
+        {
+          "unitName": "URSULA CREED",
+          "role": "LEADER",
+          "targets": [
+            "CADIAN SHOCK TROOPS",
+            "KASRKIN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Black Templars",
+      "slug": "black-templars",
+      "url": "https://mfm.warhammer-community.com/en/black-templars",
+      "attachments": [
+        {
+          "unitName": "CASTELLAN",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN GRIMALDUS",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CRUSADE ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "CRUSADER SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "EMPEROR’S CHAMPION",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "EXECRATOR",
+          "role": "LEADER",
+          "targets": [
+            "CRUSADER SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "HIGH MARSHAL HELBRECHT",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "MARSHAL",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY BIOLOGIS",
+          "role": "SUPPORT",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blood Angels",
+      "slug": "blood-angels",
+      "url": "https://mfm.warhammer-community.com/en/blood-angels",
+      "attachments": [
+        {
+          "unitName": "ASTORATH",
+          "role": "LEADER",
+          "targets": [
+            "DEATH COMPANY MARINES WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "BLOOD ANGELS CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "COMPANY HEROES",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "COMMANDER DANTE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "DEATH COMPANY CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES"
+          ]
+        },
+        {
+          "unitName": "DEATH COMPANY CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "DEATH COMPANY MARINES WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "LEMARTES",
+          "role": "LEADER",
+          "targets": [
+            "DEATH COMPANY MARINES WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "SANGUINARY PRIEST",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY BIOLOGIS",
+          "role": "SUPPORT",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chaos Daemons",
+      "slug": "chaos-daemons",
+      "url": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "attachments": [
+        {
+          "unitName": "BLOODMASTER",
+          "role": "LEADER",
+          "targets": [
+            "BLOODLETTERS"
+          ]
+        },
+        {
+          "unitName": "CHANGECASTER",
+          "role": "LEADER",
+          "targets": [
+            "BLUE HORRORS",
+            "PINK HORRORS"
+          ]
+        },
+        {
+          "unitName": "CONTORTED EPITOME",
+          "role": "LEADER",
+          "targets": [
+            "DAEMONETTES"
+          ]
+        },
+        {
+          "unitName": "EPIDEMIUS",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUEBEARERS"
+          ]
+        },
+        {
+          "unitName": "EXALTED FLAMER",
+          "role": "LEADER",
+          "targets": [
+            "FLAMERS"
+          ]
+        },
+        {
+          "unitName": "FATESKIMMER",
+          "role": "LEADER",
+          "targets": [
+            "SCREAMERS"
+          ]
+        },
+        {
+          "unitName": "FLUXMASTER",
+          "role": "LEADER",
+          "targets": [
+            "BLUE HORRORS",
+            "PINK HORRORS"
+          ]
+        },
+        {
+          "unitName": "HORTICULOUS SLIMUX",
+          "role": "LEADER",
+          "targets": [
+            "BEASTS OF NURGLE"
+          ]
+        },
+        {
+          "unitName": "INFERNAL ENRAPTURESS",
+          "role": "LEADER",
+          "targets": [
+            "DAEMONETTES"
+          ]
+        },
+        {
+          "unitName": "KARANAK",
+          "role": "LEADER",
+          "targets": [
+            "FLESH HOUNDS"
+          ]
+        },
+        {
+          "unitName": "POXBRINGER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUEBEARERS"
+          ]
+        },
+        {
+          "unitName": "SKULLMASTER",
+          "role": "LEADER",
+          "targets": [
+            "BLOODCRUSHERS"
+          ]
+        },
+        {
+          "unitName": "SKULLTAKER",
+          "role": "LEADER",
+          "targets": [
+            "BLOODLETTERS"
+          ]
+        },
+        {
+          "unitName": "SLOPPITY BILEPIPER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUEBEARERS"
+          ]
+        },
+        {
+          "unitName": "SPOILPOX SCRIVENER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUEBEARERS"
+          ]
+        },
+        {
+          "unitName": "SYLL’ESSKE",
+          "role": "LEADER",
+          "targets": [
+            "DAEMONETTES"
+          ]
+        },
+        {
+          "unitName": "TORMENTBRINGER",
+          "role": "LEADER",
+          "targets": [
+            "HELLFLAYERS"
+          ]
+        },
+        {
+          "unitName": "TRANCEWEAVER",
+          "role": "LEADER",
+          "targets": [
+            "DAEMONETTES"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chaos Knights",
+      "slug": "chaos-knights",
+      "url": "https://mfm.warhammer-community.com/en/chaos-knights",
+      "attachments": []
+    },
+    {
+      "name": "Chaos Space Marines",
+      "slug": "chaos-space-marines",
+      "url": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "attachments": [
+        {
+          "unitName": "ABADDON THE DESPOILER",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATOR SQUAD",
+            "CHOSEN"
+          ]
+        },
+        {
+          "unitName": "CHAOS LORD",
+          "role": "LEADER",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "CHAOS LORD IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAOS LORD WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "RAPTORS"
+          ]
+        },
+        {
+          "unitName": "CULTIST FIREBRAND",
+          "role": "LEADER",
+          "targets": [
+            "ACCURSED CULTISTS",
+            "CULTIST MOB"
+          ]
+        },
+        {
+          "unitName": "DARK APOSTLE",
+          "role": "LEADER",
+          "targets": [
+            "ACCURSED CULTISTS",
+            "CHOSEN",
+            "CULTIST MOB",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "DARK COMMUNE",
+          "role": "LEADER",
+          "targets": [
+            "ACCURSED CULTISTS",
+            "CULTIST MOB"
+          ]
+        },
+        {
+          "unitName": "FABIUS BILE",
+          "role": "LEADER",
+          "targets": [
+            "ACCURSED CULTISTS",
+            "CHOSEN",
+            "CULTIST MOB",
+            "LEGIONARIES",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "HAARKEN WORLDCLAIMER",
+          "role": "LEADER",
+          "targets": [
+            "RAPTORS"
+          ]
+        },
+        {
+          "unitName": "HURON BLACKHEART",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATOR SQUAD",
+            "CHOSEN",
+            "LEGIONARIES",
+            "MASTERS OF THE MAELSTROM",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "KRAVEK MORNE",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATOR SQUAD",
+            "MUTILATORS",
+            "OBLITERATORS"
+          ]
+        },
+        {
+          "unitName": "MASTER OF EXECUTIONS",
+          "role": "SUPPORT",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "MASTER OF POSSESSION",
+          "role": "LEADER",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "POSSESSED",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "MASTERS OF THE MAELSTROM",
+          "role": "SUPPORT",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "RED CORSAIRS REAVE-CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "SORCERER",
+          "role": "LEADER",
+          "targets": [
+            "CHOSEN",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        },
+        {
+          "unitName": "SORCERER IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "TRAITOR ENFORCER",
+          "role": "LEADER",
+          "targets": [
+            "TRAITOR GUARDSMEN SQUAD"
+          ]
+        },
+        {
+          "unitName": "WARPSMITH",
+          "role": "LEADER",
+          "targets": [
+            "CHOSEN",
+            "HAVOCS",
+            "LEGIONARIES",
+            "NEMESIS CLAW",
+            "RED CORSAIRS RAIDERS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chaos Titan Legions",
+      "slug": "chaos-titan-legions",
+      "url": "https://mfm.warhammer-community.com/en/chaos-titan-legions",
+      "attachments": []
+    },
+    {
+      "name": "Dark Angels",
+      "slug": "dark-angels",
+      "url": "https://mfm.warhammer-community.com/en/dark-angels",
+      "attachments": [
+        {
+          "unitName": "ASMODAI",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "AZRAEL",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "BELIAL",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "EZEKIEL",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LAZARUS",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "RAVENWING COMMAND SQUAD",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "SAMMAEL",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY BIOLOGIS",
+          "role": "SUPPORT",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Death Guard",
+      "slug": "death-guard",
+      "url": "https://mfm.warhammer-community.com/en/death-guard",
+      "attachments": [
+        {
+          "unitName": "BIOLOGUS PUTRIFIER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "FOUL BLIGHTSPAWN",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "ICON BEARER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "LORD OF CONTAGION",
+          "role": "LEADER",
+          "targets": [
+            "BLIGHTLORD TERMINATORS",
+            "DEATHSHROUD TERMINATORS"
+          ]
+        },
+        {
+          "unitName": "LORD OF POXES",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "LORD OF VIRULENCE",
+          "role": "LEADER",
+          "targets": [
+            "BLIGHTLORD TERMINATORS",
+            "DEATHSHROUD TERMINATORS"
+          ]
+        },
+        {
+          "unitName": "MALIGNANT PLAGUECASTER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES",
+            "POXWALKERS"
+          ]
+        },
+        {
+          "unitName": "NOXIOUS BLIGHTBRINGER",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES",
+            "POXWALKERS"
+          ]
+        },
+        {
+          "unitName": "PLAGUE SURGEON",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "TALLYMAN",
+          "role": "LEADER",
+          "targets": [
+            "PLAGUE MARINES"
+          ]
+        },
+        {
+          "unitName": "TYPHUS",
+          "role": "LEADER",
+          "targets": [
+            "BLIGHTLORD TERMINATORS",
+            "DEATHSHROUD TERMINATORS",
+            "POXWALKERS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deathwatch",
+      "slug": "deathwatch",
+      "url": "https://mfm.warhammer-community.com/en/deathwatch",
+      "attachments": [
+        {
+          "unitName": "WATCH CAPTAIN ARTEMIS",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "WATCH MASTER",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY BIOLOGIS",
+          "role": "SUPPORT",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drukhari",
+      "slug": "drukhari",
+      "url": "https://mfm.warhammer-community.com/en/drukhari",
+      "attachments": [
+        {
+          "unitName": "ARCHON",
+          "role": "LEADER",
+          "targets": [
+            "HAND OF THE ARCHON",
+            "INCUBI",
+            "KABALITE WARRIORS"
+          ]
+        },
+        {
+          "unitName": "DRAZHAR",
+          "role": "LEADER",
+          "targets": [
+            "INCUBI"
+          ]
+        },
+        {
+          "unitName": "HAEMONCULUS",
+          "role": "LEADER",
+          "targets": [
+            "WRACKS"
+          ]
+        },
+        {
+          "unitName": "LADY MALYS",
+          "role": "LEADER",
+          "targets": [
+            "HAND OF THE ARCHON",
+            "INCUBI",
+            "KABALITE WARRIORS"
+          ]
+        },
+        {
+          "unitName": "LELITH HESPERAX",
+          "role": "LEADER",
+          "targets": [
+            "WYCHES"
+          ]
+        },
+        {
+          "unitName": "SUCCUBUS",
+          "role": "LEADER",
+          "targets": [
+            "WYCHES"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Emperor’s Children",
+      "slug": "emperors-children",
+      "url": "https://mfm.warhammer-community.com/en/emperors-children",
+      "attachments": [
+        {
+          "unitName": "LORD EXULTANT",
+          "role": "LEADER",
+          "targets": [
+            "INFRACTORS",
+            "TORMENTORS"
+          ]
+        },
+        {
+          "unitName": "LORD KAKOPHONIST",
+          "role": "LEADER",
+          "targets": [
+            "CHAOS TERMINATORS",
+            "NOISE MARINES"
+          ]
+        },
+        {
+          "unitName": "LUCIUS THE ETERNAL",
+          "role": "LEADER",
+          "targets": [
+            "FLAWLESS BLADES"
+          ]
+        },
+        {
+          "unitName": "SORCERER",
+          "role": "LEADER",
+          "targets": [
+            "INFRACTORS",
+            "NOISE MARINES",
+            "TORMENTORS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Genestealer Cults",
+      "slug": "genestealer-cults",
+      "url": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "attachments": [
+        {
+          "unitName": "ABOMINANT",
+          "role": "LEADER",
+          "targets": [
+            "ABERRANTS"
+          ]
+        },
+        {
+          "unitName": "ACOLYTE ICONWARD",
+          "role": "LEADER",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "BENEFICTUS",
+          "role": "LEADER",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "BIOPHAGUS",
+          "role": "SUPPORT",
+          "targets": [
+            "ABERRANTS",
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "CLAMAVUS",
+          "role": "SUPPORT",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "JACKAL ALPHUS",
+          "role": "LEADER",
+          "targets": [
+            "ATALAN JACKALS"
+          ]
+        },
+        {
+          "unitName": "LOCUS",
+          "role": "SUPPORT",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "MAGUS",
+          "role": "LEADER",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "NEXOS",
+          "role": "SUPPORT",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        },
+        {
+          "unitName": "PATRIARCH",
+          "role": "LEADER",
+          "targets": [
+            "PURESTRAIN GENESTEALERS"
+          ]
+        },
+        {
+          "unitName": "PRIMUS",
+          "role": "LEADER",
+          "targets": [
+            "ACOLYTE HYBRIDS WITH AUTOPISTOLS",
+            "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+            "HYBRID METAMORPHS",
+            "NEOPHYTE HYBRIDS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Grey Knights",
+      "slug": "grey-knights",
+      "url": "https://mfm.warhammer-community.com/en/grey-knights",
+      "attachments": [
+        {
+          "unitName": "BROTHER-CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "BROTHERHOOD TERMINATOR SQUAD",
+            "PALADIN SQUAD"
+          ]
+        },
+        {
+          "unitName": "BROTHERHOOD CHAMPION",
+          "role": "LEADER",
+          "targets": [
+            "PURGATION SQUAD",
+            "STRIKE SQUAD"
+          ]
+        },
+        {
+          "unitName": "BROTHERHOOD CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "BROTHERHOOD TERMINATOR SQUAD",
+            "PALADIN SQUAD"
+          ]
+        },
+        {
+          "unitName": "BROTHERHOOD LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "BROTHERHOOD TERMINATOR SQUAD",
+            "PALADIN SQUAD"
+          ]
+        },
+        {
+          "unitName": "BROTHERHOOD TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "PURGATION SQUAD",
+            "PURIFIER SQUAD",
+            "STRIKE SQUAD"
+          ]
+        },
+        {
+          "unitName": "CASTELLAN CROWE",
+          "role": "LEADER",
+          "targets": [
+            "PURIFIER SQUAD"
+          ]
+        },
+        {
+          "unitName": "GRAND MASTER",
+          "role": "LEADER",
+          "targets": [
+            "BROTHERHOOD TERMINATOR SQUAD",
+            "PALADIN SQUAD"
+          ]
+        },
+        {
+          "unitName": "GRAND MASTER VOLDUS",
+          "role": "LEADER",
+          "targets": [
+            "BROTHERHOOD TERMINATOR SQUAD",
+            "PALADIN SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Imperial Agents",
+      "slug": "imperial-agents",
+      "url": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "attachments": [
+        {
+          "unitName": "INQUISITOR",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "GREY KNIGHTS TERMINATOR SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR COTEAZ",
+          "role": "LEADER",
+          "targets": [
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "GREY KNIGHTS TERMINATOR SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR DRAXUS",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR GREYFAX",
+          "role": "LEADER",
+          "targets": [
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "MINISTORUM PRIEST",
+          "role": "SUPPORT",
+          "targets": [
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "NAVIGATOR",
+          "role": "LEADER",
+          "targets": [
+            "IMPERIAL NAVY BREACHERS",
+            "VOIDSMEN-AT-ARMS"
+          ]
+        },
+        {
+          "unitName": "ROGUE TRADER ENTOURAGE",
+          "role": "LEADER",
+          "targets": [
+            "IMPERIAL NAVY BREACHERS",
+            "VOIDSMEN-AT-ARMS"
+          ]
+        },
+        {
+          "unitName": "WATCH CAPTAIN ARTEMIS",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "DEATHWATCH KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "WATCH MASTER",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "DEATHWATCH KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "GREY KNIGHTS TERMINATOR SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR COTEAZ",
+          "role": "LEADER",
+          "targets": [
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "GREY KNIGHTS TERMINATOR SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR DRAXUS",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "INQUISITOR GREYFAX",
+          "role": "LEADER",
+          "targets": [
+            "BATTLELINE IMPERIUM INFANTRY",
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "MINISTORUM PRIEST",
+          "role": "SUPPORT",
+          "targets": [
+            "EXACTION SQUAD",
+            "IMPERIAL NAVY BREACHERS",
+            "INQUISITORIAL AGENTS",
+            "SANCTIFIERS",
+            "SISTERS OF BATTLE SQUAD",
+            "SUBDUCTOR SQUAD",
+            "VIGILANT SQUAD"
+          ]
+        },
+        {
+          "unitName": "NAVIGATOR",
+          "role": "LEADER",
+          "targets": [
+            "IMPERIAL NAVY BREACHERS",
+            "VOIDSMEN-AT-ARMS"
+          ]
+        },
+        {
+          "unitName": "ROGUE TRADER ENTOURAGE",
+          "role": "LEADER",
+          "targets": [
+            "IMPERIAL NAVY BREACHERS",
+            "VOIDSMEN-AT-ARMS"
+          ]
+        },
+        {
+          "unitName": "WATCH CAPTAIN ARTEMIS",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "DEATHWATCH KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "WATCH MASTER",
+          "role": "LEADER",
+          "targets": [
+            "AQUILA KILL TEAM",
+            "DEATHWATCH KILL TEAM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Imperial Knights",
+      "slug": "imperial-knights",
+      "url": "https://mfm.warhammer-community.com/en/imperial-knights",
+      "attachments": []
+    },
+    {
+      "name": "Leagues of Votann",
+      "slug": "leagues-of-votann",
+      "url": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "attachments": [
+        {
+          "unitName": "BEREHK STORNBRÖW",
+          "role": "LEADER",
+          "targets": [
+            "CTHONIAN BESERKS"
+          ]
+        },
+        {
+          "unitName": "BRÔKHYR IRON-MASTER",
+          "role": "LEADER",
+          "targets": [
+            "BRÔKHYR THUNDERKYN",
+            "HEARTHKYN WARRIORS"
+          ]
+        },
+        {
+          "unitName": "EINHYR CHAMPION",
+          "role": "LEADER",
+          "targets": [
+            "EINHYR HEARTHGUARD"
+          ]
+        },
+        {
+          "unitName": "GRIMNYR",
+          "role": "LEADER",
+          "targets": [
+            "HEARTHKYN WARRIORS"
+          ]
+        },
+        {
+          "unitName": "KÂHL",
+          "role": "LEADER",
+          "targets": [
+            "EINHYR HEARTHGUARD",
+            "HEARTHKYN WARRIORS"
+          ]
+        },
+        {
+          "unitName": "MEMNYR STRATEGIST",
+          "role": "LEADER",
+          "targets": [
+            "IRONKIN STEELJACKS WITH HEAVY VOLKANITE DISINTEGRATORS",
+            "IRONKIN STEELJACKS WITH MELEE WEAPONS"
+          ]
+        },
+        {
+          "unitName": "ÛTHAR THE DESTINED",
+          "role": "LEADER",
+          "targets": [
+            "EINHYR HEARTHGUARD",
+            "HEARTHKYN WARRIORS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Necrons",
+      "slug": "necrons",
+      "url": "https://mfm.warhammer-community.com/en/necrons",
+      "attachments": [
+        {
+          "unitName": "CHRONOMANCER",
+          "role": "SUPPORT",
+          "targets": [
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "GEOMANCER",
+          "role": "SUPPORT",
+          "targets": [
+            "CANOPTEK MACROCYTES",
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "IMOTEKH THE STORMLORD",
+          "role": "LEADER",
+          "targets": [
+            "IMMORTALS",
+            "LYCHGUARD",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "LOKHUST LORD",
+          "role": "LEADER",
+          "targets": [
+            "LOKHUST DESTROYERS",
+            "LOKHUST HEAVY DESTROYERS"
+          ]
+        },
+        {
+          "unitName": "ORIKAN THE DIVINER",
+          "role": "SUPPORT",
+          "targets": [
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "OVERLORD",
+          "role": "LEADER",
+          "targets": [
+            "IMMORTALS",
+            "LYCHGUARD",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "OVERLORD WITH TRANSLOCATION SHROUD",
+          "role": "LEADER",
+          "targets": [
+            "IMMORTALS",
+            "LYCHGUARD",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "PLASMANCER",
+          "role": "SUPPORT",
+          "targets": [
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "PSYCHOMANCER",
+          "role": "SUPPORT",
+          "targets": [
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "ROYAL WARDEN",
+          "role": "LEADER",
+          "targets": [
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "SKORPEKH LORD",
+          "role": "LEADER",
+          "targets": [
+            "SKORPEKH DESTROYERS"
+          ]
+        },
+        {
+          "unitName": "TECHNOMANCER",
+          "role": "SUPPORT",
+          "targets": [
+            "CANOPTEK WRAITHS",
+            "IMMORTALS",
+            "NECRON WARRIORS"
+          ]
+        },
+        {
+          "unitName": "TRAZYN THE INFINITE",
+          "role": "LEADER",
+          "targets": [
+            "IMMORTALS",
+            "LYCHGUARD",
+            "NECRON WARRIORS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orks",
+      "slug": "orks",
+      "url": "https://mfm.warhammer-community.com/en/orks",
+      "attachments": [
+        {
+          "unitName": "BANNERNOB",
+          "role": "SUPPORT",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "BURNA BOYZ",
+            "FLASH GITZ",
+            "LOOTAS",
+            "NOBZ",
+            "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "BEASTBOSS",
+          "role": "LEADER",
+          "targets": [
+            "BEAST SNAGGA BOYZ"
+          ]
+        },
+        {
+          "unitName": "BEASTBOSS ON SQUIGOSAUR",
+          "role": "LEADER",
+          "targets": [
+            "SQUIGHOG BOYZ"
+          ]
+        },
+        {
+          "unitName": "BIGBOSS",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "NOBZ"
+          ]
+        },
+        {
+          "unitName": "BIG MEK",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "LOOTAS",
+            "MEK GUNZ",
+            "NOBZ",
+            "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "BIG MEK IN MEGA ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "MEGANOBZ"
+          ]
+        },
+        {
+          "unitName": "BIG MEK WITH SHOKK ATTACK GUN",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "LOOTAS",
+            "MEK GUNZ",
+            "NOBZ",
+            "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "BOSS SNIKROT",
+          "role": "LEADER",
+          "targets": [
+            "KOMMANDOS"
+          ]
+        },
+        {
+          "unitName": "DEFFKILLA WARTRIKE",
+          "role": "LEADER",
+          "targets": [
+            "WARBIKERS"
+          ]
+        },
+        {
+          "unitName": "GHAZGHKULL THRAKA",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "MEGANOBZ",
+            "NOBZ"
+          ]
+        },
+        {
+          "unitName": "MEK",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "LOOTAS",
+            "MEK GUNZ",
+            "NOBZ",
+            "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "MOZROG SKRAGBAD",
+          "role": "LEADER",
+          "targets": [
+            "SQUIGHOG BOYZ"
+          ]
+        },
+        {
+          "unitName": "PAINBOSS",
+          "role": "LEADER",
+          "targets": [
+            "BEAST SNAGGA BOYZ"
+          ]
+        },
+        {
+          "unitName": "PAINBOY",
+          "role": "SUPPORT",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "BURNA BOYZ",
+            "LOOTAS",
+            "NOBZ",
+            "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "WARBOSS",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ",
+            "NOBZ"
+          ]
+        },
+        {
+          "unitName": "WARBOSS IN MEGA ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "MEGANOBZ"
+          ]
+        },
+        {
+          "unitName": "WEIRDBOY",
+          "role": "LEADER",
+          "targets": [
+            "BOYZ",
+            "BREAKA BOYZ"
+          ]
+        },
+        {
+          "unitName": "WURRBOY",
+          "role": "LEADER",
+          "targets": [
+            "BEAST SNAGGA BOYZ"
+          ]
+        },
+        {
+          "unitName": "ZODGROD WORTSNAGGA",
+          "role": "LEADER",
+          "targets": [
+            "GRETCHIN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Space Marines",
+      "slug": "space-marines",
+      "url": "https://mfm.warhammer-community.com/en/space-marines",
+      "attachments": [
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "APOTHECARY BIOLOGIS",
+          "role": "SUPPORT",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "DARNATH LYSANDER",
+          "role": "LEADER",
+          "targets": [
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "PEDRO KANTOR",
+          "role": "LEADER",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "TOR GARADON",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAANOK VAR",
+          "role": "LEADER",
+          "targets": [
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "IRON FATHER FEIRROS",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "ADRAX AGATONE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "VULKAN HE’STAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "COMPANY HEROES",
+            "INFERNUS SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "KAYVAAN SHRIKE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN TITUS",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "VICTRIX HONOUR GUARD",
+            "WARDENS OF ULTRAMAR"
+          ]
+        },
+        {
+          "unitName": "CATO SICARIUS",
+          "role": "SUPPORT",
+          "targets": [
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CHIEF LIBRARIAN TIGURIUS",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "KOR’SARRO KHAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "SUBODEN KHAN",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD"
+          ]
+        },
+        {
+          "unitName": "SUBODEN KHAN",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "URIEL VENTRIS",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "WARDENS OF ULTRAMAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Space Wolves",
+      "slug": "space-wolves",
+      "url": "https://mfm.warhammer-community.com/en/space-wolves",
+      "attachments": [
+        {
+          "unitName": "ARJAC ROCKFIST",
+          "role": "LEADER",
+          "targets": [
+            "WOLF GUARD TERMINATORS"
+          ]
+        },
+        {
+          "unitName": "IRON PRIEST",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "GREY HUNTERS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "LOGAN GRIMNAR",
+          "role": "LEADER",
+          "targets": [
+            "WOLF GUARD TERMINATORS"
+          ]
+        },
+        {
+          "unitName": "NJAL STORMCALLER",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "GREY HUNTERS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "RAGNAR BLACKMANE",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "ULRIK THE SLAYER",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "GREY HUNTERS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "WOLF GUARD BATTLE LEADER",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "GREY HUNTERS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "WOLF PRIEST",
+          "role": "LEADER",
+          "targets": [
+            "BLOOD CLAWS",
+            "GREY HUNTERS",
+            "WOLF GUARD HEADTAKERS"
+          ]
+        },
+        {
+          "unitName": "ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "ANCIENT IN TERMINATOR ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "BLADEGUARD ANCIENT",
+          "role": "SUPPORT",
+          "targets": [
+            "BLADEGUARD VETERAN SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN GRAVIS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ERADICATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INDOMITOR KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SCOUT SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CAPTAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "SANGUINARY GUARD",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATH COMPANY MARINES",
+            "DEATH COMPANY MARINES WITH BOLT RIFLES",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN ON BIKE",
+          "role": "LEADER",
+          "targets": [
+            "OUTRIDER SQUAD",
+            "RAVENWING BLACK KNIGHTS"
+          ]
+        },
+        {
+          "unitName": "CHAPLAIN WITH JUMP PACK",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSORS WITH JUMP PACKS",
+            "DEATH COMPANY MARINES WITH JUMP PACKS",
+            "TALONSTRIKE KILL TEAM",
+            "VANGUARD VETERAN SQUAD WITH JUMP PACKS"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN PHOBOS ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ELIMINATOR SQUAD",
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIBRARIAN IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "DEATHWATCH TERMINATOR SQUAD",
+            "DEATHWING KNIGHTS",
+            "DEATHWING TERMINATOR SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "CRUSADER SQUAD",
+            "DEATHWATCH VETERANS",
+            "DECIMUS KILL TEAM",
+            "FORTIS KILL TEAM",
+            "HELLBLASTER SQUAD",
+            "INFERNUS SQUAD",
+            "INNER CIRCLE COMPANIONS",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN PHOBOS ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "INCURSOR SQUAD",
+            "INFILTRATOR SQUAD",
+            "REIVER SQUAD",
+            "SPECTRUS KILL TEAM"
+          ]
+        },
+        {
+          "unitName": "LIEUTENANT IN REIVER ARMOUR",
+          "role": "SUPPORT",
+          "targets": [
+            "REIVER SQUAD"
+          ]
+        },
+        {
+          "unitName": "TECHMARINE",
+          "role": "LEADER",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "CRUSADER SQUAD",
+            "DECIMUS KILL TEAM",
+            "DESOLATION SQUAD",
+            "DEVASTATOR SQUAD",
+            "FORTIS KILL TEAM",
+            "INTERCESSOR SQUAD",
+            "SWORD BRETHREN SQUAD",
+            "TACTICAL SQUAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "T’au Empire",
+      "slug": "tau-empire",
+      "url": "https://mfm.warhammer-community.com/en/tau-empire",
+      "attachments": [
+        {
+          "unitName": "CADRE FIREBLADE",
+          "role": "LEADER",
+          "targets": [
+            "BREACHER TEAM",
+            "STRIKE TEAM"
+          ]
+        },
+        {
+          "unitName": "COMMANDER FARSIGHT",
+          "role": "LEADER",
+          "targets": [
+            "CRISIS FIREKNIFE BATTLESUITS",
+            "CRISIS STARSCYTHE BATTLESUITS",
+            "CRISIS SUNFORGE BATTLESUITS"
+          ]
+        },
+        {
+          "unitName": "COMMANDER IN COLDSTAR BATTLESUIT",
+          "role": "LEADER",
+          "targets": [
+            "CRISIS FIREKNIFE BATTLESUITS",
+            "CRISIS STARSCYTHE BATTLESUITS",
+            "CRISIS SUNFORGE BATTLESUITS"
+          ]
+        },
+        {
+          "unitName": "COMMANDER IN ENFORCER BATTLESUIT",
+          "role": "LEADER",
+          "targets": [
+            "CRISIS FIREKNIFE BATTLESUITS",
+            "CRISIS STARSCYTHE BATTLESUITS",
+            "CRISIS SUNFORGE BATTLESUITS"
+          ]
+        },
+        {
+          "unitName": "DARKSTRIDER",
+          "role": "LEADER",
+          "targets": [
+            "PATHFINDER TEAM"
+          ]
+        },
+        {
+          "unitName": "ETHEREAL",
+          "role": "LEADER",
+          "targets": [
+            "BREACHER TEAM",
+            "STRIKE TEAM"
+          ]
+        },
+        {
+          "unitName": "KROOT FLESH SHAPER",
+          "role": "LEADER",
+          "targets": [
+            "KROOT CARNIVORES",
+            "KROOT FARSTALKERS"
+          ]
+        },
+        {
+          "unitName": "KROOT TRAIL SHAPER",
+          "role": "LEADER",
+          "targets": [
+            "KROOT CARNIVORES",
+            "KROOT FARSTALKERS"
+          ]
+        },
+        {
+          "unitName": "KROOT WAR SHAPER",
+          "role": "LEADER",
+          "targets": [
+            "KROOT CARNIVORES",
+            "KROOT FARSTALKERS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Thousand Sons",
+      "slug": "thousand-sons",
+      "url": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "attachments": [
+        {
+          "unitName": "AHRIMAN",
+          "role": "LEADER",
+          "targets": [
+            "RUBRIC MARINES",
+            "TZAANGOR ENLIGHTENED",
+            "TZAANGOR ENLIGHTENED WITH FATECASTER GREATBOWS"
+          ]
+        },
+        {
+          "unitName": "EXALTED SORCERER",
+          "role": "LEADER",
+          "targets": [
+            "RUBRIC MARINES"
+          ]
+        },
+        {
+          "unitName": "EXALTED SORCERER ON DISC OF TZEENTCH",
+          "role": "LEADER",
+          "targets": [
+            "RUBRIC MARINES",
+            "TZAANGOR ENLIGHTENED",
+            "TZAANGOR ENLIGHTENED WITH FATECASTER GREATBOWS"
+          ]
+        },
+        {
+          "unitName": "INFERNAL MASTER",
+          "role": "LEADER",
+          "targets": [
+            "RUBRIC MARINES"
+          ]
+        },
+        {
+          "unitName": "SORCERER",
+          "role": "LEADER",
+          "targets": [
+            "RUBRIC MARINES"
+          ]
+        },
+        {
+          "unitName": "SORCERER IN TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "SCARAB OCCULT TERMINATORS"
+          ]
+        },
+        {
+          "unitName": "TZAANGOR SHAMAN",
+          "role": "LEADER",
+          "targets": [
+            "TZAANGOR ENLIGHTENED",
+            "TZAANGOR ENLIGHTENED WITH FATECASTER GREATBOWS",
+            "TZAANGORS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Titan Legions",
+      "slug": "titan-legions",
+      "url": "https://mfm.warhammer-community.com/en/titan-legions",
+      "attachments": []
+    },
+    {
+      "name": "Tyranids",
+      "slug": "tyranids",
+      "url": "https://mfm.warhammer-community.com/en/tyranids",
+      "attachments": [
+        {
+          "unitName": "BROODLORD",
+          "role": "LEADER",
+          "targets": [
+            "GENESTEALERS"
+          ]
+        },
+        {
+          "unitName": "HIVE TYRANT",
+          "role": "LEADER",
+          "targets": [
+            "TYRANT GUARD"
+          ]
+        },
+        {
+          "unitName": "HYPERADAPTED RAVENERS",
+          "role": "LEADER",
+          "targets": [
+            "RAVENERS"
+          ]
+        },
+        {
+          "unitName": "NEUROTYRANT",
+          "role": "LEADER",
+          "targets": [
+            "NEUROGAUNTS",
+            "TYRANT GUARD",
+            "ZOANTHROPES"
+          ]
+        },
+        {
+          "unitName": "OLD ONE EYE",
+          "role": "LEADER",
+          "targets": [
+            "CARNIFEXES"
+          ]
+        },
+        {
+          "unitName": "THE SWARMLORD",
+          "role": "LEADER",
+          "targets": [
+            "TYRANT GUARD"
+          ]
+        },
+        {
+          "unitName": "TYRANID PRIME WITH LASH WHIP",
+          "role": "LEADER",
+          "targets": [
+            "HORMAGAUNTS",
+            "TERMAGANTS",
+            "TYRANID WARRIORS WITH MELEE BIO-WEAPONS",
+            "TYRANID WARRIORS WITH RANGED BIO-WEAPONS"
+          ]
+        },
+        {
+          "unitName": "WINGED TYRANID PRIME",
+          "role": "LEADER",
+          "targets": [
+            "GARGOYLES",
+            "TYRANID WARRIORS WITH MELEE BIO-WEAPONS",
+            "TYRANID WARRIORS WITH RANGED BIO-WEAPONS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "World Eaters",
+      "slug": "world-eaters",
+      "url": "https://mfm.warhammer-community.com/en/world-eaters",
+      "attachments": [
+        {
+          "unitName": "KHÂRN THE BETRAYER",
+          "role": "LEADER",
+          "targets": [
+            "KHORNE BERZERKERS"
+          ]
+        },
+        {
+          "unitName": "LORD INVOCATUS",
+          "role": "LEADER",
+          "targets": [
+            "EIGHTBOUND",
+            "EXALTED EIGHTBOUND",
+            "KHORNE BERZERKERS"
+          ]
+        },
+        {
+          "unitName": "LORD ON JUGGERNAUT",
+          "role": "LEADER",
+          "targets": [
+            "EIGHTBOUND",
+            "EXALTED EIGHTBOUND",
+            "KHORNE BERZERKERS"
+          ]
+        },
+        {
+          "unitName": "MASTER OF EXECUTIONS",
+          "role": "LEADER",
+          "targets": [
+            "KHORNE BERZERKERS"
+          ]
+        },
+        {
+          "unitName": "SLAUGHTERBOUND",
+          "role": "LEADER",
+          "targets": [
+            "EIGHTBOUND",
+            "EXALTED EIGHTBOUND"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "name": "Local 11e Core Stratagems",
+  "version": "codex-screenshot-2026-07-03",
+  "updatedAt": "2026-07-03",
+  "notes": [
+    "Recovered from Codex chat screenshots supplied by the user after installer data loss.",
+    "These records are the current core stratagem set shown in those screenshots."
+  ],
+  "coreStratagems": [
+    {
+      "id": "core-command-re-roll",
+      "name": "Command Re-roll",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Either player's turn",
+      "phase": "Any phase",
+      "legend": "A great commander can bend even the vagaries of fate and fortune to their will, the better to ensure victory.",
+      "description": "<b>WHEN:</b> Any phase, just after you make one of the following rolls for a friendly unit or model: Advance roll; Charge roll; Damage roll; Hazard roll; Hit roll; Save roll; Wound roll; a roll to determine the number of attacks generated with a weapon.<br><br><b>TARGET:</b> That unit or model.<br><br><b>EFFECT:</b> You re-roll that roll. If you are rolling more than one dice together, select one of those dice to re-roll, excluding charge rolls, which you must re-roll in full."
+    },
+    {
+      "id": "core-epic-challenge",
+      "name": "Epic Challenge",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Either player's turn",
+      "phase": "Fight phase",
+      "legend": "The legends of the 41st millennium are replete with deadly duels between mighty champions.",
+      "description": "<b>WHEN:</b> Fight phase, just after a friendly CHARACTER unit is selected to fight.<br><br><b>TARGET:</b> That CHARACTER unit.<br><br><b>EFFECT:</b> Select one CHARACTER model in your unit. Until the end of the phase, that model's melee weapons have the [PRECISION] ability."
+    },
+    {
+      "id": "core-insane-bravery",
+      "name": "Insane Bravery",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Your turn",
+      "phase": "Command phase",
+      "legend": "Indifferent to their own survival, these warriors hold their ground against seemingly impossible odds.",
+      "description": "<b>WHEN:</b> Battle-shock step of your Command phase, just before you make a battle-shock roll for a friendly unit.<br><br><b>TARGET:</b> That unit.<br><br><b>EFFECT:</b> That battle-shock roll is automatically successful.<br><br><b>RESTRICTIONS:</b> You cannot use this stratagem more than once per battle."
+    },
+    {
+      "id": "core-explosives",
+      "name": "Explosives",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Your turn",
+      "phase": "Shooting phase",
+      "legend": "Priming grenades or other explosives, these warriors draw back and hurl death into the enemy's midst.",
+      "description": "<b>WHEN:</b> Your Shooting phase.<br><br><b>TARGET:</b> One friendly unengaged EXPLOSIVES/GRENADES unit that is eligible to shoot and did not make an advance move this turn.<br><br><b>EFFECT:</b> Resolve the following sequence:<br>1. Select one EXPLOSIVES/GRENADES model in your unit.<br>2. Select one unengaged enemy unit within 8&quot; of and visible to that model.<br>3. Roll six D6: for each 4+, that enemy unit suffers 1 mortal wound (06.02)."
+    },
+    {
+      "id": "core-crushing-impact",
+      "name": "Crushing Impact",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Your turn",
+      "phase": "Charge phase",
+      "legend": "In extremis, armoured vehicles and rampaging monsters can use their sheer size as a weapon, ramming and crushing enemies beneath their colossal bulk, though doing so risks sustaining damage in return.",
+      "description": "<b>WHEN:</b> Your Charge phase, just after a friendly MONSTER/VEHICLE unit ends a charge move.<br><br><b>TARGET:</b> That MONSTER/VEHICLE unit.<br><br><b>EFFECT:</b> Resolve the following sequence:<br>1. Select one enemy unit engaged with your unit.<br>2. Select one model in your unit engaged with that enemy unit.<br>3. Roll a number of D6 equal to the T characteristic of that model: for each 1, your unit suffers 1 mortal wound; for each 5+, that enemy unit suffers 1 mortal wound, to a maximum of 6 mortal wounds per unit."
+    },
+    {
+      "id": "core-rapid-ingress",
+      "name": "Rapid Ingress",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Opponent's turn",
+      "phase": "Movement phase",
+      "legend": "Be it cunning strategy, potent technology or supernatural ritual, there are many means by which a commander may hasten their warriors' onset.",
+      "description": "<b>WHEN:</b> End of your opponent's Movement phase.<br><br><b>TARGET:</b> One friendly unit that is in strategic reserves, excluding AIRCRAFT.<br><br><b>EFFECT:</b> Your unit makes an ingress move (20.04).<br><br><b>RESTRICTIONS:</b> You cannot use this stratagem during the first battle round."
+    },
+    {
+      "id": "core-fire-overwatch",
+      "name": "Fire Overwatch",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Opponent's turn",
+      "phase": "Movement phase",
+      "legend": "A hail of fire can drive back advancing foes.",
+      "description": "<b>WHEN:</b> End of your opponent's Movement phase.<br><br><b>TARGET:</b> One friendly unengaged unit, excluding TITANIC units.<br><br><b>EFFECT:</b> Your unit shoots using snap shooting."
+    },
+    {
+      "id": "core-snap-shooting",
+      "name": "Snap Shooting",
+      "type": "Core Stratagem",
+      "cpCost": "",
+      "turn": "Either player's turn",
+      "phase": "As specified",
+      "description": "<b>ELIGIBLE IF:</b> As stated in the rule allowing this shooting type.<br><br><b>EFFECT:</b> Your unit shoots as described in Making Attacks (04).<br><br><b>WHILE SHOOTING:</b><br>- You can only target one visible enemy unit within 24&quot; of your unit, and only if it is an eligible target.<br>- Each attack only hits on an unmodified hit roll of 6, irrespective of the attacking weapon's BS characteristic or any modifiers.<br>- You cannot re-roll hit rolls.<br><br><b>AFTER SHOOTING:</b> Until the end of the phase, your unit is not eligible to start an action."
+    },
+    {
+      "id": "core-smokescreen",
+      "name": "Smokescreen",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Opponent's turn",
+      "phase": "Shooting phase",
+      "legend": "Even the most skilled marksmen struggle to hit targets veiled by billowing screens of smoke.",
+      "description": "<b>WHEN:</b> Start of your opponent's Shooting phase.<br><br><b>TARGET:</b> One friendly SMOKE unit.<br><br><b>EFFECT:</b> Until the end of the phase, each time an attack targets either your SMOKE unit, or a unit that is not fully visible to the attacking model because of one or more models in your SMOKE unit, the target has the benefit of cover against that attack (13.08)."
+    },
+    {
+      "id": "core-heroic-intervention",
+      "name": "Heroic Intervention",
+      "type": "Core Stratagem",
+      "cpCost": "1",
+      "turn": "Opponent's turn",
+      "phase": "Charge phase",
+      "legend": "Voices raised in furious war cries, your warriors surge forth to meet the enemy's onslaught head-on.",
+      "description": "<b>WHEN:</b> End of your opponent's Charge phase.<br><br><b>TARGET:</b> One friendly unengaged unit within 12&quot; of one or more enemy units. You can only select a VEHICLE unit if it is a CHARACTER/WALKER unit.<br><br><b>EFFECT:</b> Resolve a charge with your unit (11.02). While doing so, before making the charge roll, you must select one of the following modes:<br><br><b>Leap to Defend!</b> When selecting charge targets, you can only select enemy units that made a charge move this phase and are within the maximum distance.<br><br><b>Into the Fray (+1CP):</b> When making the charge roll, if the result is greater than 6 after modifiers, change it to 6. When selecting charge targets, you can select any enemy units within 6&quot; of your unit and within the maximum distance."
+    },
+    {
+      "id": "core-counteroffensive",
+      "name": "Counteroffensive",
+      "type": "Core Stratagem",
+      "cpCost": "2",
+      "turn": "Opponent's turn",
+      "phase": "Fight phase",
+      "legend": "In close-quarters combat, the slightest hesitation can leave an opening for a swift foe to exploit.",
+      "description": "<b>WHEN:</b> Fight step of your opponent's Fight phase, just after an enemy unit has resolved its attacks.<br><br><b>TARGET:</b> One friendly unit that is eligible to fight.<br><br><b>EFFECT:</b> Until the end of the phase, your unit has the Fights First ability and it must be the next unit you select to fight (12.04)."
+    }
+  ]
+}

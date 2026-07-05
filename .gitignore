@@ -1,0 +1,43 @@
+# Installed dependencies
+node_modules/
+
+# Generated reports and normalized data
+data/audits/
+data/rulesets/
+data/builder-units/
+data/builder-rules/leader-attachments-raw.json
+data/overrides/11th/points-overrides.json
+data/wh40K/
+
+# Generated browser bundles
+ui/army-builder-data.js
+ui/engine-data.js
+ui/engine-data-*.js
+ui/engine-data/
+
+# Generated user-facing desktop/runtime builds
+dist-user/
+release/
+
+# Local applications and installers
+*.exe
+*.zip
+new recruit exes/
+
+# Local recovery/checkpoint folders
+_recovery_package_*/
+_recovery_snapshot_*/
+_git-backups/
+
+# Local reference apps/source checkouts kept beside the repo during research
+/Arcadien Card Scribe v4/
+/warhammer-40k-stratagem-card-generator-main/
+/wh40k-11e-main/
+
+# Root-level diagnostic artifacts
+/*-debug.json
+/*-debug.txt
+/*-dump.txt
+/cat-files.txt
+/json-files.txt
+/leader-*.txt
