@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { app, BrowserWindow, shell } = require("electron");
 
-const APP_NAME = "Roster Builder";
+const APP_NAME = "Arcadien Army Assembler";
 
 function userDataRoot() {
   if (app.isPackaged) return path.dirname(app.getPath("exe"));

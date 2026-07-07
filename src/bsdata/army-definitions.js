@@ -74,7 +74,7 @@ function rulesFor(node, indexes) {
     id: rule.id || null,
     name: rule.name || "Unnamed rule",
     description: textValue(rule.description)
-  }));
+  })).filter(rule => rule.name && rule.description);
   for (const link of asArray(node?.infoLinks?.infoLink)) {
     if (link.type !== "rule") continue;
     const rule = indexes.rules.get(link.targetId);
@@ -85,6 +85,10 @@ function rulesFor(node, indexes) {
     });
   }
   return rules;
+}
+
+function catalogueArmyRules(catalogue, indexes) {
+  return rulesFor(catalogue, indexes).filter(rule => !/^boarding actions$/i.test(rule.name));
 }
 
 function visitResolved(node, indexes, visitor, ancestry = new Set()) {
@@ -386,6 +390,7 @@ function extractArmyDefinitions(dataDirectory) {
       id: catalogue.id || faction,
       faction,
       source: { catalogueId: catalogue.id || null, sourceFile: file },
+      armyRules: catalogueArmyRules(catalogue, indexes),
       allowedSelectionKeys: nativeUnitLinks
         .filter(({ link }) => link.type === "selectionEntry" && link.hidden !== "true" && isRosterUnit(indexes.entries.get(link.targetId)))
         .map(({ link, selectionCatalogueId }) => `${selectionCatalogueId || faction}:${link.id}`),

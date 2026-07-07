@@ -2,13 +2,20 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Roster Engine UI</title>
+  <title>Arcadien Army Assembler</title>
+  <script>
+    try {
+      document.documentElement.dataset.theme = localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
+    } catch {
+      document.documentElement.dataset.theme = "light";
+    }
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <section id="startScreen" class="startScreen">
     <div class="startupPanel">
-      <h1>Roster Builder</h1>
+      <h1>Arcadien Army Assembler</h1>
       <p>Loading offline rules data...</p>
       <div class="startupBar" aria-hidden="true"><span></span></div>
     </div>
@@ -17,8 +24,11 @@
   <div id="builderShell" hidden>
     <header class="builderHeader">
       <div class="rosterTitleBlock">
-        <input id="rosterName" class="rosterNameInput" placeholder="List name">
-        <div class="rosterPoints"><span id="pointsTotal">0</span> pts</div>
+        <div class="appBrand">Arcadien Army Assembler</div>
+        <div class="rosterTitleRow">
+          <input id="rosterName" class="rosterNameInput" placeholder="List name">
+          <div class="rosterPoints"><span id="pointsTotal">0</span> pts</div>
+        </div>
       </div>
 
       <div class="headerActions">
@@ -37,8 +47,19 @@
             <button class="exportTextFormat" data-format="WTC">Export WTC</button>
             <button class="exportTextFormat" data-format="GW">Export GW</button>
             <button id="openDiscordExport">Discord</button>
+            <label class="exportMenuToggle"><input id="includeSheetReferences" type="checkbox" checked> Rules reference</label>
             <button id="printUnitSheets">Unit Sheets</button>
             <button id="printCrusadeSheets">Crusade Sheets</button>
+          </div>
+        </div>
+        <div class="displayControls">
+          <div class="segmentedControl" aria-label="Roster layout">
+            <button id="standardRosterLayout" class="active" type="button">Standard</button>
+            <button id="customRosterLayout" type="button">Custom</button>
+          </div>
+          <div class="segmentedControl themeToggle" aria-label="Color theme">
+            <button id="lightTheme" class="active" type="button">Light</button>
+            <button id="darkTheme" type="button">Dark</button>
           </div>
         </div>
         <button id="deleteRoster" class="dangerButton">Delete List</button>
@@ -192,8 +213,8 @@
   <script defer src="engine-runtime.js?v=milestone3"></script>
   <script defer src="../src/domain/army.js?v=milestone26"></script>
   <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
-  <script defer src="../src/domain/sheets.js?v=milestone2"></script>
+  <script defer src="../src/domain/sheets.js?v=milestone3"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
-  <script defer src="engine-app.js?v=milestone7"></script>
+  <script defer src="engine-app.js?v=milestone8"></script>
 </body>
 </html>

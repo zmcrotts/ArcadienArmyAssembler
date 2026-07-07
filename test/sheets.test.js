@@ -228,6 +228,36 @@ test("printable sheets apply selected upgrade invulnerable saves to statlines", 
   assert.equal(sheets.crusadeSheets[0].statline.characteristics.InSv, "4+");
 });
 
+test("printable sheets infer invulnerable saves split across ability name and value", () => {
+  const sheets = buildRosterSheets({
+    name: "Bladeguard Test",
+    pointsLimit: 1000,
+    totalPoints: 90,
+    rosterEntries: [{
+      instanceId: "bladeguard-1",
+      name: "Bladeguard Veteran Squad",
+      points: 90,
+      keywords: ["Infantry"],
+      unitSize: { current: 3 },
+      configured: {
+        units: [
+          { name: "Bladeguard Veteran", count: 2, characteristics: { M: "6\"", T: "4", SV: "3+", W: "3", LD: "6+", OC: "1", InSv: "" } },
+          { name: "Bladeguard Veteran Sergeant", count: 1, characteristics: { M: "6\"", T: "4", SV: "3+", W: "3", LD: "6+", OC: "1", InSv: "" } }
+        ],
+        weapons: [],
+        abilities: [
+          { name: "Bladeguard", characteristics: { Description: "Each time an invulnerable saving throw is made for a model in this unit, re-roll a saving throw of 1." } },
+          { name: "Invulnerable Save", characteristics: { Description: "4+" } }
+        ],
+        rules: []
+      }
+    }]
+  });
+
+  assert.deepEqual(sheets.combinedUnitSheets[0].statlines.map(profile => profile.characteristics.InSv), ["4+", "4+"]);
+  assert.equal(sheets.crusadeSheets[0].statline.characteristics.InSv, "4+");
+});
+
 test("printable sheets abbreviate long weapon keywords for attack rows", () => {
   const sheets = buildRosterSheets({
     name: "Keyword Test",
@@ -276,6 +306,554 @@ test("printable sheets abbreviate long weapon keywords for attack rows", () => {
   const sheet = sheets.combinedUnitSheets[0];
   assert.equal(sheet.meleeWeapons[0].keywords, "AMon4+, AVeh4+, DEV, HAZ, SH1, TL");
   assert.equal(sheet.rangedWeapons[0].keywords, "AInf3+, APsy4+, RF2, Blast, Precision, CQ");
+});
+
+test("unit sheets apply detachment and attached leader weapon effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Buff Test",
+    pointsLimit: 1000,
+    totalPoints: 200,
+    detachments: [{
+      id: "warhorde",
+      name: "War Horde",
+      rules: [{
+        name: "Get Stuck In",
+        description: "Melee weapons equipped by Orks models from your army have the [Sustained Hits 1] ability."
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Battle Sisters Squad",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Boltgun", typeName: "Ranged Weapons", count: 10, characteristics: { Range: "24\"", A: "2", BS: "3+", S: "4", AP: "0", D: "1" } },
+          { name: "Close combat weapon", typeName: "Melee Weapons", count: 10, characteristics: { A: "1", WS: "4+", S: "3", AP: "0", D: "1" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "Palatine",
+      points: 50,
+      keywords: ["Character"],
+      configured: {
+        units: [],
+        weapons: [{ name: "Palatine blade", typeName: "Melee Weapons", count: 1, characteristics: { A: "4", WS: "2+", S: "4", AP: "-2", D: "2" } }],
+        abilities: [{
+          name: "Righteous Rage",
+          characteristics: { Description: "While this model is leading a unit, weapons equipped by models in that unit have [Lethal Hits]." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Battle Sisters Squad + Palatine",
+      totalPoints: 150,
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.rangedWeapons[0].keywords, "LH");
+  assert.deepEqual(sheet.meleeWeapons.map(item => [item.name, item.keywords]), [
+    ["Close combat weapon", "SH1, LH"],
+    ["Palatine blade", "SH1, LH"]
+  ]);
+});
+
+test("unit sheets ignore detachment weapon glossary examples when applying effects", () => {
+  const sheets = buildRosterSheets({
+    name: "War Horde Test",
+    pointsLimit: 1000,
+    totalPoints: 240,
+    detachments: [{
+      id: "warhorde",
+      name: "War Horde",
+      rules: [{
+        name: "Get Stuck In",
+        description: "Melee weapons equipped by ORKS models from your army have the [SUSTAINED HITS 1] ability."
+      }, {
+        name: "Sustained Hits",
+        description: "This ability always takes the form [SUSTAINED HITS X]. Example: An attack made with a [SUSTAINED HITS 2] weapon results in a critical hit."
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "boyz-1",
+      name: "Boyz",
+      points: 240,
+      keywords: ["Orks", "Infantry"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Slugga", typeName: "Ranged Weapons", count: 17, characteristics: { Range: "12\"", A: "1", BS: "5+", S: "4", AP: "0", D: "1", Keywords: "Pistol" } },
+          { name: "Choppa", typeName: "Melee Weapons", count: 17, characteristics: { Range: "Melee", A: "3", WS: "3+", S: "4", AP: "-1", D: "1", Keywords: "-" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.rangedWeapons[0].keywords, "Pistol");
+  assert.equal(sheet.meleeWeapons[0].keywords, "SH1");
+});
+
+test("unit sheets ignore detachment keyword glossary rules when applying effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Montka Glossary Test",
+    pointsLimit: 1000,
+    totalPoints: 100,
+    detachments: [{
+      id: "montka",
+      name: "Mont'ka",
+      rules: [{
+        name: "Killing Blow",
+        description: "During the first, second and third battle rounds, ranged weapons equipped by T'AU EMPIRE models from your army have the [ASSAULT] ability. During the first, second and third battle rounds, while a unit is a Guided unit (see For the Greater Good), its ranged weapons have the [LETHAL HITS] ability."
+      }, {
+        name: "Assault",
+        description: "Units containing one or more models with an **[ASSAULT]** weapon can shoot using assault shooting."
+      }, {
+        name: "Lethal Hits",
+        description: "Each time an attack made with a **[LETHAL HITS]** weapon results in a critical hit, you can choose for that attack to automatically wound the target. You may decide against this, as it means that attack cannot result in a critical wound and so cannot trigger other abilities such as [DEVASTATING WOUNDS]."
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "fire-warriors-1",
+      name: "Strike Team",
+      points: 100,
+      keywords: ["T'au Empire", "Infantry"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Pulse rifle", typeName: "Ranged Weapons", count: 10, characteristics: { Range: "30\"", A: "1", BS: "4+", S: "5", AP: "0", D: "1", Keywords: "-" } },
+          { name: "Close combat weapon", typeName: "Melee Weapons", count: 10, characteristics: { Range: "Melee", A: "1", WS: "5+", S: "3", AP: "0", D: "1", Keywords: "-" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.rangedWeapons[0].keywords, "");
+  assert.equal(sheet.meleeWeapons[0].keywords, "");
+});
+
+test("unit sheets do not auto-apply conditional aura weapon effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Ghaz Aura Test",
+    pointsLimit: 1000,
+    totalPoints: 550,
+    detachments: [{
+      id: "warhorde",
+      name: "War Horde",
+      rules: [{
+        name: "Get Stuck In",
+        description: "Melee weapons equipped by ORKS models from your army have the [SUSTAINED HITS 1] ability."
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "nobz-1",
+      name: "Nobz",
+      points: 210,
+      keywords: ["Orks", "Infantry"],
+      configured: {
+        units: [],
+        weapons: [{ name: "Power klaw", typeName: "Melee Weapons", count: 10, characteristics: { Range: "Melee", A: "3", WS: "4+", S: "9", AP: "-2", D: "2", Keywords: "-" } }],
+        abilities: [{ name: "Da Boss' Ladz", characteristics: { Description: "While a WARBOSS model is leading this unit, subtract 1 from the Wound roll." } }],
+        rules: []
+      }
+    }, {
+      instanceId: "painboy-1",
+      name: "Painboy",
+      points: 70,
+      keywords: ["Orks", "Character", "Support"],
+      configured: {
+        units: [],
+        weapons: [{ name: "Power klaw", typeName: "Melee Weapons", count: 1, characteristics: { Range: "Melee", A: "3", WS: "4+", S: "9", AP: "-2", D: "2", Keywords: "-" } }],
+        abilities: [{ name: "Dok's Toolz", characteristics: { Description: "While this model is leading a unit, models in that unit have the Feel No Pain 5+ ability." } }],
+        rules: []
+      }
+    }, {
+      instanceId: "ghaz-1",
+      name: "Ghazghkull Thraka",
+      points: 270,
+      keywords: ["Orks", "Character", "Epic Hero"],
+      configured: {
+        units: [],
+        weapons: [{ name: "Gork's Klaw", typeName: "Melee Weapons", count: 1, characteristics: { Range: "Melee", A: "6", WS: "2+", S: "14", AP: "-3", D: "4", Keywords: "-" } }],
+        abilities: [{
+          name: "Ghazghkull's Waaagh! Banner (Aura)",
+          characteristics: { Description: "While a friendly ORKS unit is within 12\" of Makari, if the Waaagh! is active for your army, melee weapons equipped by models in that unit have the [LETHAL HITS] ability." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:nobz-1",
+      kind: "attached",
+      title: "Nobz + Painboy + Ghazghkull Thraka",
+      totalPoints: 550,
+      memberInstanceIds: ["nobz-1", "painboy-1", "ghaz-1"],
+      warnings: []
+    }]
+  });
+
+  assert.deepEqual(sheets.combinedUnitSheets[0].meleeWeapons.map(item => [item.name, item.keywords]), [
+    ["Power klaw", "SH1"],
+    ["Power klaw", "SH1"],
+    ["Gork's Klaw", "SH1"]
+  ]);
+});
+
+test("unit sheets apply leading support armour penetration effects to melee weapons", () => {
+  const sheets = buildRosterSheets({
+    name: "Sanguinary Priest Test",
+    pointsLimit: 1000,
+    totalPoints: 160,
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Assault Intercessor Squad",
+      points: 80,
+      keywords: ["Infantry"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Heavy bolt pistol", typeName: "Ranged Weapons", count: 5, characteristics: { Range: "18\"", A: "1", BS: "3+", S: "4", AP: "-1", D: "1" } },
+          { name: "Astartes chainsword", typeName: "Melee Weapons", count: 5, characteristics: { A: "4", WS: "3+", S: "4", AP: "-1", D: "1" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "support-1",
+      name: "Sanguinary Priest",
+      points: 80,
+      keywords: ["Character", "Support"],
+      configured: {
+        units: [],
+        weapons: [{ name: "Astartes chainsword", typeName: "Melee Weapons", count: 1, characteristics: { A: "5", WS: "2+", S: "4", AP: "-1", D: "1" } }],
+        abilities: [{
+          name: "Blood Chalice",
+          characteristics: { Description: "While this model is leading a unit, improve the Armour Penetration characteristic of melee weapons equipped by models in that unit by 1." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Assault Intercessor Squad + Sanguinary Priest",
+      totalPoints: 160,
+      memberInstanceIds: ["bodyguard-1", "support-1"],
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.rangedWeapons[0].characteristics.AP, "-1");
+  assert.deepEqual(sheet.meleeWeapons.map(item => [item.name, item.characteristics.AP]), [
+    ["Astartes chainsword", "-2"],
+    ["Astartes chainsword", "-2"]
+  ]);
+});
+
+test("unit sheets apply attached epic bodyguard-only strength and toughness effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Fabius Test",
+    pointsLimit: 1000,
+    totalPoints: 170,
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Legionaries",
+      points: 90,
+      keywords: ["Infantry"],
+      configured: {
+        units: [{ name: "Legionary", count: 5, characteristics: { M: "6\"", T: "4", SV: "3+", W: "2" } }],
+        weapons: [
+          { name: "Boltgun", typeName: "Ranged Weapons", count: 5, characteristics: { Range: "24\"", A: "2", BS: "3+", S: "4", AP: "0", D: "1" } },
+          { name: "Astartes chainsword", typeName: "Melee Weapons", count: 5, characteristics: { A: "4", WS: "3+", S: "4", AP: "-1", D: "1" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "fabius-1",
+      name: "Fabius Bile",
+      points: 80,
+      keywords: ["Epic Hero"],
+      configured: {
+        units: [{ name: "Fabius Bile", count: 1, characteristics: { M: "6\"", T: "4", SV: "3+", W: "5" } }],
+        weapons: [{ name: "Rod of Torment", typeName: "Melee Weapons", count: 1, characteristics: { A: "5", WS: "2+", S: "5", AP: "-2", D: "2" } }],
+        abilities: [{
+          name: "Enhanced Warriors",
+          characteristics: { Description: "If this unit is attached to a unit at the start of the battle, until the end of the battle, add 1 to the Strength characteristic of melee weapons equipped by Bodyguard models in that unit and add 1 to the Toughness characteristic of Bodyguard models in that unit." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Legionaries + Fabius Bile",
+      totalPoints: 170,
+      memberInstanceIds: ["bodyguard-1", "fabius-1"],
+      bodyguard: { instanceId: "bodyguard-1" },
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.deepEqual(sheet.statlines.map(item => [item.name, item.characteristics.T]), [
+    ["Legionary", "5"],
+    ["Fabius Bile", "4"]
+  ]);
+  assert.deepEqual(sheet.rangedWeapons.map(item => [item.name, item.characteristics.S]), [["Boltgun", "4"]]);
+  assert.deepEqual(sheet.meleeWeapons.map(item => [item.name, item.characteristics.S]), [
+    ["Astartes chainsword", "5"],
+    ["Rod of Torment", "5"]
+  ]);
+});
+
+test("unit sheets apply static leader OC, weapon keyword, and attacks effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Static Effect Test",
+    pointsLimit: 1000,
+    totalPoints: 150,
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Bodyguard Squad",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [{ name: "Bodyguard", count: 5, characteristics: { M: "6\"", T: "4", SV: "3+", W: "2", OC: "1" } }],
+        weapons: [
+          { name: "Ranged weapon", typeName: "Ranged Weapons", count: 5, characteristics: { Range: "24\"", A: "1", BS: "3+", S: "4", AP: "0", D: "1", Keywords: "-" } },
+          { name: "Melee weapon", typeName: "Melee Weapons", count: 5, characteristics: { Range: "Melee", A: "1", WS: "3+", S: "4", AP: "0", D: "1", Keywords: "-" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "Static Leader",
+      points: 50,
+      keywords: ["Character"],
+      configured: {
+        units: [],
+        weapons: [],
+        abilities: [
+          { name: "Astartes Banner", characteristics: { Description: "While this model is leading a unit, add 1 to the Objective Control characteristic of models in that unit." } },
+          { name: "Vicious Insight", characteristics: { Description: "While this model is leading a unit, weapons equipped by models in that unit have the [DEVASTATING WOUNDS] ability." } },
+          { name: "Volley Fire", characteristics: { Description: "While this model is leading a unit, add 1 to the Attacks characteristic of ranged weapons equipped by models in that unit." } }
+        ],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Bodyguard Squad + Static Leader",
+      totalPoints: 150,
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      bodyguard: { instanceId: "bodyguard-1" },
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.statlines[0].characteristics.OC, "2");
+  assert.equal(sheet.rangedWeapons[0].characteristics.A, "2");
+  assert.equal(sheet.meleeWeapons[0].characteristics.A, "1");
+  assert.equal(sheet.rangedWeapons[0].keywords, "DEV");
+  assert.equal(sheet.meleeWeapons[0].keywords, "DEV");
+});
+
+test("unit sheets apply named weapon and unusual keyword effects narrowly", () => {
+  const sheets = buildRosterSheets({
+    name: "One-off Effect Test",
+    pointsLimit: 1000,
+    totalPoints: 200,
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Purifier Squad",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Purifying Flame", typeName: "Ranged Weapons", count: 5, characteristics: { Range: "18\"", A: "1", BS: "3+", S: "4", AP: "0", D: "1", Keywords: "-" } },
+          { name: "Storm bolter", typeName: "Ranged Weapons", count: 5, characteristics: { Range: "24\"", A: "2", BS: "3+", S: "4", AP: "0", D: "1", Keywords: "-" } },
+          { name: "Force weapon", typeName: "Melee Weapons", count: 5, characteristics: { Range: "Melee", A: "3", WS: "3+", S: "6", AP: "-2", D: "2", Keywords: "-" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "One-off Leader",
+      points: 100,
+      keywords: ["Character"],
+      configured: {
+        units: [],
+        weapons: [
+          { name: "Purifying Flame", typeName: "Ranged Weapons", count: 1, characteristics: { Range: "18\"", A: "3", BS: "2+", S: "4", AP: "-2", D: "1", Keywords: "-" } }
+        ],
+        abilities: [{
+          name: "Champion of the Order of Purifiers",
+          characteristics: { Description: "While this model is leading a unit, add 1 to the Attacks characteristic of Purifying Flame weapons equipped by that unit." }
+        }, {
+          name: "Break the Foe",
+          characteristics: { Description: "Melee weapons equipped by models in this unit have the [^^Sustained Hits 1^^] ability." }
+        }, {
+          name: "For the Khan",
+          characteristics: { Description: "While this model is leading a unit, ranged weapons equipped by models in that unit have the [ASSAULT] ability and melee weapons equipped by models in that unit have the [LANCE] ability." }
+        }, {
+          name: "Might of Heroes",
+          characteristics: { Description: "While this model is leading a unit, melee weapons equipped by models in that unit have the [PYSCHIC] ability." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Purifier Squad + One-off Leader",
+      totalPoints: 200,
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      bodyguard: { instanceId: "bodyguard-1" },
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.deepEqual(sheet.rangedWeapons.map(item => [item.name, item.characteristics.A, item.keywords]), [
+    ["Purifying Flame", "2", "Assault"],
+    ["Storm bolter", "2", "Assault"],
+    ["Purifying Flame", "4", "Assault"]
+  ]);
+  assert.deepEqual(sheet.meleeWeapons.map(item => [item.name, item.keywords]), [
+    ["Force weapon", "SH1, Lance, Psychic"]
+  ]);
+});
+
+test("unit sheets apply static leader and detachment invulnerable save effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Invulnerable Effect Test",
+    pointsLimit: 1000,
+    totalPoints: 150,
+    detachments: [{
+      id: "kroot",
+      name: "Kroot Hunting Pack",
+      rules: [{
+        name: "Skirmish Fighters",
+        description: "KROOT models from your army have a 6+ invulnerable save."
+      }, {
+        name: "Battle Round Shield",
+        description: "During the first, second and third battle rounds, models from your army have a 4+ invulnerable save."
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Bodyguard Squad",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [{ name: "Bodyguard", count: 5, characteristics: { M: "6\"", T: "4", SV: "3+", W: "2", OC: "1", InSv: "" } }],
+        weapons: [],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "Librarian",
+      points: 50,
+      keywords: ["Character"],
+      configured: {
+        units: [{ name: "Librarian", count: 1, characteristics: { M: "6\"", T: "4", SV: "3+", W: "4", OC: "1", InSv: "" } }],
+        weapons: [],
+        abilities: [{
+          name: "Mental Fortress",
+          characteristics: { Description: "While this model is leading a unit, models in that unit have a 4+ invulnerable save." }
+        }],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Bodyguard Squad + Librarian",
+      totalPoints: 150,
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      bodyguard: { instanceId: "bodyguard-1" },
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.deepEqual(sheet.statlines.map(profile => [profile.name, profile.characteristics.InSv]), [
+    ["Bodyguard", "4+"],
+    ["Librarian", "4+"]
+  ]);
+  assert.equal(sheets.crusadeSheets[0].statline.characteristics.InSv, "6+");
+});
+
+test("unit sheets apply static model characteristic set and improve effects", () => {
+  const sheets = buildRosterSheets({
+    name: "Model Stat Effect Test",
+    pointsLimit: 1000,
+    totalPoints: 200,
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Bodyguard Squad",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [{ name: "Bodyguard", count: 5, characteristics: { M: "6\"", T: "4", SV: "3+", W: "2", LD: "6+", OC: "1" } }],
+        weapons: [],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "Stat Leader",
+      points: 100,
+      keywords: ["Character"],
+      configured: {
+        units: [{ name: "Stat Leader", count: 1, characteristics: { M: "6\"", T: "4", SV: "3+", W: "4", LD: "6+", OC: "1" } }],
+        weapons: [],
+        abilities: [
+          { name: "Fast", characteristics: { Description: "While this model is leading a unit, models in that unit have a Move characteristic of 12\"." } },
+          { name: "Armoured", characteristics: { Description: "While this model is leading a unit, models in that unit have a Save characteristic of 2+." } },
+          { name: "Officer", characteristics: { Description: "While this model is leading a unit, add 1 to the Leadership characteristic of models in that unit." } },
+          { name: "Veteran", characteristics: { Description: "While this model is leading a unit, improve the Objective Control characteristic of models in that unit by 1." } }
+        ],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      title: "Bodyguard Squad + Stat Leader",
+      totalPoints: 200,
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      bodyguard: { instanceId: "bodyguard-1" },
+      warnings: []
+    }]
+  });
+
+  assert.deepEqual(sheets.combinedUnitSheets[0].statlines.map(profile => [profile.name, profile.characteristics.M, profile.characteristics.SV, profile.characteristics.LD, profile.characteristics.OC]), [
+    ["Bodyguard", "12\"", "2+", "7+", "2"],
+    ["Stat Leader", "12\"", "2+", "7+", "2"]
+  ]);
 });
 
 test("unit sheet packets include rule and stratagem reference sheets", () => {

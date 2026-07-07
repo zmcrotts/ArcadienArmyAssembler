@@ -813,14 +813,15 @@ function getConfiguredProfiles(unitDefinition, entry) {
       const key = profile.typeName === "Unit"
         ? `${profile.typeName}:${profile.name}:${JSON.stringify(profile.characteristics || {})}`
         : profile.id || `${profile.typeName}:${profile.name}`;
+      const contribution = count * Number(profile.countMultiplier ?? 1);
       const existing = profiles.get(key);
-      if (existing) existing.count += count;
-      else profiles.set(key, { ...profile, count });
+      if (existing) existing.count += contribution;
+      else profiles.set(key, { ...profile, count: contribution });
     }
     for (const rule of node.rules || []) rules.set(rule.id || rule.name, rule);
   }
 
-  const values = mergeDuplicateAbilityProfiles([...profiles.values()]);
+  const values = mergeDuplicateAbilityProfiles([...profiles.values()].filter(profile => Number(profile.count || 0) > 0));
   return {
     profiles: values,
     weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
@@ -844,19 +845,36 @@ function getConfiguredModels(unitDefinition, entry) {
 }
 
 function selectedEquipmentLabels(node, entry, index, unitDefinition) {
-  const labels = [];
+  const records = collectEquipmentLabelRecords(node, entry, index, unitDefinition);
+  const counts = new Map();
+  for (const record of records) {
+    if (!record.name) continue;
+    counts.set(record.name, Number(counts.get(record.name) || 0) + Number(record.count || 0));
+  }
+  return [...counts.entries()]
+    .filter(([, count]) => count > 0)
+    .map(([name, count]) => `${count > 1 ? `${count}x ` : ""}${name}`);
+}
+
+function collectEquipmentLabelRecords(node, entry, index, unitDefinition) {
+  const labels = (node.defaultEquipment || []).map(name => ({
+    name,
+    count: Number(entry?.selections?.[node.id] || 0)
+  }));
   for (const child of node.children || []) {
     if (!nodeIsActive(child, entry, index, unitDefinition, true)) continue;
     if (child.kind === "group") {
-      labels.push(...selectedEquipmentLabels(child, entry, index, unitDefinition));
+      labels.push(...collectEquipmentLabelRecords(child, entry, index, unitDefinition));
       continue;
     }
     const count = Number(entry?.selections?.[child.id] || 0);
     if (count <= 0) continue;
     const nested = selectedEquipmentLabels(child, entry, index, unitDefinition);
     const suffix = nested.length ? ` (${nested.join(", ")})` : "";
-    const prefix = count > 1 ? `${count}x ` : "";
-    labels.push(`${prefix}${child.name}${suffix}`);
+    labels.push({ name: `${child.name}${suffix}`, count });
+    for (const replaced of child.replacesEquipment || []) {
+      labels.push({ name: replaced, count: -count });
+    }
   }
   return labels;
 }

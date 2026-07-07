@@ -40,6 +40,11 @@ const rosterSavesSelect = document.getElementById("rosterSaves");
 const importJsonFile = document.getElementById("importJsonFile");
 const exportMenuToggle = document.getElementById("exportMenuToggle");
 const exportMenuPanel = document.getElementById("exportMenuPanel");
+const includeSheetReferences = document.getElementById("includeSheetReferences");
+const standardRosterLayout = document.getElementById("standardRosterLayout");
+const customRosterLayout = document.getElementById("customRosterLayout");
+const lightTheme = document.getElementById("lightTheme");
+const darkTheme = document.getElementById("darkTheme");
 
 const DEFAULT_CATALOGUE_PREFERENCES = {
   agents: true,
@@ -71,8 +76,12 @@ let newRosterDraft = null;
 let compactorSkippableWargear = {};
 let lastDiscordExportText = "";
 const factionLoadPromises = {};
+let rosterDisplay = defaultRosterDisplay();
+let pendingRosterSectionFocusKey = null;
+let rulePopupCounter = 0;
 
 function init() {
+  applySavedTheme();
   loadCompactorData();
 
   for (const group of engineData.factionNavigation || []) {
@@ -96,6 +105,7 @@ function init() {
     currentSubfaction = currentFactionRecord()?.defaultMode || currentFaction;
     appMode = "builder";
     roster = [];
+    rosterDisplay = defaultRosterDisplay();
     selectedInstanceId = null;
     selectedPanel = "configuration";
     renderSubfactionControl();
@@ -112,6 +122,7 @@ function init() {
     currentSubfaction = subfactionSelect.value;
     appMode = "builder";
     roster = [];
+    rosterDisplay = defaultRosterDisplay();
     selectedInstanceId = null;
     selectedPanel = "configuration";
     await loadSelectedFactionData();
@@ -123,6 +134,24 @@ function init() {
     searchText = event.target.value.toLowerCase();
     renderUnits();
   });
+
+  if (standardRosterLayout) {
+    standardRosterLayout.onclick = () => {
+      rosterDisplay.mode = "standard";
+      render();
+    };
+  }
+
+  if (customRosterLayout) {
+    customRosterLayout.onclick = () => {
+      rosterDisplay.mode = "custom";
+      initializeCustomRosterLayout();
+      render();
+    };
+  }
+
+  if (lightTheme) lightTheme.onclick = () => setTheme("light");
+  if (darkTheme) darkTheme.onclick = () => setTheme("dark");
 
   pointsLimitInput.addEventListener("input", render);
   rosterNameInput.addEventListener("input", render);
@@ -393,9 +422,22 @@ function currentArmyDefinition() {
   return {
     ...selected,
     allies,
+    armyRules: uniqueRules([...(base.armyRules || []), ...(selected.armyRules || [])]),
     allowedSelectionKeys: [...new Set([...(base.allowedSelectionKeys || []), ...(selected.allowedSelectionKeys || []), ...nativeKeys, ...allyKeys])],
     enhancements: [...enhancements.values()]
   };
+}
+
+function uniqueRules(rules) {
+  const seen = new Set();
+  const result = [];
+  for (const rule of rules || []) {
+    const key = `${String(rule?.name || "").trim().toLowerCase()}:${String(rule?.description || "").trim().toLowerCase()}`;
+    if (seen.has(key) || !String(rule?.name || "").trim()) continue;
+    seen.add(key);
+    result.push(rule);
+  }
+  return result;
 }
 
 function createRosterEntry(unitPackage) {
@@ -422,6 +464,63 @@ function duplicateRosterEntry(sourceEntry) {
   selectedInstanceId = duplicate.instanceId;
   selectedPanel = "unit";
   return duplicate;
+}
+
+function defaultRosterDisplay() {
+  return {
+    mode: "standard",
+    customSections: [],
+    sectionLabels: {},
+    groupSections: {},
+    groupOrder: []
+  };
+}
+
+function normalizeRosterDisplay(input) {
+  const source = input && typeof input === "object" ? input : {};
+  return {
+    mode: source.mode === "custom" ? "custom" : "standard",
+    customSections: Array.isArray(source.customSections) ? source.customSections.map(String) : [],
+    sectionLabels: source.sectionLabels && typeof source.sectionLabels === "object" ? { ...source.sectionLabels } : {},
+    groupSections: source.groupSections && typeof source.groupSections === "object" ? { ...source.groupSections } : {},
+    groupOrder: Array.isArray(source.groupOrder) ? source.groupOrder.map(String) : []
+  };
+}
+
+function currentRosterDisplayDocument() {
+  return normalizeRosterDisplay(rosterDisplay);
+}
+
+function setRosterLayoutModeButtons() {
+  if (standardRosterLayout) standardRosterLayout.classList.toggle("active", rosterDisplay.mode !== "custom");
+  if (customRosterLayout) customRosterLayout.classList.toggle("active", rosterDisplay.mode === "custom");
+}
+
+function applySavedTheme() {
+  let theme = "light";
+  try {
+    theme = localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
+  } catch {
+    theme = "light";
+  }
+  applyTheme(theme);
+}
+
+function setTheme(theme) {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  try {
+    localStorage.setItem("engineTheme", nextTheme);
+  } catch {
+    // Theme persistence is optional; still apply it for this session.
+  }
+  applyTheme(nextTheme);
+}
+
+function applyTheme(theme) {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  if (lightTheme) lightTheme.classList.toggle("active", nextTheme === "light");
+  if (darkTheme) darkTheme.classList.toggle("active", nextTheme === "dark");
 }
 
 function setExportMenuOpen(open) {
@@ -462,6 +561,7 @@ function showBuilder() {
 }
 
 function render() {
+  setRosterLayoutModeButtons();
   renderRosterSaveBrowser();
   if (appMode === "library") {
     if (builderShell) builderShell.hidden = true;
@@ -484,6 +584,7 @@ function renderStartScreen() {
   startScreen.innerHTML = `
     <div class="startHeader">
       <div>
+        <span class="startBrand">Arcadien Army Assembler</span>
         <h2>Saved Rosters</h2>
         <p class="muted">Load an existing roster or start a new one.</p>
       </div>
@@ -727,6 +828,7 @@ async function createRosterFromDraft() {
   pointsLimitInput.value = newRosterDraft.pointsLimit;
   rosterNameInput.value = "";
   roster = [];
+  rosterDisplay = defaultRosterDisplay();
   selectedInstanceId = null;
   selectedPanel = "configuration";
   currentRosterSaveId = null;
@@ -782,6 +884,7 @@ function renderArmyAssignments() {
 }
 
 function renderArmyControls() {
+  const armyRulesElement = document.getElementById("armyRules");
   const detachmentSelect = document.getElementById("detachmentSelect");
   const detachmentRules = document.getElementById("detachmentRules");
   const stratagemsElement = document.getElementById("stratagems");
@@ -790,11 +893,23 @@ function renderArmyControls() {
   const army = currentArmyDefinition();
   detachmentSelect.innerHTML = "";
   if (!army) {
+    if (armyRulesElement) armyRulesElement.innerHTML = `<p class="muted">No army rule data in this catalogue.</p>`;
     detachmentSelect.innerHTML = `<p class="muted">No detachments available.</p>`;
     detachmentRules.innerHTML = `<p class="muted">No detachment data in this catalogue.</p>`;
     stratagemsElement.innerHTML = `<p class="muted">No stratagem data in this catalogue.</p>`;
     enhancementsElement.innerHTML = "";
     return;
+  }
+
+  if (armyRulesElement) {
+    armyRulesElement.innerHTML = (army.armyRules || []).length
+      ? army.armyRules.map(rule => `
+        <details class="sidebarCard ruleDisclosure" open>
+          <summary>${escapeHtml(rule.name)}</summary>
+          <p>${formatDescription(rule.description)}</p>
+        </details>
+      `).join("")
+      : `<p class="muted">No army rule text found in this catalogue.</p>`;
   }
 
   const selectedDetachmentIds = new Set(armyEngine.selectedDetachmentIds?.(armyState) || [armyState?.detachmentId].filter(Boolean));
@@ -998,14 +1113,21 @@ function renderRoster() {
   };
   rosterList.appendChild(configuration);
 
+  if (rosterDisplay.mode === "custom") renderCustomRosterLayoutControls();
+
   for (const section of groupRosterPresentation(rosterPresentation())) {
-    if (!section.groups.length) continue;
+    if (!section.groups.length && !section.custom) continue;
     const details = document.createElement("details");
-    details.className = "unitSection rosterSection";
+    details.className = `unitSection rosterSection${section.custom ? " customRosterSection" : ""}`;
+    details.dataset.sectionKey = section.key;
     details.open = true;
-    details.innerHTML = `<summary>${escapeHtml(section.section)} <span>${section.groups.length}</span></summary>`;
+    details.innerHTML = rosterDisplay.mode === "custom"
+      ? `<summary><input class="rosterSectionName" data-section-key="${escapeHtml(section.key)}" value="${escapeHtml(section.section)}" aria-label="Section name"> <span>${section.groups.length}</span></summary>`
+      : `<summary>${escapeHtml(section.section)} <span>${section.groups.length}</span></summary>`;
     const contents = document.createElement("div");
     contents.className = "unitSectionContents";
+    contents.dataset.sectionKey = section.key;
+    if (rosterDisplay.mode === "custom") bindRosterDropZone(contents, section.key);
 
     for (const group of section.groups) {
     const groupEntries = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).filter(Boolean);
@@ -1014,6 +1136,8 @@ function renderRoster() {
 
     const div = document.createElement("div");
     div.className = "unit";
+    div.dataset.groupId = group.id;
+    if (rosterDisplay.mode === "custom") bindRosterDragHandle(div, group.id);
     if (group.memberInstanceIds.includes(selectedInstanceId)) div.classList.add("selected");
     if (group.kind === "attached") div.classList.add("attachedUnit");
 
@@ -1063,17 +1187,174 @@ function renderRoster() {
     details.appendChild(contents);
     rosterList.appendChild(details);
   }
+
+  if (rosterDisplay.mode === "custom") bindRosterSectionNameInputs();
+}
+
+function renderCustomRosterLayoutControls() {
+  const controls = document.createElement("div");
+  controls.className = "customRosterControls";
+  const addCategory = document.createElement("button");
+  addCategory.type = "button";
+  addCategory.textContent = "New Category";
+  addCategory.onclick = addCustomRosterSection;
+  controls.appendChild(addCategory);
+  rosterList.appendChild(controls);
 }
 
 function groupRosterPresentation(presentation) {
-  const groupsBySection = new Map(catalogueSections.SECTION_ORDER.map(section => [section, []]));
+  const sectionKeys = rosterDisplay.mode === "custom"
+    ? [...catalogueSections.SECTION_ORDER, ...rosterDisplay.customSections]
+    : [...catalogueSections.SECTION_ORDER];
+  const customSectionKeys = new Set(rosterDisplay.customSections);
+  const groupsBySection = new Map(sectionKeys.map(section => [section, []]));
+  const defaultSections = {};
   for (const group of presentation) {
     const primary = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
-    const section = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
+    const defaultSection = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
+    defaultSections[group.id] = defaultSection;
+    const section = rosterDisplay.mode === "custom" ? rosterDisplay.groupSections[group.id] || defaultSection : defaultSection;
     if (!groupsBySection.has(section)) groupsBySection.set(section, []);
     groupsBySection.get(section).push(group);
   }
-  return [...groupsBySection.entries()].map(([section, groups]) => ({ section, groups }));
+  if (rosterDisplay.mode === "custom") {
+    reconcileCustomRosterLayout(presentation, defaultSections);
+    for (const groups of groupsBySection.values()) groups.sort(compareCustomRosterPresentationGroups);
+  } else {
+    for (const groups of groupsBySection.values()) groups.sort(compareRosterPresentationGroups);
+  }
+  return [...groupsBySection.entries()].map(([key, groups]) => ({
+    key,
+    section: rosterDisplay.mode === "custom" ? rosterDisplay.sectionLabels[key] || key : key,
+    custom: customSectionKeys.has(key),
+    groups
+  }));
+}
+
+function rosterPresentationTitle(group) {
+  if (group.kind === "attached") return group.bodyguard?.name || group.title || "";
+  return group.entries?.[0]?.name || group.title || "";
+}
+
+function compareRosterPresentationGroups(left, right) {
+  return rosterPresentationTitle(left).localeCompare(rosterPresentationTitle(right), undefined, { sensitivity: "base" })
+    || String(left.id).localeCompare(String(right.id));
+}
+
+function compareCustomRosterPresentationGroups(left, right) {
+  const order = new Map(rosterDisplay.groupOrder.map((id, index) => [id, index]));
+  const leftOrder = order.has(left.id) ? order.get(left.id) : Number.MAX_SAFE_INTEGER;
+  const rightOrder = order.has(right.id) ? order.get(right.id) : Number.MAX_SAFE_INTEGER;
+  return leftOrder - rightOrder || compareRosterPresentationGroups(left, right);
+}
+
+function initializeCustomRosterLayout() {
+  const presentation = rosterPresentation();
+  const defaultSections = {};
+  for (const group of presentation) {
+    const primary = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
+    defaultSections[group.id] = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
+  }
+  reconcileCustomRosterLayout(presentation, defaultSections);
+}
+
+function addCustomRosterSection() {
+  const sectionKey = `custom:${Date.now()}:${Math.random().toString(16).slice(2)}`;
+  rosterDisplay.customSections.push(sectionKey);
+  rosterDisplay.sectionLabels[sectionKey] = "New Category";
+  pendingRosterSectionFocusKey = sectionKey;
+  render();
+}
+
+function reconcileCustomRosterLayout(presentation, defaultSections) {
+  const groupIds = new Set(presentation.map(group => group.id));
+  rosterDisplay.groupOrder = [
+    ...rosterDisplay.groupOrder.filter(id => groupIds.has(id)),
+    ...presentation
+      .filter(group => !rosterDisplay.groupOrder.includes(group.id))
+      .sort(compareRosterPresentationGroups)
+      .map(group => group.id)
+  ];
+  for (const group of presentation) {
+    if (!rosterDisplay.groupSections[group.id]) rosterDisplay.groupSections[group.id] = defaultSections[group.id] || "Infantry";
+  }
+  for (const groupId of Object.keys(rosterDisplay.groupSections)) {
+    if (!groupIds.has(groupId)) delete rosterDisplay.groupSections[groupId];
+  }
+}
+
+function bindRosterDragHandle(element, groupId) {
+  element.draggable = true;
+  element.addEventListener("dragstart", event => {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", groupId);
+    element.classList.add("dragging");
+  });
+  element.addEventListener("dragend", () => {
+    element.classList.remove("dragging");
+    rosterList.querySelectorAll(".dragOver").forEach(item => item.classList.remove("dragOver"));
+  });
+  element.addEventListener("dragover", event => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    element.classList.add("dragOver");
+  });
+  element.addEventListener("dragleave", () => element.classList.remove("dragOver"));
+  element.addEventListener("drop", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const draggedGroupId = event.dataTransfer.getData("text/plain");
+    moveRosterPresentationGroup(draggedGroupId, element.closest(".unitSectionContents")?.dataset.sectionKey, groupId);
+  });
+}
+
+function bindRosterDropZone(element, sectionKey) {
+  element.addEventListener("dragover", event => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    element.classList.add("dragOver");
+  });
+  element.addEventListener("dragleave", event => {
+    if (!element.contains(event.relatedTarget)) element.classList.remove("dragOver");
+  });
+  element.addEventListener("drop", event => {
+    event.preventDefault();
+    element.classList.remove("dragOver");
+    const draggedGroupId = event.dataTransfer.getData("text/plain");
+    const targetUnit = event.target.closest(".unit");
+    moveRosterPresentationGroup(draggedGroupId, sectionKey, targetUnit?.dataset.groupId || null);
+  });
+}
+
+function moveRosterPresentationGroup(groupId, sectionKey, beforeGroupId = null) {
+  if (!groupId || !sectionKey || groupId === beforeGroupId) return;
+  rosterDisplay.groupSections[groupId] = sectionKey;
+  const order = rosterDisplay.groupOrder.filter(id => id !== groupId);
+  const targetIndex = beforeGroupId ? order.indexOf(beforeGroupId) : -1;
+  order.splice(targetIndex >= 0 ? targetIndex : order.length, 0, groupId);
+  rosterDisplay.groupOrder = order;
+  render();
+}
+
+function bindRosterSectionNameInputs() {
+  rosterList.querySelectorAll(".rosterSectionName").forEach(input => {
+    input.addEventListener("click", event => event.stopPropagation());
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        input.blur();
+      }
+    });
+    input.addEventListener("input", event => {
+      const key = event.target.dataset.sectionKey;
+      rosterDisplay.sectionLabels[key] = event.target.value;
+    });
+    if (input.dataset.sectionKey === pendingRosterSectionFocusKey) {
+      input.focus();
+      input.select();
+      pendingRosterSectionFocusKey = null;
+    }
+  });
 }
 
 function renderRosterUnitLabel(rosterEntry) {
@@ -1147,6 +1428,7 @@ function renderSelectedDetails() {
 function showConfigurationPanel() {
   details.innerHTML = `
     <h3>Roster Configuration</h3>
+    <details class="sidebarGroup" data-disclosure-key="armyRules" ${disclosureOpenAttribute("armyRules", true)}><summary>Army Rules</summary><div id="armyRules"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachments" ${disclosureOpenAttribute("detachments", true)}><summary>Detachments</summary><div id="detachmentSelect" class="detachmentList"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachmentRules" ${disclosureOpenAttribute("detachmentRules", true)}><summary>Detachment Rules</summary><div id="detachmentRules"></div></details>
     <details class="sidebarGroup stratagemsGroup" data-disclosure-key="stratagems" ${disclosureOpenAttribute("stratagems", false)}><summary>Stratagems</summary><div id="stratagems"></div></details>
@@ -1162,11 +1444,12 @@ function showConfigurationPanel() {
 
 function showPreview(unitPackage) {
   const models = engine.getConfiguredModels?.(unitPackage.definition, unitPackage.defaultEntry) || [];
+  const ruleLookup = buildRuleLookup(unitPackage.defaultSummary.configured, [], currentArmyDefinition());
   details.innerHTML = `
     <h3>${escapeHtml(unitPackage.name)} <span class="pts">${unitPackage.defaultSummary.points} pts</span></h3>
     <p><b>Faction:</b> ${escapeHtml(unitPackage.faction)}</p>
-    ${renderKeywords(unitPackage.keywords || unitPackage.definition?.keywords || unitPackage.definition?.categories || [])}
-    ${renderConfigured(unitPackage.defaultSummary.configured, [], models)}
+    ${renderKeywords(unitPackage.keywords || unitPackage.definition?.keywords || unitPackage.definition?.categories || [], ruleLookup)}
+    ${renderConfigured(unitPackage.defaultSummary.configured, [], models, { ruleLookup })}
     <p><b>Source:</b> ${escapeHtml(unitPackage.source?.sourceFile || "")}</p>
   `;
 }
@@ -1180,17 +1463,24 @@ function showRosterEntry(rosterEntry) {
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const attachedGroup = attachedGroupForInstance(rosterEntry.instanceId);
+  const effects = [
+    ...selectedArmyAndDetachmentEffects(),
+    ...attachedGroupEffects(attachedGroup),
+    ...assignedEnhancementsForRosterEntry(rosterEntry)
+  ];
+  const ruleLookup = buildRuleLookup(configured, effects, currentArmyDefinition());
+  const isBodyguard = Boolean(attachedGroup && (attachedGroup.bodyguard?.instanceId || attachedGroup.memberInstanceIds?.[0]) === rosterEntry.instanceId);
 
   details.innerHTML = `
     <h3>${sizePrefix}${escapeHtml(unit.name)} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
-    ${renderKeywords(unit.keywords || unit.definition.keywords || unit.definition.categories || [])}
+    ${renderKeywords(unit.keywords || unit.definition.keywords || unit.definition.categories || [], ruleLookup)}
     ${renderUnitAssignments(rosterEntry)}
     ${renderUnitSizeControl(rosterEntry, unitSize)}
     ${renderOptionControls(rosterEntry)}
     ${renderEntryValidation(loadoutErrors, pricing.validationErrors)}
-    ${renderConfigured(configured, assignedEnhancementsForRosterEntry(rosterEntry), models)}
+    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup })}
     <p><b>Source:</b> ${escapeHtml(unit.source?.sourceFile || "")}</p>
   `;
   bindUnitSizeInputs();
@@ -1269,20 +1559,64 @@ function renderGroupWarnings(group) {
 
 function renderAttachedConfigured(groupEntries) {
   const merged = { units: [], weapons: [], abilities: [], rules: [] };
+  const group = groupEntries.length ? attachedGroupForInstance(groupEntries[0].instanceId) : null;
+  const bodyguardInstanceId = group?.bodyguard?.instanceId || groupEntries[0]?.instanceId || null;
+  const effects = [
+    ...selectedArmyAndDetachmentEffects(),
+    ...groupEntries.flatMap(rosterEntry => {
+      const configured = engine.getConfiguredProfiles(rosterEntry.unitPackage.definition, rosterEntry.entry);
+      return [
+        ...(configured.abilities || []),
+        ...(configured.rules || []),
+        ...(configured.profiles || []),
+        ...assignedEnhancementsForRosterEntry(rosterEntry)
+      ];
+    })
+  ];
   for (const rosterEntry of groupEntries) {
     const configured = engine.getConfiguredProfiles(rosterEntry.unitPackage.definition, rosterEntry.entry);
+    const context = { isBodyguard: rosterEntry.instanceId === bodyguardInstanceId };
     const enhancedUnits = unitProfilesWithDerivedInvulnerableSaves(
       configured.units || [],
       configured,
-      assignedEnhancementsForRosterEntry(rosterEntry)
+      [...effects, ...assignedEnhancementsForRosterEntry(rosterEntry)],
+      context
     );
+    const effectiveConfigured = rosterSheets.applyWeaponEffectsToConfigured
+      ? rosterSheets.applyWeaponEffectsToConfigured(configured, effects, context)
+      : configured;
     const withUnit = profile => ({ ...profile, name: `${rosterEntry.unitPackage.name}: ${profile.name}` });
     merged.units.push(...enhancedUnits.map(withUnit));
-    merged.weapons.push(...(configured.weapons || []).map(withUnit));
+    merged.weapons.push(...(effectiveConfigured.weapons || []).map(withUnit));
     merged.abilities.push(...(configured.abilities || []).map(withUnit));
     merged.rules.push(...(configured.rules || []).map(rule => ({ ...rule, name: `${rosterEntry.unitPackage.name}: ${rule.name || rule}` })));
   }
-  return renderConfigured(merged);
+  return renderConfigured(merged, [], [], { effectsAlreadyApplied: true, ruleLookup: buildRuleLookup(merged, effects, currentArmyDefinition()) });
+}
+
+function selectedArmyAndDetachmentEffects() {
+  const army = currentArmyDefinition();
+  return [
+    ...(army?.armyRules || []).map(item => ({ ...item, sourceKind: "army" })),
+    ...armyEngine.selectedDetachments(army, armyState).flatMap(detachment =>
+      (detachment.rules || []).map(rule => ({ ...rule, sourceKind: "detachment", sourceLabel: detachment.name }))
+    )
+  ];
+}
+
+function attachedGroupEffects(group) {
+  if (!group) return [];
+  return group.memberInstanceIds
+    .map(instanceId => roster.find(item => item.instanceId === instanceId))
+    .filter(Boolean)
+    .flatMap(rosterEntry => {
+      const configured = engine.getConfiguredProfiles(rosterEntry.unitPackage.definition, rosterEntry.entry);
+      return [
+        ...(configured.abilities || []),
+        ...(configured.rules || []),
+        ...(configured.profiles || [])
+      ];
+    });
 }
 
 function assignedEnhancementsForRosterEntry(rosterEntry) {
@@ -1759,12 +2093,16 @@ function renderEntryValidation(loadoutErrors, pricingErrors) {
   `;
 }
 
-function renderConfigured(configured, effects = [], models = []) {
+function renderConfigured(configured, effects = [], models = [], context = {}) {
+  const effectiveConfigured = rosterSheets.applyWeaponEffectsToConfigured
+    ? rosterSheets.applyWeaponEffectsToConfigured(configured, context.effectsAlreadyApplied ? [] : effects, context)
+    : configured;
+  const ruleLookup = context.ruleLookup || buildRuleLookup(configured, effects, currentArmyDefinition());
   return `
     ${renderConfiguredModels(models)}
-    ${renderUnitProfiles(unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects))}
-    ${renderWeapons("Ranged Weapons", configured.weapons || [], "Ranged Weapons")}
-    ${renderWeapons("Melee Weapons", configured.weapons || [], "Melee Weapons")}
+    ${renderUnitProfiles(unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects, context))}
+    ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
+    ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
     ${renderAbilities(configured.abilities || [])}
     ${renderRules(configured.rules || [])}
   `;
@@ -1788,13 +2126,13 @@ function renderConfiguredModels(models) {
   `;
 }
 
-function renderKeywords(keywords) {
+function renderKeywords(keywords, ruleLookup = new Map()) {
   const visible = [...new Set(keywords || [])].filter(Boolean);
   if (!visible.length) return "";
   return `
     <h4>Keywords</h4>
     <div class="chips keywordChips">
-      ${visible.map(keyword => `<span>${escapeHtml(keyword)}</span>`).join("")}
+      ${visible.map(keyword => renderRuleToken(keyword, ruleLookup)).join("")}
     </div>
   `;
 }
@@ -1831,9 +2169,12 @@ function renderUnitProfiles(units) {
   `;
 }
 
-function unitProfilesWithDerivedInvulnerableSaves(units, configured = {}, effects = []) {
+function unitProfilesWithDerivedInvulnerableSaves(units, configured = {}, effects = [], context = {}) {
   const inferredInSv = inferredInvulnerableSave(configured, effects);
-  return (units || []).map(profile => {
+  const effectiveUnits = rosterSheets.applyUnitEffectsToProfiles
+    ? rosterSheets.applyUnitEffectsToProfiles(units || [], effects, context)
+    : (units || []);
+  return effectiveUnits.map(profile => {
     const characteristics = { ...(profile.characteristics || {}) };
     const best = bestSave(invulnerableSaveValue(characteristics), inferredInSv);
     if (best) {
@@ -1846,21 +2187,59 @@ function unitProfilesWithDerivedInvulnerableSaves(units, configured = {}, effect
 
 function inferredInvulnerableSave(configured = {}, effects = []) {
   const texts = [
-    ...(configured.abilities || []).flatMap(effectTextParts),
-    ...(configured.rules || []).flatMap(effectTextParts),
-    ...(configured.profiles || []).flatMap(effectTextParts),
-    ...(effects || []).flatMap(effectTextParts)
+    ...(configured.abilities || []).flatMap(invulnerableEffectTextParts),
+    ...(configured.rules || []).flatMap(invulnerableEffectTextParts),
+    ...(configured.profiles || []).flatMap(invulnerableEffectTextParts),
+    ...invulnerableEffectTextsFromEffects(effects)
   ];
   return bestSave("", ...texts.map(extractInvulnerableSave).filter(Boolean));
 }
 
+function invulnerableEffectTextsFromEffects(effects = []) {
+  return (effects || []).flatMap(effect => {
+    const source = effect?.sourceKind || effect?.source || "";
+    return invulnerableEffectTextParts(effect).filter(text => effectAppliesAutomaticallyForInvulnerableSave(text, source));
+  });
+}
+
+function effectAppliesAutomaticallyForInvulnerableSave(text, sourceKind = "") {
+  if (effectRequiresBattleStateForInvulnerableSave(text)) return false;
+  if (sourceKind === "detachment" || sourceKind === "army") return true;
+  return /while\s+.*\b(?:is\s+)?leading\b/i.test(text)
+    || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
+    || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text)
+    || /\bmodels?\s+in\s+(?:this|that)\s+unit\b/i.test(text);
+}
+
+function effectRequiresBattleStateForInvulnerableSave(text) {
+  return /\bAura\b/i.test(text)
+    || /\bwithin\s+\d+\s*(?:"|&quot;|inches?\b)/i.test(text)
+    || /\bif\s+the\s+Waaagh!?'?s?\s+active\b/i.test(text)
+    || /\bif\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
+    || /\bwhile\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
+    || /\buntil\s+the\s+end\s+of\s+(?:the\s+)?(?:phase|turn|battle round)\b/i.test(text)
+    || /\bbattle\s+rounds?\s+\d/i.test(text)
+    || /\bduring\s+the\s+(?:first|second|third|fourth|fifth)[^.]*battle\s+rounds?\b/i.test(text)
+    || /\bselect\s+one\b/i.test(text);
+}
+
 function effectTextParts(item) {
+  const description = item?.description || item?.characteristics?.Description || "";
   return [
     item?.name,
-    item?.description,
-    item?.characteristics?.Description,
+    description,
     ...(item?.profiles || []).flatMap(effectTextParts),
     ...(item?.rules || []).flatMap(effectTextParts)
+  ].filter(Boolean);
+}
+
+function invulnerableEffectTextParts(item) {
+  const description = item?.description || item?.characteristics?.Description || "";
+  return [
+    ...effectTextParts(item),
+    `${item?.name || ""} ${description}`.trim(),
+    ...(item?.profiles || []).flatMap(invulnerableEffectTextParts),
+    ...(item?.rules || []).flatMap(invulnerableEffectTextParts)
   ].filter(Boolean);
 }
 
@@ -1872,7 +2251,7 @@ function invulnerableSaveValue(characteristics = {}) {
 function extractInvulnerableSave(text) {
   const normalized = String(text || "").replace(/\s+/g, " ").trim();
   const match = normalized.match(/\b([2-6]\+)\s*(?:\*\*)?\s*(?:InSv|invulnerable\s+save)\b/i)
-    || normalized.match(/\b(?:InSv|invulnerable\s+save)\s*(?:of|:)?\s*(?:\*\*)?\s*([2-6]\+)/i);
+    || normalized.match(/\b(?:InSv|invulnerable\s+save)\s*(?::|of)?\s*(?:\*\*)?\s*([2-6]\+)/i);
   return match ? match[1] : "";
 }
 
@@ -1888,7 +2267,7 @@ function displayStatValue(value) {
   return text || "-";
 }
 
-function renderWeapons(title, weapons, typeName) {
+function renderWeapons(title, weapons, typeName, ruleLookup = new Map()) {
   const rows = weapons.filter(w => w.typeName === typeName);
   if (!rows.length) return "";
 
@@ -1914,7 +2293,7 @@ function renderWeapons(title, weapons, typeName) {
               <td>${escapeHtml(displayWeaponCell(c.S))}</td>
               <td>${escapeHtml(displayWeaponCell(c.AP))}</td>
               <td>${escapeHtml(displayWeaponCell(c.D))}</td>
-              <td>${escapeHtml(displayWeaponCell(c.Keywords))}</td>
+              <td>${renderWeaponKeywordCell(c.Keywords, ruleLookup)}</td>
             </tr>
           `;
         }).join("")}
@@ -1926,6 +2305,132 @@ function renderWeapons(title, weapons, typeName) {
 function displayWeaponCell(value) {
   const text = String(value ?? "").trim();
   return text || "-";
+}
+
+function renderWeaponKeywordCell(value, ruleLookup = new Map()) {
+  const text = displayWeaponCell(value);
+  if (text === "-") return "-";
+  return splitKeywordList(text)
+    .map(keyword => renderRuleToken(keyword, ruleLookup, { compact: true }))
+    .join(" ");
+}
+
+function splitKeywordList(value) {
+  return String(value || "")
+    .split(",")
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function buildRuleLookup(configured = {}, effects = [], army = null) {
+  const selectedDetachments = army && armyEngine.selectedDetachments
+    ? armyEngine.selectedDetachments(army, armyState)
+    : [];
+  const lookup = new Map();
+  const records = [
+    ...(configured?.rules || []),
+    ...(configured?.abilities || []),
+    ...(configured?.profiles || []),
+    ...(effects || []),
+    ...(engineData.coreRules || []),
+    ...(army?.armyRules || []),
+    ...(army?.coreStratagems || []),
+    ...selectedDetachments.flatMap(detachment => [
+      ...(detachment.rules || []),
+      ...(detachment.stratagems || [])
+    ])
+  ];
+
+  for (const record of records) addRuleRecord(lookup, record);
+  addRuleAlias(lookup, "Smoke", "Smokescreen");
+  addRuleAlias(lookup, "Grenades", "Explosives");
+  addRuleAlias(lookup, "Explosives", "Explosives");
+  return lookup;
+}
+
+function addRuleRecord(lookup, record, sourceLabel = "") {
+  if (!record || typeof record !== "object") return;
+  const name = String(record.name || "").trim();
+  const description = ruleDescription(record);
+  if (name && description) {
+    const key = normalizeRuleLookupKey(name);
+    const value = {
+      name,
+      description,
+      meta: ruleMeta(record, sourceLabel)
+    };
+    if (!lookup.has(key)) lookup.set(key, value);
+    for (const alias of record.alias || []) {
+      const aliasKey = normalizeRuleLookupKey(alias);
+      if (aliasKey && !lookup.has(aliasKey)) lookup.set(aliasKey, value);
+    }
+  }
+  for (const child of [
+    ...(record.rules || []),
+    ...(record.profiles || [])
+  ]) addRuleRecord(lookup, child, name);
+}
+
+function addRuleAlias(lookup, alias, canonical) {
+  const rule = lookup.get(normalizeRuleLookupKey(canonical));
+  const key = normalizeRuleLookupKey(alias);
+  if (rule && !lookup.has(key)) lookup.set(key, { ...rule, alias });
+}
+
+function ruleDescription(record) {
+  return record.description
+    || record.characteristics?.Description
+    || record.effect
+    || "";
+}
+
+function ruleMeta(record, sourceLabel = "") {
+  return [
+    record.sourceKind === "core-rule" ? "Core Rule" : "",
+    record.type,
+    record.cpCost ? `${record.cpCost}CP` : "",
+    record.phase,
+    record.page ? `p. ${record.page}` : "",
+    record.sourceLabel,
+    sourceLabel
+  ].filter(Boolean).join(" · ");
+}
+
+function normalizeRuleLookupKey(value) {
+  return String(value || "")
+    .replace(/\[[^\]]+\]/g, match => match.slice(1, -1))
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function ruleLookupCandidates(value) {
+  const text = String(value || "").trim();
+  const candidates = [normalizeRuleLookupKey(text)];
+  const parameterized = text.match(/^(Rapid Fire|Sustained Hits|Melta|Feel No Pain|Scouts)\b/i);
+  if (parameterized) candidates.push(normalizeRuleLookupKey(parameterized[1]));
+  const anti = text.match(/^Anti[-\s]/i);
+  if (anti) candidates.push(normalizeRuleLookupKey("Anti"));
+  return [...new Set(candidates.filter(Boolean))];
+}
+
+function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
+  const text = String(label || "").trim();
+  if (!text) return "";
+  const rule = ruleLookupCandidates(text).map(key => ruleLookup.get(key)).find(Boolean);
+  if (!rule) return `<span>${escapeHtml(text)}</span>`;
+  const id = `rulePopup${++rulePopupCounter}`;
+  const title = rule.alias ? `${text} -> ${rule.name}` : rule.name;
+  return `
+    <span class="ruleTokenWrap">
+      <button class="ruleToken ${options.compact ? "ruleTokenCompact" : ""}" type="button" popovertarget="${id}" title="Show ${escapeHtml(rule.name)}">${escapeHtml(text)}</button>
+      <div id="${id}" class="rulePopover" popover>
+        <strong>${escapeHtml(title)}</strong>
+        ${rule.meta ? `<small>${escapeHtml(rule.meta)}</small>` : ""}
+        <p>${formatRichDescription(rule.description)}</p>
+      </div>
+    </span>
+  `;
 }
 
 function renderAbilities(abilities) {
@@ -2084,6 +2589,7 @@ function currentRosterDocument() {
     armyState,
     rosterEntries: roster,
     groupedPresentation: rosterPresentation(),
+    rosterDisplay: currentRosterDisplayDocument(),
     validationWarnings: validateRoster().filter(item => !item.ok),
     services: {
       entryPoints,
@@ -2237,6 +2743,7 @@ async function loadRosterDocument(save) {
   renderSubfactionControl();
   await loadSelectedFactionData();
   rosterNameInput.value = save.name || "";
+  rosterDisplay = normalizeRosterDisplay(save.rosterDisplay);
   const loaded = rosterDocument.hydrateRosterDocument(save, {
     unitPackages: factionUnits(),
     createArmyState: () => armyEngine.createArmyState(currentArmyDefinition()),
@@ -2483,7 +2990,9 @@ function openSheetPreview(kind) {
     return;
   }
   const sheets = rosterSheets.buildRosterSheets(currentRosterDocument());
-  const html = buildSheetPreviewHtml(sheets, kind);
+  const html = buildSheetPreviewHtml(sheets, kind, {
+    includeReferences: kind === "units" ? Boolean(includeSheetReferences?.checked) : true
+  });
   const previewUrl = URL.createObjectURL(new Blob([html], { type: "text/html" }));
   const preview = window.open(previewUrl, "_blank");
   if (!preview) {
@@ -2494,13 +3003,14 @@ function openSheetPreview(kind) {
   preview.addEventListener?.("load", () => URL.revokeObjectURL(previewUrl), { once: true });
 }
 
-function buildSheetPreviewHtml(sheets, kind) {
+function buildSheetPreviewHtml(sheets, kind, options = {}) {
   const title = kind === "crusade" ? "Crusade Sheets" : "Unit Sheets";
+  const includeReferences = options.includeReferences !== false;
   const body = kind === "crusade"
     ? sheets.crusadeSheets.map(renderCrusadeSheetPage).join("")
     : [
-        renderRulesReferencePage(sheets.referenceSheets?.rules),
-        renderCoreStratagemReferencePage(sheets.referenceSheets?.stratagems),
+        includeReferences ? renderRulesReferencePage(sheets.referenceSheets?.rules) : "",
+        includeReferences ? renderCoreStratagemReferencePage(sheets.referenceSheets?.stratagems) : "",
         ...sheets.combinedUnitSheets.map(renderUnitSheetPage)
       ].filter(Boolean).join("");
   return `<!doctype html>

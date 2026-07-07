@@ -218,6 +218,7 @@ function createRosterDocument(options) {
     rosterEntries: unitRecords,
     groupedPresentation,
     validationWarnings,
+    rosterDisplay: clone(options.rosterDisplay || null),
     exportData: {
       machineReadable: "json",
       includesIndependentUnitRecords: true,

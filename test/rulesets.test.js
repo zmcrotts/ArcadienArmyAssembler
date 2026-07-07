@@ -12,9 +12,12 @@ const {
 } = require("../src/rulesets/sources");
 const {
   createDefaultRosterEntry,
+  getConfiguredModels,
   getConfiguredProfiles,
   getOptionStates,
-  setSelection
+  setSelection,
+  setUnitSize,
+  validateLoadout
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 
@@ -89,6 +92,19 @@ test("11e ruleset attaches New Recruit detachment stratagems", () => {
   assert.ok(daemonicIncursion.stratagems.length > 0);
   assert.ok(daemonicIncursion.stratagems.every(stratagem => stratagem.scope === "detachment"));
   assert.ok(daemonicIncursion.stratagems.some(stratagem => stratagem.detachment === "Daemonic Incursion"));
+});
+
+test("11e ruleset gap-fills incomplete army rules", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const orks = ruleset.armies.find(army => army.faction === "Xenos - Orks");
+  assert.ok(orks, "Missing Orks army definition");
+  const waaagh = orks.armyRules.find(rule => rule.name === "Waaagh!");
+
+  assert.ok(waaagh, "Missing Waaagh! army rule");
+  assert.match(waaagh.description, /eligible to declare a charge/i);
+  assert.match(waaagh.description, /Strength and Attacks characteristics/i);
+  assert.match(waaagh.description, /5\+ invulnerable save/i);
+  assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
 });
 
 test("11e ruleset gap-fills missing Tyranids detachment stratagems without replacing New Recruit data", () => {
@@ -198,6 +214,77 @@ test("11e Space Marine unit wargear controls do not include detachment upgrades"
   assert.ok(names.has("Power fist"));
 });
 
+test("11e Death Company Marines with Jump Packs expose explicit alternate weapon lanes", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const deathCompany = ruleset.units.find(unit =>
+    unit.faction === "Imperium - Adeptus Astartes - Blood Angels"
+    && unit.name === "Death Company Marines with Jump Packs"
+  );
+  const entry = createDefaultRosterEntry(deathCompany);
+  const tenModels = setUnitSize(deathCompany, entry, 10);
+  const states = getOptionStates(deathCompany, tenModels);
+  const state = name => states.find(option => option.name === name);
+
+  for (const name of ["Plasma pistol", "Eviscerator"]) {
+    assert.equal(state(name).groupMaximum, 2);
+  }
+  assert.equal(state("Power fist").groupMaximum, 1);
+  assert.equal(state("Power weapon").groupMaximum, 1);
+
+  for (const name of [
+    "1 hand flamer and 1 Astartes chainsword",
+    "1 hand flamer and 1 power fist",
+    "1 hand flamer and 1 power weapon",
+    "1 heavy bolt pistol and 1 power fist",
+    "1 heavy bolt pistol and 1 power weapon",
+    "1 inferno pistol and 1 Astartes chainsword",
+    "1 inferno pistol and 1 power fist",
+    "1 inferno pistol and 1 power weapon",
+    "1 plasma pistol and 1 Astartes chainsword",
+    "1 plasma pistol and 1 power fist",
+    "1 plasma pistol and 1 power weapon"
+  ]) {
+    assert.equal(state(name).groupMaximum, 2, `Missing or uncapped paired option: ${name}`);
+  }
+
+  const alternateModel = states.find(option => option.name === "Death Company Marine w/ alternate weapons");
+  const activeAlternates = setSelection(deathCompany, tenModels, alternateModel.id, 4, false);
+  const overstackedPowerFists = JSON.parse(JSON.stringify(activeAlternates));
+  overstackedPowerFists.selections[state("Power fist").id] = 2;
+  assert.ok(
+    validateLoadout(deathCompany, overstackedPowerFists).some(error =>
+      error.name === "Power fist or power weapon" && error.type === "max"
+    )
+  );
+
+  const oneAlternate = setSelection(deathCompany, tenModels, alternateModel.id, 1, false);
+  const defaultAlternateProfiles = getConfiguredProfiles(deathCompany, oneAlternate);
+  const defaultAlternateModels = getConfiguredModels(deathCompany, oneAlternate);
+  const weaponCount = (configured, name) =>
+    configured.weapons
+      .filter(profile => profile.name === name)
+      .reduce((sum, profile) => sum + Number(profile.count || 0), 0);
+
+  assert.equal(weaponCount(defaultAlternateProfiles, "Heavy Bolt Pistol"), 10);
+  assert.equal(weaponCount(defaultAlternateProfiles, "Astartes Chainsword"), 10);
+  assert.deepEqual(
+    defaultAlternateModels.find(model => model.name === "Death Company Marine w/ alternate weapons").equipment,
+    ["Astartes Chainsword", "Heavy Bolt Pistol"]
+  );
+
+  const oneStandalonePlasma = setSelection(deathCompany, oneAlternate, state("Plasma pistol").id, 1, false);
+  const plasmaProfiles = getConfiguredProfiles(deathCompany, oneStandalonePlasma);
+  const plasmaModels = getConfiguredModels(deathCompany, oneStandalonePlasma);
+  assert.equal(weaponCount(plasmaProfiles, "Heavy Bolt Pistol"), 9);
+  assert.equal(weaponCount(plasmaProfiles, "Astartes Chainsword"), 10);
+  assert.equal(weaponCount(plasmaProfiles, "➤ Plasma pistol - standard"), 1);
+  assert.equal(weaponCount(plasmaProfiles, "➤ Plasma pistol - supercharge"), 1);
+  assert.deepEqual(
+    plasmaModels.find(model => model.name === "Death Company Marine w/ alternate weapons").equipment,
+    ["Astartes Chainsword", "Plasma pistol"]
+  );
+});
+
 test("11e configured abilities collapse duplicate same-name wargear rules", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const captain = ruleset.units.find(unit =>
@@ -211,6 +298,25 @@ test("11e configured abilities collapse duplicate same-name wargear rules", () =
 
   assert.equal(relicShield.length, 1);
   assert.match(relicShield[0].characteristics.Description, /Wounds characteristic of 6/);
+});
+
+test("11e Templar Vows stays scoped to Black Templars units", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const configuredRules = unit => {
+    const entry = createDefaultRosterEntry(unit);
+    return getConfiguredProfiles(unit, entry).rules.map(rule => rule.name);
+  };
+  const blackTemplarsUnit = ruleset.units.find(unit =>
+    unit.faction === "Imperium - Adeptus Astartes - Black Templars"
+    && configuredRules(unit).includes("Templar Vows")
+  );
+  const nonBlackTemplarsUnits = ruleset.units.filter(unit =>
+    unit.faction !== "Imperium - Adeptus Astartes - Black Templars"
+    && configuredRules(unit).includes("Templar Vows")
+  );
+
+  assert.ok(blackTemplarsUnit, "expected at least one Black Templars unit to retain Templar Vows");
+  assert.deepEqual(nonBlackTemplarsUnits.map(unit => [unit.faction, unit.name]), []);
 });
 
 test("11e ruleset extracts detachment upgrades with unit eligibility", () => {

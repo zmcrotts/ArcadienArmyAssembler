@@ -20,6 +20,27 @@ const ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(ROOT, "ui", "engine-data-milestone15.js");
 const MANIFEST_OUT = path.join(ROOT, "ui", "engine-data-manifest.js");
 const FACTION_OUT_DIR = path.join(ROOT, "ui", "engine-data");
+const CORE_RULE_NAMES = new Set([
+  "Anti",
+  "Assault",
+  "Blast",
+  "Devastating Wounds",
+  "Extra Attacks",
+  "Hazardous",
+  "Heavy",
+  "Ignores Cover",
+  "Indirect Fire",
+  "Lance",
+  "Lethal Hits",
+  "Melta",
+  "Pistol",
+  "Precision",
+  "Psychic",
+  "Rapid Fire",
+  "Sustained Hits",
+  "Torrent",
+  "Twin-linked"
+]);
 
 function summarizeConfigured(unitDefinition, rosterEntry) {
   const configured = getConfiguredProfiles(unitDefinition, rosterEntry);
@@ -79,12 +100,31 @@ function factionFileName(faction) {
     .replace(/^-+|-+$/g, "") || "faction"}.js`;
 }
 
+function coreRulesFromSource(sourcePath) {
+  const gameSystemPath = path.join(sourcePath, "Warhammer 40,000.json");
+  if (!fs.existsSync(gameSystemPath)) return [];
+  const document = JSON.parse(fs.readFileSync(gameSystemPath, "utf8"));
+  const rules = document?.gameSystem?.sharedRules || [];
+  return rules
+    .filter(rule => CORE_RULE_NAMES.has(rule?.name) && rule.description)
+    .map(rule => ({
+      id: rule.id,
+      name: rule.name,
+      description: rule.description,
+      alias: Array.isArray(rule.alias) ? rule.alias : [],
+      page: rule.page,
+      sourceKind: "core-rule"
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function main() {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const definitions = ruleset.units;
   const armyDefinitions = ruleset.armies;
   const allyDefinitions = ruleset.allies;
   const unresolved = ruleset.unresolved;
+  const coreRules = coreRulesFromSource(ruleset.source.sourcePath);
 
   const factions = {};
 
@@ -121,6 +161,7 @@ function main() {
     generatedAt: new Date().toISOString(),
     source: path.relative(ROOT, ruleset.source.sourcePath),
     unresolvedCount: unresolved.length,
+    coreRules,
     armies: Object.fromEntries(armyDefinitions.map(army => [army.faction, army])),
     factionNavigation: buildFactionNavigation(Object.keys(factions)),
     allies: allyDefinitions,
@@ -147,6 +188,7 @@ function main() {
     generatedAt: payload.generatedAt,
     source: payload.source,
     unresolvedCount: payload.unresolvedCount,
+    coreRules: payload.coreRules,
     armies: payload.armies,
     factionNavigation: payload.factionNavigation,
     allies: payload.allies,

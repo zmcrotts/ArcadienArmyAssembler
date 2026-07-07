@@ -600,6 +600,9 @@ function extractUnitDefinitions(dataDirectory) {
       const support = hasCategory("Support");
 
       const leaderTargets = leaderTargetNames(unit, indexes);
+      const selectionTree = buildSelectionTree(unit, indexes, link);
+      if (!/black templars/i.test(faction)) removeRulesNamed(selectionTree, "Templar Vows");
+
       definitions.push({
         schemaVersion: 1,
         id: unit.id,
@@ -634,7 +637,7 @@ function extractUnitDefinitions(dataDirectory) {
         },
         composition,
         compositionConstraints: compositionConstraints(unit, indexes),
-        selectionTree: buildSelectionTree(unit, indexes, link),
+        selectionTree,
         pricing: {
           base,
           baseSource: linkPoints !== null && unitPoints !== null
@@ -658,6 +661,13 @@ function extractUnitDefinitions(dataDirectory) {
   }
 
   return { definitions, unresolved };
+}
+
+function removeRulesNamed(node, name) {
+  if (!node || typeof node !== "object") return;
+  const normalized = String(name || "").trim().toLowerCase();
+  node.rules = asArray(node.rules).filter(rule => String(rule?.name || "").trim().toLowerCase() !== normalized);
+  for (const child of asArray(node.children)) removeRulesNamed(child, name);
 }
 
 function hasUsableRosterPoints(base, composition, modifiers) {

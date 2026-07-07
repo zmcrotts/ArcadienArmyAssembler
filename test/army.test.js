@@ -51,6 +51,16 @@ test("World Eaters detachments retain rules and detachment-gated enhancements", 
   assert.ok(glaive.eligibleSelectionKeys.length > 0);
 });
 
+test("catalogue-level faction rules are exposed as army rules", () => {
+  const orks = armies.find(item => item.faction === "Xenos - Orks");
+  assert.ok(orks, "Missing Orks army definition");
+  const waaagh = orks.armyRules.find(item => item.name === "Waaagh!");
+  assert.ok(waaagh, "Missing Waaagh! army rule");
+  assert.match(waaagh.description, /once per battle, at the start of your Command phase/i);
+  assert.match(waaagh.description, /5\+ invulnerable save/i);
+  assert.equal(orks.armyRules.some(item => item.name === "Void Waaagh!"), false);
+});
+
 test("chapter catalogues inherit only context-legal Astartes detachments", () => {
   const bloodAngels = armies.find(item => item.faction === "Imperium - Adeptus Astartes - Blood Angels");
   assert.ok(bloodAngels);

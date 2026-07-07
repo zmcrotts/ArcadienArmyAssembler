@@ -56,6 +56,21 @@ button:hover {
 }
 
 .rosterTitleBlock {
+  align-items: start;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.appBrand {
+  color: #4d5f63;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.rosterTitleRow {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
@@ -160,6 +175,70 @@ button:hover {
   width: 100%;
 }
 
+.exportMenuToggle {
+  align-items: center;
+  border-top: 1px solid #d8e0e3;
+  display: flex;
+  gap: 6px;
+  padding: 6px 2px 4px;
+  white-space: nowrap;
+}
+
+.rosterLayoutToggle {
+  border: 1px solid #9ba8ad;
+  border-radius: 4px;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.rosterLayoutToggle button {
+  border: 0;
+  border-radius: 0;
+  margin-left: 0;
+}
+
+.rosterLayoutToggle button + button {
+  border-left: 1px solid #9ba8ad;
+}
+
+.rosterLayoutToggle button.active {
+  background: #006070;
+  color: white;
+}
+
+.displayControls {
+  align-items: stretch;
+  display: grid;
+  gap: 5px;
+}
+
+.segmentedControl {
+  border: 1px solid #9ba8ad;
+  border-radius: 4px;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.segmentedControl button {
+  border: 0;
+  border-radius: 0;
+  margin-left: 0;
+}
+
+.segmentedControl button + button {
+  border-left: 1px solid #9ba8ad;
+}
+
+.segmentedControl button.active {
+  background: #006070;
+  color: white;
+}
+
+.themeToggle button {
+  font-size: 12px;
+  padding: 4px 9px;
+}
+
 #catalogueOptions {
   display: grid;
   gap: 8px;
@@ -237,6 +316,50 @@ section {
 
 .unitActions button {
   margin-left: 0;
+}
+
+.unit.dragging {
+  opacity: 0.55;
+}
+
+.customRosterControls {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 8px;
+}
+
+.customRosterControls button {
+  margin-left: 0;
+}
+
+.rosterSection.dragOver > summary,
+.unitSectionContents.dragOver,
+.unit.dragOver {
+  outline: 2px solid #008090;
+  outline-offset: 2px;
+}
+
+.rosterSectionName {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: white;
+  font: inherit;
+  padding: 2px 4px;
+  width: min(220px, 70%);
+}
+
+.rosterSectionName:focus {
+  background: white;
+  color: #182124;
+  outline: 2px solid #bdeaf0;
+}
+
+.customRosterSection .unitSectionContents:empty {
+  border: 1px dashed #8aa1a7;
+  min-height: 36px;
 }
 
 .attachedUnit {
@@ -328,6 +451,16 @@ section {
   display: flex;
   gap: 16px;
   justify-content: space-between;
+}
+
+.startBrand {
+  color: #4d5f63;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 5px;
+  text-transform: uppercase;
 }
 
 .startHeaderActions {
@@ -951,6 +1084,67 @@ th {
   margin: 2px;
 }
 
+.ruleTokenWrap {
+  display: inline-block;
+  margin: 2px;
+}
+
+.chips .ruleTokenWrap {
+  background: transparent;
+  border: 0;
+  margin: 2px;
+  padding: 0;
+}
+
+.ruleToken {
+  background: #eef7f8;
+  border: 1px solid #517b83;
+  border-radius: 4px;
+  color: #064f5a;
+  cursor: help;
+  font: inherit;
+  margin: 0;
+  padding: 4px 6px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.ruleToken:hover,
+.ruleToken:focus {
+  background: #dceff2;
+  outline: 2px solid #9fd1d8;
+}
+
+.ruleTokenCompact {
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.rulePopover {
+  border: 1px solid #26363b;
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
+  line-height: 1.35;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 12px;
+}
+
+.rulePopover strong,
+.rulePopover small {
+  display: block;
+}
+
+.rulePopover small {
+  color: #4d5f63;
+  margin-top: 2px;
+}
+
+.rulePopover p {
+  margin: 8px 0 0;
+}
+
 .pts {
   font-size: 16px;
   color: green;
@@ -968,4 +1162,319 @@ th {
 
 .categoryHeader:hover {
   background: #008090;
+}
+
+html[data-theme="dark"] body {
+  background: #101417;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background: #11181c;
+  border-color: #42535a;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] button {
+  background: #1e272c;
+  border-color: #42535a;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] button:hover {
+  background: #2a373d;
+}
+
+html[data-theme="dark"] .builderHeader,
+html[data-theme="dark"] section,
+html[data-theme="dark"] .modalPanel,
+html[data-theme="dark"] .exportMenuPanel {
+  background: #171d21;
+  border-color: #34454c;
+}
+
+html[data-theme="dark"] .builderHeader {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.42);
+}
+
+html[data-theme="dark"] .appBrand,
+html[data-theme="dark"] .startBrand,
+html[data-theme="dark"] .muted,
+html[data-theme="dark"] .unit small,
+html[data-theme="dark"] .savedRosterCard small,
+html[data-theme="dark"] .attachedMember small,
+html[data-theme="dark"] .modelRow small,
+html[data-theme="dark"] .optionLimits,
+html[data-theme="dark"] .lockedOption,
+html[data-theme="dark"] .assignmentRow small,
+html[data-theme="dark"] .assignmentSelect small,
+html[data-theme="dark"] .stratagemLegend,
+html[data-theme="dark"] .rulePopover small {
+  color: #89969b;
+}
+
+html[data-theme="dark"] .readonlyField,
+html[data-theme="dark"] .rosterConfiguration,
+html[data-theme="dark"] .unitSizeControl,
+html[data-theme="dark"] .discordOptionsPanel,
+html[data-theme="dark"] .discordPreviewPanel {
+  background: #1f2a2f;
+  border-color: #42535a;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .unit,
+html[data-theme="dark"] .savedRosterCard,
+html[data-theme="dark"] .attachedMember,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] pre,
+html[data-theme="dark"] .optionGroup,
+html[data-theme="dark"] .previewItem,
+html[data-theme="dark"] .stratagemItem {
+  background: #20282d;
+  border-color: #51646c;
+}
+
+html[data-theme="dark"] .unit:hover,
+html[data-theme="dark"] .rosterConfiguration:hover {
+  background: #2d3a40;
+}
+
+html[data-theme="dark"] .unit.selected,
+html[data-theme="dark"] .rosterConfiguration.selected {
+  border-color: #26b8c5;
+  box-shadow: inset 4px 0 #0f8290;
+}
+
+html[data-theme="dark"] .displayControls .segmentedControl,
+html[data-theme="dark"] .rosterLayoutToggle,
+html[data-theme="dark"] .discordColorOptions,
+html[data-theme="dark"] .discordCustomColors {
+  border-color: #42535a;
+}
+
+html[data-theme="dark"] .segmentedControl button + button,
+html[data-theme="dark"] .rosterLayoutToggle button + button {
+  border-left-color: #42535a;
+}
+
+html[data-theme="dark"] .segmentedControl button.active,
+html[data-theme="dark"] .rosterLayoutToggle button.active,
+html[data-theme="dark"] .unitSection > summary,
+html[data-theme="dark"] .sidebarGroup > summary,
+html[data-theme="dark"] .previewMaster > summary,
+html[data-theme="dark"] .categoryHeader {
+  background: #0f8290;
+  border-color: #26b8c5;
+  color: #d0dcdf;
+}
+
+html[data-theme="dark"] .unitSection > summary:hover,
+html[data-theme="dark"] .categoryHeader:hover {
+  background: #11a0ad;
+}
+
+html[data-theme="dark"] .stratagemsGroup > summary {
+  background: #374151;
+}
+
+html[data-theme="dark"] .rosterPoints,
+html[data-theme="dark"] .valid,
+html[data-theme="dark"] .pts {
+  color: #87e4a2;
+}
+
+html[data-theme="dark"] .rosterPoints {
+  background: #12301e;
+  border-color: #2d7a48;
+}
+
+html[data-theme="dark"] .dangerButton {
+  border-color: #b45353;
+  color: #ff9b9b;
+}
+
+html[data-theme="dark"] .dangerButton:hover {
+  background: #3a1d20;
+}
+
+html[data-theme="dark"] .warning,
+html[data-theme="dark"] .invalid,
+html[data-theme="dark"] .warningBadge,
+html[data-theme="dark"] .requiredBadge {
+  color: #f6c873;
+}
+
+html[data-theme="dark"] .warningSummary {
+  background: #392914;
+  border-color: #b88328;
+}
+
+html[data-theme="dark"] .startScreen {
+  border-color: #34454c;
+}
+
+html[data-theme="dark"] .startupPanel p {
+  color: #a8b8be;
+}
+
+html[data-theme="dark"] .startupBar {
+  background: #1f2a2f;
+  border-color: #42535a;
+}
+
+html[data-theme="dark"] .startupBar span {
+  background: #87e4a2;
+}
+
+html[data-theme="dark"] .modalBackdrop {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+html[data-theme="dark"] .exportMenuToggle,
+html[data-theme="dark"] .compactOptionRow,
+html[data-theme="dark"] .assignmentRow,
+html[data-theme="dark"] .assignmentSelect,
+html[data-theme="dark"] .modelRow,
+html[data-theme="dark"] .stratagemBody {
+  border-color: #34454c;
+}
+
+html[data-theme="dark"] .stratagemBody {
+  background: rgba(17, 24, 28, 0.72);
+}
+
+html[data-theme="dark"] .detachmentChoiceList,
+html[data-theme="dark"] .previewMaster,
+html[data-theme="dark"] .previewDetachment,
+html[data-theme="dark"] .previewSection,
+html[data-theme="dark"] .previewItem,
+html[data-theme="dark"] .sidebarGroup,
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
+  border-color: #51646c;
+}
+
+html[data-theme="dark"] th,
+html[data-theme="dark"] .detachmentChoiceGroup h3,
+html[data-theme="dark"] .optionGroup > summary,
+html[data-theme="dark"] .previewDetachment > summary {
+  background: #263238;
+}
+
+html[data-theme="dark"] .previewSection > summary,
+html[data-theme="dark"] .optionGroupDepth1 > summary {
+  background: #202b30;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .optionGroupDepth2 > summary {
+  background: #1b2428;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .chips span {
+  background: #202b30;
+  border-color: #51646c;
+}
+
+html[data-theme="dark"] .ruleToken {
+  background: #132d33;
+  border-color: #3b8790;
+  color: #9ee8f0;
+}
+
+html[data-theme="dark"] .ruleToken:hover,
+html[data-theme="dark"] .ruleToken:focus {
+  background: #1d424a;
+}
+
+html[data-theme="dark"] .rulePopover {
+  background: #171d21;
+  border-color: #51646c;
+  color: #c1ccd0;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.52);
+}
+
+html[data-theme="dark"] .stratagemMeta b {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+html[data-theme="dark"] .stratagemMeta small,
+html[data-theme="dark"] .previewDetachment > summary small,
+html[data-theme="dark"] .previewSection > summary small,
+html[data-theme="dark"] .previewItem > summary small,
+html[data-theme="dark"] .optionGroup > summary small {
+  color: #98a6ab;
+}
+
+html[data-theme="dark"] .stratagemCore {
+  background: #3b341c;
+  border-color: #9b7a2d;
+}
+
+html[data-theme="dark"] .stratagemTone0 {
+  background: #1b2e49;
+  border-color: #5478aa;
+}
+
+html[data-theme="dark"] .stratagemTone1 {
+  background: #173422;
+  border-color: #4f9668;
+}
+
+html[data-theme="dark"] .stratagemTone2 {
+  background: #351c3b;
+  border-color: #8c5d98;
+}
+
+html[data-theme="dark"] .stratagemTone3 {
+  background: #3b2617;
+  border-color: #a46e3d;
+}
+
+html[data-theme="dark"] .rosterSectionName:focus {
+  background: #11181c;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .rosterSectionName {
+  border-color: rgba(184, 196, 200, 0.45);
+  color: #d0dcdf;
+}
+
+html[data-theme="dark"] .discordExportPreview {
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .discordExportPreview .ansi37 {
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] b,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] .unit,
+html[data-theme="dark"] .savedRosterCard {
+  color: #cbd5d9;
+}
+
+html[data-theme="dark"] .unitActions button,
+html[data-theme="dark"] .savedRosterActions button,
+html[data-theme="dark"] .configureMember,
+html[data-theme="dark"] .removeMember,
+html[data-theme="dark"] .visibilityButton {
+  color: #b8c4c8;
+}
+
+html[data-theme="dark"] svg {
+  color: #b8c4c8;
+  stroke: currentColor;
 }

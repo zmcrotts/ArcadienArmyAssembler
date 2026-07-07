@@ -30,7 +30,7 @@
   },
   "build": {
     "appId": "local.rosterbuilder.app",
-    "productName": "Roster Builder",
+    "productName": "Arcadien Army Assembler",
     "directories": {
       "output": "release"
     },
@@ -52,7 +52,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Roster Builder"
+      "shortcutName": "Arcadien Army Assembler"
     }
   }
 }

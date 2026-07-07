@@ -1,0 +1,13 @@
+{
+  "kind": "manual-army-rules",
+  "name": "Local 11e Army Rule Gap-fill",
+  "nrversion": "army-rules-gapfill-1",
+  "lastUpdated": "2026-07-06",
+  "rules": [
+    {
+      "faction": "Xenos - Orks",
+      "name": "Waaagh!",
+      "description": "If your Army Faction is ORKS, once per battle, at the start of your Command phase, you can call a Waaagh!. If you do, until the start of your next Command phase, the Waaagh! is active for your army and:\n- Units from your army with this ability are eligible to declare a charge in a turn in which they Advanced.\n- Add 1 to the Strength and Attacks characteristics of melee weapons equipped by models from your army with this ability.\n- Models from your army with this ability have a 5+ invulnerable save."
+    }
+  ]
+}
