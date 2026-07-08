@@ -7,9 +7,15 @@
     "test": "node --test test/*.test.js",
     "build:user": "node scripts/build-user-runtime.js",
     "desktop": "npm.cmd run build:user && electron .",
-    "dist:dir": "npm.cmd run build:user && node scripts/build-electron-dir.js",
+    "prepare:icons": "node scripts/write-crosshair-icon.js",
+    "dist:dir": "npm.cmd run prepare:icons && npm.cmd run build:user && node scripts/build-electron-dir.js",
     "dist:local-installer": "npm.cmd run dist:dir && node scripts/build-local-installer.js",
     "dist:win": "npm.cmd run build:user && electron-builder --win nsis",
+    "dist:linux": "npm.cmd run dist:linux:archive",
+    "dist:linux:archive": "npm.cmd run prepare:icons && npm.cmd run build:user && electron-builder --linux tar.gz --config.directories.output=release/linux",
+    "dist:linux:appimage": "npm.cmd run prepare:icons && npm.cmd run build:user && electron-builder --linux AppImage --config.directories.output=release/linux",
+    "dist:linux:rpm": "npm.cmd run prepare:icons && npm.cmd run build:user && electron-builder --linux rpm --config.directories.output=release/linux",
+    "dist:linux:flatpak": "npm.cmd run prepare:icons && npm.cmd run build:user && electron-builder --linux flatpak --config.directories.output=release/linux",
     "audit:bsdata-pricing": "node scripts/audit-bsdata-unit-pricing.js",
     "audit:bsdata-loadouts": "node scripts/audit-bsdata-loadouts.js",
     "audit:bsdata-armies": "node scripts/audit-bsdata-armies.js",
@@ -18,7 +24,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "fast-xml-parser": "^5.9.2",
@@ -43,8 +49,17 @@
       "main": "electron/main.js"
     },
     "win": {
+      "icon": "build/crosshair.ico",
       "target": [
         "nsis"
+      ]
+    },
+    "linux": {
+      "icon": "build/crosshair.png",
+      "category": "Utility",
+      "artifactName": "${productName} Linux ${version}.${ext}",
+      "target": [
+        "AppImage"
       ]
     },
     "nsis": {
