@@ -37,6 +37,7 @@ jobs:
       - name: Prepare runtime and icon
         run: |
           node scripts/write-crosshair-icon.js
+          node scripts/build-engine-ui-data.js
           node scripts/build-user-runtime.js
 
       - name: Build AppImage and RPM
