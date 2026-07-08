@@ -23,8 +23,16 @@
     "health": "node scripts/project-health.js"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "zmcrotts",
+    "email": "zmcrotts@users.noreply.github.com"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/zmcrotts/ArcadienArmyAssembler#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zmcrotts/ArcadienArmyAssembler.git"
+  },
   "type": "commonjs",
   "dependencies": {
     "fast-xml-parser": "^5.9.2",
