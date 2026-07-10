@@ -306,6 +306,17 @@ section {
   margin-top: 3px;
 }
 
+.rosterUnitLabel {
+  display: inline-block;
+  min-width: min(220px, 55%);
+  vertical-align: middle;
+}
+
+.unitNickname {
+  color: #315f67;
+  font-weight: 700;
+}
+
 .unitActions {
   align-items: center;
   display: inline-flex;
@@ -867,8 +878,97 @@ section {
 .compactOptionRow input[type="number"] { box-sizing: border-box; font-size: 14px; width: 54px; }
 .compactOptionRow input[type="checkbox"] { justify-self: end; margin: 0; }
 .optionName { min-width: 0; }
+.optionPoints { color: #4f6b70; font-size: 11px; font-weight: 600; white-space: nowrap; }
 .optionLimits { color: #617074; font-size: 11px; white-space: nowrap; }
 .lockedOption { color: #596164; }
+
+.weaponPreviewWrap {
+  display: inline-block;
+  position: relative;
+}
+
+.weaponPreviewToken {
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.weaponPreviewToken:focus {
+  outline: 2px solid #9fd1d8;
+  outline-offset: 2px;
+}
+
+.weaponPreviewPopover {
+  background: #f8fbfc;
+  border: 1px solid #26363b;
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  box-sizing: border-box;
+  color: #182124;
+  display: none;
+  left: 0;
+  line-height: 1.25;
+  min-width: 400px;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 10px 12px;
+  position: absolute;
+  top: calc(100% + 6px);
+  white-space: normal;
+  z-index: 90;
+}
+
+.weaponPreviewWrap:hover .weaponPreviewPopover,
+.weaponPreviewWrap:focus-within .weaponPreviewPopover {
+  display: block;
+}
+
+.weaponPreviewProfile,
+.weaponPreviewProfile strong,
+.weaponPreviewProfile small,
+.weaponPreviewProfile em {
+  display: block;
+}
+
+.weaponPreviewProfile + .weaponPreviewProfile {
+  border-top: 1px solid #cbdadd;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.weaponPreviewProfile small {
+  color: #4d5f63;
+  margin-top: 2px;
+}
+
+.weaponPreviewProfile em {
+  color: #315f67;
+  font-style: normal;
+  margin-top: 7px;
+}
+
+.weaponPreviewStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.weaponPreviewStats span {
+  border: 1px solid #ccdadd;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 42px;
+  padding: 5px 6px;
+  white-space: nowrap;
+}
+
+.weaponPreviewStats b {
+  display: block;
+  font-size: 10px;
+  color: #52676c;
+}
+
 .assignmentRow, .assignmentSelect { align-items: center; border-bottom: 1px solid #ddd; display: grid; gap: 8px; margin: 0; padding: 7px 0; }
 .assignmentRow { grid-template-columns: minmax(0, 1fr) auto; }
 .assignmentSelect { grid-template-columns: minmax(0, 1fr) minmax(120px, 1fr); }
@@ -879,6 +979,23 @@ section {
 .assignmentDisclosure > summary { cursor: pointer; }
 .assignmentDisclosure small { display: inline; }
 .compactMessage { margin: 9px 0 0; }
+
+.appTransientMessage {
+  background: #102f36;
+  border: 1px solid #2c6f7a;
+  border-radius: 4px;
+  bottom: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+  color: #f7fbfc;
+  font-size: 14px;
+  font-weight: 700;
+  left: 50%;
+  max-width: min(520px, calc(100vw - 32px));
+  padding: 10px 14px;
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 80;
+}
 
 .attachedMembers {
   display: grid;
@@ -904,6 +1021,26 @@ section {
 
 .sidebarBack {
   margin: 0 0 10px;
+}
+
+.sidebarNicknameControl {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(70px, max-content) minmax(160px, 260px);
+  margin: -4px 0 8px;
+}
+
+.sidebarNicknameControl span {
+  color: #596164;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sidebarNicknameControl input {
+  box-sizing: border-box;
+  font-size: 14px;
+  width: 100%;
 }
 
 .sidebarSelect,
@@ -1399,6 +1536,26 @@ html[data-theme="dark"] .rulePopover {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.52);
 }
 
+html[data-theme="dark"] .weaponPreviewPopover {
+  background: #171d21;
+  border-color: #51646c;
+  color: #c1ccd0;
+}
+
+html[data-theme="dark"] .weaponPreviewProfile + .weaponPreviewProfile,
+html[data-theme="dark"] .weaponPreviewStats span {
+  border-color: #34454c;
+}
+
+html[data-theme="dark"] .weaponPreviewProfile small,
+html[data-theme="dark"] .weaponPreviewStats b {
+  color: #9caeb4;
+}
+
+html[data-theme="dark"] .weaponPreviewProfile em {
+  color: #8ed2dc;
+}
+
 html[data-theme="dark"] .stratagemMeta b {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.22);
@@ -1445,6 +1602,14 @@ html[data-theme="dark"] .rosterSectionName:focus {
 html[data-theme="dark"] .rosterSectionName {
   border-color: rgba(184, 196, 200, 0.45);
   color: #d0dcdf;
+}
+
+html[data-theme="dark"] .unitNickname {
+  color: #8ed2dc;
+}
+
+html[data-theme="dark"] .sidebarNicknameControl span {
+  color: #9caeb4;
 }
 
 html[data-theme="dark"] .discordExportPreview {

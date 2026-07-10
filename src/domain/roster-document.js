@@ -366,6 +366,11 @@ function enhancementBearerMap(document) {
   return byBearer;
 }
 
+function enhancementPointsForBearer(document, instanceId) {
+  return (enhancementBearerMap(document).get(instanceId) || [])
+    .reduce((sum, enhancement) => sum + Number(enhancement.points || 0), 0);
+}
+
 function wargearNames(record) {
   const names = [];
   for (const weapon of record.configured?.weapons || []) {
@@ -509,7 +514,7 @@ function discordUnitSpecials(record, document, compact) {
   if (document.warlord?.instanceId === record.instanceId) specials.push("Warlord");
   for (const enhancement of enhancementBearerMap(document).get(record.instanceId) || []) {
     const name = compact ? abbreviateName(enhancement.name) : enhancement.name;
-    specials.push(`E: ${name}`);
+    specials.push(`E: ${name}${enhancement.points ? ` (+${enhancement.points} pts)` : ""}`);
   }
   return specials;
 }
@@ -517,11 +522,12 @@ function discordUnitSpecials(record, document, compact) {
 function discordExportRecordFor(document, record, options) {
   const skippableEntry = findSkippableEntry(options.skippableWargear || {}, document, record.name);
   const modelItems = modelExportItems(record, document, skippableEntry, options.compact);
+  const enhancementPoints = enhancementPointsForBearer(document, record.instanceId);
   return {
     instanceId: record.instanceId,
     name: record.name,
     count: Number(record.unitSize?.current || 1),
-    points: Number(record.points || 0),
+    points: Number(record.points || 0) + enhancementPoints,
     specials: discordUnitSpecials(record, document, options.compact),
     flatItems: flatExportItems(record, document, skippableEntry, options.compact),
     modelItems

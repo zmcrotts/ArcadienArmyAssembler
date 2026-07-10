@@ -4,23 +4,23 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execFileSync } = require("child_process");
+const { ensureCrosshairIcon } = require("./write-crosshair-icon");
 
 const ROOT = path.resolve(__dirname, "..");
 const RELEASE_DIR = path.join(ROOT, "release");
 const UNPACKED_DIR = path.join(RELEASE_DIR, "win-unpacked");
 const INSTALLER_WORK = path.join(os.tmpdir(), "RosterBuilderLocalInstaller");
 const PAYLOAD_ZIP = path.join(INSTALLER_WORK, "roster-builder-app.zip");
-const INSTALLER_EXE = path.join(RELEASE_DIR, "Roster Builder Local Setup.exe");
-const INSTALLER_SUPPORT_FILES = [
-  "RosterBuilderInstaller.dll",
-  "RosterBuilderInstaller.deps.json",
-  "RosterBuilderInstaller.runtimeconfig.json"
-];
+const ICON_FILE = path.join(ROOT, "build", "crosshair.ico");
+const INSTALLER_ICON = path.join(INSTALLER_WORK, "crosshair.ico");
+const APP_NAME = "Arcadien Army Assembler";
+const APP_EXE_NAME = `${APP_NAME}.exe`;
+const INSTALLER_EXE = path.join(RELEASE_DIR, `${APP_NAME} Setup.exe`);
 
 function assertUnpackedApp() {
-  const exe = path.join(UNPACKED_DIR, "Roster Builder.exe");
+  const exe = path.join(UNPACKED_DIR, APP_EXE_NAME);
   if (!fs.existsSync(exe)) {
-    throw new Error("Missing release/win-unpacked/Roster Builder.exe. Run electron-builder --win dir first.");
+    throw new Error(`Missing release/win-unpacked/${APP_EXE_NAME}. Run electron-builder --win dir first.`);
   }
 }
 
@@ -56,6 +56,11 @@ function zipPayload() {
   if (!fs.existsSync(PAYLOAD_ZIP)) throw new Error(`Failed to create payload zip: ${PAYLOAD_ZIP}`);
 }
 
+function prepareInstallerIcon() {
+  ensureCrosshairIcon(ICON_FILE);
+  fs.copyFileSync(ICON_FILE, INSTALLER_ICON);
+}
+
 function writeDotnetProject() {
   const csproj = String.raw`<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
@@ -65,17 +70,22 @@ function writeDotnetProject() {
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <SelfContained>false</SelfContained>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <ApplicationIcon>crosshair.ico</ApplicationIcon>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="roster-builder-app.zip" LogicalName="roster-builder-app.zip" />
+    <Content Include="crosshair.ico" />
   </ItemGroup>
 </Project>
 `;
 
-  const program = String.raw`using System;
+    const program = String.raw`using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -86,7 +96,9 @@ using System.Windows.Forms;
 
 internal static class Program
 {
-    private const string AppName = "Roster Builder";
+    private const string AppName = "Arcadien Army Assembler";
+    private const string AppExeName = "Arcadien Army Assembler.exe";
+    private const string LegacyAppExeName = "Roster Builder.exe";
 
     private static readonly string[] AppItems =
     {
@@ -102,7 +114,7 @@ internal static class Program
         "LICENSE.electron.txt",
         "LICENSES.chromium.html",
         "resources.pak",
-        "Roster Builder.exe",
+        AppExeName,
         "snapshot_blob.bin",
         "v8_context_snapshot.bin",
         "vk_swiftshader.dll",
@@ -121,57 +133,63 @@ internal static class Program
     private sealed class InstallForm : Form
     {
         private readonly TextBox folderTextBox = new();
+        private readonly CheckBox desktopShortcutCheckBox = new();
         private readonly Button installButton = new();
         private readonly Label statusLabel = new();
 
         internal InstallForm()
         {
-            Text = "Install Roster Builder";
+            Text = "Install Arcadien Army Assembler";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            ClientSize = new Size(610, 170);
+            ClientSize = new Size(640, 218);
 
             var label = new Label
             {
-                Text = "Choose a parent folder. Roster Builder will be installed into a Roster Builder folder inside it, with saves kept there too.",
+                Text = "Choose where Arcadien Army Assembler should be installed. Saves, exports, and app data will live in this folder too.",
                 AutoSize = false,
                 Location = new Point(14, 14),
-                Size = new Size(580, 38)
+                Size = new Size(610, 38)
             };
 
             folderTextBox.Location = new Point(16, 64);
-            folderTextBox.Size = new Size(468, 24);
-            folderTextBox.Text = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            folderTextBox.Size = new Size(496, 24);
+            folderTextBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName);
 
             var browseButton = new Button
             {
                 Text = "Browse...",
-                Location = new Point(500, 62),
-                Size = new Size(90, 28)
+                Location = new Point(528, 62),
+                Size = new Size(96, 28)
             };
             browseButton.Click += (_, _) => BrowseForFolder();
+
+            desktopShortcutCheckBox.Text = "Create a desktop shortcut";
+            desktopShortcutCheckBox.Checked = true;
+            desktopShortcutCheckBox.AutoSize = true;
+            desktopShortcutCheckBox.Location = new Point(16, 104);
 
             var cancelButton = new Button
             {
                 Text = "Cancel",
-                Location = new Point(396, 112),
-                Size = new Size(92, 30),
+                Location = new Point(424, 158),
+                Size = new Size(92, 32),
                 DialogResult = DialogResult.Cancel
             };
             cancelButton.Click += (_, _) => Close();
 
             installButton.Text = "Install";
-            installButton.Location = new Point(500, 112);
-            installButton.Size = new Size(90, 30);
+            installButton.Location = new Point(528, 158);
+            installButton.Size = new Size(96, 32);
             installButton.Click += (_, _) => Install();
 
             statusLabel.AutoSize = false;
-            statusLabel.Location = new Point(16, 106);
-            statusLabel.Size = new Size(360, 42);
+            statusLabel.Location = new Point(16, 138);
+            statusLabel.Size = new Size(392, 58);
 
-            Controls.AddRange(new Control[] { label, folderTextBox, browseButton, statusLabel, cancelButton, installButton });
+            Controls.AddRange(new Control[] { label, folderTextBox, browseButton, desktopShortcutCheckBox, statusLabel, cancelButton, installButton });
             AcceptButton = installButton;
             CancelButton = cancelButton;
         }
@@ -180,7 +198,7 @@ internal static class Program
         {
             using var dialog = new FolderBrowserDialog
             {
-                Description = "Choose parent install folder",
+                Description = "Choose install folder",
                 SelectedPath = folderTextBox.Text
             };
 
@@ -198,41 +216,53 @@ internal static class Program
                 statusLabel.Text = "Installing...";
                 Application.DoEvents();
 
-                var parent = folderTextBox.Text.Trim();
-                if (string.IsNullOrWhiteSpace(parent)) throw new InvalidOperationException("Install folder is required.");
+                var installRoot = folderTextBox.Text.Trim();
+                if (string.IsNullOrWhiteSpace(installRoot)) throw new InvalidOperationException("Install folder is required.");
 
-                var installRoot = Path.Combine(parent, AppName);
-                InstallTo(installRoot);
+                InstallTo(installRoot, desktopShortcutCheckBox.Checked);
 
                 statusLabel.Text = "Installed.";
-                var exe = Path.Combine(installRoot, "Roster Builder.exe");
-                Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = installRoot, UseShellExecute = true });
+                var exe = Path.Combine(installRoot, AppExeName);
+                var result = MessageBox.Show(
+                    this,
+                    "Arcadien Army Assembler installed successfully.\n\nInstalled app:\n" + exe + "\n\nLaunch it now?",
+                    "Arcadien Army Assembler installed",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information);
+
+                if (result == DialogResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = installRoot, UseShellExecute = true });
+                }
+
                 Close();
             }
             catch (Exception ex)
             {
                 installButton.Enabled = true;
                 statusLabel.Text = "Install failed.";
-                MessageBox.Show(this, ex.Message, "Roster Builder install failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.Message, "Arcadien Army Assembler install failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
 
-    private static void InstallTo(string installRoot)
+    private static void InstallTo(string installRoot, bool createDesktopShortcut)
     {
         var marker = Path.Combine(installRoot, ".roster-builder-install");
         Directory.CreateDirectory(installRoot);
 
         var existingItems = Directory.EnumerateFileSystemEntries(installRoot).ToArray();
         var isExistingRosterBuilderInstall =
-            File.Exists(marker) || File.Exists(Path.Combine(installRoot, "Roster Builder.exe"));
+            File.Exists(marker) ||
+            File.Exists(Path.Combine(installRoot, AppExeName)) ||
+            File.Exists(Path.Combine(installRoot, LegacyAppExeName));
 
         if (existingItems.Length > 0 && !isExistingRosterBuilderInstall)
         {
             throw new InvalidOperationException(
                 "The target folder already exists and is not marked as a Roster Builder install: " +
                 installRoot +
-                ". Choose another parent folder or move the existing folder first.");
+                ". Choose another install folder or move the existing folder first.");
         }
 
         foreach (var item in AppItems)
@@ -252,18 +282,21 @@ internal static class Program
         Directory.CreateDirectory(Path.Combine(installRoot, "exports"));
         File.WriteAllText(marker, "Roster Builder local install");
 
-        var exe = Path.Combine(installRoot, "Roster Builder.exe");
+        var exe = Path.Combine(installRoot, AppExeName);
         if (!File.Exists(exe)) throw new FileNotFoundException("Installed app executable not found.", exe);
 
         WriteUninstaller(installRoot);
-        CreateShortcut(
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Roster Builder.lnk"),
-            exe,
-            installRoot);
+        if (createDesktopShortcut)
+        {
+            CreateShortcut(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), AppName + ".lnk"),
+                exe,
+                installRoot);
+        }
 
         var startMenuFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), AppName);
         Directory.CreateDirectory(startMenuFolder);
-        CreateShortcut(Path.Combine(startMenuFolder, "Roster Builder.lnk"), exe, installRoot);
+        CreateShortcut(Path.Combine(startMenuFolder, AppName + ".lnk"), exe, installRoot);
     }
 
     private static void WriteUninstaller(string installRoot)
@@ -271,7 +304,7 @@ internal static class Program
         var uninstallPs1 = Path.Combine(installRoot, "Uninstall Roster Builder.ps1");
         var uninstallCmd = Path.Combine(installRoot, "Uninstall Roster Builder.cmd");
         var ps1 = @"$ErrorActionPreference = ""Stop""
-$appName = ""Roster Builder""
+$appName = ""Arcadien Army Assembler""
 $installRoot = Split-Path -Parent $PSCommandPath
 $marker = Join-Path $installRoot "".roster-builder-install""
 if (!(Test-Path -LiteralPath $marker)) {
@@ -292,6 +325,7 @@ $appItems = @(
   ""LICENSE.electron.txt"",
   ""LICENSES.chromium.html"",
   ""resources.pak"",
+  ""Arcadien Army Assembler.exe"",
   ""Roster Builder.exe"",
   ""snapshot_blob.bin"",
   ""v8_context_snapshot.bin"",
@@ -307,12 +341,12 @@ foreach ($item in $appItems) {
   }
 }
 
-$desktopShortcut = Join-Path ([Environment]::GetFolderPath(""Desktop"")) ""Roster Builder.lnk""
+$desktopShortcut = Join-Path ([Environment]::GetFolderPath(""Desktop"")) ""Arcadien Army Assembler.lnk""
 $startMenuFolder = Join-Path ([Environment]::GetFolderPath(""Programs"")) $appName
 Remove-Item -LiteralPath $desktopShortcut -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $startMenuFolder -Recurse -Force -ErrorAction SilentlyContinue
 
-Write-Host ""Roster Builder app files removed. Local rosters, exports, and user-data were left in:""
+Write-Host ""Arcadien Army Assembler app files removed. Local rosters, exports, and user-data were left in:""
 Write-Host $installRoot
 ";
         File.WriteAllText(uninstallPs1, ps1);
@@ -339,7 +373,7 @@ Write-Host $installRoot
     String.raw`<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
-    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
 </configuration>
 `,
@@ -349,16 +383,21 @@ Write-Host $installRoot
 
 function publishInstaller() {
   fs.rmSync(INSTALLER_EXE, { force: true });
-  for (const file of INSTALLER_SUPPORT_FILES) fs.rmSync(path.join(RELEASE_DIR, file), { force: true });
+  for (const file of fs.readdirSync(RELEASE_DIR)) {
+    if (file.startsWith("RosterBuilderInstaller.")) fs.rmSync(path.join(RELEASE_DIR, file), { force: true });
+  }
   run("dotnet.exe", [
-    "build",
+    "publish",
     path.join(INSTALLER_WORK, "RosterBuilderInstaller.csproj"),
     "-c",
     "Release",
     "-r",
     "win-x64",
     "--self-contained",
-    "false",
+    "true",
+    "/p:PublishSingleFile=true",
+    "/p:EnableCompressionInSingleFile=true",
+    "/p:IncludeNativeLibrariesForSelfExtract=true",
     "/p:DebugType=none",
     "/p:DebugSymbols=false",
     `/p:RestoreConfigFile=${path.join(INSTALLER_WORK, "NuGet.Config")}`
@@ -369,7 +408,8 @@ function publishInstaller() {
     "bin",
     "Release",
     "net9.0-windows",
-    "win-x64"
+    "win-x64",
+    "publish"
   );
   const built = path.join(
     builtDir,
@@ -377,17 +417,13 @@ function publishInstaller() {
   );
   if (!fs.existsSync(built)) throw new Error(`dotnet did not create ${built}`);
   fs.copyFileSync(built, INSTALLER_EXE);
-  for (const file of INSTALLER_SUPPORT_FILES) {
-    const source = path.join(builtDir, file);
-    if (!fs.existsSync(source)) throw new Error(`dotnet did not create ${source}`);
-    fs.copyFileSync(source, path.join(RELEASE_DIR, file));
-  }
 }
 
 function main() {
   assertUnpackedApp();
   fs.rmSync(INSTALLER_WORK, { recursive: true, force: true });
   fs.mkdirSync(INSTALLER_WORK, { recursive: true });
+  prepareInstallerIcon();
   zipPayload();
   writeDotnetProject();
   publishInstaller();
@@ -395,11 +431,6 @@ function main() {
   const stats = fs.statSync(INSTALLER_EXE);
   console.log(`Built ${INSTALLER_EXE}`);
   console.log(`Installer size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
-  for (const file of INSTALLER_SUPPORT_FILES) {
-    const supportPath = path.join(RELEASE_DIR, file);
-    const supportStats = fs.statSync(supportPath);
-    console.log(`Built ${supportPath} (${(supportStats.size / 1024 / 1024).toFixed(2)} MB)`);
-  }
 }
 
 if (require.main === module) main();

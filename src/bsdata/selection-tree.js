@@ -11,6 +11,15 @@ function numberOrNull(value) {
   return Number.isFinite(number) ? number : null;
 }
 
+const POINTS_FIELD_ID = "51b2-306e-1021-d207";
+
+function directPoints(node) {
+  const cost = asArray(node?.costs?.cost).find(item =>
+    item.typeId === POINTS_FIELD_ID || String(item.name).toLowerCase() === "pts"
+  );
+  return numberOrNull(cost?.value);
+}
+
 function characteristics(profile) {
   const values = {};
   for (const item of asArray(profile?.characteristics?.characteristic)) {
@@ -173,6 +182,12 @@ function isLoadoutNode(node) {
   return isLoadoutLink({ name: node?.name });
 }
 
+function shouldIncludeEntryLink(entryLink, definition) {
+  if (!isLoadoutLink(entryLink)) return false;
+  if (String(entryLink?.name || "") !== "Mark of Chaos") return true;
+  return /daemon prince/i.test(String(definition?.name || ""));
+}
+
 function buildSelectionTree(unit, indexes, rootLink = null) {
   function build(source, link = null, ancestry = new Set(), forcedKind = null, parentPath = null) {
     let definition = source;
@@ -224,7 +239,7 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
       }
       for (const entryLink of asArray(container?.entryLinks?.entryLink)) {
         if (entryLink.hidden === "true") continue;
-        if (!isLoadoutLink(entryLink)) continue;
+        if (!shouldIncludeEntryLink(entryLink, definition)) continue;
         if (entryLink.type === "selectionEntry") {
           const target = indexes.entries.get(entryLink.targetId);
           if (target) children.push(build(target, entryLink, nextAncestry, null, occurrenceId));
@@ -254,6 +269,7 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
       targetId: link?.targetId || null,
       name: link?.name || definition?.name || "Unnamed selection",
       kind,
+      points: Number(directPoints(definition) || 0) + Number(link && link !== definition ? directPoints(link) || 0 : 0),
       collective: (link?.collective ?? definition?.collective) === "true",
       hidden: (link?.hidden ?? definition?.hidden) === "true",
       forceVisible: Boolean(parentPath === null && link?.hidden === "false"),

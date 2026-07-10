@@ -159,3 +159,37 @@ test("browser army runtime allows support attachments beside a leader", () => {
 
   assert.equal(warnings.some(item => item.code === "BODYGUARD_HAS_MULTIPLE_LEADERS"), false);
 });
+
+test("browser army runtime warns when god-specific summoned daemons lack the daemon detachment", () => {
+  const army = {
+    id: "thousand-sons",
+    faction: "Chaos - Thousand Sons",
+    allowedSelectionKeys: ["blue-horrors"],
+    detachments: [
+      { id: "grand-coven", name: "Grand Coven", points: 0 },
+      { id: "servants", name: "Servants of Change", points: 0 }
+    ],
+    enhancements: []
+  };
+  const roster = [{
+    instanceId: "blue-horrors-1",
+    selectionKey: "blue-horrors",
+    name: "Blue Horrors",
+    faction: "Chaos - Thousand Sons",
+    categories: ["Daemon", "Summoned", "Tzeentch"],
+    roles: { battleline: true },
+    rosterRules: {}
+  }];
+
+  let state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "grand-coven");
+  assert.equal(
+    window.ArmyEngine.validateRosterLegality(army, state, roster).warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"),
+    true
+  );
+
+  state = window.ArmyEngine.selectDetachment(army, state, "servants");
+  assert.equal(
+    window.ArmyEngine.validateRosterLegality(army, state, roster).warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"),
+    false
+  );
+});

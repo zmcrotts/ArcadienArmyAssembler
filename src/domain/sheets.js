@@ -520,6 +520,11 @@ function abilitiesFor(record) {
 }
 
 function abilityProviderName(record, ability) {
+  const sectionName = normalizeText(ability?.typeName);
+  if (sectionName && !["abilities", "unit"].includes(sectionName.toLowerCase())) {
+    const recordName = normalizeText(record?.name).toLowerCase();
+    if (sectionName.toLowerCase() !== recordName) return sectionName;
+  }
   const unitNames = unitProfiles(record).map(profile => normalizeText(profile.name)).filter(Boolean);
   const haystack = `${ability?.name || ""} ${ability?.characteristics?.Description || ability?.description || ""}`.toLowerCase();
   const named = unitNames.find(name => haystack.includes(name.toLowerCase()));

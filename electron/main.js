@@ -5,6 +5,9 @@ const fs = require("fs");
 const { app, BrowserWindow, shell } = require("electron");
 
 const APP_NAME = "Arcadien Army Assembler";
+let isQuitting = false;
+
+app.setName(APP_NAME);
 
 function userDataRoot() {
   if (app.isPackaged) return path.dirname(app.getPath("exe"));
@@ -46,6 +49,22 @@ function createWindow() {
     shell.openExternal(url);
     return { action: "deny" };
   });
+
+  mainWindow.on("close", event => {
+    if (process.platform === "darwin" || isQuitting) return;
+    isQuitting = true;
+    event.preventDefault();
+    app.exit(0);
+  });
+
+  mainWindow.on("closed", () => {
+    if (process.platform === "darwin" || isQuitting) return;
+    isQuitting = true;
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed()) window.destroy();
+    }
+    app.quit();
+  });
 }
 
 app.whenReady().then(() => {
@@ -55,6 +74,10 @@ app.whenReady().then(() => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+app.on("before-quit", () => {
+  isQuitting = true;
 });
 
 app.on("window-all-closed", () => {

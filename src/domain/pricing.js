@@ -131,6 +131,29 @@ function hasTreeSelections(unitDefinition, rosterEntry) {
   return found;
 }
 
+function selectedTreePointAdjustments(unitDefinition, rosterEntry) {
+  const adjustments = [];
+  function visit(node) {
+    if (!node) return;
+    if (!["unit", "group", "model"].includes(node.kind)) {
+      const count = selectedCount(rosterEntry, node.id);
+      const points = Number(node.points || 0);
+      if (count > 0 && points) {
+        adjustments.push({
+          selectionId: node.id,
+          name: node.name,
+          count,
+          points,
+          value: count * points
+        });
+      }
+    }
+    for (const child of node.children || []) visit(child);
+  }
+  visit(unitDefinition?.selectionTree);
+  return adjustments;
+}
+
 function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
   const validationErrors = validateRosterEntry(unitDefinition, rosterEntry);
   if (validationErrors.length && options.allowInvalid !== true) {
@@ -175,6 +198,19 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
       operation: "increment",
       value: selectionPoints,
       selectionId: selection.id
+    });
+  }
+
+  for (const adjustment of selectedTreePointAdjustments(unitDefinition, effectiveEntry)) {
+    points += adjustment.value;
+    applied.push({
+      source: "bsdata-selection-tree",
+      operation: "increment",
+      value: adjustment.value,
+      selectionId: adjustment.selectionId,
+      name: adjustment.name,
+      count: adjustment.count,
+      points: adjustment.points
     });
   }
 

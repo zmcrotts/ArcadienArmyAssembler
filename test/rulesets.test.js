@@ -214,6 +214,30 @@ test("11e Space Marine unit wargear controls do not include detachment upgrades"
   assert.ok(names.has("Power fist"));
 });
 
+test("11e Einhyr Hearthguard squad ranged weapons stay freely swappable", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const hearthguard = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Leagues of Votann" && unit.name === "Einhyr Hearthguard"
+  );
+  const entry = setUnitSize(hearthguard, createDefaultRosterEntry(hearthguard), 5);
+  const squadWeaponState = name => getOptionStates(hearthguard, entry)
+    .find(option => option.name === name && option.parentId.includes("ccb3-8ee6-568d-eee9"));
+
+  const plasma = squadWeaponState("EtaCarn plasma gun");
+  const volkanite = squadWeaponState("Volkanite disintegrator");
+
+  assert.equal(plasma.current, 4);
+  assert.equal(plasma.maximum, 4);
+  assert.equal(volkanite.current, 0);
+  assert.equal(volkanite.maximum, 4);
+  assert.equal(volkanite.editable, true);
+
+  const swapped = setSelection(hearthguard, entry, volkanite.id, 4);
+  assert.deepEqual(validateLoadout(hearthguard, swapped), []);
+  assert.equal(getOptionStates(hearthguard, swapped).find(option => option.id === plasma.id).current, 0);
+  assert.equal(getOptionStates(hearthguard, swapped).find(option => option.id === volkanite.id).current, 4);
+});
+
 test("11e Death Company Marines with Jump Packs expose explicit alternate weapon lanes", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const deathCompany = ruleset.units.find(unit =>
@@ -408,4 +432,28 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
 
   assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 210);
   assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 220);
+});
+
+test("11e selected wargear direct points are included in entry totals", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const riptide = ruleset.units.find(unit =>
+    unit.faction === "Xenos - T'au Empire" && unit.name === "Riptide Battlesuit"
+  );
+  assert.ok(riptide, "Missing Riptide Battlesuit");
+
+  const entry = createDefaultRosterEntry(riptide);
+  assert.equal(calculateEntryPoints(riptide, entry).points, 180);
+
+  const ionAccelerator = getOptionStates(riptide, entry).find(option => option.name === "Ion accelerator");
+  assert.ok(ionAccelerator, "Missing Ion accelerator option");
+  assert.equal(ionAccelerator.points, 20);
+
+  const upgraded = setSelection(riptide, entry, ionAccelerator.id, 1);
+  const pricing = calculateEntryPoints(riptide, upgraded);
+  assert.equal(pricing.points, 200);
+  assert.ok(pricing.applied.some(item =>
+    item.source === "bsdata-selection-tree"
+    && item.name === "Ion accelerator"
+    && item.value === 20
+  ));
 });

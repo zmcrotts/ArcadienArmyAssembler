@@ -79,6 +79,7 @@ const factionLoadPromises = {};
 let rosterDisplay = defaultRosterDisplay();
 let pendingRosterSectionFocusKey = null;
 let rulePopupCounter = 0;
+let transientMessageTimer = null;
 
 function init() {
   applySavedTheme();
@@ -203,6 +204,7 @@ function init() {
   exportMenuPanel.onclick = event => event.stopPropagation();
   document.addEventListener("click", () => setExportMenuOpen(false));
   window.addEventListener("beforeunload", event => {
+    if (navigator.userAgent.includes("Electron/")) return;
     if (!hasUnsavedRosterChanges()) return;
     event.preventDefault();
     event.returnValue = "";
@@ -472,7 +474,8 @@ function defaultRosterDisplay() {
     customSections: [],
     sectionLabels: {},
     groupSections: {},
-    groupOrder: []
+    groupOrder: [],
+    unitNicknames: {}
   };
 }
 
@@ -483,12 +486,28 @@ function normalizeRosterDisplay(input) {
     customSections: Array.isArray(source.customSections) ? source.customSections.map(String) : [],
     sectionLabels: source.sectionLabels && typeof source.sectionLabels === "object" ? { ...source.sectionLabels } : {},
     groupSections: source.groupSections && typeof source.groupSections === "object" ? { ...source.groupSections } : {},
-    groupOrder: Array.isArray(source.groupOrder) ? source.groupOrder.map(String) : []
+    groupOrder: Array.isArray(source.groupOrder) ? source.groupOrder.map(String) : [],
+    unitNicknames: source.unitNicknames && typeof source.unitNicknames === "object" ? normalizeUnitNicknames(source.unitNicknames) : {}
   };
 }
 
+function normalizeUnitNicknames(source) {
+  return Object.fromEntries(Object.entries(source)
+    .map(([key, value]) => [String(key), String(value || "").trim()])
+    .filter(([key, value]) => key && value));
+}
+
 function currentRosterDisplayDocument() {
+  reconcileRosterDisplayMetadata();
   return normalizeRosterDisplay(rosterDisplay);
+}
+
+function reconcileRosterDisplayMetadata() {
+  if (!rosterDisplay.unitNicknames) rosterDisplay.unitNicknames = {};
+  const instanceIds = new Set(roster.map(item => item.instanceId));
+  for (const instanceId of Object.keys(rosterDisplay.unitNicknames)) {
+    if (!instanceIds.has(instanceId)) delete rosterDisplay.unitNicknames[instanceId];
+  }
 }
 
 function setRosterLayoutModeButtons() {
@@ -847,24 +866,25 @@ function renderArmyAssignments() {
     armyAssignments.innerHTML = `<p class="muted">Add units to select a Warlord and attach Leaders.</p>`;
     return;
   }
-  const option = item => `<option value="${escapeHtml(item.instanceId)}">${escapeHtml(item.unitPackage.name)}${item.unitPackage.definition.rosterRules?.canBeWarlord ? "" : " ⚠"}</option>`;
   const leaders = roster.filter(item => item.unitPackage.definition.roles?.leader);
   armyAssignments.innerHTML = `
     <label class="optionRow"><b>Warlord</b>
-      <select id="warlordSelect"><option value="">Not selected</option>${roster.map(option).join("")}</select>
+      <select id="warlordSelect"><option value="">Not selected</option>${renderRosterUnitOptions(roster, {
+        legalFor: item => Boolean(item.unitPackage.definition.rosterRules?.canBeWarlord)
+      })}</select>
     </label>
     ${leaders.map(leader => {
       const assignment = (armyState.attachments || []).find(item => item.leaderInstanceId === leader.instanceId);
-      return `<label class="optionRow"><b>${escapeHtml(leader.unitPackage.name)} leads</b>
+      return `<label class="optionRow"><b>${renderRosterUnitPlainLabel(leader)} leads</b>
         <select class="leaderTarget" data-leader-id="${escapeHtml(leader.instanceId)}">
           <option value="">Not attached</option>
-          ${roster.filter(item => item.instanceId !== leader.instanceId).map(target => {
-            const legal = armyEngine.leaderCanTarget(
+          ${renderRosterUnitOptions(roster.filter(item => item.instanceId !== leader.instanceId), {
+            selectedId: assignment?.targetInstanceId,
+            legalFor: target => armyEngine.leaderCanTarget(
               { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
               { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
-            );
-            return `<option value="${escapeHtml(target.instanceId)}" ${assignment?.targetInstanceId === target.instanceId ? "selected" : ""}>${escapeHtml(target.unitPackage.name)}${legal ? "" : " ⚠"}</option>`;
-          }).join("")}
+            )
+          })}
         </select>
       </label>`;
     }).join("") || `<p class="muted">No Leaders in this roster.</p>`}
@@ -1095,6 +1115,7 @@ function unitMatchesSearch(unit) {
 }
 
 function renderRoster() {
+  reconcileRosterDisplayMetadata();
   rosterList.innerHTML = "";
 
   const configuration = document.createElement("div");
@@ -1142,6 +1163,7 @@ function renderRoster() {
     if (group.kind === "attached") div.classList.add("attachedUnit");
 
     const label = document.createElement("span");
+    label.className = "rosterUnitLabel";
     label.innerHTML = group.kind === "attached"
       ? renderRosterGroupLabel(group, groupEntries)
       : renderRosterUnitLabel(primary);
@@ -1361,7 +1383,8 @@ function renderRosterUnitLabel(rosterEntry) {
   const unit = rosterEntry.unitPackage;
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
-  return `<b>${sizePrefix}${escapeHtml(unit.name)}</b> — ${formatEntryPoints(rosterEntry)}`;
+  const nickname = rosterNicknameFor(rosterEntry.instanceId);
+  return `<b>${sizePrefix}${escapeHtml(unit.name)}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)} — ${formatEntryPoints(rosterEntry)}`;
 }
 
 function renderRosterGroupLabel(group, groupEntries) {
@@ -1372,10 +1395,138 @@ function renderRosterGroupLabel(group, groupEntries) {
   const unitSize = engine.getUnitSizeState(bodyguard.unitPackage.definition, bodyguard.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const warning = group.warnings.length ? ` <span class="warningBadge">⚠</span>` : "";
+  const nickname = rosterNicknameFor(bodyguard.instanceId);
   return `
-    <b>${sizePrefix}${escapeHtml(bodyguard.unitPackage.name)}</b>${warning} — ${group.totalPoints} pts
+    <b>${sizePrefix}${escapeHtml(bodyguard.unitPackage.name)}</b>${renderRosterNickname(nickname, bodyguard.instanceId)}${warning} — ${group.totalPoints} pts
     <small>Led by ${leaders.map(item => escapeHtml(item.unitPackage.name)).join(", ")}</small>
   `;
+}
+
+function renderRosterNickname(nickname, instanceId) {
+  const value = String(nickname || "").trim();
+  return ` <span class="unitNickname" data-nickname-display-for="${escapeHtml(instanceId)}"${value ? "" : " hidden"}>"${escapeHtml(value)}"</span>`;
+}
+
+function rosterNicknameFor(instanceId) {
+  return String(rosterDisplay.unitNicknames?.[instanceId] || "").trim();
+}
+
+function renderRosterUnitPlainLabel(rosterEntry) {
+  return escapeHtml(rosterUnitPlainTextLabel(rosterEntry));
+}
+
+function rosterUnitPlainTextLabel(rosterEntry) {
+  const nickname = rosterNicknameFor(rosterEntry.instanceId);
+  return `${rosterEntry.unitPackage.name}${nickname ? ` "${nickname}"` : ""}`;
+}
+
+function renderRosterUnitOptions(entries, options = {}) {
+  const labels = rosterUnitDropdownLabels(entries);
+  const selectedId = options.selectedId || null;
+  const legalFor = typeof options.legalFor === "function" ? options.legalFor : () => true;
+  return entries.map(entry => renderRosterUnitOption(entry, {
+    label: labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry),
+    legal: legalFor(entry),
+    selected: selectedId === entry.instanceId
+  })).join("");
+}
+
+function renderRosterUnitOption(rosterEntry, options = {}) {
+  const label = options.label || rosterUnitPlainTextLabel(rosterEntry);
+  return `<option value="${escapeHtml(rosterEntry.instanceId)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" ${options.selected ? "selected" : ""}>${escapeHtml(label)}${options.legal === false ? " ⚠" : ""}</option>`;
+}
+
+function rosterUnitDropdownLabels(entries) {
+  const bases = entries.map(entry => [entry.instanceId, rosterUnitDropdownBaseLabel(entry)]);
+  const counts = new Map();
+  for (const [, label] of bases) counts.set(label, (counts.get(label) || 0) + 1);
+  const seen = new Map();
+  return new Map(bases.map(([instanceId, label]) => {
+    if ((counts.get(label) || 0) <= 1) return [instanceId, label];
+    const next = (seen.get(label) || 0) + 1;
+    seen.set(label, next);
+    return [instanceId, `${label} (${next})`];
+  }));
+}
+
+function rosterUnitDropdownBaseLabel(rosterEntry) {
+  const status = rosterUnitAttachmentStatus(rosterEntry);
+  return `${rosterUnitPlainTextLabel(rosterEntry)}${status ? ` - ${status}` : ""}`;
+}
+
+function rosterUnitAttachmentStatus(rosterEntry) {
+  const attachments = armyState?.attachments || [];
+  const ledBy = attachments
+    .filter(item => item.targetInstanceId === rosterEntry.instanceId)
+    .map(item => roster.find(entry => entry.instanceId === item.leaderInstanceId))
+    .filter(Boolean);
+  if (ledBy.length) return `led by ${ledBy.map(rosterUnitPlainTextLabel).join(", ")}`;
+
+  const leading = attachments.find(item => item.leaderInstanceId === rosterEntry.instanceId);
+  if (leading) {
+    const target = roster.find(entry => entry.instanceId === leading.targetInstanceId);
+    if (target) return `leading ${rosterUnitPlainTextLabel(target)}`;
+  }
+  return "";
+}
+
+function renderSidebarNicknameControl(rosterEntry) {
+  return `
+    <label class="sidebarNicknameControl">
+      <span>Nickname</span>
+      <input id="unitNicknameInput" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="text" value="${escapeHtml(rosterNicknameFor(rosterEntry.instanceId))}" placeholder="Optional nickname">
+    </label>
+  `;
+}
+
+function bindSidebarNicknameInput() {
+  const input = document.getElementById("unitNicknameInput");
+  if (!input) return;
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      input.blur();
+    }
+  });
+  input.addEventListener("input", event => {
+    const instanceId = event.target.dataset.instanceId;
+    const nickname = event.target.value.trim();
+    if (!rosterDisplay.unitNicknames) rosterDisplay.unitNicknames = {};
+    if (nickname) {
+      rosterDisplay.unitNicknames[instanceId] = nickname;
+    } else {
+      delete rosterDisplay.unitNicknames[instanceId];
+    }
+    updateNicknameDisplays(instanceId, nickname);
+  });
+}
+
+function updateNicknameDisplays(instanceId, nickname) {
+  for (const display of document.querySelectorAll("[data-nickname-display-for]")) {
+    if (display.dataset.nicknameDisplayFor !== instanceId) continue;
+    display.textContent = nickname ? `"${nickname}"` : "";
+    display.hidden = !nickname;
+  }
+  const rosterEntry = roster.find(item => item.instanceId === instanceId);
+  if (!rosterEntry) return;
+  refreshAssignmentSelectLabels();
+}
+
+function refreshAssignmentSelectLabels() {
+  for (const select of document.querySelectorAll("select")) {
+    const options = [...select.querySelectorAll("option[data-instance-id]")];
+    if (!options.length) continue;
+    const entries = options
+      .map(option => roster.find(entry => entry.instanceId === option.dataset.instanceId))
+      .filter(Boolean);
+    const labels = rosterUnitDropdownLabels(entries);
+    for (const option of options) {
+      const entry = roster.find(item => item.instanceId === option.dataset.instanceId);
+      if (!entry) continue;
+      const warning = option.textContent.includes("⚠") ? " ⚠" : "";
+      option.textContent = `${labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry)}${warning}`;
+    }
+  }
 }
 
 function rosterPresentation() {
@@ -1473,6 +1624,7 @@ function showRosterEntry(rosterEntry) {
 
   details.innerHTML = `
     <h3>${sizePrefix}${escapeHtml(unit.name)} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
+    ${renderSidebarNicknameControl(rosterEntry)}
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
     ${renderKeywords(unit.keywords || unit.definition.keywords || unit.definition.categories || [], ruleLookup)}
@@ -1486,6 +1638,7 @@ function showRosterEntry(rosterEntry) {
   bindUnitSizeInputs();
   bindLoadoutInputs();
   bindSidebarDisclosureState();
+  bindSidebarNicknameInput();
   bindUnitAssignmentInputs();
   const backButton = document.getElementById("backToAttachedUnit");
   if (backButton) {
@@ -1515,9 +1668,12 @@ function showAttachedRosterGroup(group) {
     <div class="attachedMembers">
       ${[bodyguard, ...leaders].filter(Boolean).map(item => renderAttachedMemberCard(item, item === bodyguard)).join("")}
     </div>
+    ${bodyguard ? renderUnitAssignments(bodyguard) : ""}
     ${renderAttachedConfigured(groupEntries)}
   `;
   bindAttachedGroupInputs();
+  bindSidebarDisclosureState();
+  bindUnitAssignmentInputs();
 }
 
 function renderAttachedMemberCard(rosterEntry, isBodyguard) {
@@ -1674,31 +1830,30 @@ function renderUnitAssignments(rosterEntry) {
           <label class="assignmentSelect"><span><b>Leads</b><small>Bodyguard unit</small></span>
             <select class="leaderTarget" data-leader-id="${escapeHtml(rosterEntry.instanceId)}">
               <option value="">Not attached</option>
-              ${assignment.leaderTargets.map(targetState => {
-                const target = roster.find(item => item.instanceId === targetState.instanceId);
-                if (!target) return "";
-                const legal = armyEngine.leaderCanTarget(
+              ${renderRosterUnitOptions(assignment.leaderTargets
+                .map(targetState => roster.find(item => item.instanceId === targetState.instanceId))
+                .filter(Boolean), {
+                selectedId: assignment.leaderAssignment?.targetInstanceId,
+                legalFor: target => armyEngine.leaderCanTarget(
                   { selectionKey: unit.selectionKey, name: unit.name, rosterRules: definition.rosterRules },
                   { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
-                );
-                return `<option value="${escapeHtml(target.instanceId)}" ${assignment.leaderAssignment?.targetInstanceId === target.instanceId ? "selected" : ""}>${escapeHtml(target.unitPackage.name)}${legal ? "" : " ⚠"}</option>`;
-              }).join("")}
+                )
+              })}
             </select>
           </label>
         ` : ""}
         ${assignment.eligibleLeaders.length || assignment.ledBy.length ? `
           <label class="assignmentSelect"><span><b>Led by</b><small>${escapeHtml(ledByLabel)}</small></span>
             <select class="bodyguardLeader" data-target-id="${escapeHtml(rosterEntry.instanceId)}">
-              <option value="">Not attached</option>
-              ${assignment.eligibleLeaders.map(leaderState => {
-                const leader = roster.find(item => item.instanceId === leaderState.instanceId);
-                if (!leader) return "";
-                const legal = armyEngine.leaderCanTarget(
+              <option value="">${assignment.ledBy.length ? "Add another leader" : "Not attached"}</option>
+              ${renderRosterUnitOptions(assignment.eligibleLeaders
+                .map(leaderState => roster.find(item => item.instanceId === leaderState.instanceId))
+                .filter(Boolean), {
+                legalFor: leader => armyEngine.leaderCanTarget(
                   { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
                   { selectionKey: unit.selectionKey, name: unit.name }
-                );
-                return `<option value="${escapeHtml(leader.instanceId)}" ${assignment.ledBy[0]?.leaderInstanceId === leader.instanceId ? "selected" : ""}>${escapeHtml(leader.unitPackage.name)}${legal ? "" : " ⚠"}</option>`;
-              }).join("")}
+                )
+              })}
             </select>
           </label>
         ` : ""}
@@ -1799,10 +1954,13 @@ function bindUnitAssignmentInputs() {
   for (const select of document.querySelectorAll(".bodyguardLeader")) {
     select.onchange = event => {
       const targetId = event.target.dataset.targetId;
-      for (const relationship of (armyState.attachments || []).filter(item => item.targetInstanceId === targetId)) {
-        armyState = armyEngine.setLeaderAttachment(armyState, relationship.leaderInstanceId, null);
+      if (!event.target.value) {
+        for (const relationship of (armyState.attachments || []).filter(item => item.targetInstanceId === targetId)) {
+          armyState = armyEngine.setLeaderAttachment(armyState, relationship.leaderInstanceId, null);
+        }
+      } else {
+        armyState = armyEngine.setLeaderAttachment(armyState, event.target.value, targetId);
       }
-      if (event.target.value) armyState = armyEngine.setLeaderAttachment(armyState, event.target.value, targetId);
       selectedInstanceId = targetId;
       selectedPanel = event.target.value ? "group" : "unit";
       render();
@@ -1990,7 +2148,7 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
   return `
     <div class="nestedOptionBlock">
       <label class="compactOptionRow ${option.editable ? "" : "lockedOption"}">
-        <span class="optionName">${escapeHtml(option.name)}</span>
+        <span class="optionName">${renderOptionNameWithPoints(option, node)}</span>
         <span class="optionLimits">${current} · ${option.minimum}–${formatOptionMaximum(max)}</span>
         <input
           class="loadoutInput"
@@ -2003,6 +2161,121 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
       </label>
       ${childGroups ? `<div class="nestedOptionGroups">${childGroups}</div>` : ""}
     </div>
+  `;
+}
+
+function renderOptionNameWithPoints(option, node = null) {
+  const points = Number(option?.points || 0);
+  const suffix = points
+    ? ` <small class="optionPoints">(${points > 0 ? "+" : ""}${points} pts)</small>`
+    : "";
+  return `${renderWeaponOptionName(option?.name || "Option", weaponProfilesForOptionNode(node))}${suffix}`;
+}
+
+function weaponProfilesForOptionNode(node) {
+  if (!node) return [];
+  return collectWeaponProfilesForNode(node)
+    .filter(profile => profile?.name && /Weapons$/i.test(profile.typeName || ""))
+    .filter(profile => Number(profile.countMultiplier ?? 1) > 0)
+    .filter((profile, index, profiles) =>
+      profiles.findIndex(item =>
+        String(item.name || "") === String(profile.name || "")
+        && String(item.typeName || "") === String(profile.typeName || "")
+      ) === index
+    );
+}
+
+function collectWeaponProfilesForNode(node) {
+  return [
+    ...(node.profiles || []),
+    ...(node.children || []).flatMap(collectWeaponProfilesForNode)
+  ];
+}
+
+function renderWeaponOptionName(name, profiles = []) {
+  if (!profiles.length) return escapeHtml(name);
+
+  const parts = splitWeaponOptionName(name, profiles);
+  if (!parts) return renderWeaponOptionPreview(name, profiles);
+
+  return parts.map(part =>
+    part.profiles.length
+      ? renderWeaponOptionPreview(part.text, part.profiles)
+      : escapeHtml(part.text)
+  ).join("");
+}
+
+function splitWeaponOptionName(name, profiles = []) {
+  if (profiles.length < 2 || !/\s+and\s+/i.test(name)) return null;
+
+  const sourceParts = String(name).split(/(\s+and\s+)/i);
+  const usedProfiles = new Set();
+  const parts = sourceParts.map(text => {
+    if (/^\s+and\s+$/i.test(text)) return { text, profiles: [] };
+
+    const label = normalizeWeaponLabel(text);
+    const matches = profiles.filter(profile => {
+      if (usedProfiles.has(profile)) return false;
+      const profileName = normalizeWeaponLabel(profile.name);
+      return profileName === label
+        || profileName.includes(label)
+        || label.includes(profileName);
+    });
+    matches.forEach(profile => usedProfiles.add(profile));
+    return { text, profiles: matches };
+  });
+
+  return usedProfiles.size === profiles.length && parts.some(part => part.profiles.length)
+    ? parts
+    : null;
+}
+
+function normalizeWeaponLabel(value) {
+  return String(value || "")
+    .replace(/^\s*(?:\d+|one|a|an)\s+/i, "")
+    .replace(/^➤\s*/, "")
+    .replace(/\s+-\s+.*$/, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function renderWeaponOptionPreview(name, profiles = []) {
+  if (!profiles.length) return escapeHtml(name);
+  const id = `weaponPreview${++rulePopupCounter}`;
+  return `
+    <span class="weaponPreviewWrap">
+      <span class="weaponPreviewToken" tabindex="0" aria-describedby="${id}">${escapeHtml(name)}</span>
+      <span id="${id}" class="weaponPreviewPopover" role="tooltip">
+        ${profiles.map(renderWeaponPreviewProfile).join("")}
+      </span>
+    </span>
+  `;
+}
+
+function renderWeaponPreviewProfile(profile) {
+  const c = profile.characteristics || {};
+  const stats = [
+    ["Range", c.Range],
+    ["A", c.A],
+    ["BS", c.BS],
+    ["WS", c.WS],
+    ["S", c.S],
+    ["AP", c.AP],
+    ["D", c.D]
+  ];
+  return `
+    <span class="weaponPreviewProfile">
+      <strong>${escapeHtml(profile.name)}</strong>
+      <small>${escapeHtml(profile.typeName || "Weapon")}</small>
+      <span class="weaponPreviewStats">
+        ${stats.map(([label, value]) => `
+          <span><b>${label}</b>${escapeHtml(displayWeaponCell(value))}</span>
+        `).join("")}
+      </span>
+      ${displayWeaponCell(c.Keywords) !== "-" ? `<em>Keywords: ${escapeHtml(displayWeaponCell(c.Keywords))}</em>` : ""}
+    </span>
   `;
 }
 
@@ -2453,14 +2726,16 @@ function renderRules(rules) {
   if (!rules.length) return "";
 
   return `
-    <h4>Rules</h4>
-    ${rules.map(rule => {
-      const name = rule.name || rule;
-      const description = rule.description || "";
-      return description
-        ? `<details class="card ruleDisclosure"><summary>${escapeHtml(name)}</summary><p>${formatDescription(description)}</p></details>`
-        : `<div class="chips"><span>${escapeHtml(name)}</span></div>`;
-    }).join("")}
+    <details class="configuredSection" open>
+      <summary>Rules</summary>
+      ${rules.map(rule => {
+        const name = rule.name || rule;
+        const description = rule.description || "";
+        return description
+          ? `<details class="card ruleDisclosure"><summary>${escapeHtml(name)}</summary><p>${formatDescription(description)}</p></details>`
+          : `<div class="chips"><span>${escapeHtml(name)}</span></div>`;
+      }).join("")}
+    </details>
   `;
 }
 
@@ -2734,7 +3009,7 @@ async function loadRosterById(id) {
   await loadRosterDocument(selected.document);
 }
 
-async function loadRosterDocument(save) {
+async function loadRosterDocument(save, options = {}) {
   const savedRecord = (engineData.factionNavigation || []).flatMap(group => group.factions)
     .find(item => item.id === save.faction || (item.modes || []).some(mode => mode.id === save.faction));
   currentFaction = savedRecord?.id || save.faction;
@@ -2758,7 +3033,10 @@ async function loadRosterDocument(save) {
   appMode = "builder";
   markRosterClean();
   render();
-  if (loaded.warnings.length) alert(`Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}. Recoverable choices were preserved where possible.`);
+  if (loaded.warnings.length && options.showWarnings !== false) {
+    alert(`Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}. Recoverable choices were preserved where possible.`);
+  }
+  return loaded;
 }
 
 async function importRosterJsonFile(event) {
@@ -2776,11 +3054,40 @@ async function importRosterJsonFile(event) {
     }
     mergeRosterSaves(records);
     currentRosterSaveId = records[0].id;
-    await loadRosterDocument(records[0].document);
-    alert(records.length === 1 ? "Imported 1 roster." : `Imported ${records.length} rosters.`);
+    const loaded = await loadRosterDocument(records[0].document, { showWarnings: false });
+    const warningText = loaded.warnings.length
+      ? ` Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}.`
+      : "";
+    showTransientMessage(`${records.length === 1 ? "Imported 1 roster." : `Imported ${records.length} rosters.`}${warningText}`);
+    restoreTypingFocus(unitSearch);
   } catch (error) {
     alert(`Import failed: ${error.message}`);
   }
+}
+
+function restoreTypingFocus(element) {
+  const target = element && typeof element.focus === "function" ? element : unitSearch;
+  window.setTimeout(() => {
+    if (!target || target.disabled || target.hidden) return;
+    target.focus({ preventScroll: true });
+  }, 0);
+}
+
+function showTransientMessage(message) {
+  let element = document.getElementById("appTransientMessage");
+  if (!element) {
+    element = document.createElement("div");
+    element.id = "appTransientMessage";
+    element.className = "appTransientMessage";
+    element.setAttribute("role", "status");
+    document.body.appendChild(element);
+  }
+  element.textContent = message;
+  element.hidden = false;
+  window.clearTimeout(transientMessageTimer);
+  transientMessageTimer = window.setTimeout(() => {
+    element.hidden = true;
+  }, 4500);
 }
 
 function deleteRoster() {
@@ -2956,12 +3263,45 @@ function discordAnsiClass(codes) {
 
 async function copyDiscordExport() {
   const text = lastDiscordExportText || currentDiscordExportText();
-  try {
-    await navigator.clipboard.writeText(text);
-    alert("Copied Discord export.");
-  } catch {
-    alert("Copy failed. The preview text is still selectable.");
+  const copied = await copyTextToClipboard(text);
+  if (copied) {
+    showTransientMessage("Copied Discord export.");
+  } else {
+    showTransientMessage("Could not copy automatically. Use Download instead.");
   }
+}
+
+async function copyTextToClipboard(text) {
+  const value = String(text || "");
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch {
+    // Fall back to a DOM-based copy path below.
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-1000px";
+  textarea.style.left = "-1000px";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus({ preventScroll: true });
+  textarea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  } finally {
+    document.body.removeChild(textarea);
+  }
+  return copied;
 }
 
 function downloadDiscordExport() {

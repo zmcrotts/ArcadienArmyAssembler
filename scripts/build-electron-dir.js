@@ -5,7 +5,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
-const APP_EXE = path.join(ROOT, "release", "win-unpacked", "Roster Builder.exe");
+const APP_EXE = path.join(ROOT, "release", "win-unpacked", "Arcadien Army Assembler.exe");
 const BUILDER_CACHE = path.join(ROOT, "release", ".cache", "electron-builder");
 const BUILDER_LOCAL_APPDATA = path.join(ROOT, "release", ".cache", "local-appdata");
 const ELECTRON_CACHE = process.env.ELECTRON_CACHE

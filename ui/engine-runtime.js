@@ -51,6 +51,35 @@
         : Number(entry.selections[node.id] || 0)), 0);
   }
 
+  function scopedSelectionCount(entry, index, condition) {
+    const scope = condition?.scope;
+    const childId = condition?.childId || null;
+    if (!childId || !scope || ["self", "parent", "force", "roster"].includes(scope)) {
+      return selectionCount(entry, index, childId || scope);
+    }
+
+    return index.all
+      .filter(node => nodeMatchesReference(node, scope))
+      .reduce((sum, scopeNode) => sum + selectionCountUnder(scopeNode, entry, childId), 0);
+  }
+
+  function nodeMatchesReference(node, reference) {
+    if (reference === "model") return node.kind === "model";
+    return [node.id, node.sourceId, node.definitionId, node.targetId].includes(reference);
+  }
+
+  function selectionCountUnder(scopeNode, entry, reference) {
+    let total = 0;
+    function visit(node) {
+      if (node !== scopeNode && nodeMatchesReference(node, reference)) {
+        total += node.kind === "group" ? groupCount(node, entry) : Number(entry.selections[node.id] || 0);
+      }
+      for (const child of node.children || []) visit(child);
+    }
+    visit(scopeNode);
+    return total;
+  }
+
   function evaluateRawCondition(condition, entry, index, unitDefinition) {
     const expected = Number(condition?.value || 0);
     if (condition?.type === "instanceOf" || condition?.type === "notInstanceOf") {
@@ -62,7 +91,7 @@
       return condition.type === "instanceOf" ? present : !present;
     }
 
-    const actual = selectionCount(entry, index, condition?.childId || condition?.scope);
+    const actual = scopedSelectionCount(entry, index, condition);
     switch (condition?.type) {
       case "atLeast": return actual >= expected;
       case "atMost": return actual <= expected;
@@ -487,11 +516,12 @@
 
         return {
           id: node.id,
-          definitionId: node.definitionId,
-          name: node.name,
-          kind: node.kind,
-          parentId: parent?.id || null,
-          current,
+        definitionId: node.definitionId,
+        name: node.name,
+        kind: node.kind,
+        points: Number(node.points || 0),
+        parentId: parent?.id || null,
+        current,
           minimum,
           maximum,
           groupCurrent,
@@ -963,6 +993,29 @@
     return false;
   }
 
+  function selectedTreePointAdjustments(unitDefinition, rosterEntry) {
+    const adjustments = [];
+    function visit(node) {
+      if (!node) return;
+      if (!["unit", "group", "model"].includes(node.kind)) {
+        const count = selectedCount(rosterEntry, node.id);
+        const points = Number(node.points || 0);
+        if (count > 0 && points) {
+          adjustments.push({
+            selectionId: node.id,
+            name: node.name,
+            count,
+            points,
+            value: count * points
+          });
+        }
+      }
+      for (const child of node.children || []) visit(child);
+    }
+    visit(unitDefinition?.selectionTree);
+    return adjustments;
+  }
+
   function calculateEntryPoints(unitDefinition, rosterEntry) {
     const effectiveEntry = {
       ...rosterEntry,
@@ -990,6 +1043,18 @@
       if (!value) continue;
       points += value;
       applied.push({ source: "bsdata-selection", operation: "increment", value, selectionId: selection.id });
+    }
+    for (const adjustment of selectedTreePointAdjustments(unitDefinition, effectiveEntry)) {
+      points += adjustment.value;
+      applied.push({
+        source: "bsdata-selection-tree",
+        operation: "increment",
+        value: adjustment.value,
+        selectionId: adjustment.selectionId,
+        name: adjustment.name,
+        count: adjustment.count,
+        points: adjustment.points
+      });
     }
     for (const modifier of unitDefinition?.pricing?.modifiers || []) {
       if (modifier.supported === false || !evaluatePricingTree(modifier.when, effectiveEntry)) continue;

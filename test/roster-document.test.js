@@ -132,7 +132,7 @@ const services = {
     armyDefinition.detachments.find(item => item.id === armyState.detachmentId) || null
 };
 
-function buildDocument(roster, state, pointsLimit = 1000) {
+function buildDocument(roster, state, pointsLimit = 1000, options = {}) {
   const legalityRoster = roster.map(legalityEntry);
   const totalPoints = legalityRoster.reduce((sum, item) => sum + item.points, 0)
     + (state.enhancements || []).reduce((sum, assignment) => {
@@ -150,6 +150,7 @@ function buildDocument(roster, state, pointsLimit = 1000) {
     armyState: state,
     rosterEntries: roster,
     groupedPresentation: getRosterPresentation(army, state, legalityRoster, { totalPoints, pointsLimit, warnings: validation }),
+    rosterDisplay: options.rosterDisplay,
     validationWarnings: validation,
     services
   });
@@ -165,7 +166,16 @@ test("saved roster document preserves detachment, enhancement, unit identity, an
   state = setEnhancement(army, state, roster.map(legalityEntry), "blade", "leader-1");
   state = setLeaderAttachment(state, "leader-1", "bodyguard-1");
 
-  const document = buildDocument(roster, state, 2000);
+  const rosterDisplay = {
+    mode: "custom",
+    customSections: ["custom:vanguard"],
+    sectionLabels: { "custom:vanguard": "Vanguard" },
+    groupSections: { "attached:bodyguard-1": "custom:vanguard" },
+    groupOrder: ["attached:bodyguard-1", "ally-1"],
+    unitNicknames: { "bodyguard-1": "The Wall", "ally-1": "Gatecrasher" }
+  };
+
+  const document = buildDocument(roster, state, 2000, { rosterDisplay });
 
   assert.equal(document.schemaVersion, 2);
   assert.equal(document.detachment.name, "Hallowed Martyrs");
@@ -173,6 +183,7 @@ test("saved roster document preserves detachment, enhancement, unit identity, an
   assert.deepEqual(document.coreStratagems.map(item => item.name), ["Command Re-roll"]);
   assert.deepEqual(document.detachments[0].stratagems.map(item => item.name), ["Spirit of the Martyr"]);
   assert.equal(document.stratagemSource.name, "Test Stratagem Source");
+  assert.deepEqual(document.rosterDisplay.unitNicknames, { "bodyguard-1": "The Wall", "ally-1": "Gatecrasher" });
   assert.deepEqual(document.warlord, { instanceId: "leader-1", name: "Canoness", selectionKey: "leader" });
   assert.deepEqual(document.enhancements.map(item => [item.name, item.bearerInstanceId, item.points]), [["Saintly Example", "leader-1", 20]]);
   assert.equal(document.enhancements[0].description, "Bearer inspires nearby units.");
@@ -328,7 +339,7 @@ test("exports Discord compact list chunks with hide-subunit and combine options"
 test("Discord export groups attached leaders, supports, and bodyguards together", () => {
   const document = {
     faction: "Xenos - Orks",
-    totalPoints: 525,
+    totalPoints: 550,
     pointsLimit: 1000,
     warlord: { instanceId: "ghaz-1", name: "Ghazghkull Thraka" },
     enhancements: [{ name: "Follow Me Ladz", points: 25, bearerInstanceId: "painboy-1", bearerName: "Painboy" }],
@@ -370,7 +381,7 @@ test("Discord export groups attached leaders, supports, and bodyguards together"
       id: "attached:nobz-1",
       kind: "attached",
       title: "Nobz + Ghazghkull Thraka + Painboy",
-      totalPoints: 525,
+      totalPoints: 550,
       bodyguardInstanceId: "nobz-1",
       leaderInstanceIds: ["ghaz-1", "painboy-1"],
       memberInstanceIds: ["nobz-1", "ghaz-1", "painboy-1"],
@@ -379,7 +390,7 @@ test("Discord export groups attached leaders, supports, and bodyguards together"
   };
 
   const text = exportRosterText(document, { format: "DISCORD", compact: true, ansi: false, hideSubunits: true });
-  assert.match(text, /^Attached unit 1: \[525\]\n\* 2 Ghazghkull Thraka \(Warlord\) \[235\]\n\* Painboy \(E: FML, 'US\) \[80\]\n\* 10 Nobz \(9x PK, 9x SL, S&PK\) \[210\]/);
+  assert.match(text, /^Attached unit 1: \[550\]\n\* 2 Ghazghkull Thraka \(Warlord\) \[235\]\n\* Painboy \(E: FML \(\+25 pts\), 'US\) \[105\]\n\* 10 Nobz \(9x PK, 9x SL, S&PK\) \[210\]/);
 });
 
 test("old saves hydrate while stale references are pruned with warnings", () => {

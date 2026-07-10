@@ -43,6 +43,35 @@ function selectionCount(entry, index, reference) {
       : Number(entry.selections[node.id] || 0)), 0);
 }
 
+function scopedSelectionCount(entry, index, condition) {
+  const scope = condition?.scope;
+  const childId = condition?.childId || null;
+  if (!childId || !scope || ["self", "parent", "force", "roster"].includes(scope)) {
+    return selectionCount(entry, index, childId || scope);
+  }
+
+  return index.all
+    .filter(node => nodeMatchesReference(node, scope))
+    .reduce((sum, scopeNode) => sum + selectionCountUnder(scopeNode, entry, childId), 0);
+}
+
+function nodeMatchesReference(node, reference) {
+  if (reference === "model") return node.kind === "model";
+  return [node.id, node.sourceId, node.definitionId, node.targetId].includes(reference);
+}
+
+function selectionCountUnder(scopeNode, entry, reference) {
+  let total = 0;
+  function visit(node) {
+    if (node !== scopeNode && nodeMatchesReference(node, reference)) {
+      total += node.kind === "group" ? groupCount(node, entry) : Number(entry.selections[node.id] || 0);
+    }
+    for (const child of node.children || []) visit(child);
+  }
+  visit(scopeNode);
+  return total;
+}
+
 function groupCount(group, entry) {
   return (group.children || []).reduce((sum, child) => {
     if (child.kind === "group") return sum + groupCount(child, entry);
@@ -61,7 +90,7 @@ function evaluateRawCondition(condition, entry, index, unitDefinition) {
     return condition.type === "instanceOf" ? present : !present;
   }
 
-  const actual = selectionCount(entry, index, condition?.childId || condition?.scope);
+  const actual = scopedSelectionCount(entry, index, condition);
   switch (condition?.type) {
     case "atLeast": return actual >= expected;
     case "atMost": return actual <= expected;
@@ -541,6 +570,7 @@ function getOptionStates(unitDefinition, entry) {
         definitionId: node.definitionId,
         name: node.name,
         kind: node.kind,
+        points: Number(node.points || 0),
         parentId: parent?.id || null,
         current,
         minimum,
@@ -826,7 +856,7 @@ function getConfiguredProfiles(unitDefinition, entry) {
     profiles: values,
     weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
     units: values.filter(profile => profile.typeName === "Unit"),
-    abilities: values.filter(profile => profile.typeName === "Abilities"),
+    abilities: values.filter(profile => profile.typeName !== "Unit" && !/Weapons$/i.test(profile.typeName || "")),
     rules: [...rules.values()]
   };
 }
@@ -885,16 +915,16 @@ function normalizeProfileText(value) {
 
 function mergeDuplicateAbilityProfiles(profiles) {
   const output = [];
-  const abilityByName = new Map();
+  const abilityByKey = new Map();
   for (const profile of profiles) {
-    if (profile.typeName !== "Abilities") {
+    if (profile.typeName === "Unit" || /Weapons$/i.test(profile.typeName || "")) {
       output.push(profile);
       continue;
     }
-    const key = normalizeProfileText(profile.name);
-    const existingIndex = abilityByName.get(key);
+    const key = `${normalizeProfileText(profile.typeName)}:${normalizeProfileText(profile.name)}`;
+    const existingIndex = abilityByKey.get(key);
     if (existingIndex === undefined) {
-      abilityByName.set(key, output.length);
+      abilityByKey.set(key, output.length);
       output.push(profile);
       continue;
     }
@@ -921,6 +951,7 @@ function listSelectableOptions(unitDefinition) {
       definitionId: node.definitionId,
       name: node.name,
       kind: node.kind,
+      points: Number(node.points || 0),
       parentId: index.parentById.get(node.id)?.id || null,
       constraints: node.constraints,
       profiles: node.profiles

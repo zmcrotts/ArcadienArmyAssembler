@@ -55,6 +55,7 @@ function normalizeRosterEntries(rosterEntries) {
       instanceId: item.instanceId || item.entry?.instanceId,
       selectionKey: item.selectionKey || item.unitPackage?.selectionKey || definition.selectionKey,
       name: item.name || item.unitPackage?.name || definition.name || "Unknown unit",
+      faction: item.faction || item.unitPackage?.faction || definition.faction || null,
       points: Number(item.points ?? 0),
       roles: item.roles || definition.roles || {},
       categories: item.categories || definition.categories || [],
@@ -209,11 +210,40 @@ function warning(code, message, affectedInstanceIds = [], details = {}) {
   return { severity: "warning", code, message, affectedInstanceIds, details };
 }
 
+const DAEMON_DETACHMENT_GATES = {
+  "Chaos - Death Guard": "Tallyband Summoners",
+  "Chaos - Thousand Sons": "Servants of Change",
+  "Chaos - World Eaters": "Khorne Daemonkin"
+};
+
+function normalizeName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function selectedDaemonGate(armyDefinition, armyState) {
+  const requiredDetachmentName = DAEMON_DETACHMENT_GATES[armyDefinition?.faction];
+  if (!requiredDetachmentName) return null;
+  return {
+    requiredDetachmentName,
+    selected: selectedDetachments(armyDefinition, armyState)
+      .some(detachment => normalizeName(detachment.name) === normalizeName(requiredDetachmentName))
+  };
+}
+
+function isNativeSummonedDaemon(armyDefinition, entry) {
+  if (!DAEMON_DETACHMENT_GATES[armyDefinition?.faction]) return false;
+  if (entry.alliedFor?.type) return false;
+  if (entry.faction && entry.faction !== armyDefinition.faction) return false;
+  const categories = entry.categories || [];
+  return categories.includes("Daemon") && categories.includes("Summoned");
+}
+
 function validateRosterLegality(armyDefinition, armyState, rosterEntries, options = {}) {
   const entries = normalizeRosterEntries(rosterEntries);
   const byInstance = new Map(entries.map(entry => [entry.instanceId, entry]));
   const warnings = [];
   const detachments = selectedDetachments(armyDefinition, armyState);
+  const daemonGate = selectedDaemonGate(armyDefinition, armyState);
 
   if (!detachments.length) warnings.push(warning("DETACHMENT_REQUIRED", "Select at least one valid detachment."));
   const detachmentPoints = detachments.reduce((sum, item) => sum + Number(item.detachmentPoints || 0), 0);
@@ -265,6 +295,17 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
     if (!alliedGroups.has(entry.alliedFor.type)) alliedGroups.set(entry.alliedFor.type, []);
     alliedGroups.get(entry.alliedFor.type).push(entry);
   }
+  if (daemonGate && !daemonGate.selected) {
+    const gatedNativeDaemons = entries.filter(entry => isNativeSummonedDaemon(armyDefinition, entry));
+    if (gatedNativeDaemons.length) {
+      warnings.push(warning(
+        "DAEMON_DETACHMENT_REQUIRED",
+        `Summoned Daemon units in ${armyDefinition.faction.replace(/^Chaos - /, "")} require the ${daemonGate.requiredDetachmentName} detachment.`,
+        gatedNativeDaemons.map(item => item.instanceId),
+        { requiredDetachmentName: daemonGate.requiredDetachmentName }
+      ));
+    }
+  }
   const battleSizeSlots = Math.max(1, Math.min(3, Math.ceil(Number(options.pointsLimit || 1000) / 1000)));
   for (const [type, allied] of alliedGroups) {
     const ids = allied.map(item => item.instanceId);
@@ -281,6 +322,14 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
         warnings.push(warning("KNIGHT_ALLY_LIMIT_EXCEEDED", `Knight allies may be either 1 Titanic model or up to 3 Armiger/War Dog models.`, ids, { titanic, armigers }));
       }
     } else if (type === "chaosDaemons") {
+      if (daemonGate && !daemonGate.selected) {
+        warnings.push(warning(
+          "DAEMON_DETACHMENT_REQUIRED",
+          `Chaos Daemons allies require the ${daemonGate.requiredDetachmentName} detachment.`,
+          ids,
+          { requiredDetachmentName: daemonGate.requiredDetachmentName }
+        ));
+      }
       const alliedPoints = allied.reduce((sum, item) => sum + item.points, 0);
       const pointCap = Number(options.pointsLimit || 0) * 0.25;
       if (pointCap > 0 && alliedPoints > pointCap) {

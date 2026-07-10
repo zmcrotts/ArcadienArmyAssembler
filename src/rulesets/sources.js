@@ -173,6 +173,14 @@ function sameRuleName(left, right) {
 function applyManualLoadoutCorrections(definitions) {
   return definitions.map(definition => {
     if (
+      definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Xenos - Leagues of Votann"
+      && definition.name === "Einhyr Hearthguard"
+    ) {
+      return fixEinhyrHearthguardLoadout(definition);
+    }
+
+    if (
       definition.rulesetId !== "wh40k-11e-vflam"
       || definition.faction !== "Imperium - Adeptus Astartes - Blood Angels"
       || definition.name !== "Death Company Marines with Jump Packs"
@@ -236,6 +244,27 @@ function applyManualLoadoutCorrections(definitions) {
   });
 }
 
+function fixEinhyrHearthguardLoadout(definition) {
+  const unit = clone(definition);
+  for (const group of findNodesByName(unit.selectionTree, "Ranged weapon")) {
+    const etaCarn = (group.children || []).find(child => normalizeName(child.name) === "etacarn plasma gun");
+    const volkanite = (group.children || []).find(child => normalizeName(child.name) === "volkanite disintegrator");
+    if (!etaCarn || !volkanite) continue;
+
+    group.defaultSelectionId = etaCarn.id;
+    group.constraints = [
+      manualSelectionConstraint("einhyr-hesyr-ranged-min", "min", "parent", 1),
+      manualSelectionConstraint("einhyr-hesyr-ranged-max", "max", "parent", 1)
+    ];
+    for (const option of [etaCarn, volkanite]) {
+      option.hidden = false;
+      option.modifiers = [];
+      option.constraints = [manualSelectionConstraint(`${option.sourceId || option.id}-max`, "max", "parent", 1)];
+    }
+  }
+  return unit;
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -252,6 +281,13 @@ function findNodeByName(node, name) {
     if (found) return found;
   }
   return null;
+}
+
+function findNodesByName(node, name, matches = []) {
+  if (!node) return matches;
+  if (normalizeName(node.name) === normalizeName(name)) matches.push(node);
+  for (const child of node.children || []) findNodesByName(child, name, matches);
+  return matches;
 }
 
 function profilesByOptionName(node, map = new Map()) {
@@ -301,15 +337,7 @@ function manualGroup(id, name, children, options = {}) {
     forceVisible: false,
     defaultSelectionId: null,
     constraints: [{
-      id: constraintId,
-      type: "max",
-      field: "selections",
-      scope: "unit",
-      value: maximum,
-      childId: null,
-      includeChildSelections: false,
-      includeChildForces: false,
-      raw: { source: "manual-11e-wargear-options" }
+      ...manualSelectionConstraint(constraintId, "max", "unit", maximum)
     }],
     modifiers: dynamicEvery ? [{
       type: "increment",
@@ -331,6 +359,20 @@ function manualGroup(id, name, children, options = {}) {
     profiles: [],
     rules: [],
     children
+  };
+}
+
+function manualSelectionConstraint(id, type, scope, value) {
+  return {
+    id,
+    type,
+    field: "selections",
+    scope,
+    value,
+    childId: null,
+    includeChildSelections: false,
+    includeChildForces: false,
+    raw: { source: "manual-11e-wargear-options" }
   };
 }
 
