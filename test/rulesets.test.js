@@ -139,6 +139,40 @@ test("11e ruleset reads detachment point modifiers from catalogue-specific detac
   assert.equal(angelic.detachmentPoints, 3);
 });
 
+test("11e ruleset exposes the shared Force Dispositions reference set", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const army = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Astartes - Space Marines");
+  const takeAndHold = army.forceDispositions.find(item => item.name === "Take and Hold");
+
+  assert.deepEqual((army.forceDispositions || []).map(item => item.name), [
+    "Disruption",
+    "Priority Assets",
+    "Purge the Foe",
+    "Take and Hold",
+    "Reconnaissance"
+  ]);
+  assert.deepEqual(takeAndHold.missionMap.map(item => `${item.name} vs ${item.opponentDisposition}`), [
+    "Battlefield Dominance vs Take and Hold",
+    "Determined Acquisition vs Disruption",
+    "Immovable Object vs Purge the Foe",
+    "Inescapable Dominion vs Priority Assets",
+    "Purge and Secure vs Reconnaissance"
+  ]);
+  assert.equal(takeAndHold.missionMap[0].sourceUrl, undefined);
+  assert.equal(takeAndHold.missionMap[0].cardImages.front, "assets/11th/primary-missions/take-and-hold/battlefield-dominance.png");
+  assert.equal(takeAndHold.missionMap[0].cardImages.back, null);
+  assert.equal(takeAndHold.missionMap[3].cardImages.back, null);
+  assert.ok(army.forceDispositions.every(item => item.missionMap.length === 5));
+
+  const disruption = army.forceDispositions.find(item => item.name === "Disruption");
+  assert.equal(disruption.missionMap[0].cardImages.front, "assets/11th/primary-missions/disruption/death-trap.png");
+  assert.equal(disruption.missionMap[0].cardImages.back, "assets/11th/primary-missions/disruption/death-trap-back.png");
+
+  const orks = ruleset.armies.find(item => item.faction === "Xenos - Orks");
+  const warHorde = orks.detachments.find(item => item.name === "War Horde");
+  assert.equal(warHorde.forceDisposition.name, "Take and Hold");
+});
+
 test("11e ruleset recognizes alternate detachment root names", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const custodes = ruleset.armies.find(army => army.faction === "Imperium - Adeptus Custodes");
@@ -330,6 +364,7 @@ test("11e Templar Vows stays scoped to Black Templars units", () => {
     const entry = createDefaultRosterEntry(unit);
     return getConfiguredProfiles(unit, entry).rules.map(rule => rule.name);
   };
+  const spaceMarinesArmy = ruleset.armies.find(army => army.faction === "Imperium - Adeptus Astartes - Space Marines");
   const blackTemplarsUnit = ruleset.units.find(unit =>
     unit.faction === "Imperium - Adeptus Astartes - Black Templars"
     && configuredRules(unit).includes("Templar Vows")
@@ -340,6 +375,7 @@ test("11e Templar Vows stays scoped to Black Templars units", () => {
   );
 
   assert.ok(blackTemplarsUnit, "expected at least one Black Templars unit to retain Templar Vows");
+  assert.equal(spaceMarinesArmy?.armyRules.some(rule => rule.name === "Templar Vows"), false);
   assert.deepEqual(nonBlackTemplarsUnits.map(unit => [unit.faction, unit.name]), []);
 });
 

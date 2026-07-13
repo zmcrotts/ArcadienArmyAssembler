@@ -29,12 +29,16 @@ const subfactionSelect = document.getElementById("subfactionSelect");
 const subfactionControl = document.getElementById("subfactionControl");
 const factionReference = document.getElementById("factionReference");
 const subfactionReference = document.getElementById("subfactionReference");
+const builderLayout = document.getElementById("builderLayout");
+const availableUnitsPanel = document.getElementById("availableUnitsPanel");
 const unitList = document.getElementById("unitList");
 const rosterList = document.getElementById("rosterList");
 const details = document.getElementById("details");
 const pointsTotal = document.getElementById("pointsTotal");
 const pointsLimitInput = document.getElementById("pointsLimit");
 const unitSearch = document.getElementById("unitSearch");
+const availableUnitsTitle = document.getElementById("availableUnitsTitle");
+const toggleAvailableUnits = document.getElementById("toggleAvailableUnits");
 const rosterNameInput = document.getElementById("rosterName");
 const rosterSavesSelect = document.getElementById("rosterSaves");
 const importJsonFile = document.getElementById("importJsonFile");
@@ -69,6 +73,7 @@ let cataloguePreferences = loadCataloguePreferences();
 let currentRosterSaveId = null;
 let lastSavedRosterSnapshot = null;
 let pendingDeleteRosterId = null;
+let availableUnitsCollapsed = loadAvailableUnitsCollapsed();
 const sidebarDisclosureState = {};
 const unitSectionDisclosureState = {};
 let appMode = "library";
@@ -83,6 +88,7 @@ let transientMessageTimer = null;
 
 function init() {
   applySavedTheme();
+  applyAvailableUnitsLayoutState();
   loadCompactorData();
 
   for (const group of engineData.factionNavigation || []) {
@@ -153,6 +159,22 @@ function init() {
 
   if (lightTheme) lightTheme.onclick = () => setTheme("light");
   if (darkTheme) darkTheme.onclick = () => setTheme("dark");
+  if (toggleAvailableUnits) {
+    toggleAvailableUnits.onclick = event => {
+      event.stopPropagation();
+      setAvailableUnitsCollapsed(!availableUnitsCollapsed);
+    };
+  }
+  if (availableUnitsPanel) {
+    availableUnitsPanel.addEventListener("click", () => {
+      if (availableUnitsCollapsed) setAvailableUnitsCollapsed(false);
+    });
+    availableUnitsPanel.addEventListener("keydown", event => {
+      if (!availableUnitsCollapsed || !["Enter", " "].includes(event.key)) return;
+      event.preventDefault();
+      setAvailableUnitsCollapsed(false);
+    });
+  }
 
   pointsLimitInput.addEventListener("input", render);
   rosterNameInput.addEventListener("input", render);
@@ -221,6 +243,48 @@ function init() {
 
   renderRosterSaveBrowser();
   render();
+}
+
+function loadAvailableUnitsCollapsed() {
+  try {
+    return localStorage.getItem("engineAvailableUnitsCollapsed") === "true";
+  } catch {
+    return false;
+  }
+}
+
+function saveAvailableUnitsCollapsed() {
+  try {
+    localStorage.setItem("engineAvailableUnitsCollapsed", availableUnitsCollapsed ? "true" : "false");
+  } catch {
+    // A blocked storage write should not make the layout control unusable.
+  }
+}
+
+function setAvailableUnitsCollapsed(nextCollapsed) {
+  availableUnitsCollapsed = Boolean(nextCollapsed);
+  saveAvailableUnitsCollapsed();
+  applyAvailableUnitsLayoutState();
+}
+
+function applyAvailableUnitsLayoutState() {
+  if (builderLayout) builderLayout.classList.toggle("availableUnitsCollapsed", availableUnitsCollapsed);
+  if (availableUnitsPanel) {
+    availableUnitsPanel.tabIndex = availableUnitsCollapsed ? 0 : -1;
+    if (availableUnitsCollapsed) {
+      availableUnitsPanel.setAttribute("role", "button");
+      availableUnitsPanel.setAttribute("aria-label", "Expand Available Units");
+    } else {
+      availableUnitsPanel.removeAttribute("role");
+      availableUnitsPanel.removeAttribute("aria-label");
+    }
+  }
+  if (availableUnitsTitle) availableUnitsTitle.textContent = availableUnitsCollapsed ? "A.U." : "Available Units";
+  if (!toggleAvailableUnits) return;
+  toggleAvailableUnits.textContent = availableUnitsCollapsed ? ">" : "<";
+  toggleAvailableUnits.setAttribute("aria-expanded", availableUnitsCollapsed ? "false" : "true");
+  toggleAvailableUnits.title = availableUnitsCollapsed ? "Expand Available Units" : "Collapse Available Units";
+  toggleAvailableUnits.setAttribute("aria-label", toggleAvailableUnits.title);
 }
 
 function currentFactionRecord() {
@@ -810,6 +874,7 @@ function renderNewRosterDetachmentCard(army, detachment) {
         <small>${Number(detachment.detachmentPoints || 0)}DP</small>
       </summary>
       <div class="previewDetachmentBody">
+        ${renderDetachmentForceDispositionNote(detachment)}
         <details class="previewSection" open>
           <summary>Detachment Rule${(detachment.rules || []).length === 1 ? "" : "s"}</summary>
           ${(detachment.rules || []).length ? (detachment.rules || []).map(rule => `
@@ -907,6 +972,7 @@ function renderArmyControls() {
   const armyRulesElement = document.getElementById("armyRules");
   const detachmentSelect = document.getElementById("detachmentSelect");
   const detachmentRules = document.getElementById("detachmentRules");
+  const forceDispositionsElement = document.getElementById("forceDispositions");
   const stratagemsElement = document.getElementById("stratagems");
   const enhancementsElement = document.getElementById("enhancements");
   if (!detachmentSelect || !detachmentRules || !stratagemsElement || !enhancementsElement) return;
@@ -916,6 +982,7 @@ function renderArmyControls() {
     if (armyRulesElement) armyRulesElement.innerHTML = `<p class="muted">No army rule data in this catalogue.</p>`;
     detachmentSelect.innerHTML = `<p class="muted">No detachments available.</p>`;
     detachmentRules.innerHTML = `<p class="muted">No detachment data in this catalogue.</p>`;
+    if (forceDispositionsElement) forceDispositionsElement.innerHTML = `<p class="muted">No force disposition data in this catalogue.</p>`;
     stratagemsElement.innerHTML = `<p class="muted">No stratagem data in this catalogue.</p>`;
     enhancementsElement.innerHTML = "";
     return;
@@ -955,6 +1022,7 @@ function renderArmyControls() {
   const detachments = armyEngine.selectedDetachments?.(army, armyState) || [armyEngine.selectedDetachment(army, armyState)].filter(Boolean);
   if (!detachments.length) {
     detachmentRules.innerHTML = `<p>Select one or more detachments to activate their rules and enhancements.</p>`;
+    if (forceDispositionsElement) forceDispositionsElement.innerHTML = `<p class="muted">Select a detachment to choose its force disposition and mission.</p>`;
     stratagemsElement.innerHTML = `<p class="muted">Select a detachment first.</p>`;
     enhancementsElement.innerHTML = "";
     return;
@@ -968,6 +1036,10 @@ function renderArmyControls() {
       <p>${formatDescription(rule.description)}</p>
     </details>
   `)).join("") || `<p class="muted">No detachment rule text found.</p>`;
+  if (forceDispositionsElement) {
+    forceDispositionsElement.innerHTML = renderForceDispositionPicker(army, detachments, armyState);
+    bindForceDispositionControls(forceDispositionsElement, army);
+  }
   stratagemsElement.innerHTML = renderStratagems(army, detachments);
 
   const enhancementStates = armyEngine.getEnhancementStates(army, armyState, roster);
@@ -1402,6 +1474,112 @@ function renderRosterGroupLabel(group, groupEntries) {
   `;
 }
 
+function renderDetachmentForceDispositionNote(detachment) {
+  const disposition = detachment.forceDisposition;
+  return `
+    <div class="previewDispositionNote">
+      <span>Force Disposition</span>
+      <b>${escapeHtml(disposition?.name || "Not listed")}</b>
+    </div>
+  `;
+}
+
+function renderForceDispositionPicker(army, detachments, state) {
+  const available = armyEngine.availableForceDispositions?.(army, state) || [];
+  if (!available.length) return `<p class="muted">The selected detachment does not list a force disposition.</p>`;
+  const selectedDisposition = armyEngine.selectedForceDisposition?.(army, state) || null;
+  const opponentDisposition = armyEngine.selectedOpponentForceDisposition?.(army, state) || null;
+  const mission = armyEngine.selectedPrimaryMission?.(army, state) || null;
+  const dispositionSources = detachments
+    .map(detachment => detachment.forceDisposition ? `${detachment.name}: ${detachment.forceDisposition.name}` : null)
+    .filter(Boolean);
+
+  return `
+    <div class="missionPicker">
+      <div class="missionPickerBlock">
+        <b>Your detachment disposition</b>
+        ${dispositionSources.length ? `<small>${escapeHtml(dispositionSources.join(" · "))}</small>` : ""}
+        <div class="forceDispositionChoices">
+          ${available.map(disposition => `
+            <label class="forceDispositionChoice ${selectedDisposition?.id === disposition.id ? "selected" : ""}">
+              <input type="checkbox" class="forceDispositionToggle" data-force-disposition-id="${escapeHtml(disposition.id)}" ${selectedDisposition?.id === disposition.id ? "checked" : ""}>
+              <span class="forceDispositionMark" aria-hidden="true">${escapeHtml(forceDispositionMark(disposition.name))}</span>
+              <span>${escapeHtml(disposition.name || "Disposition")}</span>
+            </label>
+          `).join("")}
+        </div>
+      </div>
+      <label class="missionPickerBlock">
+        <b>Opponent disposition</b>
+        <select id="opponentForceDisposition">
+          <option value="">Choose who you are playing into</option>
+          ${(army.forceDispositions || []).map(disposition => `
+            <option value="${escapeHtml(disposition.id)}" ${opponentDisposition?.id === disposition.id ? "selected" : ""}>${escapeHtml(disposition.name)}</option>
+          `).join("")}
+        </select>
+      </label>
+      ${mission ? renderPrimaryMissionCard(selectedDisposition, opponentDisposition, mission) : `
+        <p class="muted">Pick your disposition and your opponent's disposition to show the primary mission.</p>
+      `}
+    </div>
+  `;
+}
+
+function renderPrimaryMissionCard(forceDisposition, opponentDisposition, mission) {
+  const images = mission.cardImages || {};
+  return `
+    <article class="primaryMissionCard">
+      ${images.front ? `
+        <div class="missionCardImageShell" data-mission-card>
+          ${images.back ? `<button type="button" class="missionCardToggle" aria-label="Flip mission card">1/2</button>` : ""}
+          <img class="missionCardSide missionCardFront" src="${escapeHtml(images.front)}" alt="${escapeHtml(mission.name || "Mission")} scoring side" loading="lazy">
+          ${images.back ? `<img class="missionCardSide missionCardBack" src="${escapeHtml(images.back)}" alt="${escapeHtml(mission.name || "Mission")} action side" loading="lazy" hidden>` : ""}
+        </div>
+      ` : `<p class="muted">Mission card images are not available for this mission.</p>`}
+    </article>
+  `;
+}
+
+function bindForceDispositionControls(root, army) {
+  for (const input of root.querySelectorAll(".forceDispositionToggle")) {
+    input.onchange = event => {
+      armyState = armyEngine.setForceDisposition(army, armyState, event.target.checked ? event.target.dataset.forceDispositionId : null);
+      selectedPanel = "configuration";
+      render();
+    };
+  }
+  const opponentSelect = root.querySelector("#opponentForceDisposition");
+  if (opponentSelect) {
+    opponentSelect.onchange = event => {
+      armyState = armyEngine.setOpponentForceDisposition(army, armyState, event.target.value || null);
+      selectedPanel = "configuration";
+      render();
+    };
+  }
+  for (const button of root.querySelectorAll(".missionCardToggle")) {
+    button.onclick = () => {
+      const shell = button.closest("[data-mission-card]");
+      const front = shell?.querySelector(".missionCardFront");
+      const back = shell?.querySelector(".missionCardBack");
+      if (!front || !back) return;
+      const showingBack = back.hidden;
+      back.hidden = !showingBack;
+      front.hidden = showingBack;
+      button.textContent = showingBack ? "2/2" : "1/2";
+    };
+  }
+}
+
+function forceDispositionMark(name) {
+  const normalized = String(name || "").toLowerCase();
+  if (normalized.includes("take and hold")) return "TH";
+  if (normalized.includes("disruption")) return "D";
+  if (normalized.includes("purge")) return "PF";
+  if (normalized.includes("priority")) return "PA";
+  if (normalized.includes("recon")) return "R";
+  return name ? name.slice(0, 2).toUpperCase() : "?";
+}
+
 function renderRosterNickname(nickname, instanceId) {
   const value = String(nickname || "").trim();
   return ` <span class="unitNickname" data-nickname-display-for="${escapeHtml(instanceId)}"${value ? "" : " hidden"}>"${escapeHtml(value)}"</span>`;
@@ -1582,6 +1760,7 @@ function showConfigurationPanel() {
     <details class="sidebarGroup" data-disclosure-key="armyRules" ${disclosureOpenAttribute("armyRules", true)}><summary>Army Rules</summary><div id="armyRules"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachments" ${disclosureOpenAttribute("detachments", true)}><summary>Detachments</summary><div id="detachmentSelect" class="detachmentList"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachmentRules" ${disclosureOpenAttribute("detachmentRules", true)}><summary>Detachment Rules</summary><div id="detachmentRules"></div></details>
+    <details class="sidebarGroup" data-disclosure-key="forceDispositions" ${disclosureOpenAttribute("forceDispositions", true)}><summary>Force Dispositions</summary><div id="forceDispositions"></div></details>
     <details class="sidebarGroup stratagemsGroup" data-disclosure-key="stratagems" ${disclosureOpenAttribute("stratagems", false)}><summary>Stratagems</summary><div id="stratagems"></div></details>
     <details class="sidebarGroup"><summary>Available Enhancements & Upgrades</summary><div id="enhancements"></div></details>
     <details class="sidebarGroup"><summary>Show/Hide Options</summary><div id="catalogueOptions"></div></details>
@@ -3382,6 +3561,12 @@ function buildSheetPreviewHtml(sheets, kind, options = {}) {
     .referenceItem h3 { font-size: 0.95em; margin: 0 0 0.25em; }
     .referenceItem small { color: #555; display: block; margin-bottom: 0.2em; }
     .referenceItem p { margin: 0; }
+    .forceDispositionGrid { display: grid; gap: 0.45em; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); }
+    .forceDispositionCard { align-items: start; display: grid; gap: 0.45em; grid-template-columns: 34px minmax(0, 1fr); }
+    .forceDispositionMark { align-items: center; background: #006070; border-radius: 999px; color: white; display: flex; font-weight: 700; height: 34px; justify-content: center; width: 34px; }
+    .forceMissionMap { display: grid; gap: 0.22em; list-style: none; margin: 0.25em 0 0; padding: 0; }
+    .forceMissionMap li { align-items: baseline; border-top: 1px solid #ccc; display: grid; gap: 0.25em; grid-template-columns: minmax(0, 1fr) auto; padding-top: 0.2em; }
+    .forceMissionMap small { white-space: nowrap; }
     .stratagemGrid { display: grid; gap: 0.42em; grid-template-columns: 1fr 1fr; }
     .stratagemCard { border: 1px solid #999; padding: 0.35em; }
     .stratagemCard h3 { align-items: baseline; display: flex; font-size: 0.88em; gap: 0.45em; justify-content: space-between; margin: 0 0 0.25em; }
@@ -3439,10 +3624,11 @@ function renderRulesReferencePage(sheet) {
   if (!sheet) return "";
   const armyRules = sheet.armyRules || [];
   const keywordLegend = sheet.weaponKeywordLegend || [];
+  const forceDispositions = sheet.forceDispositions || [];
   const detachments = (sheet.detachments || []).filter(detachment =>
     (detachment.rules || []).length || (detachment.stratagems || []).length
   );
-  if (!armyRules.length && !keywordLegend.length && !detachments.length) return "";
+  if (!armyRules.length && !keywordLegend.length && !detachments.length && !forceDispositions.length) return "";
   return `
     <main class="sheet referenceSheet">
       <header class="sheetHeader">
@@ -3454,6 +3640,7 @@ function renderRulesReferencePage(sheet) {
       </header>
       ${armyRules.length ? `<h2>Army Rules</h2><div class="referenceGrid">${armyRules.map(rule => renderReferenceItem(rule)).join("")}</div>` : ""}
       ${keywordLegend.length ? renderWeaponKeywordLegend(keywordLegend) : ""}
+      ${forceDispositions.length ? renderForceDispositionReferenceSection(forceDispositions) : ""}
       ${detachments.map(renderDetachmentReferenceBlock).join("")}
     </main>
   `;
@@ -3472,6 +3659,34 @@ function renderDetachmentReferenceBlock(detachment) {
       <h2>${escapeHtml(detachment.name || "Detachment")}</h2>
       ${(detachment.rules || []).length ? `<div class="referenceGrid">${detachment.rules.map(rule => renderReferenceItem(rule)).join("")}</div>` : ""}
       ${(detachment.stratagems || []).length ? `<h2>${escapeHtml(detachment.name || "Detachment")} Stratagems</h2><div class="stratagemGrid">${detachment.stratagems.map(renderSheetStratagem).join("")}</div>` : ""}
+    </section>
+  `;
+}
+
+function renderForceDispositionReferenceSection(forceDispositions) {
+  return `
+    <section>
+      <h2>Force Dispositions</h2>
+      <div class="forceDispositionGrid referenceGrid">
+        ${forceDispositions.map(disposition => `
+          <article class="forceDispositionCard referenceItem">
+            <div class="forceDispositionMark" aria-hidden="true">${escapeHtml(forceDispositionMark(disposition.name))}</div>
+            <div>
+              <h3>${escapeHtml(disposition.name || "Disposition")}</h3>
+              ${(disposition.missionMap || []).length ? `
+                <ol class="forceMissionMap">
+                  ${(disposition.missionMap || []).map(mission => `
+                    <li>
+                      <span>${escapeHtml(mission.name || "Mission")}</span>
+                      <small>vs ${escapeHtml(mission.opponentDisposition || "Disposition")}</small>
+                    </li>
+                  `).join("")}
+                </ol>
+              ` : `<p>No mission map found.</p>`}
+            </div>
+          </article>
+        `).join("")}
+      </div>
     </section>
   `;
 }

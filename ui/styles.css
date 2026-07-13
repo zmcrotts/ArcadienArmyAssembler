@@ -249,12 +249,18 @@ button:hover {
 
 .layout {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: minmax(300px, 32vw) minmax(420px, 32vw) minmax(360px, 1fr);
   gap: 16px;
   padding: 16px;
+  transition: grid-template-columns 180ms ease;
 }
 
-section {
+.layout.availableUnitsCollapsed {
+  align-items: stretch;
+  grid-template-columns: 64px minmax(420px, 32vw) minmax(360px, 1fr);
+}
+
+.layout > section {
   background: white;
   border: 1px solid #bac5ca;
   border-radius: 6px;
@@ -262,6 +268,11 @@ section {
   min-height: 360px;
   max-height: calc(100vh - 160px);
   overflow: auto;
+}
+
+.availablePanel {
+  min-width: 0;
+  transition: padding 180ms ease;
 }
 
 .sectionTitleRow {
@@ -273,6 +284,7 @@ section {
 }
 
 .sectionTitleRow h2 {
+  flex: 0 0 auto;
   margin: 0;
 }
 
@@ -280,6 +292,78 @@ section {
   box-sizing: border-box;
   min-width: 160px;
   width: min(260px, 48%);
+}
+
+.panelCollapseButton {
+  align-items: center;
+  background: #e5f5f7;
+  border-color: #006f80;
+  color: #006070;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 22px;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  line-height: 1;
+  margin-left: 0;
+  padding: 0;
+  width: 34px;
+}
+
+.panelCollapseButton:hover {
+  background: #cfedf1;
+}
+
+.layout.availableUnitsCollapsed .availablePanel {
+  align-items: stretch;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  padding: 7px 6px;
+}
+
+.layout.availableUnitsCollapsed .availablePanel:focus {
+  outline: 2px solid #00a4bb;
+  outline-offset: 2px;
+}
+
+.layout.availableUnitsCollapsed .availablePanel .sectionTitleRow {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  margin-bottom: 0;
+}
+
+.layout.availableUnitsCollapsed .availablePanel h2 {
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.layout.availableUnitsCollapsed .availablePanel #unitSearch,
+.layout.availableUnitsCollapsed .availablePanel #availableUnitsBody {
+  display: none;
+}
+
+.layout.availableUnitsCollapsed .panelCollapseButton {
+  background: #0090a5;
+  border-color: #00b4cc;
+  color: #ffffff;
+  width: 40px;
+}
+
+.layout.availableUnitsCollapsed .availablePanel::after {
+  align-self: stretch;
+  background: #108b97;
+  content: "";
+  display: block;
+  height: 100%;
+  margin: 8px auto 0;
+  width: calc(100% - 8px);
 }
 
 .unit {
@@ -785,6 +869,172 @@ section {
   padding: 0 8px 8px;
 }
 
+.forceDispositionGrid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  padding: 8px;
+}
+
+.forceDispositionCard {
+  align-items: start;
+  background: linear-gradient(180deg, #fbfbf7, #eef5f2);
+  border: 1px solid #8aa;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 48px minmax(0, 1fr);
+  padding: 10px;
+}
+
+.forceDispositionMark {
+  align-items: center;
+  background: #006070;
+  border-radius: 999px;
+  color: white;
+  display: flex;
+  font-weight: 800;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  width: 48px;
+}
+
+.forceDispositionCard p {
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.forceMissionMap {
+  display: grid;
+  gap: 5px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.forceMissionMap li {
+  align-items: baseline;
+  border-top: 1px solid rgba(0, 96, 112, 0.18);
+  display: grid;
+  gap: 4px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-top: 5px;
+}
+
+.forceMissionMap span {
+  font-weight: 600;
+}
+
+.forceMissionMap small {
+  color: #465c60;
+  white-space: nowrap;
+}
+
+.previewDispositionNote {
+  align-items: center;
+  background: #f2f6f6;
+  border: 1px solid #c7d5d7;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.previewDispositionNote span {
+  color: #465c60;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.missionPicker {
+  display: grid;
+  gap: 10px;
+}
+
+.missionPickerBlock {
+  background: #111a1d;
+  border: 1px solid #34565d;
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+}
+
+.missionPickerBlock small {
+  color: #adc3c9;
+}
+
+.forceDispositionChoices {
+  display: grid;
+  gap: 7px;
+}
+
+.forceDispositionChoice {
+  align-items: center;
+  background: #152529;
+  border: 1px solid #40636b;
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto 34px minmax(0, 1fr);
+  padding: 8px;
+}
+
+.forceDispositionChoice.selected {
+  border-color: #f2c14e;
+  box-shadow: inset 0 0 0 1px rgba(242, 193, 78, 0.45);
+}
+
+.forceDispositionChoice .forceDispositionMark {
+  height: 34px;
+  width: 34px;
+}
+
+.missionPickerBlock select {
+  width: 100%;
+}
+
+.primaryMissionCard {
+  display: grid;
+  justify-items: start;
+}
+
+.missionCardImageShell {
+  background: transparent;
+  border: 0;
+  display: grid;
+  justify-self: start;
+  justify-items: center;
+  max-width: 100%;
+  overflow: visible;
+  position: relative;
+  width: min(100%, 360px);
+}
+
+.missionCardSide {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  width: 100%;
+}
+
+.missionCardSide[hidden] {
+  display: none;
+}
+
+.missionCardToggle {
+  background: #070b0d;
+  border: 1px solid #1f6aa6;
+  border-radius: 10px 0 0 0;
+  bottom: 0;
+  color: white;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 6px 9px;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+
 @media (max-width: 860px) {
   .builderHeader {
     grid-template-columns: 1fr;
@@ -798,7 +1048,36 @@ section {
     grid-template-columns: 1fr;
   }
 
-  section {
+  .layout.availableUnitsCollapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .layout.availableUnitsCollapsed .availablePanel {
+    display: block;
+    padding: 12px;
+  }
+
+  .layout.availableUnitsCollapsed .availablePanel .sectionTitleRow {
+    display: flex;
+    justify-items: stretch;
+    margin-bottom: 10px;
+  }
+
+  .layout.availableUnitsCollapsed .availablePanel h2 {
+    font-size: 1.5em;
+    text-align: left;
+  }
+
+  .layout.availableUnitsCollapsed .availablePanel #unitSearch,
+  .layout.availableUnitsCollapsed .availablePanel #availableUnitsBody {
+    display: block;
+  }
+
+  .layout.availableUnitsCollapsed .availablePanel::after {
+    display: none;
+  }
+
+  .layout > section {
     max-height: none;
   }
 
@@ -1324,6 +1603,16 @@ html[data-theme="dark"] button:hover {
   background: #2a373d;
 }
 
+html[data-theme="dark"] .panelCollapseButton {
+  background: #132d33;
+  border-color: #3b8790;
+  color: #9ee8f0;
+}
+
+html[data-theme="dark"] .panelCollapseButton:hover {
+  background: #1d424a;
+}
+
 html[data-theme="dark"] .builderHeader,
 html[data-theme="dark"] section,
 html[data-theme="dark"] .modalPanel,
@@ -1399,6 +1688,7 @@ html[data-theme="dark"] .rosterLayoutToggle button + button {
 
 html[data-theme="dark"] .segmentedControl button.active,
 html[data-theme="dark"] .rosterLayoutToggle button.active,
+html[data-theme="dark"] .layout.availableUnitsCollapsed .panelCollapseButton,
 html[data-theme="dark"] .unitSection > summary,
 html[data-theme="dark"] .sidebarGroup > summary,
 html[data-theme="dark"] .previewMaster > summary,
@@ -1411,6 +1701,10 @@ html[data-theme="dark"] .categoryHeader {
 html[data-theme="dark"] .unitSection > summary:hover,
 html[data-theme="dark"] .categoryHeader:hover {
   background: #11a0ad;
+}
+
+html[data-theme="dark"] .layout.availableUnitsCollapsed .availablePanel::after {
+  background: #0f8290;
 }
 
 html[data-theme="dark"] .stratagemsGroup > summary {

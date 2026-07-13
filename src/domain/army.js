@@ -7,6 +7,9 @@ function createArmyState(armyDefinition) {
     armyId: armyDefinition?.id || null,
     detachmentId: null,
     detachmentIds: [],
+    forceDispositionId: null,
+    opponentForceDispositionId: null,
+    primaryMissionName: null,
     warlordInstanceId: null,
     attachments: [],
     enhancements: []
@@ -25,6 +28,36 @@ function selectedDetachment(armyDefinition, armyState) {
 function selectedDetachments(armyDefinition, armyState) {
   const ids = new Set(selectedDetachmentIds(armyState));
   return (armyDefinition?.detachments || []).filter(item => ids.has(item.id));
+}
+
+function availableForceDispositions(armyDefinition, armyState) {
+  const byId = new Map((armyDefinition?.forceDispositions || []).map(item => [item.id, item]));
+  return [...new Map(selectedDetachments(armyDefinition, armyState)
+    .map(detachment => detachment.forceDisposition)
+    .filter(Boolean)
+    .map(disposition => {
+      const full = byId.get(disposition.id) || disposition;
+      return [full.id || full.name, full];
+    })).values()];
+}
+
+function selectedForceDisposition(armyDefinition, armyState) {
+  const available = availableForceDispositions(armyDefinition, armyState);
+  return available.find(item => item.id === armyState?.forceDispositionId)
+    || (available.length === 1 ? available[0] : null);
+}
+
+function selectedOpponentForceDisposition(armyDefinition, armyState) {
+  return (armyDefinition?.forceDispositions || []).find(item => item.id === armyState?.opponentForceDispositionId) || null;
+}
+
+function selectedPrimaryMission(armyDefinition, armyState) {
+  const forceDisposition = selectedForceDisposition(armyDefinition, armyState);
+  const opponentDisposition = selectedOpponentForceDisposition(armyDefinition, armyState);
+  if (!forceDisposition || !opponentDisposition) return null;
+  return (forceDisposition.missionMap || []).find(mission =>
+    normalizeName(mission.opponentDisposition) === normalizeName(opponentDisposition.name)
+  ) || null;
 }
 
 function enhancementAvailable(enhancement, armyState) {
@@ -143,7 +176,7 @@ function selectDetachment(armyDefinition, armyState, detachmentId) {
   const next = structuredClone(armyState);
   next.detachmentId = detachmentId || null;
   next.detachmentIds = detachmentId ? [detachmentId] : [];
-  return next;
+  return normalizeMissionState(armyDefinition, next);
 }
 
 function setSelectedDetachments(armyDefinition, armyState, detachmentIds) {
@@ -152,7 +185,39 @@ function setSelectedDetachments(armyDefinition, armyState, detachmentIds) {
   const next = structuredClone(armyState);
   next.detachmentIds = ids;
   next.detachmentId = ids[0] || null;
+  return normalizeMissionState(armyDefinition, next);
+}
+
+function normalizeMissionState(armyDefinition, armyState) {
+  const next = structuredClone(armyState || createArmyState(armyDefinition));
+  const available = availableForceDispositions(armyDefinition, next);
+  const forceDisposition = available.find(item => item.id === next.forceDispositionId)
+    || (available.length === 1 ? available[0] : null);
+  next.forceDispositionId = forceDisposition?.id || null;
+
+  const opponentDisposition = selectedOpponentForceDisposition(armyDefinition, next);
+  if (!opponentDisposition) next.opponentForceDispositionId = null;
+
+  const mission = selectedPrimaryMission(armyDefinition, next);
+  next.primaryMissionName = mission?.name || null;
   return next;
+}
+
+function setForceDisposition(armyDefinition, armyState, forceDispositionId) {
+  const next = structuredClone(armyState);
+  const available = availableForceDispositions(armyDefinition, next);
+  const selected = available.find(item => item.id === forceDispositionId) || null;
+  next.forceDispositionId = selected?.id || null;
+  next.primaryMissionName = selectedPrimaryMission(armyDefinition, next)?.name || null;
+  return normalizeMissionState(armyDefinition, next);
+}
+
+function setOpponentForceDisposition(armyDefinition, armyState, forceDispositionId) {
+  const next = structuredClone(armyState);
+  const selected = (armyDefinition?.forceDispositions || []).find(item => item.id === forceDispositionId) || null;
+  next.opponentForceDispositionId = selected?.id || null;
+  next.primaryMissionName = selectedPrimaryMission(armyDefinition, next)?.name || null;
+  return normalizeMissionState(armyDefinition, next);
 }
 
 function setWarlord(armyState, instanceId) {
@@ -500,6 +565,7 @@ const armyApi = {
   createArmyState,
   detachBodyguard,
   detachmentPointLimitFor,
+  availableForceDispositions,
   enhancementPointsByBearer,
   getEnhancementStates,
   getRosterPresentation,
@@ -507,10 +573,15 @@ const armyApi = {
   leaderCanTarget,
   pruneArmyStateForRoster,
   selectDetachment,
+  selectedForceDisposition,
   selectedDetachment,
   selectedDetachments,
   selectedDetachmentIds,
+  selectedOpponentForceDisposition,
+  selectedPrimaryMission,
+  setForceDisposition,
   setSelectedDetachments,
+  setOpponentForceDisposition,
   setEnhancement,
   setLeaderAttachment,
   setWarlord,

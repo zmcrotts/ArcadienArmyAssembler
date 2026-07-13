@@ -1,0 +1,148 @@
+{
+  "cards": [
+    {
+      "title": "A Grievous Blow",
+      "pageSlug": "a-grievous-blow-defender",
+      "cardSlug": "a-grievous-blow",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/a-grievous-blow-defender",
+      "image": "assets/11th/secondary-missions/defender/a-grievous-blow.png"
+    },
+    {
+      "title": "A Tempting Target",
+      "pageSlug": "a-tempting-target-defender",
+      "cardSlug": "a-tempting-target",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/a-tempting-target-defender",
+      "image": "assets/11th/secondary-missions/defender/a-tempting-target.png"
+    },
+    {
+      "title": "Assassination",
+      "pageSlug": "assassination-defender",
+      "cardSlug": "assassination",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/assassination-defender",
+      "image": "assets/11th/secondary-missions/defender/assassination.png"
+    },
+    {
+      "title": "Beacon",
+      "pageSlug": "beacon-defender",
+      "cardSlug": "beacon",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/beacon-defender",
+      "image": "assets/11th/secondary-missions/defender/beacon.png"
+    },
+    {
+      "title": "Behind Enemy Lines",
+      "pageSlug": "behind-enemy-lines-defender",
+      "cardSlug": "behind-enemy-lines",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/behind-enemy-lines-defender",
+      "image": "assets/11th/secondary-missions/defender/behind-enemy-lines.png"
+    },
+    {
+      "title": "Bring it Down",
+      "pageSlug": "bring-it-down-defender",
+      "cardSlug": "bring-it-down",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/bring-it-down-defender",
+      "image": "assets/11th/secondary-missions/defender/bring-it-down.png"
+    },
+    {
+      "title": "Burden of Trust",
+      "pageSlug": "burden-of-trust-defender",
+      "cardSlug": "burden-of-trust",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/burden-of-trust-defender",
+      "image": "assets/11th/secondary-missions/defender/burden-of-trust.png"
+    },
+    {
+      "title": "Centre Ground",
+      "pageSlug": "centre-ground-defender",
+      "cardSlug": "centre-ground",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/centre-ground-defender",
+      "image": "assets/11th/secondary-missions/defender/centre-ground.png"
+    },
+    {
+      "title": "Cleanse",
+      "pageSlug": "cleanse-defender",
+      "cardSlug": "cleanse",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/cleanse-defender",
+      "image": "assets/11th/secondary-missions/defender/cleanse.png"
+    },
+    {
+      "title": "Defend Stronghold",
+      "pageSlug": "defend-stronghold-defender",
+      "cardSlug": "defend-stronghold",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/defend-stronghold-defender",
+      "image": "assets/11th/secondary-missions/defender/defend-stronghold.png"
+    },
+    {
+      "title": "Display of Might",
+      "pageSlug": "display-of-might-defender",
+      "cardSlug": "display-of-might",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/display-of-might-defender",
+      "image": "assets/11th/secondary-missions/defender/display-of-might.png"
+    },
+    {
+      "title": "Engage on All Fronts",
+      "pageSlug": "engage-on-all-fronts-defender",
+      "cardSlug": "engage-on-all-fronts",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/engage-on-all-fronts-defender",
+      "image": "assets/11th/secondary-missions/defender/engage-on-all-fronts.png"
+    },
+    {
+      "title": "Forward Position",
+      "pageSlug": "forward-position-defender",
+      "cardSlug": "forward-position",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/forward-position-defender",
+      "image": "assets/11th/secondary-missions/defender/forward-position.png"
+    },
+    {
+      "title": "No Prisoners",
+      "pageSlug": "no-prisoners-defender",
+      "cardSlug": "no-prisoners",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/no-prisoners-defender",
+      "image": "assets/11th/secondary-missions/defender/no-prisoners.png"
+    },
+    {
+      "title": "Outflank",
+      "pageSlug": "outflank-defender",
+      "cardSlug": "outflank",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/outflank-defender",
+      "image": "assets/11th/secondary-missions/defender/outflank.png"
+    },
+    {
+      "title": "Overwhelming Force",
+      "pageSlug": "overwhelming-force-defender",
+      "cardSlug": "overwhelming-force",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/overwhelming-force-defender",
+      "image": "assets/11th/secondary-missions/defender/overwhelming-force.png"
+    },
+    {
+      "title": "Plunder",
+      "pageSlug": "plunder-defender",
+      "cardSlug": "plunder",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/plunder-defender",
+      "image": "assets/11th/secondary-missions/defender/plunder.png"
+    },
+    {
+      "title": "Secure No Man&#x27;s Land",
+      "pageSlug": "secure-no-man-s-land-defender",
+      "cardSlug": "secure-no-man-s-land",
+      "role": "defender",
+      "pagePath": "/11th/secondary-missions/secure-no-man-s-land-defender",
+      "image": "assets/11th/secondary-missions/defender/secure-no-man-s-land.png"
+    }
+  ]
+}

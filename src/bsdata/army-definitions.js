@@ -9,6 +9,7 @@ const {
   loadBsdataContext,
   nativeUnitLinksFor
 } = require("./unit-definitions");
+const PRIMARY_MISSION_CARD_IMAGES = require("../../ui/assets/11th/primary-missions/manifest.json");
 
 const DETACHMENT_NAME_EXCLUSIONS_BY_FACTION = {
   "Xenos - Tyranids": new Set([
@@ -18,6 +19,71 @@ const DETACHMENT_NAME_EXCLUSIONS_BY_FACTION = {
     "Xenocult Masses"
   ])
 };
+
+const FORCE_DISPOSITION_MISSION_MAP = {
+  "Take and Hold": [
+    { name: "Battlefield Dominance", opponentDisposition: "Take and Hold" },
+    { name: "Determined Acquisition", opponentDisposition: "Disruption" },
+    { name: "Immovable Object", opponentDisposition: "Purge the Foe" },
+    { name: "Inescapable Dominion", opponentDisposition: "Priority Assets" },
+    { name: "Purge and Secure", opponentDisposition: "Reconnaissance" }
+  ],
+  "Purge the Foe": [
+    { name: "Consecrate", opponentDisposition: "Reconnaissance" },
+    { name: "Destroyer's Wrath", opponentDisposition: "Priority Assets" },
+    { name: "Meatgrinder", opponentDisposition: "Purge the Foe" },
+    { name: "Punishment", opponentDisposition: "Disruption" },
+    { name: "Unstoppable Force", opponentDisposition: "Take and Hold" }
+  ],
+  "Reconnaissance": [
+    { name: "Gather Intel", opponentDisposition: "Reconnaissance" },
+    { name: "Reconnaissance Sweep", opponentDisposition: "Take and Hold" },
+    { name: "Search and Scour", opponentDisposition: "Priority Assets" },
+    { name: "Surveil the Foe", opponentDisposition: "Disruption" },
+    { name: "Triangulation", opponentDisposition: "Purge the Foe" }
+  ],
+  "Priority Assets": [
+    { name: "Extract Relic", opponentDisposition: "Disruption" },
+    { name: "Sabotage", opponentDisposition: "Priority Assets" },
+    { name: "Secure Asset", opponentDisposition: "Take and Hold" },
+    { name: "Vanguard Operation", opponentDisposition: "Reconnaissance" },
+    { name: "Vital Link", opponentDisposition: "Purge the Foe" }
+  ],
+  "Disruption": [
+    { name: "Death Trap", opponentDisposition: "Take and Hold" },
+    { name: "Delaying Action", opponentDisposition: "Purge the Foe" },
+    { name: "Locate and Deny", opponentDisposition: "Priority Assets" },
+    { name: "Outmanoeuvre", opponentDisposition: "Disruption" },
+    { name: "Smoke and Mirrors", opponentDisposition: "Reconnaissance" }
+  ]
+};
+
+function missionSlug(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function missionAssets(dispositionName, missionName) {
+  const dispositionSlug = missionSlug(dispositionName);
+  const cardSlug = missionSlug(missionName);
+  const cardImages = PRIMARY_MISSION_CARD_IMAGES[dispositionSlug]?.[cardSlug] || null;
+  return {
+    cardImages: {
+      front: cardImages?.front || `assets/11th/primary-missions/${dispositionSlug}/${cardSlug}.png`,
+      back: cardImages?.back || null
+    }
+  };
+}
+
+function dispositionMissionMap(dispositionName) {
+  return (FORCE_DISPOSITION_MISSION_MAP[dispositionName] || []).map(mission => ({
+    ...mission,
+    ...missionAssets(dispositionName, mission.name)
+  }));
+}
 
 function textValue(value) {
   if (value === undefined || value === null) return "";
@@ -87,8 +153,10 @@ function rulesFor(node, indexes) {
   return rules;
 }
 
-function catalogueArmyRules(catalogue, indexes) {
-  return rulesFor(catalogue, indexes).filter(rule => !/^boarding actions$/i.test(rule.name));
+function catalogueArmyRules(catalogue, indexes, faction = "") {
+  const rules = rulesFor(catalogue, indexes).filter(rule => !/^boarding actions$/i.test(rule.name));
+  if (/black templars/i.test(faction)) return rules;
+  return rules.filter(rule => String(rule.name || "").trim().toLowerCase() !== "templar vows");
 }
 
 function visitResolved(node, indexes, visitor, ancestry = new Set()) {
@@ -131,6 +199,27 @@ function findNamedGroups(catalogue, name) {
     ]) visit(entry);
   }
   visit(catalogue);
+  return matches;
+}
+
+function findNamedGroupsInNode(node, name) {
+  const matches = [];
+  const wanted = name.toLowerCase();
+  function visit(current) {
+    if (!current || typeof current !== "object") return;
+    for (const group of [
+      ...asArray(current?.selectionEntryGroups?.selectionEntryGroup),
+      ...asArray(current?.sharedSelectionEntryGroups?.selectionEntryGroup)
+    ]) {
+      if (String(group.name || "").trim().toLowerCase() === wanted) matches.push(group);
+      visit(group);
+    }
+    for (const entry of [
+      ...asArray(current?.selectionEntries?.selectionEntry),
+      ...asArray(current?.sharedSelectionEntries?.selectionEntry)
+    ]) visit(entry);
+  }
+  visit(node);
   return matches;
 }
 
@@ -231,6 +320,14 @@ function rootInstanceIdsFor(unit) {
   ].filter(Boolean));
 }
 
+function forceDispositionForDetachment(entry, dispositionsByName) {
+  for (const link of asArray(entry?.categoryLinks?.categoryLink)) {
+    const disposition = dispositionsByName.get(link.name);
+    if (disposition) return disposition;
+  }
+  return null;
+}
+
 function requiredRootInstanceIds(entry) {
   const ids = new Set();
 
@@ -289,6 +386,8 @@ function enhancementEntriesIn(group, indexes, detachmentIds, inherited = [], anc
 function extractArmyDefinitions(dataDirectory) {
   const { catalogues, gameSystem, indexes } = loadBsdataContext(dataDirectory);
   const catalogueLookup = buildCatalogueLookup(catalogues);
+  const forceDispositions = extractForceDispositions(gameSystem);
+  const forceDispositionsByName = new Map(forceDispositions.map(disposition => [disposition.name, disposition]));
   const definitions = [];
 
   for (const { file, catalogue } of catalogues) {
@@ -325,6 +424,7 @@ function extractArmyDefinitions(dataDirectory) {
     const visibleDetachmentIds = new Set(detachmentEntries.map(item => item.id).filter(Boolean));
     const detachments = detachmentEntries.map(entry => {
       const stratagems = [];
+      const forceDisposition = forceDispositionForDetachment(entry, forceDispositionsByName);
       visitResolved(entry, indexes, node => {
         for (const profile of asArray(node?.profiles?.profile)) {
           if (/stratagem/i.test(profile.typeName || "")) stratagems.push(normalizeProfile(profile));
@@ -335,6 +435,10 @@ function extractArmyDefinitions(dataDirectory) {
         name: entry.name || "Unnamed detachment",
         points: Number(directPoints(entry) || 0),
         detachmentPoints: detachmentPointsFor(entry, gameSystem, catalogue.id),
+        forceDisposition: forceDisposition ? {
+          id: forceDisposition.id,
+          name: forceDisposition.name
+        } : null,
         rules: rulesFor(entry, indexes),
         stratagems
       };
@@ -390,7 +494,8 @@ function extractArmyDefinitions(dataDirectory) {
       id: catalogue.id || faction,
       faction,
       source: { catalogueId: catalogue.id || null, sourceFile: file },
-      armyRules: catalogueArmyRules(catalogue, indexes),
+      armyRules: catalogueArmyRules(catalogue, indexes, faction),
+      forceDispositions,
       allowedSelectionKeys: nativeUnitLinks
         .filter(({ link }) => link.type === "selectionEntry" && link.hidden !== "true" && isRosterUnit(indexes.entries.get(link.targetId)))
         .map(({ link, selectionCatalogueId }) => `${selectionCatalogueId || faction}:${link.id}`),
@@ -400,6 +505,17 @@ function extractArmyDefinitions(dataDirectory) {
   }
 
   return { definitions };
+}
+
+function extractForceDispositions(gameSystem) {
+  const group = findNamedGroupsInNode(gameSystem, "Force Disposition")[0];
+  const entries = asArray(group?.selectionEntries?.selectionEntry);
+  return entries.map(entry => ({
+    id: entry.id,
+    name: entry.name || "Unnamed disposition",
+    hidden: String(entry.hidden || "").toLowerCase() === "true",
+    missionMap: dispositionMissionMap(entry.name)
+  }));
 }
 
 module.exports = { extractArmyDefinitions };

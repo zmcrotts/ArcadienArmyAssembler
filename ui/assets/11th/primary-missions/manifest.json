@@ -1,0 +1,112 @@
+{
+  "take-and-hold": {
+    "battlefield-dominance": {
+      "front": "assets/11th/primary-missions/take-and-hold/battlefield-dominance.png",
+      "back": null
+    },
+    "determined-acquisition": {
+      "front": "assets/11th/primary-missions/take-and-hold/determined-acquisition.png",
+      "back": null
+    },
+    "immovable-object": {
+      "front": "assets/11th/primary-missions/take-and-hold/immovable-object.png",
+      "back": null
+    },
+    "inescapable-dominion": {
+      "front": "assets/11th/primary-missions/take-and-hold/inescapable-dominion.png",
+      "back": null
+    },
+    "purge-and-secure": {
+      "front": "assets/11th/primary-missions/take-and-hold/purge-and-secure.png",
+      "back": null
+    }
+  },
+  "purge-the-foe": {
+    "consecrate": {
+      "front": "assets/11th/primary-missions/purge-the-foe/consecrate.png",
+      "back": null
+    },
+    "destroyers-wrath": {
+      "front": "assets/11th/primary-missions/purge-the-foe/destroyers-wrath.png",
+      "back": null
+    },
+    "meatgrinder": {
+      "front": "assets/11th/primary-missions/purge-the-foe/meatgrinder.png",
+      "back": null
+    },
+    "punishment": {
+      "front": "assets/11th/primary-missions/purge-the-foe/punishment.png",
+      "back": null
+    },
+    "unstoppable-force": {
+      "front": "assets/11th/primary-missions/purge-the-foe/unstoppable-force.png",
+      "back": null
+    }
+  },
+  "reconnaissance": {
+    "gather-intel": {
+      "front": "assets/11th/primary-missions/reconnaissance/gather-intel.png",
+      "back": "assets/11th/primary-missions/reconnaissance/gather-intel-back.png"
+    },
+    "reconnaissance-sweep": {
+      "front": "assets/11th/primary-missions/reconnaissance/reconnaissance-sweep.png",
+      "back": null
+    },
+    "search-and-scour": {
+      "front": "assets/11th/primary-missions/reconnaissance/search-and-scour.png",
+      "back": null
+    },
+    "surveil-the-foe": {
+      "front": "assets/11th/primary-missions/reconnaissance/surveil-the-foe.png",
+      "back": "assets/11th/primary-missions/reconnaissance/surveil-the-foe-back.png"
+    },
+    "triangulation": {
+      "front": "assets/11th/primary-missions/reconnaissance/triangulation.png",
+      "back": "assets/11th/primary-missions/reconnaissance/triangulation-back.png"
+    }
+  },
+  "priority-assets": {
+    "extract-relic": {
+      "front": "assets/11th/primary-missions/priority-assets/extract-relic.png",
+      "back": "assets/11th/primary-missions/priority-assets/extract-relic-back.png"
+    },
+    "sabotage": {
+      "front": "assets/11th/primary-missions/priority-assets/sabotage.png",
+      "back": "assets/11th/primary-missions/priority-assets/sabotage-back.png"
+    },
+    "secure-asset": {
+      "front": "assets/11th/primary-missions/priority-assets/secure-asset.png",
+      "back": "assets/11th/primary-missions/priority-assets/secure-asset-back.png"
+    },
+    "vanguard-operation": {
+      "front": "assets/11th/primary-missions/priority-assets/vanguard-operation.png",
+      "back": "assets/11th/primary-missions/priority-assets/vanguard-operation-back.png"
+    },
+    "vital-link": {
+      "front": "assets/11th/primary-missions/priority-assets/vital-link.png",
+      "back": "assets/11th/primary-missions/priority-assets/vital-link-back.png"
+    }
+  },
+  "disruption": {
+    "death-trap": {
+      "front": "assets/11th/primary-missions/disruption/death-trap.png",
+      "back": "assets/11th/primary-missions/disruption/death-trap-back.png"
+    },
+    "delaying-action": {
+      "front": "assets/11th/primary-missions/disruption/delaying-action.png",
+      "back": null
+    },
+    "locate-and-deny": {
+      "front": "assets/11th/primary-missions/disruption/locate-and-deny.png",
+      "back": "assets/11th/primary-missions/disruption/locate-and-deny-back.png"
+    },
+    "outmanoeuvre": {
+      "front": "assets/11th/primary-missions/disruption/outmanoeuvre.png",
+      "back": null
+    },
+    "smoke-and-mirrors": {
+      "front": "assets/11th/primary-missions/disruption/smoke-and-mirrors.png",
+      "back": "assets/11th/primary-missions/disruption/smoke-and-mirrors-back.png"
+    }
+  }
+}

@@ -81,6 +81,7 @@ function summarizeDetachment(armyDefinition, armyState, services) {
     name: detachment.name,
     points: asNumber(detachment.points),
     detachmentPoints: asNumber(detachment.detachmentPoints),
+    forceDisposition: clone(detachment.forceDisposition || null),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
   };
@@ -96,9 +97,23 @@ function summarizeDetachments(armyDefinition, armyState, services) {
     name: detachment.name,
     points: asNumber(detachment.points),
     detachmentPoints: asNumber(detachment.detachmentPoints),
+    forceDisposition: clone(detachment.forceDisposition || null),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
   }));
+}
+
+function summarizeMissionSetup(armyDefinition, armyState) {
+  const forceDisposition = (armyDefinition?.forceDispositions || []).find(item => item.id === armyState?.forceDispositionId) || null;
+  const opponentDisposition = (armyDefinition?.forceDispositions || []).find(item => item.id === armyState?.opponentForceDispositionId) || null;
+  const primaryMission = forceDisposition && opponentDisposition
+    ? (forceDisposition.missionMap || []).find(mission => mission.opponentDisposition === opponentDisposition.name) || null
+    : null;
+  return {
+    forceDisposition: forceDisposition ? { id: forceDisposition.id, name: forceDisposition.name } : null,
+    opponentForceDisposition: opponentDisposition ? { id: opponentDisposition.id, name: opponentDisposition.name } : null,
+    primaryMission: primaryMission ? clone(primaryMission) : null
+  };
 }
 
 function summarizeEnhancements(armyDefinition, armyState, rosterEntries) {
@@ -203,6 +218,8 @@ function createRosterDocument(options) {
     detachment: summarizeDetachment(armyDefinition, armyState, services),
     detachments: summarizeDetachments(armyDefinition, armyState, services),
     armyRules: summarizeArmyRules(armyDefinition),
+    forceDispositions: clone(armyDefinition?.forceDispositions || []),
+    missionSetup: summarizeMissionSetup(armyDefinition, armyState),
     coreStratagems: clone(armyDefinition?.coreStratagems || []),
     stratagemSource: clone(armyDefinition?.stratagemSource || null),
     warlord: summarizeWarlord(armyState, unitRecords),

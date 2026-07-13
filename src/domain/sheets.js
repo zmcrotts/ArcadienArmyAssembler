@@ -867,12 +867,19 @@ function buildReferenceSheets(document) {
     id: detachment.id,
     name: detachment.name,
     detachmentPoints: Number(detachment.detachmentPoints || 0),
+    forceDisposition: clone(detachment.forceDisposition || null),
     rules: asArray(detachment.rules).filter(rule => sheetRelevantReferenceRule(rule, legend)).map(clone),
     stratagems: asArray(detachment.stratagems).map(stratagem => ({
       ...clone(stratagem),
       detachmentName: detachment.name,
       sourceLabel: detachment.name || stratagem.detachment || "Detachment"
     }))
+  }));
+  const forceDispositions = asArray(document?.forceDispositions).map(disposition => ({
+    id: disposition.id,
+    name: disposition.name,
+    hidden: Boolean(disposition.hidden),
+    missionMap: clone(disposition.missionMap || [])
   }));
   const { coreStratagems } = stratagemRecords(document);
   return {
@@ -882,7 +889,8 @@ function buildReferenceSheets(document) {
       title: "Army & Detachment Rules",
       armyRules: asArray(document?.armyRules).filter(rule => sheetRelevantReferenceRule(rule, legend)).map(clone),
       weaponKeywordLegend: legend,
-      detachments
+      detachments,
+      forceDispositions
     },
     stratagems: {
       id: "reference:stratagems",
@@ -936,6 +944,8 @@ function buildRosterSheets(document) {
     pointsLimit: Number(document?.pointsLimit || 0),
     totalPoints: Number(document?.totalPoints || 0),
     detachments: clone(document?.detachments || []),
+    forceDispositions: clone(document?.forceDispositions || []),
+    missionSetup: clone(document?.missionSetup || null),
     referenceSheets: buildReferenceSheets(document),
     combinedUnitSheets: uniqueReferenceSheets(combinedUnitSheets),
     crusadeSheets: asArray(document?.rosterEntries).map(record => buildCrusadeSheet(document, record))

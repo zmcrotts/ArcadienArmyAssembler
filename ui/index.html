@@ -85,21 +85,24 @@
       </div>
     </header>
 
-    <div class="layout">
-      <section>
+    <div id="builderLayout" class="layout">
+      <section id="availableUnitsPanel" class="availablePanel">
         <div class="sectionTitleRow">
-          <h2>Available Units</h2>
+          <h2><span id="availableUnitsTitle">Available Units</span></h2>
+          <button id="toggleAvailableUnits" class="panelCollapseButton" type="button" aria-controls="availableUnitsBody" aria-expanded="true" title="Collapse Available Units">&lt;</button>
           <input id="unitSearch" placeholder="Search units or keywords">
         </div>
-        <div id="unitList"></div>
+        <div id="availableUnitsBody">
+          <div id="unitList"></div>
+        </div>
       </section>
 
-      <section>
+      <section class="rosterPanel">
         <h2>Roster</h2>
         <div id="rosterList"></div>
       </section>
 
-      <section>
+      <section class="detailsPanel">
         <h2>Sidebar</h2>
         <div id="details">Click a unit.</div>
       </section>
@@ -215,6 +218,6 @@
   <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
   <script defer src="../src/domain/sheets.js?v=milestone3"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
-  <script defer src="engine-app.js?v=milestone8"></script>
+  <script defer src="engine-app.js?v=milestone10"></script>
 </body>
 </html>
