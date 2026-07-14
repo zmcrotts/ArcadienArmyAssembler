@@ -32,7 +32,12 @@ test("mobile build produces a complete installable offline package", async () =>
   assert.match(offlineApp, /panel\.hidden = state === "ready" && installedApp/);
   assert.match(engineApp, /mobileSheetBackdrop\.onclick = closeMobileSheets/);
   assert.match(engineApp, /mobileSheetBackdrop\.hidden = mobileSheet !== "details"/);
+  assert.match(engineApp, /class="loadoutStepper"/);
+  assert.match(engineApp, /quantity" readonly/);
+  assert.match(engineApp, /class="loadoutStep"[^>]+data-delta="-1"/);
+  assert.match(engineApp, /applySelection\(input, Math\.max\(minimum, Math\.min\(maximum, requested\)\)\)/);
   assert.match(styles, /\.mobileSheetBackdrop \{[\s\S]*?position: fixed;[\s\S]*?z-index: 60;/);
+  assert.match(styles, /\.loadoutStepper \.loadoutStep \{[\s\S]*?min-height: 44px;/);
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.start_url, "./");
   assert.ok(fs.statSync(path.join(DIST, "app-icon.png")).size > 0);

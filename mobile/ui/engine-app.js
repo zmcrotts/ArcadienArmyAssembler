@@ -2755,21 +2755,33 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
   const inputType = max === 1 ? "checkbox" : "number";
   const checked = current > 0 ? "checked" : "";
   const value = inputType === "number" ? `value="${current}" min="0" max="${Number.isFinite(max) ? max : 99}"` : "";
+  const input = `
+    <input
+      class="loadoutInput"
+      data-instance-id="${escapeHtml(rosterEntry.instanceId)}"
+      data-option-id="${escapeHtml(option.id)}"
+      type="${inputType}"
+      ${inputType === "number" ? `inputmode="numeric" aria-label="${escapeHtml(option.name)} quantity" readonly` : ""}
+      ${inputType === "checkbox" ? checked : value}
+      ${option.editable ? "" : "disabled"}
+    >
+  `;
+  const control = inputType === "number"
+    ? `<span class="loadoutStepper">
+        <button class="loadoutStep" type="button" data-delta="-1" aria-label="Decrease ${escapeHtml(option.name)}" ${option.editable && current > 0 ? "" : "disabled"}>−</button>
+        ${input}
+        <button class="loadoutStep" type="button" data-delta="1" aria-label="Increase ${escapeHtml(option.name)}" ${option.editable && current < max ? "" : "disabled"}>+</button>
+      </span>`
+    : input;
+  const rowTag = inputType === "checkbox" ? "label" : "div";
 
   return `
     <div class="nestedOptionBlock">
-      <label class="compactOptionRow ${option.editable ? "" : "lockedOption"}">
+      <${rowTag} class="compactOptionRow ${option.editable ? "" : "lockedOption"}">
         <span class="optionName">${renderOptionNameWithPoints(option, node)}</span>
         <span class="optionLimits">${current} · ${option.minimum}–${formatOptionMaximum(max)}</span>
-        <input
-          class="loadoutInput"
-          data-instance-id="${escapeHtml(rosterEntry.instanceId)}"
-          data-option-id="${escapeHtml(option.id)}"
-          type="${inputType}"
-          ${inputType === "checkbox" ? checked : value}
-          ${option.editable ? "" : "disabled"}
-        >
-      </label>
+        ${control}
+      </${rowTag}>
       ${childGroups ? `<div class="nestedOptionGroups">${childGroups}</div>` : ""}
     </div>
   `;
@@ -2958,25 +2970,39 @@ function formatOptionMaximum(value) {
 }
 
 function bindLoadoutInputs() {
+  const applySelection = (input, count) => {
+    const instanceId = input.dataset.instanceId;
+    const optionId = input.dataset.optionId;
+    const rosterEntry = roster.find(item => item.instanceId === instanceId);
+    if (!rosterEntry) return;
+
+    try {
+      rosterEntry.entry = engine.setSelection(rosterEntry.unitPackage.definition, rosterEntry.entry, optionId, count);
+    } catch (error) {
+      alert(error.message);
+    }
+
+    selectedInstanceId = instanceId;
+    render();
+  };
+
   for (const input of document.querySelectorAll(".loadoutInput")) {
     input.onchange = event => {
-      const instanceId = event.target.dataset.instanceId;
-      const optionId = event.target.dataset.optionId;
-      const rosterEntry = roster.find(item => item.instanceId === instanceId);
-      if (!rosterEntry) return;
-
       const count = event.target.type === "checkbox"
         ? event.target.checked ? 1 : 0
         : Number(event.target.value || 0);
-
-      try {
-        rosterEntry.entry = engine.setSelection(rosterEntry.unitPackage.definition, rosterEntry.entry, optionId, count);
-      } catch (error) {
-        alert(error.message);
-      }
-
-      selectedInstanceId = instanceId;
-      render();
+      applySelection(event.target, count);
+    };
+  }
+  for (const button of document.querySelectorAll(".loadoutStep")) {
+    button.onclick = event => {
+      event.preventDefault();
+      const input = event.currentTarget.closest(".loadoutStepper")?.querySelector(".loadoutInput");
+      if (!input || input.disabled) return;
+      const minimum = Number(input.min || 0);
+      const maximum = Number(input.max || 99);
+      const requested = Number(input.value || 0) + Number(event.currentTarget.dataset.delta || 0);
+      applySelection(input, Math.max(minimum, Math.min(maximum, requested)));
     };
   }
 }
