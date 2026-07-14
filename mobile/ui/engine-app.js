@@ -37,6 +37,7 @@ const unitList = document.getElementById("unitList");
 const mobileUnitAddList = document.getElementById("mobileUnitAddList");
 const rosterList = document.getElementById("rosterList");
 const details = document.getElementById("details");
+const detailsPanel = document.querySelector(".detailsPanel");
 const pointsTotal = document.getElementById("pointsTotal");
 const pointsLimitInput = document.getElementById("pointsLimit");
 const unitSearch = document.getElementById("unitSearch");
@@ -282,6 +283,8 @@ function init() {
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closeOpenWeaponPreview();
   });
+  detailsPanel?.addEventListener("scroll", () => closeOpenWeaponPreview(), { passive: true });
+  window.addEventListener("resize", () => closeOpenWeaponPreview());
   newRosterModal.addEventListener("click", event => {
     if (event.target === newRosterModal) closeNewRosterModal();
   });
@@ -2909,6 +2912,63 @@ function setWeaponPreviewOpen(wrap, open) {
   wrap.classList.toggle("active", open);
   const token = wrap.querySelector(".weaponPreviewToken");
   if (token) token.setAttribute("aria-expanded", open ? "true" : "false");
+  const popover = wrap.querySelector(".weaponPreviewPopover");
+  if (open) positionWeaponPreview(wrap, popover, token);
+  else if (popover) {
+    popover.style.removeProperty("left");
+    popover.style.removeProperty("right");
+    popover.style.removeProperty("top");
+    popover.style.removeProperty("width");
+    popover.style.removeProperty("max-height");
+  }
+}
+
+function positionWeaponPreview(wrap, popover, token) {
+  if (!popover || !token || !window.matchMedia("(max-width: 860px), (display-mode: standalone)").matches) return;
+  const viewport = window.visualViewport;
+  const viewportLeft = viewport?.offsetLeft || 0;
+  const viewportTop = viewport?.offsetTop || 0;
+  const viewportWidth = viewport?.width || window.innerWidth;
+  const viewportHeight = viewport?.height || window.innerHeight;
+  const viewportRight = viewportLeft + viewportWidth;
+  const viewportBottom = viewportTop + viewportHeight;
+  const panel = wrap.closest(".detailsPanel");
+  const panelRect = panel?.getBoundingClientRect();
+  const transformedPanel = panel && getComputedStyle(panel).transform !== "none";
+  const bounds = panelRect
+    ? {
+        left: Math.max(viewportLeft, panelRect.left),
+        top: Math.max(viewportTop, panelRect.top),
+        right: Math.min(viewportRight, panelRect.right),
+        bottom: Math.min(viewportBottom, panelRect.bottom)
+      }
+    : { left: viewportLeft, top: viewportTop, right: viewportRight, bottom: viewportBottom };
+  const originLeft = transformedPanel ? panelRect.left : 0;
+  const originTop = transformedPanel ? panelRect.top : 0;
+  const tokenRect = token.getBoundingClientRect();
+  const margin = 12;
+  const gap = 8;
+  const width = Math.max(260, Math.min(560, bounds.right - bounds.left - margin * 2));
+  const left = Math.min(
+    Math.max(tokenRect.left, bounds.left + margin),
+    Math.max(bounds.left + margin, bounds.right - width - margin)
+  );
+
+  popover.style.width = `${width}px`;
+  popover.style.left = `${left - originLeft}px`;
+  popover.style.right = "auto";
+  popover.style.top = `${bounds.top + margin - originTop}px`;
+  popover.style.maxHeight = `${Math.max(160, Math.min(viewportHeight * 0.7, bounds.bottom - bounds.top - margin * 2))}px`;
+
+  const naturalHeight = popover.getBoundingClientRect().height;
+  const availableBelow = bounds.bottom - tokenRect.bottom - gap - margin;
+  const availableAbove = tokenRect.top - bounds.top - gap - margin;
+  const openBelow = availableBelow >= Math.min(naturalHeight, 260) || availableBelow >= availableAbove;
+  const available = Math.max(160, openBelow ? availableBelow : availableAbove);
+  popover.style.maxHeight = `${Math.min(viewportHeight * 0.7, available)}px`;
+  const height = popover.getBoundingClientRect().height;
+  const top = openBelow ? tokenRect.bottom + gap : tokenRect.top - height - gap;
+  popover.style.top = `${Math.max(bounds.top + margin, Math.min(top, bounds.bottom - height - margin)) - originTop}px`;
 }
 
 function renderWeaponPreviewProfile(profile) {
