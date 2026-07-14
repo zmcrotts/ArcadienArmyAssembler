@@ -808,7 +808,9 @@
       profiles: values,
       weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
       units: values.filter(profile => profile.typeName === "Unit"),
-      abilities: values.filter(profile => profile.typeName === "Abilities"),
+      // Transport and other datasheet profile types belong on the configured
+      // sheet too; only unit statlines and weapons have separate collections.
+      abilities: values.filter(profile => profile.typeName !== "Unit" && !/Weapons$/i.test(profile.typeName || "")),
       rules: [...rules.values()]
     };
   }

@@ -512,7 +512,8 @@ function abilitiesFor(record) {
     .map(item => ({
       id: item.id,
       name: item.name,
-      description: item.characteristics?.Description || item.description || "",
+      description: item.characteristics?.Description || item.characteristics?.Capacity || item.description || "",
+      profileType: item.typeName || "Abilities",
       providerUnitName: record?.name || "Unit",
       provider: abilityProviderName(record, item)
     }))

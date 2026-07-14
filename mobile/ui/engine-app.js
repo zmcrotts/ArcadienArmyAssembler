@@ -3048,6 +3048,7 @@ function renderConfigured(configured, effects = [], models = [], context = {}) {
     ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
     ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
     ${renderAbilities(configured.abilities || [])}
+    ${renderTransportProfiles(configured.abilities || [])}
     ${renderRules(configured.rules || [])}
   `;
 }
@@ -3392,15 +3393,33 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
 }
 
 function renderAbilities(abilities) {
-  if (!abilities.length) return "";
+  const standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
+  if (!standardAbilities.length) return "";
 
   return `
     <details class="configuredSection" open>
       <summary>Abilities</summary>
-      ${abilities.map(a => `
+      ${standardAbilities.map(a => `
         <details class="card ruleDisclosure">
           <summary>${escapeHtml(a.name)}</summary>
           <p>${formatDescription(a.characteristics?.Description || "")}</p>
+        </details>
+      `).join("")}
+    </details>
+  `;
+}
+
+function renderTransportProfiles(profiles) {
+  const transports = profiles.filter(profile => profile.typeName === "Transport");
+  if (!transports.length) return "";
+
+  return `
+    <details class="configuredSection" open>
+      <summary>Transport</summary>
+      ${transports.map(transport => `
+        <details class="card ruleDisclosure" open>
+          <summary>${escapeHtml(transport.name)}</summary>
+          <p>${formatDescription(transport.characteristics?.Capacity || "")}</p>
         </details>
       `).join("")}
     </details>
@@ -4454,10 +4473,23 @@ function renderSheetWeaponKeywords(value) {
 }
 
 function renderSheetAbilities(abilities) {
-  if (!abilities.length) return "";
+  const standardAbilities = abilities.filter(item => item.profileType !== "Transport");
+  if (!standardAbilities.length) return renderSheetTransportProfiles(abilities);
   return `
     <h2>Abilities</h2>
-    ${abilities.map(item => `
+    ${standardAbilities.map(item => `
+      <div class="rule"><b>${escapeHtml(item.name)}${item.provider ? ` <small>(${escapeHtml(item.provider)})</small>` : ""}</b>${item.description ? `<span>${formatRichDescription(item.description)}</span>` : ""}</div>
+    `).join("")}
+    ${renderSheetTransportProfiles(abilities)}
+  `;
+}
+
+function renderSheetTransportProfiles(abilities) {
+  const transports = abilities.filter(item => item.profileType === "Transport");
+  if (!transports.length) return "";
+  return `
+    <h2>Transport</h2>
+    ${transports.map(item => `
       <div class="rule"><b>${escapeHtml(item.name)}${item.provider ? ` <small>(${escapeHtml(item.provider)})</small>` : ""}</b>${item.description ? `<span>${formatRichDescription(item.description)}</span>` : ""}</div>
     `).join("")}
   `;
