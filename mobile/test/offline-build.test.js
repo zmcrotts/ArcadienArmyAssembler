@@ -27,7 +27,7 @@ test("mobile build produces a complete installable offline package", async () =>
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
   assert.match(index, /rel="apple-touch-icon" href="app-icon\.png"/);
   assert.match(index, /src="offline-app\.js\?v=offline2"/);
-  assert.match(index, /id="mobileSheetBackdrop"[^>]+aria-label="Return to roster"/);
+  assert.match(index, /<div id="mobileSheetBackdrop"[^>]+aria-hidden="true" hidden><\/div>/);
   assert.match(offlineApp, /navigator\.standalone === true/);
   assert.match(offlineApp, /panel\.hidden = state === "ready" && installedApp/);
   assert.match(engineApp, /mobileSheetBackdrop\.onclick = closeMobileSheets/);
