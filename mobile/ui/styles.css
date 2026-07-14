@@ -1092,7 +1092,7 @@ button:hover {
   display: none;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 860px), (display-mode: standalone) {
   body {
     background: #0b1118;
     color: #eef4f6;
@@ -2011,7 +2011,7 @@ button:hover {
   display: block;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 860px), (display-mode: standalone) {
   .startScreen {
     margin: 12px;
     min-height: calc(100vh - 24px);
@@ -2872,4 +2872,153 @@ html[data-theme="dark"] .visibilityButton {
 html[data-theme="dark"] svg {
   color: #b8c4c8;
   stroke: currentColor;
+}
+
+.offlinePanel {
+  align-items: center;
+  background: #102027;
+  border: 1px solid #31545d;
+  border-radius: 12px;
+  bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  box-sizing: border-box;
+  color: #e9f1f3;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  left: max(12px, env(safe-area-inset-left, 0px));
+  max-width: 620px;
+  padding: 12px;
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  z-index: 120;
+}
+
+.offlinePanel[hidden] {
+  display: none;
+}
+
+.offlineStatusText {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.offlineStatusText strong {
+  color: #f2f8fa;
+  font-size: 14px;
+}
+
+.offlineStatusText span {
+  color: #aebfc5;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.offlineStatusText progress {
+  accent-color: #0ca3b8;
+  height: 8px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.offlinePanel button {
+  background: #006070;
+  border-color: #0ca3b8;
+  color: white;
+  font-weight: 800;
+  margin: 0;
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.offlinePanel[data-state="ready"] {
+  border-color: #34785d;
+}
+
+.offlinePanel[data-state="ready"] button {
+  background: #173a31;
+  border-color: #34785d;
+}
+
+.offlinePanel[data-state="error"] {
+  border-color: #a95252;
+}
+
+@media (max-width: 620px) {
+  .offlinePanel {
+    grid-template-columns: 1fr;
+  }
+
+  .offlinePanel button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 860px), (display-mode: standalone) {
+  .mobileRosterHeader {
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    padding-top: max(12px, env(safe-area-inset-top, 0px));
+  }
+
+  .mobileRosterList {
+    padding-left: max(10px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+
+  .mobileActionBar {
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(10px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (min-width: 861px) and (display-mode: standalone) {
+  body {
+    background: #070c11;
+  }
+
+  .mobileShell {
+    border-left: 1px solid #20343d;
+    border-right: 1px solid #20343d;
+    box-shadow: 0 0 48px rgba(0, 0, 0, 0.45);
+    margin: 0 auto;
+    max-width: 860px;
+    width: 100%;
+  }
+
+  .mobileRosterList {
+    padding: 18px 22px 104px;
+  }
+
+  .mobileActionBar {
+    left: 50%;
+    max-width: 860px;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+  }
+
+  .layout > .availablePanel,
+  .layout > .detailsPanel {
+    left: 50%;
+    max-width: 860px;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+  }
+
+  .startScreen {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 836px;
+  }
+
+  .offlinePanel {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(620px, calc(100vw - 32px));
+  }
 }

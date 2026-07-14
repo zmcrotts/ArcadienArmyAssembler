@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "node scripts/build-user-runtime.js",
+    "site:build": "node scripts/build-sites-runtime.js",
     "android:assets": "npm run build && node scripts/build-android-assets.js",
     "test": "node --test test/*.test.js"
   }

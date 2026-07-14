@@ -629,7 +629,8 @@ function setRosterLayoutModeButtons() {
 }
 
 function applySavedTheme() {
-  if (Boolean(window.AndroidFiles) || window.matchMedia("(max-width: 860px)").matches) {
+  const installedWebApp = window.navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches;
+  if (Boolean(window.AndroidFiles) || installedWebApp || window.matchMedia("(max-width: 860px)").matches) {
     applyTheme("dark");
     return;
   }

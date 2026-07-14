@@ -2,11 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102027">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Army Assembler">
   <title>Arcadien Army Assembler</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="app-icon.png">
   <script>
     try {
-      const mobileUi = Boolean(window.AndroidFiles) || window.matchMedia("(max-width: 860px)").matches;
+      const installedWebApp = window.navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches;
+      const mobileUi = Boolean(window.AndroidFiles) || installedWebApp || window.matchMedia("(max-width: 860px)").matches;
+      document.documentElement.dataset.mobileUi = mobileUi ? "true" : "false";
       document.documentElement.dataset.theme = mobileUi || localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
     } catch {
       document.documentElement.dataset.theme = "dark";
@@ -15,6 +23,14 @@
   <link rel="stylesheet" href="styles.css?v=mobile20">
 </head>
 <body>
+  <aside id="offlinePanel" class="offlinePanel" data-state="loading" hidden aria-live="polite">
+    <div class="offlineStatusText">
+      <strong id="offlineTitle">Checking offline status</strong>
+      <span id="offlineDetail">Preparing offline support…</span>
+      <progress id="offlineProgress" max="1" value="0" hidden></progress>
+    </div>
+    <button id="offlineAction" type="button">Download for offline use</button>
+  </aside>
   <section id="startScreen" class="startScreen">
     <div class="startupPanel">
       <h1>Arcadien Army Assembler</h1>
@@ -253,6 +269,7 @@
   <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
   <script defer src="../src/domain/sheets.js?v=milestone3"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
+  <script defer src="offline-app.js?v=offline1"></script>
   <script defer src="engine-app.js?v=mobile20"></script>
 </body>
 </html>

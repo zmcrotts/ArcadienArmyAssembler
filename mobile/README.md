@@ -13,6 +13,10 @@ npm.cmd test
 
 Serve `mobile/dist-user/` with a static web server for browser or device testing. The generated `dist-user/` directory is intentionally ignored.
 
+## iPad and hosted offline app
+
+Run `npm.cmd run site:build` to produce the secure-hosting package. On a supported iPad, open the hosted address in Safari, choose **Add to Home Screen** and **Open as Web App**, then use **Download for offline use**. Do not rely on the app away from a connection until it reports **Offline ready**.
+
 ## Android
 
 The native wrapper lives under `android/`. Run `npm.cmd run android:assets` before an Android build to refresh its bundled offline website. The generated Android assets, local toolchain, build outputs, and APK release folder are intentionally ignored.

@@ -1,4 +1,5 @@
 dist-user/
+dist/
 .android-toolchain/
 android/.gradle/
 android/app/build/

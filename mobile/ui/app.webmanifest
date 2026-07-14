@@ -1,0 +1,20 @@
+{
+  "name": "Arcadien Army Assembler",
+  "short_name": "Army Assembler",
+  "description": "Build and manage Warhammer 40,000 army rosters offline.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1118",
+  "theme_color": "#102027",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "app-icon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
