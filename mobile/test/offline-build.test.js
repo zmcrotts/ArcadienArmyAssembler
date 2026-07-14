@@ -19,11 +19,14 @@ test("mobile build produces a complete installable offline package", async () =>
   const index = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
   const manifest = JSON.parse(fs.readFileSync(path.join(DIST, "app.webmanifest"), "utf8"));
   const worker = fs.readFileSync(path.join(DIST, "service-worker.js"), "utf8");
+  const offlineApp = fs.readFileSync(path.join(DIST, "offline-app.js"), "utf8");
   const fileMatch = worker.match(/const OFFLINE_FILES = (\[[\s\S]*?\]);\nconst TOTAL_BYTES = (\d+);/);
 
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
   assert.match(index, /rel="apple-touch-icon" href="app-icon\.png"/);
-  assert.match(index, /src="offline-app\.js\?v=offline1"/);
+  assert.match(index, /src="offline-app\.js\?v=offline2"/);
+  assert.match(offlineApp, /navigator\.standalone === true/);
+  assert.match(offlineApp, /panel\.hidden = state === "ready" && installedApp/);
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.start_url, "./");
   assert.ok(fs.statSync(path.join(DIST, "app-icon.png")).size > 0);

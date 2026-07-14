@@ -11,6 +11,7 @@
   const supportedProtocol = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
   if (window.AndroidFiles || !supportedProtocol) return;
 
+  const installedApp = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   panel.hidden = false;
   let registration = null;
   let ready = false;
@@ -113,6 +114,7 @@
 
   function render(state, heading, message, completed = 0, total = 1) {
     panel.dataset.state = state;
+    panel.hidden = state === "ready" && installedApp;
     title.textContent = heading;
     detail.textContent = message;
     progress.hidden = state !== "downloading";
