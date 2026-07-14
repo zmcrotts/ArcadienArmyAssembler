@@ -16,6 +16,7 @@ const deleteRosterMessage = document.getElementById("deleteRosterMessage");
 const discordExportModal = document.getElementById("discordExportModal");
 const discordExportPreview = document.getElementById("discordExportPreview");
 const discordListStyle = document.getElementById("discordListStyle");
+const exportFormatButtons = document.getElementById("exportFormatButtons");
 const discordMultilineHeader = document.getElementById("discordMultilineHeader");
 const discordCombineIdentical = document.getElementById("discordCombineIdentical");
 const discordHideSubunits = document.getElementById("discordHideSubunits");
@@ -24,6 +25,7 @@ const discordHidePoints = document.getElementById("discordHidePoints");
 const discordCustomColors = document.getElementById("discordCustomColors");
 const discordUnitColor = document.getElementById("discordUnitColor");
 const discordPointsColor = document.getElementById("discordPointsColor");
+const exportPdfUnits = document.getElementById("exportPdfUnits");
 const factionSelect = document.getElementById("factionSelect");
 const subfactionSelect = document.getElementById("subfactionSelect");
 const subfactionControl = document.getElementById("subfactionControl");
@@ -32,6 +34,7 @@ const subfactionReference = document.getElementById("subfactionReference");
 const builderLayout = document.getElementById("builderLayout");
 const availableUnitsPanel = document.getElementById("availableUnitsPanel");
 const unitList = document.getElementById("unitList");
+const mobileUnitAddList = document.getElementById("mobileUnitAddList");
 const rosterList = document.getElementById("rosterList");
 const details = document.getElementById("details");
 const pointsTotal = document.getElementById("pointsTotal");
@@ -39,7 +42,18 @@ const pointsLimitInput = document.getElementById("pointsLimit");
 const unitSearch = document.getElementById("unitSearch");
 const availableUnitsTitle = document.getElementById("availableUnitsTitle");
 const toggleAvailableUnits = document.getElementById("toggleAvailableUnits");
+const closeMobileDetails = document.getElementById("closeMobileDetails");
 const rosterNameInput = document.getElementById("rosterName");
+const mobileShell = document.getElementById("mobileShell");
+const mobileRosterName = document.getElementById("mobileRosterName");
+const mobileFactionLabel = document.getElementById("mobileFactionLabel");
+const mobilePointsTotal = document.getElementById("mobilePointsTotal");
+const mobileRosterList = document.getElementById("mobileRosterList");
+const mobileShowLists = document.getElementById("mobileShowLists");
+const mobileOpenMenu = document.getElementById("mobileOpenMenu");
+const mobileAddUnit = document.getElementById("mobileAddUnit");
+const mobileSaveRoster = document.getElementById("mobileSaveRoster");
+const mobileExportRoster = document.getElementById("mobileExportRoster");
 const rosterSavesSelect = document.getElementById("rosterSaves");
 const importJsonFile = document.getElementById("importJsonFile");
 const exportMenuToggle = document.getElementById("exportMenuToggle");
@@ -85,6 +99,11 @@ let rosterDisplay = defaultRosterDisplay();
 let pendingRosterSectionFocusKey = null;
 let rulePopupCounter = 0;
 let transientMessageTimer = null;
+let mobileSheet = null;
+let mobileAddSectionFilter = null;
+let mobileAddKeywordFilter = "";
+const mobileRosterSectionDisclosureState = {};
+const mobileAddSectionDisclosureState = {};
 
 function init() {
   applySavedTheme();
@@ -178,6 +197,12 @@ function init() {
 
   pointsLimitInput.addEventListener("input", render);
   rosterNameInput.addEventListener("input", render);
+  if (mobileRosterName) {
+    mobileRosterName.addEventListener("input", event => {
+      rosterNameInput.value = event.target.value;
+      render();
+    });
+  }
   rosterSavesSelect.addEventListener("change", event => {
     if (event.target.value) loadRosterById(event.target.value);
   });
@@ -210,26 +235,50 @@ function init() {
   };
   document.getElementById("showLibrary").onclick = showLibrary;
   document.getElementById("openNewRoster").onclick = openNewRosterModal;
+  if (mobileShowLists) mobileShowLists.onclick = showLibrary;
+  if (mobileAddUnit) {
+    mobileAddUnit.onclick = () => {
+      if (mobileSheet === "add") closeMobileSheets();
+      else openMobileAddSheet(null);
+    };
+  }
+  if (mobileSaveRoster) mobileSaveRoster.onclick = saveRoster;
+  if (mobileExportRoster) mobileExportRoster.onclick = openMobileExport;
+  if (mobileOpenMenu) mobileOpenMenu.onclick = openNewRosterModal;
+  if (closeMobileDetails) closeMobileDetails.onclick = closeMobileSheets;
   document.getElementById("cancelDeleteRoster").onclick = closeDeleteRosterModal;
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
   document.getElementById("closeDiscordExport").onclick = closeDiscordExportModal;
   document.getElementById("copyDiscordExport").onclick = copyDiscordExport;
   document.getElementById("downloadDiscordExport").onclick = downloadDiscordExport;
+  if (exportPdfUnits) exportPdfUnits.onclick = () => openSheetPreview("units");
   for (const control of discordExportControls()) {
     control.addEventListener("input", renderDiscordExportPreview);
     control.addEventListener("change", renderDiscordExportPreview);
   }
+  renderExportFormatButtons();
   exportMenuToggle.onclick = event => {
     event.stopPropagation();
     setExportMenuOpen(exportMenuPanel.hidden);
   };
   exportMenuPanel.onclick = event => event.stopPropagation();
   document.addEventListener("click", () => setExportMenuOpen(false));
+  document.addEventListener("click", event => {
+    if (handleWeaponPreviewClick(event)) return;
+    closeOpenWeaponPreview(event.target);
+    if (mobileSheet !== "add") return;
+    if (availableUnitsPanel?.contains(event.target)) return;
+    if (mobileAddUnit?.contains(event.target)) return;
+    closeMobileSheets();
+  });
   window.addEventListener("beforeunload", event => {
     if (navigator.userAgent.includes("Electron/")) return;
     if (!hasUnsavedRosterChanges()) return;
     event.preventDefault();
     event.returnValue = "";
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeOpenWeaponPreview();
   });
   newRosterModal.addEventListener("click", event => {
     if (event.target === newRosterModal) closeNewRosterModal();
@@ -580,6 +629,10 @@ function setRosterLayoutModeButtons() {
 }
 
 function applySavedTheme() {
+  if (Boolean(window.AndroidFiles) || window.matchMedia("(max-width: 860px)").matches) {
+    applyTheme("dark");
+    return;
+  }
   let theme = "light";
   try {
     theme = localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
@@ -647,6 +700,8 @@ function render() {
   setRosterLayoutModeButtons();
   renderRosterSaveBrowser();
   if (appMode === "library") {
+    closeMobileSheets();
+    if (mobileShell) mobileShell.hidden = true;
     if (builderShell) builderShell.hidden = true;
     if (startScreen) {
       startScreen.hidden = false;
@@ -660,20 +715,259 @@ function render() {
   renderRoster();
   renderTotal();
   renderSelectedDetails();
+  renderMobileShell();
+  applyMobileSheetState();
+}
+
+function openMobileAddSheet(section = null) {
+  mobileSheet = "add";
+  mobileAddSectionFilter = section || null;
+  mobileAddKeywordFilter = "";
+  renderUnits();
+  applyMobileSheetState();
+}
+
+function openMobileDetailsSheet() {
+  mobileSheet = "details";
+  applyMobileSheetState();
+}
+
+function closeMobileSheets() {
+  const hadAddFilter = Boolean(mobileAddSectionFilter || mobileAddKeywordFilter);
+  mobileSheet = null;
+  mobileAddSectionFilter = null;
+  mobileAddKeywordFilter = "";
+  applyMobileSheetState();
+  if (hadAddFilter && appMode === "builder") renderUnits();
+}
+
+function applyMobileSheetState() {
+  document.body.classList.toggle("mobileAddOpen", mobileSheet === "add");
+  document.body.classList.toggle("mobileDetailsOpen", mobileSheet === "details");
+  document.body.classList.toggle("mobileSheetOpen", Boolean(mobileSheet));
+  if (mobileAddUnit) mobileAddUnit.textContent = mobileSheet === "add" ? "< Back" : "Add Unit";
+  if (availableUnitsTitle) {
+    availableUnitsTitle.textContent = mobileAddSectionFilter
+      ? `Add ${mobileAddSectionFilter}`
+      : (availableUnitsCollapsed ? "A.U." : "Available Units");
+  }
+  if (unitSearch && mobileSheet === "add") {
+    unitSearch.placeholder = mobileAddSectionFilter
+      ? `Search ${mobileAddSectionFilter} units`
+      : "Search units or keywords";
+  }
+}
+
+function renderMobileShell() {
+  if (!mobileShell || !mobileRosterList) return;
+  mobileShell.hidden = false;
+  if (mobileRosterName && document.activeElement !== mobileRosterName) {
+    mobileRosterName.value = rosterNameInput.value;
+  }
+  if (mobileFactionLabel) mobileFactionLabel.textContent = factionLabelFor(currentSubfaction || currentFaction);
+  if (mobilePointsTotal) mobilePointsTotal.textContent = `${getTotalPoints()}/${Number(pointsLimitInput.value || 0)} pts`;
+
+  const detachments = currentArmyDefinition() ? (armyEngine.selectedDetachments?.(currentArmyDefinition(), armyState) || []) : [];
+  const warningCount = validateRoster().filter(item => !item.ok).length;
+  const availableSectionKeys = new Set(
+    factionUnits().map(unit => catalogueSections.sectionForUnit(unit))
+  );
+  const sections = groupRosterPresentation(rosterPresentation()).filter(section => (
+    section.groups.length || section.custom || availableSectionKeys.has(section.key)
+  ));
+  mobileRosterList.innerHTML = `
+    <button class="mobileConfigCard ${selectedPanel === "configuration" ? "selected" : ""}" type="button">
+      <span>
+        <b>Configuration</b>
+        <small>${escapeHtml(detachments.length ? detachments.map(item => item.name).join(" + ") : "Choose detachments")}</small>
+      </span>
+      <span>${warningCount ? `⚠ ${warningCount}` : "Open"}</span>
+    </button>
+    ${sections.map(renderMobileRosterSection).join("")}
+  `;
+
+  const configCard = mobileRosterList.querySelector(".mobileConfigCard");
+  if (configCard) {
+    configCard.onclick = () => {
+      selectedPanel = "configuration";
+      selectedInstanceId = null;
+      render();
+      openMobileDetailsSheet();
+    };
+  }
+  for (const button of mobileRosterList.querySelectorAll(".mobileSectionAdd")) {
+    button.onclick = event => {
+      event.stopPropagation();
+      openMobileAddSheet(button.dataset.sectionKey || null);
+    };
+  }
+  for (const header of mobileRosterList.querySelectorAll(".mobileRosterSectionHeader")) {
+    header.onclick = event => {
+      if (event.target.closest("button")) return;
+      const key = header.dataset.sectionKey || "";
+      mobileRosterSectionDisclosureState[key] = !mobileRosterSectionDisclosureState[key];
+      renderMobileShell();
+    };
+  }
+  for (const card of mobileRosterList.querySelectorAll(".mobileRosterUnit")) {
+    card.onclick = () => {
+      const primaryId = card.dataset.primaryInstanceId;
+      const isAttached = card.dataset.groupKind === "attached";
+      selectedInstanceId = primaryId;
+      selectedPanel = isAttached ? "group" : "unit";
+      render();
+      openMobileDetailsSheet();
+    };
+  }
+  for (const button of mobileRosterList.querySelectorAll("[data-mobile-action]")) {
+    button.onclick = event => {
+      event.stopPropagation();
+      handleMobileRosterAction(button);
+    };
+  }
+}
+
+function renderMobileRosterSection(section) {
+  const open = Object.prototype.hasOwnProperty.call(mobileRosterSectionDisclosureState, section.key)
+    ? mobileRosterSectionDisclosureState[section.key]
+    : true;
+  return `
+    <section class="mobileRosterSection">
+      <header class="mobileRosterSectionHeader" data-section-key="${escapeHtml(section.key)}">
+        <div>
+          <b><span>${open ? "v" : ">"}</span>${escapeHtml(section.section)}</b>
+          <small>${section.groups.length} ${section.groups.length === 1 ? "unit" : "units"}</small>
+        </div>
+        <button class="mobileSectionAdd" type="button" data-section-key="${escapeHtml(section.key)}">+ Add</button>
+      </header>
+      <div class="mobileRosterSectionContents" ${open ? "" : "hidden"}>
+        ${section.groups.map(renderMobileRosterGroup).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderMobileRosterGroup(group) {
+  const groupEntries = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).filter(Boolean);
+  const bodyguard = groupEntries.find(item => item.instanceId === group.bodyguard?.instanceId) || groupEntries[0];
+  const primary = group.kind === "attached" ? bodyguard : groupEntries[0];
+  if (!primary) return "";
+  const selected = group.memberInstanceIds.includes(selectedInstanceId) ? " selected" : "";
+  const title = group.kind === "attached" ? renderMobileAttachedTitle(group, groupEntries) : renderMobileEntryTitle(primary);
+  const points = group.kind === "attached" ? formatGroupPoints(group) : formatEntryPoints(primary);
+  const loadout = group.kind === "attached"
+    ? groupEntries.map(entry => renderMobileMemberSummary(entry, entry === bodyguard ? "Bodyguard" : "Leader")).join("")
+    : renderMobileLoadoutSummary(primary);
+  const actionLabel = group.kind === "attached"
+    ? `${bodyguard.unitPackage.name} attached unit`
+    : primary.unitPackage.name;
+  const secondaryAction = group.kind === "attached" ? "split" : "remove";
+  const secondaryLabel = group.kind === "attached" ? "Split attached unit" : `Remove ${actionLabel}`;
+  const secondaryIcon = group.kind === "attached" ? "Split" : "×";
+  return `
+    <article class="mobileRosterUnit${selected}${group.kind === "attached" ? " attached" : ""}"
+      data-group-kind="${escapeHtml(group.kind)}"
+      data-primary-instance-id="${escapeHtml(primary.instanceId)}">
+      <div class="mobileUnitTopline">
+        <span class="mobileUnitKind">${group.kind === "attached" ? "Attached unit" : mobileUnitRoleLabel(primary)}</span>
+        <span>${escapeHtml(points)}</span>
+      </div>
+      <h3>${title}</h3>
+      ${group.kind === "attached" ? `<div class="mobileAttachedBreakdown">${loadout}</div>` : loadout}
+      ${group.warnings?.length ? `<div class="mobileWarning">⚠ ${escapeHtml(group.warnings[0].message)}</div>` : ""}
+      <div class="mobileUnitActions">
+        <button class="mobileUnitPrimaryAction" type="button" data-mobile-action="configure" data-instance-id="${escapeHtml(primary.instanceId)}">Configure</button>
+        <button class="mobileUnitIconAction" type="button" data-mobile-action="duplicate" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="Duplicate ${escapeHtml(actionLabel)}" title="Duplicate"><span aria-hidden="true">⧉</span></button>
+        <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : "Split"}"><span aria-hidden="true">${secondaryIcon}</span></button>
+      </div>
+    </article>
+  `;
+}
+
+function renderMobileEntryTitle(rosterEntry) {
+  const unit = rosterEntry.unitPackage;
+  const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
+  const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
+  const nickname = rosterNicknameFor(rosterEntry.instanceId);
+  return `${sizePrefix}${escapeHtml(unit.name)}${nickname ? ` <small>"${escapeHtml(nickname)}"</small>` : ""}`;
+}
+
+function renderMobileAttachedTitle(group, groupEntries) {
+  const bodyguard = groupEntries.find(item => item.instanceId === group.bodyguard?.instanceId) || groupEntries[0];
+  const leaders = group.leaders
+    .map(leader => groupEntries.find(item => item.instanceId === leader.instanceId))
+    .filter(Boolean);
+  return `${renderMobileEntryTitle(bodyguard)} <small>with ${leaders.map(item => escapeHtml(item.unitPackage.name)).join(", ")}</small>`;
+}
+
+function renderMobileMemberSummary(rosterEntry, label) {
+  return `
+    <div>
+      <b>${escapeHtml(label)} · ${escapeHtml(formatEntryPoints(rosterEntry))}</b>
+      <span>${renderMobileLoadoutText(rosterEntry).map(escapeHtml).join(", ") || "No configured wargear"}</span>
+    </div>
+  `;
+}
+
+function renderMobileLoadoutSummary(rosterEntry) {
+  const items = renderMobileLoadoutText(rosterEntry);
+  if (!items.length) return `<p class="mobileLoadout muted">No configured wargear.</p>`;
+  return `<ul class="mobileLoadout">${items.slice(0, 5).map(item => `<li>${escapeHtml(item)}</li>`).join("")}${items.length > 5 ? `<li>+${items.length - 5} more</li>` : ""}</ul>`;
+}
+
+function renderMobileLoadoutText(rosterEntry) {
+  const configured = engine.getConfiguredProfiles(rosterEntry.unitPackage.definition, rosterEntry.entry);
+  return (configured.weapons || [])
+    .map(weapon => `${weapon.count || 1}x ${weapon.name}`)
+    .filter(Boolean);
+}
+
+function mobileUnitRoleLabel(rosterEntry) {
+  return catalogueSections.sectionForUnit(rosterEntry.unitPackage || rosterEntry);
+}
+
+function handleMobileRosterAction(button) {
+  const instanceId = button.dataset.instanceId;
+  const rosterEntry = roster.find(item => item.instanceId === instanceId);
+  if (!rosterEntry) return;
+  if (button.dataset.mobileAction === "duplicate") {
+    duplicateRosterEntry(rosterEntry);
+    render();
+    return;
+  }
+  if (button.dataset.mobileAction === "remove") {
+    removeRosterEntry(instanceId);
+    render();
+    return;
+  }
+  if (button.dataset.mobileAction === "split") {
+    armyState = armyEngine.detachBodyguard(armyState, instanceId);
+    selectedInstanceId = instanceId;
+    selectedPanel = "unit";
+    render();
+    return;
+  }
+  selectedInstanceId = instanceId;
+  selectedPanel = "unit";
+  render();
+  openMobileDetailsSheet();
 }
 
 function renderStartScreen() {
   const saves = savedRosterLibrary();
   startScreen.innerHTML = `
     <div class="startHeader">
-      <div>
+      <div class="startBrandRow">
         <span class="startBrand" aria-label="Arcadien Army Assembler"><span>Arcadien</span> <span>Army</span> <span>Assembler</span></span>
-        <h2>Saved Rosters</h2>
-        <p class="muted">Load an existing roster or start a new one.</p>
+        <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
       </div>
       <div class="startHeaderActions">
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
+      </div>
+      <div class="startIntro">
+        <h2>Saved Rosters</h2>
+        <p class="muted">Load an existing roster or start a new one.</p>
       </div>
     </div>
     <div class="savedRosterCards">
@@ -690,7 +984,6 @@ function renderStartScreen() {
         </div>
       `).join("") : `<p class="muted">No saved rosters yet.</p>`}
     </div>
-    <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer" target="_blank" rel="noopener noreferrer">☕ Support development</a>
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
@@ -1130,8 +1423,10 @@ function renderUnits() {
   const units = factionUnits()
     .filter(unitMatchesSearch);
 
+  let renderedSections = 0;
   for (const group of catalogueSections.groupUnits(units)) {
     if (!group.units.length) continue;
+    renderedSections += 1;
     const section = document.createElement("details");
     section.className = "unitSection";
     section.dataset.unitSection = group.section;
@@ -1173,17 +1468,149 @@ function renderUnits() {
     section.appendChild(contents);
     unitList.appendChild(section);
   }
+  if (!renderedSections) {
+    unitList.innerHTML = `<p class="muted">No units match the current filter.</p>`;
+  }
+  renderMobileUnitAddList(units);
+}
+
+function renderMobileUnitAddList(units) {
+  if (!mobileUnitAddList) return;
+  const grouped = catalogueSections.groupUnits(units).filter(group => group.units.length);
+  mobileUnitAddList.innerHTML = grouped.length
+    ? `${renderMobileAddFilterChips()}
+      ${grouped.map(group => {
+        const open = Boolean(searchText || mobileAddSectionFilter || mobileAddKeywordFilter || mobileAddSectionDisclosureState[group.section]);
+        return `
+          <section class="mobileAddSection">
+            <button type="button" class="mobileAddSectionHeader" data-mobile-add-section="${escapeHtml(group.section)}">
+              <span>${open ? "v" : ">"}</span>
+              <b>${escapeHtml(group.section)}</b>
+              <small>${group.units.length}</small>
+            </button>
+            <div class="mobileAddSectionContents" ${open ? "" : "hidden"}>
+              ${group.units.map(unit => renderMobileAddUnitRow(unit)).join("")}
+            </div>
+          </section>
+        `;
+      }).join("")}`
+    : `${renderMobileAddFilterChips()}<p class="muted">No units match the current filter.</p>`;
+  for (const button of mobileUnitAddList.querySelectorAll("[data-mobile-filter]")) {
+    button.onclick = event => {
+      event.stopPropagation();
+      const nextFilter = button.dataset.mobileFilter || "";
+      mobileAddSectionFilter = "";
+      mobileAddKeywordFilter = nextFilter === mobileAddKeywordFilter ? "" : nextFilter;
+      renderUnits();
+      applyMobileSheetState();
+    };
+  }
+  for (const header of mobileUnitAddList.querySelectorAll("[data-mobile-add-section]")) {
+    header.onclick = event => {
+      event.stopPropagation();
+      const section = header.dataset.mobileAddSection || "";
+      mobileAddSectionDisclosureState[section] = !mobileAddSectionDisclosureState[section];
+      renderUnits();
+    };
+  }
+  for (const button of mobileUnitAddList.querySelectorAll("[data-mobile-add-unit]")) {
+    button.onclick = event => {
+      event.stopPropagation();
+      const unit = findUnitBySelectionKey(button.dataset.mobileAddUnit);
+      if (!unit) return;
+      const rosterEntry = createRosterEntry(unit);
+      roster.push(rosterEntry);
+      selectedInstanceId = rosterEntry.instanceId;
+      selectedPanel = "unit";
+      render();
+      showTransientMessage(`✓ Added ${unit.name} to the roster.`);
+    };
+  }
+  for (const button of mobileUnitAddList.querySelectorAll("[data-mobile-preview-unit]")) {
+    button.onclick = event => {
+      event.stopPropagation();
+      const unit = findUnitBySelectionKey(button.dataset.mobilePreviewUnit);
+      if (!unit) return;
+      showPreview(unit);
+      openMobileDetailsSheet();
+    };
+  }
+}
+
+function renderMobileAddFilterChips() {
+  const units = factionUnits();
+  const chips = [];
+  for (const section of catalogueSections.SECTION_ORDER || []) {
+    const count = units.filter(unit => catalogueSections.sectionForUnit(unit) === section).length;
+    if (count) chips.push({ label: section, count });
+  }
+  const seen = new Set(chips.map(item => item.label.toLowerCase()));
+  const keywordCounts = new Map();
+  for (const unit of units) {
+    const keywords = [
+      ...(unit.keywords || []),
+      ...(unit.definition?.keywords || []),
+      ...(unit.definition?.categories || []),
+      ...(unit.categories || [])
+    ].filter(keyword => keyword && !/^Faction:/i.test(keyword));
+    for (const keyword of keywords) {
+      const normalized = keyword.toLowerCase();
+      if (seen.has(normalized)) continue;
+      keywordCounts.set(keyword, (keywordCounts.get(keyword) || 0) + 1);
+    }
+  }
+  const extraKeywords = Array.from(keywordCounts.entries())
+    .filter(([, count]) => count >= 2)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 8)
+    .map(([label, count]) => ({ label, count }));
+  const allChips = chips.concat(extraKeywords);
+  return `
+    <div class="mobileAddFilters" aria-label="Unit filters">
+      <button type="button" class="${mobileAddKeywordFilter ? "" : "selected"}" data-mobile-filter="">All</button>
+      ${allChips.map(chip => `
+        <button type="button" class="${chip.label === mobileAddKeywordFilter ? "selected" : ""}" data-mobile-filter="${escapeHtml(chip.label)}">
+          ${escapeHtml(chip.label)} <span>${chip.count}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderMobileAddUnitRow(unit) {
+  const keywords = (unit.keywords || unit.definition?.keywords || unit.definition?.categories || [])
+    .filter(keyword => !/^Faction:/i.test(keyword))
+    .slice(0, 4);
+  const models = engine.getUnitSizeState(unit.definition, unit.defaultEntry);
+  return `
+    <article class="mobileAddUnitRow">
+      <button type="button" class="mobileAddPreview" data-mobile-preview-unit="${escapeHtml(unit.selectionKey)}">View</button>
+      <div>
+        <b>${escapeHtml(unit.name)}</b>
+        <small>${escapeHtml(keywords.join(" · "))}${models.current ? ` · ${models.current} model${models.current === 1 ? "" : "s"}` : ""}</small>
+      </div>
+      <span>${unit.defaultSummary.points} pts</span>
+      <button type="button" class="mobileAddUnitButton" data-mobile-add-unit="${escapeHtml(unit.selectionKey)}">+</button>
+    </article>
+  `;
+}
+
+function findUnitBySelectionKey(selectionKey) {
+  return factionUnits().find(unit => unit.selectionKey === selectionKey) || null;
 }
 
 function unitMatchesSearch(unit) {
-  if (!searchText) return true;
+  if (mobileAddSectionFilter && catalogueSections.sectionForUnit(unit) !== mobileAddSectionFilter) return false;
   const haystack = [
     unit.name,
+    catalogueSections.sectionForUnit(unit),
     ...(unit.keywords || []),
     ...(unit.definition?.keywords || []),
     ...(unit.definition?.categories || []),
     ...(unit.categories || [])
   ].join(" ").toLowerCase();
+  if (mobileAddKeywordFilter && !haystack.includes(mobileAddKeywordFilter.toLowerCase())) return false;
+  if (!searchText) return true;
   return haystack.includes(searchText);
 }
 
@@ -2426,12 +2853,46 @@ function renderWeaponOptionPreview(name, profiles = []) {
   const id = `weaponPreview${++rulePopupCounter}`;
   return `
     <span class="weaponPreviewWrap">
-      <span class="weaponPreviewToken" tabindex="0" aria-describedby="${id}">${escapeHtml(name)}</span>
-      <span id="${id}" class="weaponPreviewPopover" role="tooltip">
+      <button type="button" class="weaponPreviewToken" aria-expanded="false" aria-controls="${id}">${escapeHtml(name)}</button>
+      <span id="${id}" class="weaponPreviewPopover" role="dialog" aria-label="${escapeHtml(name)} preview">
+        <button type="button" class="weaponPreviewClose" aria-label="Close weapon preview">Close</button>
         ${profiles.map(renderWeaponPreviewProfile).join("")}
       </span>
     </span>
   `;
+}
+
+function handleWeaponPreviewClick(event) {
+  const closeButton = event.target.closest?.(".weaponPreviewClose");
+  if (closeButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    setWeaponPreviewOpen(closeButton.closest(".weaponPreviewWrap"), false);
+    return true;
+  }
+  const token = event.target.closest?.(".weaponPreviewToken");
+  if (!token) return false;
+  event.preventDefault();
+  event.stopPropagation();
+  const wrap = token.closest(".weaponPreviewWrap");
+  const willOpen = !wrap?.classList.contains("active");
+  closeOpenWeaponPreview(wrap);
+  setWeaponPreviewOpen(wrap, willOpen);
+  return true;
+}
+
+function closeOpenWeaponPreview(except = null) {
+  for (const wrap of document.querySelectorAll(".weaponPreviewWrap.active")) {
+    if (except && (wrap === except || wrap.contains(except))) continue;
+    setWeaponPreviewOpen(wrap, false);
+  }
+}
+
+function setWeaponPreviewOpen(wrap, open) {
+  if (!wrap) return;
+  wrap.classList.toggle("active", open);
+  const token = wrap.querySelector(".weaponPreviewToken");
+  if (token) token.setAttribute("aria-expanded", open ? "true" : "false");
 }
 
 function renderWeaponPreviewProfile(profile) {
@@ -2723,31 +3184,39 @@ function displayStatValue(value) {
 function renderWeapons(title, weapons, typeName, ruleLookup = new Map()) {
   const rows = weapons.filter(w => w.typeName === typeName);
   if (!rows.length) return "";
+  const skillKey = typeName === "Melee Weapons" ? "WS" : "BS";
 
   return `
     <h4>${escapeHtml(title)}</h4>
-    <table>
+    <table class="weaponTable">
       <thead>
         <tr>
-          <th>Count</th><th>Weapon</th><th>Range</th><th>A</th><th>BS</th><th>WS</th><th>S</th><th>AP</th><th>D</th><th>Keywords</th>
+          <th class="weaponCountColumn">Count</th><th class="weaponNameColumn">Weapon</th><th>Range</th><th>A</th><th>${skillKey}</th><th>S</th><th>AP</th><th>D</th>
         </tr>
       </thead>
       <tbody>
         ${rows.map(w => {
           const c = w.characteristics || {};
+          const keywordCell = renderWeaponKeywordCell(c.Keywords, ruleLookup);
           return `
-            <tr>
-              <td>${escapeHtml(w.count ?? 1)}</td>
-              <td>${escapeHtml(w.name)}</td>
+            <tr class="mobileWeaponNameRow">
+              <td colspan="8">${escapeHtml(formatWeaponNameLine(w.count ?? 1, w.name))}</td>
+            </tr>
+            <tr class="weaponStatsRow">
+              <td class="weaponCountColumn">${escapeHtml(w.count ?? 1)}</td>
+              <td class="weaponNameColumn">${escapeHtml(w.name)}</td>
               <td>${escapeHtml(displayWeaponCell(c.Range))}</td>
               <td>${escapeHtml(displayWeaponCell(c.A))}</td>
-              <td>${escapeHtml(displayWeaponCell(c.BS))}</td>
-              <td>${escapeHtml(displayWeaponCell(c.WS))}</td>
+              <td>${escapeHtml(displayWeaponCell(c[skillKey]))}</td>
               <td>${escapeHtml(displayWeaponCell(c.S))}</td>
               <td>${escapeHtml(displayWeaponCell(c.AP))}</td>
               <td>${escapeHtml(displayWeaponCell(c.D))}</td>
-              <td>${renderWeaponKeywordCell(c.Keywords, ruleLookup)}</td>
             </tr>
+            ${keywordCell === "-" ? "" : `
+              <tr class="weaponKeywordRow">
+                <td colspan="8">${keywordCell}</td>
+              </tr>
+            `}
           `;
         }).join("")}
       </tbody>
@@ -2758,6 +3227,12 @@ function renderWeapons(title, weapons, typeName, ruleLookup = new Map()) {
 function displayWeaponCell(value) {
   const text = String(value ?? "").trim();
   return text || "-";
+}
+
+function formatWeaponNameLine(count, name) {
+  const numericCount = Number(count);
+  const prefix = Number.isFinite(numericCount) && numericCount > 1 ? `${numericCount}x ` : "";
+  return `${prefix}${name}`;
 }
 
 function renderWeaponKeywordCell(value, ruleLookup = new Map()) {
@@ -3156,7 +3631,7 @@ function saveRoster() {
   localStorage.setItem("engineRoster", JSON.stringify(document));
   markRosterClean();
   renderRosterSaveBrowser();
-  alert("Saved.");
+  showTransientMessage(`✓ Saved “${document.name}” on this device.`);
 }
 
 async function loadRoster() {
@@ -3333,6 +3808,32 @@ function exportRosterText(format = "NR") {
   }));
 }
 
+function openMobileExport() {
+  if (discordListStyle) discordListStyle.value = "wtc-compact";
+  if (discordMultilineHeader) discordMultilineHeader.checked = true;
+  if (discordHideSubunits) discordHideSubunits.checked = false;
+  if (discordHideBullets) discordHideBullets.checked = false;
+  renderExportFormatButtons();
+  openDiscordExportModal();
+}
+
+function renderExportFormatButtons() {
+  if (!exportFormatButtons || !discordListStyle) return;
+  const current = discordListStyle.value;
+  exportFormatButtons.innerHTML = Array.from(discordListStyle.options).map(option => `
+    <button type="button" class="${option.value === current ? "selected" : ""}" data-export-style="${escapeHtml(option.value)}">
+      ${escapeHtml(option.textContent || option.value)}
+    </button>
+  `).join("");
+  for (const button of exportFormatButtons.querySelectorAll("[data-export-style]")) {
+    button.onclick = () => {
+      discordListStyle.value = button.dataset.exportStyle || "wtc-compact";
+      renderExportFormatButtons();
+      renderDiscordExportPreview();
+    };
+  }
+}
+
 function discordExportControls() {
   return [
     discordListStyle,
@@ -3353,6 +3854,27 @@ function selectedDiscordColorMode() {
 
 function discordExportOptions() {
   const style = discordListStyle?.value || "discord-extended";
+  const directFormat = directExportFormatForStyle(style);
+  if (directFormat) {
+    return {
+      format: directFormat,
+      skippableWargear: compactorSkippableWargear
+    };
+  }
+  if (style.startsWith("plain-")) {
+    return {
+      format: "DISCORD",
+      compact: style === "plain-compact",
+      ansi: false,
+      multilineHeader: false,
+      combineIdentical: false,
+      hideSubunits: false,
+      noBullets: false,
+      hidePoints: false,
+      colorMode: "none",
+      skippableWargear: compactorSkippableWargear
+    };
+  }
   const colorMode = selectedDiscordColorMode();
   const customColorOptions = colorMode === "custom"
     ? {
@@ -3378,11 +3900,25 @@ function discordExportOptions() {
 
 function discordExportSuffix() {
   const style = discordListStyle?.value || "discord-extended";
+  const directFormat = directExportFormatForStyle(style);
+  if (directFormat) return directFormat.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  if (style.startsWith("plain-")) return style;
   const parts = ["discord", style.replace(/^discord-/, "").replace(/^plain-/, "plain-")];
   if (discordCombineIdentical?.checked) parts.push("combined");
   if (discordHideSubunits?.checked) parts.push("flat");
   if (discordHidePoints?.checked) parts.push("no-points");
   return parts.join("-");
+}
+
+function directExportFormatForStyle(style) {
+  const map = {
+    nr: "NR",
+    wtc: "WTC",
+    "wtc-compact": "WTC-Compact",
+    gw: "GW",
+    "gw-compact": "GW-Compact"
+  };
+  return map[style] || "";
 }
 
 function currentDiscordExportText() {
@@ -3404,7 +3940,22 @@ function closeDiscordExportModal() {
 
 function renderDiscordExportPreview() {
   if (!discordExportModal || discordExportModal.hidden) return;
-  if (discordCustomColors) discordCustomColors.hidden = selectedDiscordColorMode() !== "custom";
+  renderExportFormatButtons();
+  const style = discordListStyle?.value || "";
+  const discordLike = style.startsWith("discord-");
+  for (const element of [
+    discordMultilineHeader?.closest("label"),
+    discordCombineIdentical?.closest("label"),
+    discordHideSubunits?.closest("label"),
+    discordHideBullets?.closest("label"),
+    discordHidePoints?.closest("label"),
+    document.querySelector(".discordColorOptions")
+  ].filter(Boolean)) {
+    element.hidden = !discordLike;
+  }
+  const colorControls = document.querySelector(".discordColorOptions");
+  if (colorControls) colorControls.hidden = !discordLike;
+  if (discordCustomColors) discordCustomColors.hidden = !discordLike || selectedDiscordColorMode() !== "custom";
   lastDiscordExportText = currentDiscordExportText();
   discordExportPreview.innerHTML = discordPreviewHtml(lastDiscordExportText);
 }
@@ -3445,7 +3996,7 @@ async function copyDiscordExport() {
   const text = lastDiscordExportText || currentDiscordExportText();
   const copied = await copyTextToClipboard(text);
   if (copied) {
-    showTransientMessage("Copied Discord export.");
+    showTransientMessage("Copied export.");
   } else {
     showTransientMessage("Could not copy automatically. Use Download instead.");
   }
@@ -3453,6 +4004,11 @@ async function copyDiscordExport() {
 
 async function copyTextToClipboard(text) {
   const value = String(text || "");
+  try {
+    if (window.AndroidFiles?.copyText) return Boolean(window.AndroidFiles.copyText(value));
+  } catch {
+    // Fall through to browser clipboard support.
+  }
   try {
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(value);
@@ -3833,20 +4389,38 @@ function renderSheetWeaponSections(sheet) {
 
 function renderSheetWeapons(title, weapons) {
   if (!weapons.length) return "";
-  const hasKeywords = weapons.some(weapon => weapon.keywords);
   const skillLabel = title === "Melee Weapons" ? "WS" : "BS";
   return `
     <h2>${escapeHtml(title)}</h2>
-    <table>
-      <thead><tr><th>Count</th><th>Weapon</th><th>Rng</th><th>A</th><th>${skillLabel}</th><th>S</th><th>AP</th><th>D</th>${hasKeywords ? "<th>Keywords</th>" : ""}</tr></thead>
+    <table class="weaponTable">
+      <thead><tr><th class="weaponCountColumn">Count</th><th class="weaponNameColumn">Weapon</th><th>Rng</th><th>A</th><th>${skillLabel}</th><th>S</th><th>AP</th><th>D</th></tr></thead>
       <tbody>
         ${weapons.map(weapon => {
           const c = weapon.characteristics || {};
-          return `<tr><td>${escapeHtml(weapon.count || 1)}</td><td>${escapeHtml(weapon.name)}</td><td>${escapeHtml(c.Range || "")}</td><td>${escapeHtml(c.A || "")}</td><td>${escapeHtml(c.BS || c.WS || "")}</td><td>${escapeHtml(c.S || "")}</td><td>${escapeHtml(c.AP || "")}</td><td>${escapeHtml(c.D || "")}</td>${hasKeywords ? `<td>${escapeHtml(weapon.keywords || "")}</td>` : ""}</tr>`;
+          return `
+            <tr class="mobileWeaponNameRow">
+              <td colspan="8">${escapeHtml(formatWeaponNameLine(weapon.count || 1, weapon.name))}</td>
+            </tr>
+            <tr class="weaponStatsRow">
+              <td class="weaponCountColumn">${escapeHtml(weapon.count || 1)}</td>
+              <td class="weaponNameColumn">${escapeHtml(weapon.name)}</td>
+              <td>${escapeHtml(c.Range || "")}</td>
+              <td>${escapeHtml(c.A || "")}</td>
+              <td>${escapeHtml(c[skillLabel] || "")}</td>
+              <td>${escapeHtml(c.S || "")}</td>
+              <td>${escapeHtml(c.AP || "")}</td>
+              <td>${escapeHtml(c.D || "")}</td>
+            </tr>
+            ${weapon.keywords ? `<tr class="weaponKeywordRow"><td colspan="8">${renderSheetWeaponKeywords(weapon.keywords)}</td></tr>` : ""}
+          `;
         }).join("")}
       </tbody>
     </table>
   `;
+}
+
+function renderSheetWeaponKeywords(value) {
+  return `<div class="weaponKeywordChips">${splitKeywordList(value).map(keyword => `<span>${escapeHtml(keyword)}</span>`).join("")}</div>`;
 }
 
 function renderSheetAbilities(abilities) {
@@ -3894,6 +4468,14 @@ function renderSheetKeywords(keywords) {
 }
 
 function downloadFile(fileName, contents) {
+  try {
+    if (window.AndroidFiles?.saveText) {
+      window.AndroidFiles.saveText(String(fileName || "roster.txt"), String(contents || ""));
+      return;
+    }
+  } catch {
+    // Fall through to browser downloads.
+  }
   const blob = new Blob([contents], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
 

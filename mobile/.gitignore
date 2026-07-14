@@ -1,0 +1,6 @@
+dist-user/
+.android-toolchain/
+android/.gradle/
+android/app/build/
+android/app/src/main/assets/www/
+release/

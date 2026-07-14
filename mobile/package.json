@@ -1,0 +1,12 @@
+{
+  "name": "arcadien-army-assembler-mobile",
+  "version": "0.1.8",
+  "private": true,
+  "description": "Separated mobile web prototype for Arcadien Army Assembler.",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build-user-runtime.js",
+    "android:assets": "npm run build && node scripts/build-android-assets.js",
+    "test": "node --test test/*.test.js"
+  }
+}
