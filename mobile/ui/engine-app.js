@@ -43,6 +43,7 @@ const unitSearch = document.getElementById("unitSearch");
 const availableUnitsTitle = document.getElementById("availableUnitsTitle");
 const toggleAvailableUnits = document.getElementById("toggleAvailableUnits");
 const closeMobileDetails = document.getElementById("closeMobileDetails");
+const mobileSheetBackdrop = document.getElementById("mobileSheetBackdrop");
 const rosterNameInput = document.getElementById("rosterName");
 const mobileShell = document.getElementById("mobileShell");
 const mobileRosterName = document.getElementById("mobileRosterName");
@@ -246,6 +247,7 @@ function init() {
   if (mobileExportRoster) mobileExportRoster.onclick = openMobileExport;
   if (mobileOpenMenu) mobileOpenMenu.onclick = openNewRosterModal;
   if (closeMobileDetails) closeMobileDetails.onclick = closeMobileSheets;
+  if (mobileSheetBackdrop) mobileSheetBackdrop.onclick = closeMobileSheets;
   document.getElementById("cancelDeleteRoster").onclick = closeDeleteRosterModal;
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
   document.getElementById("closeDiscordExport").onclick = closeDiscordExportModal;
@@ -746,6 +748,7 @@ function applyMobileSheetState() {
   document.body.classList.toggle("mobileAddOpen", mobileSheet === "add");
   document.body.classList.toggle("mobileDetailsOpen", mobileSheet === "details");
   document.body.classList.toggle("mobileSheetOpen", Boolean(mobileSheet));
+  if (mobileSheetBackdrop) mobileSheetBackdrop.hidden = mobileSheet !== "details";
   if (mobileAddUnit) mobileAddUnit.textContent = mobileSheet === "add" ? "< Back" : "Add Unit";
   if (availableUnitsTitle) {
     availableUnitsTitle.textContent = mobileAddSectionFilter

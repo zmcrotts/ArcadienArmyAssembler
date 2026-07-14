@@ -1478,12 +1478,27 @@ button:hover {
     display: block;
   }
 
-  body.mobileSheetOpen::before {
+  body.mobileAddOpen::before {
     background: rgba(0, 0, 0, 0.52);
     content: "";
     inset: 0;
     position: fixed;
     z-index: 60;
+  }
+
+  .mobileSheetBackdrop {
+    background: rgba(0, 0, 0, 0.52);
+    border: 0;
+    border-radius: 0;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 60;
+  }
+
+  .mobileSheetBackdrop[hidden] {
+    display: none;
   }
 
   .mobileSheetClose {
