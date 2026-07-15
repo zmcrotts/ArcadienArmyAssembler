@@ -1,6 +1,6 @@
 {
   "name": "arcadien-army-assembler-mobile",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "private": true,
   "description": "Separated mobile web prototype for Arcadien Army Assembler.",
   "type": "commonjs",

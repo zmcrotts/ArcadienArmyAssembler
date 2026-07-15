@@ -275,7 +275,7 @@ public final class MainActivity extends Activity {
         public void disconnect() {
             oneDriveAccessToken = null;
             oneDriveAccessTokenExpiresAt = 0;
-            securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).apply();
+            securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
         }
     }
 
@@ -330,7 +330,7 @@ public final class MainActivity extends Activity {
             request.put("scope", ONEDRIVE_SCOPE);
             JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, request);
             if (!token.has("access_token")) {
-                securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).apply();
+                securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
                 return false;
             }
             acceptOneDriveToken(token);
@@ -346,7 +346,9 @@ public final class MainActivity extends Activity {
         oneDriveAccessToken = token.getString("access_token");
         oneDriveAccessTokenExpiresAt = System.currentTimeMillis() + Math.max(60, token.optInt("expires_in", 3600) - 60) * 1000L;
         String refreshToken = token.optString("refresh_token", "");
-        if (!refreshToken.isEmpty()) writeRefreshToken(refreshToken);
+        if (refreshToken.isEmpty()) throw new IllegalStateException("Microsoft did not provide a refresh credential. Try Sync again.");
+        writeRefreshToken(refreshToken);
+        if (!refreshToken.equals(readRefreshToken())) throw new IllegalStateException("OneDrive connection could not be saved securely on this device.");
     }
 
     private SharedPreferences securePreferences() {
@@ -358,7 +360,9 @@ public final class MainActivity extends Activity {
         cipher.init(Cipher.ENCRYPT_MODE, oneDriveKey());
         String encoded = Base64.encodeToString(cipher.getIV(), Base64.NO_WRAP) + ":"
             + Base64.encodeToString(cipher.doFinal(value.getBytes(StandardCharsets.UTF_8)), Base64.NO_WRAP);
-        securePreferences().edit().putString(ONEDRIVE_REFRESH_TOKEN, encoded).apply();
+        if (!securePreferences().edit().putString(ONEDRIVE_REFRESH_TOKEN, encoded).commit()) {
+            throw new IllegalStateException("OneDrive connection could not be saved securely on this device.");
+        }
     }
 
     private String readRefreshToken() {
