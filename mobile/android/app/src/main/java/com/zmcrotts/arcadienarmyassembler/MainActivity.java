@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.net.Uri;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,8 +42,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
+import java.security.KeyStore;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import android.util.Base64;
 
 public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 4102;
@@ -48,6 +58,9 @@ public final class MainActivity extends Activity {
     private static final String ONEDRIVE_SCOPE = "offline_access https://graph.microsoft.com/Files.ReadWrite.AppFolder";
     private static final String MICROSOFT_DEVICE_CODE_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
     private static final String MICROSOFT_TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
+    private static final String ONEDRIVE_KEY_ALIAS = "arcadien-onedrive-refresh-token";
+    private static final String ONEDRIVE_PREFS = "arcadien-onedrive";
+    private static final String ONEDRIVE_REFRESH_TOKEN = "refresh-token";
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
     private volatile String oneDriveAccessToken;
@@ -253,13 +266,16 @@ public final class MainActivity extends Activity {
                 if (oneDriveSignInInProgress) return;
                 oneDriveSignInInProgress = true;
             }
-            new Thread(() -> runOneDriveDeviceSignIn()).start();
+            new Thread(() -> {
+                if (!refreshOneDriveAccessToken()) runOneDriveDeviceSignIn();
+            }).start();
         }
 
         @JavascriptInterface
         public void disconnect() {
             oneDriveAccessToken = null;
             oneDriveAccessTokenExpiresAt = 0;
+            securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).apply();
         }
     }
 
@@ -286,8 +302,7 @@ public final class MainActivity extends Activity {
                 tokenRequest.put("device_code", deviceCode);
                 JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, tokenRequest);
                 if (token.has("access_token")) {
-                    oneDriveAccessToken = token.getString("access_token");
-                    oneDriveAccessTokenExpiresAt = System.currentTimeMillis() + Math.max(60, token.optInt("expires_in", 3600) - 60) * 1000L;
+                    acceptOneDriveToken(token);
                     notifyOneDriveResult(oneDriveAccessToken, null);
                     return;
                 }
@@ -302,6 +317,75 @@ public final class MainActivity extends Activity {
         } finally {
             synchronized (MainActivity.this) { oneDriveSignInInProgress = false; }
         }
+    }
+
+    private boolean refreshOneDriveAccessToken() {
+        String refreshToken = readRefreshToken();
+        if (refreshToken.isEmpty()) return false;
+        try {
+            Map<String, String> request = new LinkedHashMap<>();
+            request.put("client_id", ONEDRIVE_CLIENT_ID);
+            request.put("grant_type", "refresh_token");
+            request.put("refresh_token", refreshToken);
+            request.put("scope", ONEDRIVE_SCOPE);
+            JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, request);
+            if (!token.has("access_token")) {
+                securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).apply();
+                return false;
+            }
+            acceptOneDriveToken(token);
+            notifyOneDriveResult(oneDriveAccessToken, null);
+            synchronized (MainActivity.this) { oneDriveSignInInProgress = false; }
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private void acceptOneDriveToken(JSONObject token) throws Exception {
+        oneDriveAccessToken = token.getString("access_token");
+        oneDriveAccessTokenExpiresAt = System.currentTimeMillis() + Math.max(60, token.optInt("expires_in", 3600) - 60) * 1000L;
+        String refreshToken = token.optString("refresh_token", "");
+        if (!refreshToken.isEmpty()) writeRefreshToken(refreshToken);
+    }
+
+    private SharedPreferences securePreferences() {
+        return getSharedPreferences(ONEDRIVE_PREFS, MODE_PRIVATE);
+    }
+
+    private void writeRefreshToken(String value) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, oneDriveKey());
+        String encoded = Base64.encodeToString(cipher.getIV(), Base64.NO_WRAP) + ":"
+            + Base64.encodeToString(cipher.doFinal(value.getBytes(StandardCharsets.UTF_8)), Base64.NO_WRAP);
+        securePreferences().edit().putString(ONEDRIVE_REFRESH_TOKEN, encoded).apply();
+    }
+
+    private String readRefreshToken() {
+        try {
+            String stored = securePreferences().getString(ONEDRIVE_REFRESH_TOKEN, "");
+            String[] parts = stored.split(":", 2);
+            if (parts.length != 2) return "";
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.DECRYPT_MODE, oneDriveKey(), new GCMParameterSpec(128, Base64.decode(parts[0], Base64.NO_WRAP)));
+            return new String(cipher.doFinal(Base64.decode(parts[1], Base64.NO_WRAP)), StandardCharsets.UTF_8);
+        } catch (Exception ignored) {
+            return "";
+        }
+    }
+
+    private SecretKey oneDriveKey() throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        if (keyStore.containsAlias(ONEDRIVE_KEY_ALIAS)) {
+            return ((KeyStore.SecretKeyEntry) keyStore.getEntry(ONEDRIVE_KEY_ALIAS, null)).getSecretKey();
+        }
+        KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+        generator.init(new KeyGenParameterSpec.Builder(ONEDRIVE_KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .build());
+        return generator.generateKey();
     }
 
     private JSONObject postMicrosoftForm(String endpoint, Map<String, String> values) throws Exception {
