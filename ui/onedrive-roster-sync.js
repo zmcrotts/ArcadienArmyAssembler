@@ -13,7 +13,9 @@ function usableHere() {
 }
 
 function redirectUri() {
-  return `${window.location.origin}/`;
+  // Keep a project-hosted PWA on its own path after Microsoft returns it.
+  // This is still simply http://localhost:4173/ for the local desktop test site.
+  return new URL(".", window.location.href).href;
 }
 
 function readTokens() {
