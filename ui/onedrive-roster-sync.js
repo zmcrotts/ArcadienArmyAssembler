@@ -29,6 +29,14 @@ function readTokens() {
   }
 }
 
+function hasStoredConnection() {
+  // Opening the Lists screen must never start an OAuth flow or make a network
+  // request. A saved (even expired) browser token is enough to show Sync; the
+  // token is refreshed only inside the user's explicit Sync request.
+  if (ANDROID_NATIVE) return Boolean(window.AndroidOneDrive.getCachedAccessToken());
+  return Boolean(readTokens());
+}
+
 function saveTokens(tokens) {
   localStorage.setItem(ONEDRIVE_TOKEN_KEY, JSON.stringify({
     access_token: tokens.access_token,
@@ -282,7 +290,7 @@ window.OneDriveRosterSync = {
   available: usableHere(),
   getStatus: async () => ({
     available: usableHere(),
-    connected: ANDROID_NATIVE ? Boolean(window.AndroidOneDrive.getCachedAccessToken()) : Boolean(await accessToken())
+    connected: hasStoredConnection()
   }),
   beginSignIn,
   completeSignIn,
