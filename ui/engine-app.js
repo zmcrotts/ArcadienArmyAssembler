@@ -687,7 +687,7 @@ function renderStartScreen() {
       </div>
       <div class="startHeaderActions">
         ${syncEnabled ? `<button id="startSyncRosters" class="subtleAction">${syncLabel}</button>` : ""}
-        ${syncStatus?.connected && window.OneDriveRosterSync?.available ? `<button id="startCleanSync" class="subtleAction">Clean duplicates</button>` : ""}
+        ${syncStatus?.connected && (window.OneDriveRosterSync?.available || window.desktopRosterSync) ? `<button id="startCleanSync" class="subtleAction">Clean duplicates</button>` : ""}
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -776,7 +776,8 @@ async function syncSavedRosters() {
 }
 
 async function cleanSyncedDuplicates() {
-  if (!window.OneDriveRosterSync?.available) return;
+  const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  if (!syncProvider?.cleanDuplicates) return;
   if (!confirm("Remove exact duplicate lists from this device and OneDrive? Lists with any different content will be kept.")) return;
   const button = document.getElementById("startCleanSync");
   if (button) {
@@ -784,7 +785,7 @@ async function cleanSyncedDuplicates() {
     button.textContent = "Cleaning…";
   }
   try {
-    const result = await window.OneDriveRosterSync.cleanDuplicates(savedRosterLibrary());
+    const result = await syncProvider.cleanDuplicates(savedRosterLibrary());
     saveRosterLibrary(result.saves);
     renderStartScreen();
     const cleanup = result.cleanup || {};
