@@ -1504,14 +1504,16 @@ function renderUnits() {
 async function syncSavedRosters() {
   const service = window.OneDriveRosterSync;
   if (!service?.available) return;
-  if (!syncStatus?.connected) {
-    await service.beginSignIn();
-    syncStatus = await service.getStatus();
-  }
   const button = document.getElementById("startSyncRosters");
-  button.disabled = true;
-  button.textContent = "Syncing…";
   try {
+    if (!syncStatus?.connected) {
+      button.disabled = true;
+      button.textContent = "Connecting…";
+      await service.beginSignIn();
+      syncStatus = await service.getStatus();
+    }
+    button.disabled = true;
+    button.textContent = "Syncing…";
     const result = await service.sync(savedRosterLibrary());
     saveRosterLibrary(result.saves);
     renderStartScreen();

@@ -65,6 +65,7 @@ public final class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileChooserCallback;
     private volatile String oneDriveAccessToken;
     private volatile long oneDriveAccessTokenExpiresAt;
+    private volatile String lastOneDriveConnectionError = "";
     private boolean oneDriveSignInInProgress;
 
     @Override
@@ -267,7 +268,12 @@ public final class MainActivity extends Activity {
                 oneDriveSignInInProgress = true;
             }
             new Thread(() -> {
-                if (!refreshOneDriveAccessToken()) runOneDriveDeviceSignIn();
+                if (!refreshOneDriveAccessToken()) {
+                    if (!lastOneDriveConnectionError.isEmpty()) {
+                        showOneDriveConnectionProblem(lastOneDriveConnectionError);
+                    }
+                    runOneDriveDeviceSignIn();
+                }
             }).start();
         }
 
@@ -320,6 +326,7 @@ public final class MainActivity extends Activity {
     }
 
     private boolean refreshOneDriveAccessToken() {
+        lastOneDriveConnectionError = "";
         String refreshToken = readRefreshToken();
         if (refreshToken.isEmpty()) return false;
         try {
@@ -330,6 +337,7 @@ public final class MainActivity extends Activity {
             request.put("scope", ONEDRIVE_SCOPE);
             JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, request);
             if (!token.has("access_token")) {
+                lastOneDriveConnectionError = token.optString("error_description", "The saved OneDrive connection was rejected by Microsoft.");
                 securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
                 return false;
             }
@@ -337,7 +345,8 @@ public final class MainActivity extends Activity {
             notifyOneDriveResult(oneDriveAccessToken, null);
             synchronized (MainActivity.this) { oneDriveSignInInProgress = false; }
             return true;
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            lastOneDriveConnectionError = error.getMessage() == null ? "The saved OneDrive connection could not be restored." : error.getMessage();
             return false;
         }
     }
@@ -373,7 +382,8 @@ public final class MainActivity extends Activity {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.DECRYPT_MODE, oneDriveKey(), new GCMParameterSpec(128, Base64.decode(parts[0], Base64.NO_WRAP)));
             return new String(cipher.doFinal(Base64.decode(parts[1], Base64.NO_WRAP)), StandardCharsets.UTF_8);
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            lastOneDriveConnectionError = error.getMessage() == null ? "The saved OneDrive connection could not be read." : error.getMessage();
             return "";
         }
     }
@@ -430,7 +440,12 @@ public final class MainActivity extends Activity {
             .show());
     }
 
+    private void showOneDriveConnectionProblem(String message) {
+        runOnUiThread(() -> Toast.makeText(MainActivity.this, "Saved OneDrive connection failed: " + message, Toast.LENGTH_LONG).show());
+    }
+
     private void notifyOneDriveResult(String token, String error) {
+        if (error != null && !error.isEmpty()) showOneDriveConnectionProblem(error);
         String script = "window.OneDriveRosterSync && window.OneDriveRosterSync.androidAccessTokenReceived("
             + JSONObject.quote(token == null ? "" : token) + ","
             + JSONObject.quote(error == null ? "" : error) + ");";
