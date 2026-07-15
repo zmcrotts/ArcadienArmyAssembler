@@ -33,6 +33,11 @@ import java.nio.charset.StandardCharsets;
 
 public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 4102;
+    // The same hosted, offline-capable mobile app used on iPad/iPhone. Keeping
+    // Android on this HTTPS origin lets the manual OneDrive flow return to this
+    // installed app after Microsoft sign-in.
+    private static final String HOSTED_APP_URL = "https://arcadien-army-assembler-mobile.zmcrotts.chatgpt.site/";
+    private static final String HOSTED_APP_HOST = "arcadien-army-assembler-mobile.zmcrotts.chatgpt.site";
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
 
@@ -98,7 +103,7 @@ public final class MainActivity extends Activity {
         webView.setWebChromeClient(new LocalWebChromeClient());
 
         webView.clearCache(true);
-        webView.loadUrl("file:///android_asset/www/index.html?v=" + BuildConfig.VERSION_CODE);
+        webView.loadUrl(HOSTED_APP_URL + "?v=" + BuildConfig.VERSION_CODE);
     }
 
     @Override
@@ -158,7 +163,14 @@ public final class MainActivity extends Activity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             Uri uri = request.getUrl();
+            String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase();
             if ("file".equalsIgnoreCase(uri.getScheme()) || "blob".equalsIgnoreCase(uri.getScheme())) return false;
+            if ("https".equalsIgnoreCase(uri.getScheme()) && (
+                HOSTED_APP_HOST.equals(host)
+                || "login.microsoftonline.com".equals(host)
+                || "login.live.com".equals(host)
+                || "account.live.com".equals(host)
+            )) return false;
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
         }
