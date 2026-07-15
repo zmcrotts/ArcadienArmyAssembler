@@ -9,6 +9,7 @@ const OUT_DIR = path.join(ROOT, "dist-user");
 const FILES = [
   ["ui/styles.css", "styles.css"],
   ["ui/engine-app.js", "engine-app.js"],
+  ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
   ["ui/engine-runtime.js", "engine-runtime.js"],
   ["ui/catalogue-sections.js", "catalogue-sections.js"],
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
@@ -48,6 +49,7 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/roster-document\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-document.js"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/sheets\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/sheets.js"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=[^"]+"><\/script>/, '<script defer src="catalogue-sections.js"></script>')
+    .replace(/<script(?:\s+defer)? src="onedrive-roster-sync\.js\?v=[^"]+"><\/script>/, '<script defer src="onedrive-roster-sync.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-app.js"></script>');
 
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), html, "utf8");

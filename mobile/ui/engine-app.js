@@ -101,6 +101,7 @@ let rosterDisplay = defaultRosterDisplay();
 let pendingRosterSectionFocusKey = null;
 let rulePopupCounter = 0;
 let transientMessageTimer = null;
+let syncStatus = null;
 let mobileSheet = null;
 let mobileAddSectionFilter = null;
 let mobileAddKeywordFilter = "";
@@ -295,8 +296,18 @@ function init() {
     if (event.target === discordExportModal) closeDiscordExportModal();
   });
 
-  renderRosterSaveBrowser();
-  render();
+  (async () => {
+    try {
+      if (window.OneDriveRosterSync?.available) {
+        await window.OneDriveRosterSync.completeSignIn();
+        syncStatus = await window.OneDriveRosterSync.getStatus();
+      }
+    } catch {
+      syncStatus = null;
+    }
+    renderRosterSaveBrowser();
+    render();
+  })();
 }
 
 function loadAvailableUnitsCollapsed() {
@@ -976,6 +987,7 @@ function renderStartScreen() {
         <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
       </div>
       <div class="startHeaderActions">
+        <button id="startSyncRosters">Sync</button>
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -1000,6 +1012,7 @@ function renderStartScreen() {
     </div>
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
+  document.getElementById("startSyncRosters").onclick = syncSavedRosters;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
@@ -1486,6 +1499,30 @@ function renderUnits() {
     unitList.innerHTML = `<p class="muted">No units match the current filter.</p>`;
   }
   renderMobileUnitAddList(units);
+}
+
+async function syncSavedRosters() {
+  const service = window.OneDriveRosterSync;
+  if (!service?.available) return;
+  if (!syncStatus?.connected) {
+    await service.beginSignIn();
+    return;
+  }
+  const button = document.getElementById("startSyncRosters");
+  button.disabled = true;
+  button.textContent = "Syncing…";
+  try {
+    const result = await service.sync(savedRosterLibrary());
+    saveRosterLibrary(result.saves);
+    renderStartScreen();
+    const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
+    const details = [uploaded && `${uploaded} uploaded`, downloaded && `${downloaded} added`, conflicts && `${conflicts} kept safely`].filter(Boolean);
+    showTransientMessage(details.length ? `Synced — ${details.join(", ")}.` : "Synced — your lists already match.");
+  } catch (error) {
+    showTransientMessage(`Sync could not finish: ${error.message}`);
+    button.disabled = false;
+    button.textContent = "Sync";
+  }
 }
 
 function renderMobileUnitAddList(units) {

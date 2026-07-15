@@ -22,6 +22,7 @@ const FILES = [
 ];
 
 const PROJECT_FILES = [
+  ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
   ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
 ];
