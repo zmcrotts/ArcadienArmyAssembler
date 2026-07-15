@@ -571,6 +571,11 @@ button:hover {
   white-space: nowrap;
 }
 
+.subtleAction {
+  background: transparent;
+  border-color: #8e9899;
+}
+
 .savedRosterCards {
   display: grid;
   gap: 8px;

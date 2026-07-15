@@ -9,6 +9,7 @@ on:
       - ".github/workflows/mobile-pages.yml"
       - "data/**"
       - "mobile/**"
+      - "ui/onedrive-roster-sync.js"
       - "scripts/build-engine-ui-data.js"
       - "src/**"
 

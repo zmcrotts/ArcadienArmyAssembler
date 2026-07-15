@@ -85,6 +85,7 @@ let rosterDisplay = defaultRosterDisplay();
 let pendingRosterSectionFocusKey = null;
 let rulePopupCounter = 0;
 let transientMessageTimer = null;
+let syncStatus = null;
 
 function init() {
   applySavedTheme();
@@ -241,8 +242,12 @@ function init() {
     if (event.target === discordExportModal) closeDiscordExportModal();
   });
 
-  renderRosterSaveBrowser();
-  render();
+  refreshSyncStatus().catch(() => {
+    syncStatus = null;
+  }).finally(() => {
+    renderRosterSaveBrowser();
+    render();
+  });
 }
 
 function loadAvailableUnitsCollapsed() {
@@ -671,6 +676,8 @@ function render() {
 
 function renderStartScreen() {
   const saves = savedRosterLibrary();
+  const syncEnabled = Boolean(window.OneDriveRosterSync?.available || window.desktopRosterSync);
+  const syncLabel = "Sync";
   startScreen.innerHTML = `
     <div class="startHeader">
       <div>
@@ -679,6 +686,8 @@ function renderStartScreen() {
         <p class="muted">Load an existing roster or start a new one.</p>
       </div>
       <div class="startHeaderActions">
+        ${syncEnabled ? `<button id="startSyncRosters" class="subtleAction">${syncLabel}</button>` : ""}
+        ${syncStatus?.connected && (window.OneDriveRosterSync?.available || window.desktopRosterSync) ? `<button id="startCleanSync" class="subtleAction">Clean duplicates</button>` : ""}
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -700,12 +709,93 @@ function renderStartScreen() {
     <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer" target="_blank" rel="noopener noreferrer">☕ Support development</a>
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
+  const syncButton = document.getElementById("startSyncRosters");
+  if (syncButton) syncButton.onclick = syncSavedRosters;
+  const cleanSyncButton = document.getElementById("startCleanSync");
+  if (cleanSyncButton) cleanSyncButton.onclick = cleanSyncedDuplicates;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
   }
   for (const button of startScreen.querySelectorAll(".startDeleteRoster")) {
     button.onclick = () => requestDeleteRoster(button.dataset.saveId);
+  }
+}
+
+async function refreshSyncStatus() {
+  if (window.OneDriveRosterSync?.available) {
+    await window.OneDriveRosterSync.completeSignIn();
+    syncStatus = await window.OneDriveRosterSync.getStatus();
+    return syncStatus;
+  }
+  if (!window.desktopRosterSync) return null;
+  try {
+    syncStatus = await window.desktopRosterSync.getStatus();
+  } catch {
+    syncStatus = null;
+  }
+  return syncStatus;
+}
+
+async function syncSavedRosters() {
+  const oneDrive = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : null;
+  if (!oneDrive && !window.desktopRosterSync) return;
+  const button = document.getElementById("startSyncRosters");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Syncing…";
+  }
+  try {
+    if (oneDrive && !syncStatus?.connected) {
+      await oneDrive.beginSignIn();
+      return;
+    }
+    const result = oneDrive
+      ? await oneDrive.sync(savedRosterLibrary())
+      : await window.desktopRosterSync.sync(savedRosterLibrary());
+    syncStatus = result;
+    if (result.canceled) {
+      showTransientMessage("Sync was cancelled.");
+    } else {
+      saveRosterLibrary(Array.isArray(result.saves) ? result.saves : savedRosterLibrary());
+      renderStartScreen();
+      const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
+      const parts = [];
+      if (uploaded) parts.push(`${uploaded} uploaded`);
+      if (downloaded) parts.push(`${downloaded} added`);
+      if (conflicts) parts.push(`${conflicts} conflict${conflicts === 1 ? "" : "s"} kept safely`);
+      showTransientMessage(parts.length ? `Synced — ${parts.join(", ")}.` : "Synced — your lists already match.");
+    }
+  } catch (error) {
+    showTransientMessage(`Sync could not finish: ${error.message}`);
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Sync";
+    }
+  }
+}
+
+async function cleanSyncedDuplicates() {
+  const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  if (!syncProvider?.cleanDuplicates) return;
+  if (!confirm("Remove exact duplicate lists from this device and OneDrive? Lists with any different content will be kept.")) return;
+  const button = document.getElementById("startCleanSync");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Cleaning…";
+  }
+  try {
+    const result = await syncProvider.cleanDuplicates(savedRosterLibrary());
+    saveRosterLibrary(result.saves);
+    renderStartScreen();
+    const cleanup = result.cleanup || {};
+    showTransientMessage(`Cleanup finished — ${cleanup.localRemoved || 0} local and ${cleanup.remoteRemoved || 0} cloud duplicate${(cleanup.localRemoved || 0) + (cleanup.remoteRemoved || 0) === 1 ? "" : "s"} removed.`);
+  } catch (error) {
+    showTransientMessage(`Cleanup could not finish: ${error.message}`);
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Clean duplicates";
+    }
   }
 }
 
