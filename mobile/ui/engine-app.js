@@ -1506,7 +1506,7 @@ async function syncSavedRosters() {
   if (!service?.available) return;
   if (!syncStatus?.connected) {
     await service.beginSignIn();
-    return;
+    syncStatus = await service.getStatus();
   }
   const button = document.getElementById("startSyncRosters");
   button.disabled = true;

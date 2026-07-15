@@ -7,9 +7,11 @@ const ONEDRIVE_TOKEN_KEY = "arcadienOneDriveTokens";
 const ONEDRIVE_PKCE_KEY = "arcadienOneDrivePkce";
 const GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
 const RECORD_KIND = "arcadien-roster-sync-record";
+const ANDROID_NATIVE = Boolean(window.AndroidOneDrive);
+let pendingAndroidToken = null;
 
 function usableHere() {
-  return /^https?:$/.test(window.location.protocol);
+  return /^https?:$/.test(window.location.protocol) || ANDROID_NATIVE;
 }
 
 function redirectUri() {
@@ -56,6 +58,14 @@ async function tokenRequest(body) {
 }
 
 async function accessToken() {
+  if (ANDROID_NATIVE) {
+    const cached = window.AndroidOneDrive.getCachedAccessToken();
+    if (cached) return cached;
+    return new Promise((resolve, reject) => {
+      pendingAndroidToken = { resolve, reject };
+      window.AndroidOneDrive.beginSignIn();
+    });
+  }
   const tokens = readTokens();
   if (!tokens) return null;
   if (tokens.access_token && Number(tokens.expires_at || 0) > Date.now()) return tokens.access_token;
@@ -227,6 +237,10 @@ async function cleanDuplicates(saves) {
 }
 
 async function beginSignIn() {
+  if (ANDROID_NATIVE) {
+    await accessToken();
+    return;
+  }
   const verifier = base64Url(crypto.getRandomValues(new Uint8Array(32)));
   sessionStorage.setItem(ONEDRIVE_PKCE_KEY, verifier);
   const query = new URLSearchParams({
@@ -242,6 +256,7 @@ async function beginSignIn() {
 }
 
 async function completeSignIn() {
+  if (ANDROID_NATIVE) return false;
   if (!usableHere()) return false;
   const url = new URL(window.location.href);
   const error = url.searchParams.get("error");
@@ -265,10 +280,23 @@ async function completeSignIn() {
 
 window.OneDriveRosterSync = {
   available: usableHere(),
-  getStatus: async () => ({ available: usableHere(), connected: Boolean(await accessToken()) }),
+  getStatus: async () => ({
+    available: usableHere(),
+    connected: ANDROID_NATIVE ? Boolean(window.AndroidOneDrive.getCachedAccessToken()) : Boolean(await accessToken())
+  }),
   beginSignIn,
   completeSignIn,
   sync,
   cleanDuplicates,
-  disconnect: () => localStorage.removeItem(ONEDRIVE_TOKEN_KEY)
+  disconnect: () => {
+    if (ANDROID_NATIVE) window.AndroidOneDrive.disconnect();
+    else localStorage.removeItem(ONEDRIVE_TOKEN_KEY);
+  },
+  androidAccessTokenReceived: (token, error) => {
+    const pending = pendingAndroidToken;
+    pendingAndroidToken = null;
+    if (!pending) return;
+    if (token) pending.resolve(token);
+    else pending.reject(new Error(error || "Microsoft sign-in did not finish."));
+  }
 };
