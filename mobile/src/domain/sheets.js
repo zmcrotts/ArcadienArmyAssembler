@@ -230,6 +230,7 @@ function effectAppliesAutomatically(text, sourceKind = "") {
   return /while\s+.*\b(?:is\s+)?leading\b/i.test(text)
     || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
     || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text)
+    || /\badd\s+\d+\s+to\s+the\s+bearer['’]s\s+\w+\s+characteristic\b/i.test(text)
     || /\bmodels?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
     || /\bweapons?\s+equipped\s+by\s+models?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
     || /\bthis\s+unit'?s\s+.*weapons?\b/i.test(text);
@@ -343,8 +344,9 @@ function extractUnitEffectsFromText(text, sourceKind = "") {
   const normalized = normalizeText(text);
   if (!normalized || !effectAppliesAutomatically(normalized, sourceKind)) return [];
   const effects = [];
-  if (/\badd\s+1\s+to\s+the\s+Toughness\s+characteristic\s+of\s+(?:Bodyguard\s+)?models\b/i.test(normalized)) {
-    effects.push({ kind: "unit-characteristic", characteristic: "T", delta: 1, bodyguardOnly: bodyguardModelsOnly(normalized) });
+  const toughnessMatch = normalized.match(/\badd\s+(\d+)\s+to\s+the\s+(?:bearer['’]s|model['’]s|models?['’])?\s*Toughness\s+characteristic(?:\s+of\s+(?:Bodyguard\s+)?models)?\b/i);
+  if (toughnessMatch) {
+    effects.push({ kind: "unit-characteristic", characteristic: "T", delta: Number(toughnessMatch[1]), bodyguardOnly: bodyguardModelsOnly(normalized) });
   }
   for (const effect of modelCharacteristicEffects(normalized)) {
     effects.push(effect);
@@ -543,8 +545,9 @@ function sheetRelevantAbility(item) {
 }
 
 function statlinesForRecord(record, enhancements = [], effects = [], context = {}) {
-  const inferredInSv = inferredInvulnerableSave(record, enhancements, effects, context);
-  return applyUnitEffectsToProfiles(unitProfiles(record), effects, context).map(profile => {
+  const recordContext = { ...context, unitName: record?.name || "", keywords: record?.keywords || [] };
+  const inferredInSv = inferredInvulnerableSave(record, enhancements, effects, recordContext);
+  return applyUnitEffectsToProfiles(unitProfiles(record), effects, recordContext).map(profile => {
     const characteristics = clone(profile.characteristics || {});
     const current = invulnerableSaveValue(characteristics);
     const best = bestSave(current, inferredInSv);
@@ -575,8 +578,26 @@ function invulnerableEffectTextsFromEffects(effects = [], context = {}) {
   return asArray(effects).flatMap(effect => {
     if (effect?.bodyguardOnly && !context.isBodyguard) return [];
     const source = effect?.sourceKind || effect?.source || "";
-    return invulnerableEffectTextParts(effect).filter(text => effectAppliesAutomatically(text, source));
+    return invulnerableEffectTextParts(effect).filter(text =>
+      effectAppliesAutomatically(text, source) && invulnerableEffectTargetsUnit(text, context)
+    );
   });
+}
+
+function invulnerableEffectTargetsUnit(text, context = {}) {
+  const normalized = normalizeText(text);
+  const marker = normalized.search(/\bmodels?\s+from\s+your\s+army\s+have\s+(?:a\s+)?[2-6]\+\s*(?:InSv|invulnerable\s+save)/i);
+  if (marker < 0) return true;
+  const prefix = normalized.slice(0, marker);
+  const subject = prefix.split(/\s+-\s+/).at(-1)?.replace(/^Friendly\s+/i, "").trim() || "";
+  if (!subject) return true;
+  const targets = subject.split(/\s*\/\s*/).map(normalizeMatchText).filter(Boolean);
+  const candidates = [context.unitName, ...(context.keywords || [])].map(normalizeMatchText).filter(Boolean);
+  return targets.some(target => candidates.some(candidate => candidate === target || candidate.includes(target) || target.includes(candidate)));
+}
+
+function normalizeMatchText(value) {
+  return normalizeText(value).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
 function effectTextParts(item) {

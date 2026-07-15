@@ -476,11 +476,16 @@ function currentAllies() {
   return [...byType.values()];
 }
 
+function allyVisibleForSelectedDetachment(ally) {
+  if (ally?.type !== "chaosDaemons") return true;
+  return armyEngine.daemonDetachmentAllowsSummons(currentArmyDefinition(), armyState);
+}
+
 function renderCatalogueOptions() {
   const catalogueOptions = document.getElementById("catalogueOptions");
   if (!catalogueOptions) return;
   const options = [
-    ...currentAllies().map(ally => ({ key: ally.type, label: `Show ${ally.label}` })),
+    ...currentAllies().filter(allyVisibleForSelectedDetachment).map(ally => ({ key: ally.type, label: `Show ${ally.label}` })),
     { key: "legends", label: "Show Legends" },
     { key: "crucible", label: "Show Crucible Characters" }
   ];
@@ -512,9 +517,11 @@ function factionUnits() {
       byName.set(unit.name, { ...unit, alliedFor: { type: ally.type, label: ally.label } });
     }
   }
+  const army = currentArmyDefinition();
   return [...byName.values()].filter(unit =>
     (cataloguePreferences.legends || !/\[Legends\]/i.test(unit.name))
     && (cataloguePreferences.crucible || !/\[Crucible\]/i.test(unit.name))
+    && armyEngine.canAddUnitForSelectedDetachment(army, armyState, unit)
   );
 }
 
@@ -1585,7 +1592,7 @@ function renderMobileAddFilterChips() {
 }
 
 function renderMobileAddUnitRow(unit) {
-  const keywords = (unit.keywords || unit.definition?.keywords || unit.definition?.categories || [])
+  const keywords = (armyEngine.effectiveKeywordsForEntry?.(unit, armyState) || unit.keywords || unit.definition?.keywords || unit.definition?.categories || [])
     .filter(keyword => !/^Faction:/i.test(keyword))
     .slice(0, 4);
   const models = engine.getUnitSizeState(unit.definition, unit.defaultEntry);
@@ -1608,10 +1615,11 @@ function findUnitBySelectionKey(selectionKey) {
 
 function unitMatchesSearch(unit) {
   if (mobileAddSectionFilter && catalogueSections.sectionForUnit(unit) !== mobileAddSectionFilter) return false;
+  const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(unit, armyState) || unit.keywords || [];
   const haystack = [
     unit.name,
     catalogueSections.sectionForUnit(unit),
-    ...(unit.keywords || []),
+    ...effectiveKeywords,
     ...(unit.definition?.keywords || []),
     ...(unit.definition?.categories || []),
     ...(unit.categories || [])
@@ -2235,18 +2243,19 @@ function showRosterEntry(rosterEntry) {
   ];
   const ruleLookup = buildRuleLookup(configured, effects, currentArmyDefinition());
   const isBodyguard = Boolean(attachedGroup && (attachedGroup.bodyguard?.instanceId || attachedGroup.memberInstanceIds?.[0]) === rosterEntry.instanceId);
+  const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(rosterEntry, armyState) || unit.keywords || unit.definition.keywords || [];
 
   details.innerHTML = `
     <h3>${sizePrefix}${escapeHtml(unit.name)} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
     ${renderSidebarNicknameControl(rosterEntry)}
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
-    ${renderKeywords(unit.keywords || unit.definition.keywords || unit.definition.categories || [], ruleLookup)}
+    ${renderKeywords(effectiveKeywords, ruleLookup)}
     ${renderUnitAssignments(rosterEntry)}
     ${renderUnitSizeControl(rosterEntry, unitSize)}
     ${renderOptionControls(rosterEntry)}
     ${renderEntryValidation(loadoutErrors, pricing.validationErrors)}
-    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup })}
+    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup, unitName: unit.name, keywords: effectiveKeywords })}
     <p><b>Source:</b> ${escapeHtml(unit.source?.sourceFile || "")}</p>
   `;
   bindUnitSizeInputs();
@@ -3329,9 +3338,9 @@ function formatWeaponNameLine(count, name) {
 function renderWeaponKeywordCell(value, ruleLookup = new Map()) {
   const text = displayWeaponCell(value);
   if (text === "-") return "-";
-  return splitKeywordList(text)
+  return `<span class="weaponKeywordChips">${splitKeywordList(text)
     .map(keyword => renderRuleToken(keyword, ruleLookup, { compact: true }))
-    .join(" ");
+    .join("")}</span>`;
 }
 
 function splitKeywordList(value) {
@@ -3635,6 +3644,7 @@ function currentRosterDocument() {
       configuredProfiles: engine.getConfiguredProfiles,
       configuredModels: engine.getConfiguredModels,
       unitSizeState: engine.getUnitSizeState,
+      effectiveKeywords: item => armyEngine.effectiveKeywordsForEntry(item, armyState),
       selectedDetachment: armyEngine.selectedDetachment,
       selectedDetachments: armyEngine.selectedDetachments
     }

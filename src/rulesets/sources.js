@@ -5,6 +5,7 @@ const path = require("path");
 const { extractUnitDefinitions } = require("../bsdata/unit-definitions");
 const { extractArmyDefinitions } = require("../bsdata/army-definitions");
 const { extractAllyDefinitions } = require("../bsdata/ally-definitions");
+const { applyDetachmentKeywordCorrections } = require("./detachment-keywords");
 const {
   attachStratagemsToArmies,
   mergeStratagemSources,
@@ -82,10 +83,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID) {
   const armiesWithRules = applyManualArmyRules(armyDefinitions, armyRules);
   const mfmAttachments = readMfmAttachments(source.auxiliarySources?.mfmAttachments);
   const mfmAttachmentResult = applyMfmAttachments(unitsResult.definitions, mfmAttachments);
-  const unitDefinitions = applyManualLoadoutCorrections(mfmAttachmentResult.definitions.map(unit => ({
+  const unitDefinitions = applyDetachmentKeywordCorrections(applyManualLoadoutCorrections(mfmAttachmentResult.definitions.map(unit => ({
     ...unit,
     rulesetId: source.id
-  })));
+  }))), armiesWithRules);
 
   return {
     source,

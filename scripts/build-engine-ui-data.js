@@ -71,6 +71,7 @@ function compactDefinition(definition) {
     source: definition.source,
     categories: definition.categories,
     keywords: definition.keywords || definition.categories || [],
+    conditionalKeywords: definition.conditionalKeywords || [],
     roles: definition.roles,
     rosterRules: definition.rosterRules,
     composition: definition.composition,
@@ -143,6 +144,7 @@ function main() {
       faction: definition.faction,
       source: definition.source,
       keywords: definition.keywords || definition.categories || [],
+      conditionalKeywords: definition.conditionalKeywords || [],
 
       definition: compactDefinition(definition),
       defaultEntry: entry,

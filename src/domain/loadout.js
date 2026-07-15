@@ -627,7 +627,10 @@ function setSelection(unitDefinition, entry, nodeId, count, enforceOptionState =
     const fixed = min !== null && max !== null && min === max;
     const delta = newCount - oldCount;
     const preferred = defaultChild(parent);
-    const replacingDefault = preferred && preferred.id !== nodeId;
+    // A group may have no declared default. In that case defaultChild() falls
+    // back to the first visible option for repair purposes, but choosing a
+    // different option must not make the whole group mutually exclusive.
+    const replacingDefault = parent.defaultSelectionId && preferred && preferred.id !== nodeId;
 
     if ((fixed || replacingDefault) && delta !== 0) {
       let remaining = Math.abs(delta);

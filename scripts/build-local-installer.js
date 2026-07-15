@@ -93,12 +93,14 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 internal static class Program
 {
     private const string AppName = "Arcadien Army Assembler";
     private const string AppExeName = "Arcadien Army Assembler.exe";
     private const string LegacyAppExeName = "Roster Builder.exe";
+    private const string RegistryKeyPath = @"Software\Arcadien Army Assembler";
 
     private static readonly string[] AppItems =
     {
@@ -136,6 +138,7 @@ internal static class Program
         private readonly CheckBox desktopShortcutCheckBox = new();
         private readonly Button installButton = new();
         private readonly Label statusLabel = new();
+        private readonly Label instructionLabel = new();
 
         internal InstallForm()
         {
@@ -146,17 +149,21 @@ internal static class Program
             MinimizeBox = false;
             ClientSize = new Size(640, 218);
 
-            var label = new Label
+            instructionLabel.Text = "Choose where Arcadien Army Assembler should be installed. Saves, exports, and app data will live in this folder too.";
+            instructionLabel.AutoSize = false;
+            instructionLabel.Location = new Point(14, 14);
+            instructionLabel.Size = new Size(610, 38);
+
+            var existingInstall = FindExistingInstall();
+            var defaultInstall = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName);
+            folderTextBox.Text = existingInstall ?? defaultInstall;
+            if (existingInstall != null)
             {
-                Text = "Choose where Arcadien Army Assembler should be installed. Saves, exports, and app data will live in this folder too.",
-                AutoSize = false,
-                Location = new Point(14, 14),
-                Size = new Size(610, 38)
-            };
+                instructionLabel.Text = "Existing Arcadien Army Assembler installation found. It will be updated in place; saves, exports, and app data will be preserved.";
+            }
 
             folderTextBox.Location = new Point(16, 64);
             folderTextBox.Size = new Size(496, 24);
-            folderTextBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName);
 
             var browseButton = new Button
             {
@@ -180,7 +187,7 @@ internal static class Program
             };
             cancelButton.Click += (_, _) => Close();
 
-            installButton.Text = "Install";
+            installButton.Text = existingInstall != null ? "Update" : "Install";
             installButton.Location = new Point(528, 158);
             installButton.Size = new Size(96, 32);
             installButton.Click += (_, _) => Install();
@@ -189,7 +196,7 @@ internal static class Program
             statusLabel.Location = new Point(16, 138);
             statusLabel.Size = new Size(392, 58);
 
-            Controls.AddRange(new Control[] { label, folderTextBox, browseButton, desktopShortcutCheckBox, statusLabel, cancelButton, installButton });
+            Controls.AddRange(new Control[] { instructionLabel, folderTextBox, browseButton, desktopShortcutCheckBox, statusLabel, cancelButton, installButton });
             AcceptButton = installButton;
             CancelButton = cancelButton;
         }
@@ -205,6 +212,11 @@ internal static class Program
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 folderTextBox.Text = dialog.SelectedPath;
+                var existing = IsRosterBuilderInstall(dialog.SelectedPath);
+                installButton.Text = existing ? "Update" : "Install";
+                instructionLabel.Text = existing
+                    ? "Existing Arcadien Army Assembler installation found. It will be updated in place; saves, exports, and app data will be preserved."
+                    : "Choose where Arcadien Army Assembler should be installed. Saves, exports, and app data will live in this folder too.";
             }
         }
 
@@ -246,6 +258,76 @@ internal static class Program
         }
     }
 
+    private static bool IsRosterBuilderInstall(string? directory)
+    {
+        if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory)) return false;
+        return File.Exists(Path.Combine(directory, ".roster-builder-install"))
+            || File.Exists(Path.Combine(directory, AppExeName))
+            || File.Exists(Path.Combine(directory, LegacyAppExeName));
+    }
+
+    private static string? FindExistingInstall()
+    {
+        var candidates = new System.Collections.Generic.List<string?>();
+
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath);
+            candidates.Add(key?.GetValue("InstallLocation") as string);
+        }
+        catch { }
+
+        foreach (var shortcut in ExistingShortcutPaths()) candidates.Add(ShortcutTargetDirectory(shortcut));
+        candidates.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName));
+
+        foreach (var candidate in candidates.Where(item => !string.IsNullOrWhiteSpace(item)).Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (IsRosterBuilderInstall(candidate)) return Path.GetFullPath(candidate!);
+        }
+
+        foreach (var drive in DriveInfo.GetDrives().Where(item => item.IsReady && item.DriveType == DriveType.Fixed))
+        {
+            try
+            {
+                foreach (var directory in Directory.EnumerateDirectories(drive.RootDirectory.FullName))
+                {
+                    if (IsRosterBuilderInstall(directory)) return Path.GetFullPath(directory);
+                }
+            }
+            catch { }
+        }
+
+        return null;
+    }
+
+    private static string[] ExistingShortcutPaths()
+    {
+        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        var programs = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+        return new[]
+        {
+            Path.Combine(desktop, AppName + ".lnk"),
+            Path.Combine(desktop, "Roster Builder.lnk"),
+            Path.Combine(programs, AppName, AppName + ".lnk"),
+            Path.Combine(programs, "Roster Builder", "Roster Builder.lnk")
+        };
+    }
+
+    private static string? ShortcutTargetDirectory(string shortcutPath)
+    {
+        if (!File.Exists(shortcutPath)) return null;
+        try
+        {
+            var shellType = Type.GetTypeFromProgID("WScript.Shell");
+            if (shellType == null) return null;
+            dynamic shell = Activator.CreateInstance(shellType)!;
+            dynamic shortcut = shell.CreateShortcut(shortcutPath);
+            string target = shortcut.TargetPath;
+            return string.IsNullOrWhiteSpace(target) ? null : Path.GetDirectoryName(target);
+        }
+        catch { return null; }
+    }
+
     private static void InstallTo(string installRoot, bool createDesktopShortcut)
     {
         var marker = Path.Combine(installRoot, ".roster-builder-install");
@@ -281,6 +363,10 @@ internal static class Program
         Directory.CreateDirectory(Path.Combine(installRoot, "rosters"));
         Directory.CreateDirectory(Path.Combine(installRoot, "exports"));
         File.WriteAllText(marker, "Roster Builder local install");
+        using (var key = Registry.CurrentUser.CreateSubKey(RegistryKeyPath))
+        {
+            key.SetValue("InstallLocation", Path.GetFullPath(installRoot), RegistryValueKind.String);
+        }
 
         var exe = Path.Combine(installRoot, AppExeName);
         if (!File.Exists(exe)) throw new FileNotFoundException("Installed app executable not found.", exe);
@@ -345,6 +431,12 @@ $desktopShortcut = Join-Path ([Environment]::GetFolderPath(""Desktop"")) ""Arcad
 $startMenuFolder = Join-Path ([Environment]::GetFolderPath(""Programs"")) $appName
 Remove-Item -LiteralPath $desktopShortcut -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $startMenuFolder -Recurse -Force -ErrorAction SilentlyContinue
+
+$registryKey = ""HKCU:\Software\Arcadien Army Assembler""
+$registeredLocation = (Get-ItemProperty -LiteralPath $registryKey -Name InstallLocation -ErrorAction SilentlyContinue).InstallLocation
+if ($registeredLocation -and ([IO.Path]::GetFullPath($registeredLocation) -eq [IO.Path]::GetFullPath($installRoot))) {
+  Remove-Item -LiteralPath $registryKey -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 Write-Host ""Arcadien Army Assembler app files removed. Local rosters, exports, and user-data were left in:""
 Write-Host $installRoot

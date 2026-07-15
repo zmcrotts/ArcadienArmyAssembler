@@ -576,7 +576,9 @@
       const fixed = min !== null && max !== null && min === max;
       const delta = newCount - oldCount;
       const preferred = defaultChild(parent);
-      const replacingDefault = preferred && preferred.id !== nodeId;
+      // A fallback repair choice is not a declared default, so it must not
+      // turn an otherwise multi-select group into a replacement choice.
+      const replacingDefault = parent.defaultSelectionId && preferred && preferred.id !== nodeId;
 
       if ((fixed || replacingDefault) && delta !== 0) {
         let remaining = Math.abs(delta);
@@ -808,7 +810,10 @@
       profiles: values,
       weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
       units: values.filter(profile => profile.typeName === "Unit"),
-      abilities: values.filter(profile => profile.typeName === "Abilities"),
+      // Datasheets also use non-weapon profile types such as Transport for
+      // capacity rules. Keep every non-unit, non-weapon profile so the sheet
+      // renderer presents those rules alongside ordinary abilities.
+      abilities: values.filter(profile => profile.typeName !== "Unit" && !/Weapons$/i.test(profile.typeName || "")),
       rules: [...rules.values()]
     };
   }

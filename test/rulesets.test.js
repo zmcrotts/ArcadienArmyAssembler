@@ -358,6 +358,48 @@ test("11e configured abilities collapse duplicate same-name wargear rules", () =
   assert.match(relicShield[0].characteristics.Description, /Wounds characteristic of 6/);
 });
 
+test("11e Gorkanaut keeps its Transport capacity with its sheet profiles", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const gorkanaut = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Orks" && unit.name === "Gorkanaut"
+  );
+  const configured = getConfiguredProfiles(gorkanaut, createDefaultRosterEntry(gorkanaut));
+  const transport = configured.abilities.find(profile => profile.typeName === "Transport");
+
+  assert.ok(transport, "Gorkanaut should retain its Transport profile");
+  assert.match(transport.characteristics.Capacity, /transport capacity of 12 ORKS INFANTRY/i);
+});
+
+test("11e Rollin' Deff exposes each detachment upgrade once", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const orks = ruleset.armies.find(army => army.faction === "Xenos - Orks");
+  const rollinDeff = orks.detachments.find(detachment => detachment.name === "Rollin' Deff");
+  const upgrades = orks.enhancements.filter(item => item.detachmentIds.includes(rollinDeff.id));
+
+  assert.deepEqual(upgrades.map(item => item.name).sort(), ["Boarding Ramps", "Targetin' Gizmos"]);
+  assert.ok(upgrades.every(item => item.maxSelections === 3));
+  const eligibleNames = upgrade => upgrade.eligibleSelectionKeys
+    .map(selectionKey => ruleset.units.find(unit => unit.selectionKey === selectionKey)?.name)
+    .filter(Boolean)
+    .sort();
+  assert.ok(upgrades.every(upgrade => JSON.stringify(eligibleNames(upgrade)) === JSON.stringify(["Battlewagon", "Hunta Rig", "Kill Rig"])));
+  for (const name of ["Battlewagon", "Hunta Rig", "Kill Rig"]) {
+    const unit = ruleset.units.find(item => item.faction === "Xenos - Orks" && item.name === name);
+    assert.ok(unit.conditionalKeywords.some(grant => grant.keyword === "Wagon" && grant.detachmentIds.includes(rollinDeff.id)));
+  }
+});
+
+test("11e Warrior Bioform Onslaught grants Warrior and Battleline keywords to both Warrior units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const tyranids = ruleset.armies.find(army => army.faction === "Xenos - Tyranids");
+  const detachment = tyranids.detachments.find(item => item.name === "Warrior Bioform Onslaught");
+  for (const name of ["Tyranid Warriors with Melee Bio-Weapons", "Tyranid Warriors with Ranged Bio-Weapons"]) {
+    const unit = ruleset.units.find(item => item.faction === tyranids.faction && item.name === name);
+    const grants = unit.conditionalKeywords.filter(grant => grant.detachmentIds.includes(detachment.id)).map(grant => grant.keyword).sort();
+    assert.deepEqual(grants, ["Battleline", "Tyranid Warriors"]);
+  }
+});
+
 test("11e Templar Vows stays scoped to Black Templars units", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const configuredRules = unit => {

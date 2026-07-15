@@ -167,7 +167,7 @@ test("browser army runtime warns when god-specific summoned daemons lack the dae
     allowedSelectionKeys: ["blue-horrors"],
     detachments: [
       { id: "grand-coven", name: "Grand Coven", points: 0 },
-      { id: "servants", name: "Servants of Change", points: 0 }
+      { id: "changehost", name: "Changehost of Deceit", points: 0 }
     ],
     enhancements: []
   };
@@ -182,12 +182,36 @@ test("browser army runtime warns when god-specific summoned daemons lack the dae
   }];
 
   let state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "grand-coven");
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, state, roster[0]), false);
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, state, {
+    alliedFor: { type: "chaosDaemons" },
+    faction: "Chaos - Daemons Library",
+    categories: ["Daemon", "Tzeentch"]
+  }), false);
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment({
+    ...army,
+    faction: "Chaos - World Eaters",
+    detachments: [
+      { id: "berzerker", name: "Berzerker Warband", points: 0 },
+      { id: "daemonkin", name: "Khorne Daemonkin", points: 0 }
+    ]
+  }, { ...state, detachmentId: "berzerker", detachmentIds: ["berzerker"] }, {
+    name: "Skarbrand",
+    faction: "Chaos - World Eaters",
+    categories: ["Daemon", "Khorne", "Faction: Blood Legions"]
+  }), false);
   assert.equal(
     window.ArmyEngine.validateRosterLegality(army, state, roster).warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"),
     true
   );
 
-  state = window.ArmyEngine.selectDetachment(army, state, "servants");
+  state = window.ArmyEngine.selectDetachment(army, state, "changehost");
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, state, roster[0]), true);
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, state, {
+    alliedFor: { type: "chaosDaemons" },
+    faction: "Chaos - Daemons Library",
+    categories: ["Daemon", "Nurgle"]
+  }), false);
   assert.equal(
     window.ArmyEngine.validateRosterLegality(army, state, roster).warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"),
     false

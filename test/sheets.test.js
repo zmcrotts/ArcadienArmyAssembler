@@ -4,6 +4,75 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { buildRosterSheets } = require("../src/domain/sheets");
 
+test("printable sheets preserve Transport capacity outside ordinary abilities", () => {
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "transport-1",
+      name: "Tyrannocyte",
+      configured: {
+        units: [],
+        weapons: [],
+        abilities: [{
+          typeName: "Transport",
+          name: "Tyrannocyte",
+          characteristics: { Capacity: "This model has a transport capacity of 20 TYRANIDS INFANTRY models." }
+        }],
+        rules: []
+      }
+    }]
+  });
+  const transport = sheets.combinedUnitSheets[0].abilities[0];
+
+  assert.equal(transport.profileType, "Transport");
+  assert.match(transport.description, /transport capacity of 20 TYRANIDS INFANTRY/i);
+});
+
+test("sheets apply bearer Toughness additions from selected wargear", () => {
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "battlewagon-1",
+      name: "Battlewagon",
+      configured: {
+        units: [{ name: "Battlewagon", characteristics: { T: "10" } }],
+        weapons: [],
+        abilities: [],
+        rules: []
+      }
+    }],
+    enhancements: [{
+      bearerInstanceId: "battlewagon-1",
+      profiles: [{ characteristics: { Description: "Add 2 to the bearer's Toughness characteristic." } }]
+    }]
+  });
+
+  assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.T, "12");
+});
+
+test("detachment invulnerable saves only apply to the named units", () => {
+  const rule = {
+    sourceKind: "detachment",
+    description: "Friendly TYRANID WARRIORS/TYRANID PRIME WITH LASH WHIP/WINGED TYRANID PRIME models from your army have 5+ InSv."
+  };
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "warriors",
+      name: "Tyranid Warriors with Ranged Bio-Weapons",
+      keywords: ["Tyranid Warriors"],
+      configured: { units: [{ name: "Tyranid Warrior", characteristics: { InSv: "-" } }], weapons: [], abilities: [], rules: [] }
+    }, {
+      instanceId: "gaunts",
+      name: "Termagants",
+      keywords: ["Infantry"],
+      configured: { units: [{ name: "Termagant", characteristics: { InSv: "-" } }], weapons: [], abilities: [], rules: [] }
+    }],
+    detachments: [{ id: "warriors", name: "Warrior Bioform Onslaught", rules: [rule] }]
+  });
+  const warriors = sheets.combinedUnitSheets.find(sheet => sheet.title === "Tyranid Warriors with Ranged Bio-Weapons");
+  const gaunts = sheets.combinedUnitSheets.find(sheet => sheet.title === "Termagants");
+  assert.equal(warriors.statlines[0].characteristics.InSv, "5+");
+  assert.equal(gaunts.statlines[0].characteristics.InSv, "-");
+});
+
 test("printable sheets build combined unit records from grouped presentation", () => {
   const document = {
     name: "Order Test",
@@ -765,7 +834,7 @@ test("unit sheets apply static leader and detachment invulnerable save effects",
       instanceId: "bodyguard-1",
       name: "Bodyguard Squad",
       points: 100,
-      keywords: ["Infantry"],
+      keywords: ["Infantry", "Kroot"],
       configured: {
         units: [{ name: "Bodyguard", count: 5, characteristics: { M: "6\"", T: "4", SV: "3+", W: "2", OC: "1", InSv: "" } }],
         weapons: [],

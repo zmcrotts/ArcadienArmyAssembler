@@ -422,11 +422,16 @@ function currentAllies() {
   return [...byType.values()];
 }
 
+function allyVisibleForSelectedDetachment(ally) {
+  if (ally?.type !== "chaosDaemons") return true;
+  return armyEngine.daemonDetachmentAllowsSummons(currentArmyDefinition(), armyState);
+}
+
 function renderCatalogueOptions() {
   const catalogueOptions = document.getElementById("catalogueOptions");
   if (!catalogueOptions) return;
   const options = [
-    ...currentAllies().map(ally => ({ key: ally.type, label: `Show ${ally.label}` })),
+    ...currentAllies().filter(allyVisibleForSelectedDetachment).map(ally => ({ key: ally.type, label: `Show ${ally.label}` })),
     { key: "legends", label: "Show Legends" },
     { key: "crucible", label: "Show Crucible Characters" }
   ];
@@ -458,9 +463,11 @@ function factionUnits() {
       byName.set(unit.name, { ...unit, alliedFor: { type: ally.type, label: ally.label } });
     }
   }
+  const army = currentArmyDefinition();
   return [...byName.values()].filter(unit =>
     (cataloguePreferences.legends || !/\[Legends\]/i.test(unit.name))
     && (cataloguePreferences.crucible || !/\[Crucible\]/i.test(unit.name))
+    && armyEngine.canAddUnitForSelectedDetachment(army, armyState, unit)
   );
 }
 
@@ -1177,9 +1184,10 @@ function renderUnits() {
 
 function unitMatchesSearch(unit) {
   if (!searchText) return true;
+  const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(unit, armyState) || unit.keywords || [];
   const haystack = [
     unit.name,
-    ...(unit.keywords || []),
+    ...effectiveKeywords,
     ...(unit.definition?.keywords || []),
     ...(unit.definition?.categories || []),
     ...(unit.categories || [])
@@ -1801,18 +1809,19 @@ function showRosterEntry(rosterEntry) {
   ];
   const ruleLookup = buildRuleLookup(configured, effects, currentArmyDefinition());
   const isBodyguard = Boolean(attachedGroup && (attachedGroup.bodyguard?.instanceId || attachedGroup.memberInstanceIds?.[0]) === rosterEntry.instanceId);
+  const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(rosterEntry, armyState) || unit.keywords || unit.definition.keywords || [];
 
   details.innerHTML = `
     <h3>${sizePrefix}${escapeHtml(unit.name)} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
     ${renderSidebarNicknameControl(rosterEntry)}
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
-    ${renderKeywords(unit.keywords || unit.definition.keywords || unit.definition.categories || [], ruleLookup)}
+    ${renderKeywords(effectiveKeywords, ruleLookup)}
     ${renderUnitAssignments(rosterEntry)}
     ${renderUnitSizeControl(rosterEntry, unitSize)}
     ${renderOptionControls(rosterEntry)}
     ${renderEntryValidation(loadoutErrors, pricing.validationErrors)}
-    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup })}
+    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup, unitName: unit.name, keywords: effectiveKeywords })}
     <p><b>Source:</b> ${escapeHtml(unit.source?.sourceFile || "")}</p>
   `;
   bindUnitSizeInputs();
@@ -2557,6 +2566,7 @@ function renderConfigured(configured, effects = [], models = [], context = {}) {
     ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
     ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
     ${renderAbilities(configured.abilities || [])}
+    ${renderTransportProfiles(configured.abilities || [])}
     ${renderRules(configured.rules || [])}
   `;
 }
@@ -2746,7 +2756,7 @@ function renderWeapons(title, weapons, typeName, ruleLookup = new Map()) {
               <td>${escapeHtml(displayWeaponCell(c.S))}</td>
               <td>${escapeHtml(displayWeaponCell(c.AP))}</td>
               <td>${escapeHtml(displayWeaponCell(c.D))}</td>
-              <td>${renderWeaponKeywordCell(c.Keywords, ruleLookup)}</td>
+              <td class="weaponKeywordCell">${renderWeaponKeywordCell(c.Keywords, ruleLookup)}</td>
             </tr>
           `;
         }).join("")}
@@ -2763,9 +2773,9 @@ function displayWeaponCell(value) {
 function renderWeaponKeywordCell(value, ruleLookup = new Map()) {
   const text = displayWeaponCell(value);
   if (text === "-") return "-";
-  return splitKeywordList(text)
+  return `<span class="weaponKeywordChips">${splitKeywordList(text)
     .map(keyword => renderRuleToken(keyword, ruleLookup, { compact: true }))
-    .join(" ");
+    .join("")}</span>`;
 }
 
 function splitKeywordList(value) {
@@ -2887,15 +2897,33 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
 }
 
 function renderAbilities(abilities) {
-  if (!abilities.length) return "";
+  const standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
+  if (!standardAbilities.length) return "";
 
   return `
     <details class="configuredSection" open>
       <summary>Abilities</summary>
-      ${abilities.map(a => `
+      ${standardAbilities.map(a => `
         <details class="card ruleDisclosure">
           <summary>${escapeHtml(a.name)}</summary>
           <p>${formatDescription(a.characteristics?.Description || "")}</p>
+        </details>
+      `).join("")}
+    </details>
+  `;
+}
+
+function renderTransportProfiles(profiles) {
+  const transports = profiles.filter(profile => profile.typeName === "Transport");
+  if (!transports.length) return "";
+
+  return `
+    <details class="configuredSection" open>
+      <summary>Transport</summary>
+      ${transports.map(transport => `
+        <details class="card ruleDisclosure" open>
+          <summary>${escapeHtml(transport.name)}</summary>
+          <p>${formatDescription(transport.characteristics?.Capacity || "")}</p>
         </details>
       `).join("")}
     </details>
@@ -3051,6 +3079,7 @@ function currentRosterDocument() {
       configuredProfiles: engine.getConfiguredProfiles,
       configuredModels: engine.getConfiguredModels,
       unitSizeState: engine.getUnitSizeState,
+      effectiveKeywords: item => armyEngine.effectiveKeywordsForEntry(item, armyState),
       selectedDetachment: armyEngine.selectedDetachment,
       selectedDetachments: armyEngine.selectedDetachments
     }
@@ -3850,10 +3879,23 @@ function renderSheetWeapons(title, weapons) {
 }
 
 function renderSheetAbilities(abilities) {
-  if (!abilities.length) return "";
+  const standardAbilities = abilities.filter(item => item.profileType !== "Transport");
+  if (!standardAbilities.length) return renderSheetTransportProfiles(abilities);
   return `
     <h2>Abilities</h2>
-    ${abilities.map(item => `
+    ${standardAbilities.map(item => `
+      <div class="rule"><b>${escapeHtml(item.name)}${item.provider ? ` <small>(${escapeHtml(item.provider)})</small>` : ""}</b>${item.description ? `<span>${formatRichDescription(item.description)}</span>` : ""}</div>
+    `).join("")}
+    ${renderSheetTransportProfiles(abilities)}
+  `;
+}
+
+function renderSheetTransportProfiles(abilities) {
+  const transports = abilities.filter(item => item.profileType === "Transport");
+  if (!transports.length) return "";
+  return `
+    <h2>Transport</h2>
+    ${transports.map(item => `
       <div class="rule"><b>${escapeHtml(item.name)}${item.provider ? ` <small>(${escapeHtml(item.provider)})</small>` : ""}</b>${item.description ? `<span>${formatRichDescription(item.description)}</span>` : ""}</div>
     `).join("")}
   `;

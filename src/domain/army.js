@@ -81,17 +81,34 @@ function leaderCanTarget(leader, target) {
   return Boolean(targetName && (rules.leaderTargetNames || []).some(name => normalizeTargetName(name) === targetName));
 }
 
-function normalizeRosterEntries(rosterEntries) {
+function effectiveKeywordsForEntry(item, armyState) {
+  const definition = item?.definition || item?.unitPackage?.definition || {};
+  const selectedIds = new Set(selectedDetachmentIds(armyState));
+  const keywords = new Map((item?.keywords || item?.unitPackage?.keywords || definition.keywords || definition.categories || [])
+    .map(keyword => [normalizeTargetName(keyword), keyword]));
+  for (const grant of item?.conditionalKeywords || definition.conditionalKeywords || []) {
+    if (!(grant.detachmentIds || []).some(id => selectedIds.has(id))) continue;
+    if (grant.keyword) keywords.set(normalizeTargetName(grant.keyword), grant.keyword);
+  }
+  return [...keywords.values()];
+}
+
+function normalizeRosterEntries(rosterEntries, armyState = null) {
   return (rosterEntries || []).map(item => {
     const definition = item.definition || item.unitPackage?.definition || {};
+    const keywords = effectiveKeywordsForEntry(item, armyState);
+    const roles = { ...(item.roles || definition.roles || {}) };
+    if (keywords.some(keyword => normalizeTargetName(keyword) === "battleline")) roles.battleline = true;
+    if (keywords.some(keyword => normalizeTargetName(keyword) === "character")) roles.character = true;
     return {
       instanceId: item.instanceId || item.entry?.instanceId,
       selectionKey: item.selectionKey || item.unitPackage?.selectionKey || definition.selectionKey,
       name: item.name || item.unitPackage?.name || definition.name || "Unknown unit",
       faction: item.faction || item.unitPackage?.faction || definition.faction || null,
       points: Number(item.points ?? 0),
-      roles: item.roles || definition.roles || {},
-      categories: item.categories || definition.categories || [],
+      roles,
+      categories: [...new Set([...(item.categories || definition.categories || []), ...keywords])],
+      keywords,
       rosterRules: item.rosterRules || definition.rosterRules || {},
       alliedFor: item.alliedFor || item.unitPackage?.alliedFor || null
     };
@@ -99,7 +116,7 @@ function normalizeRosterEntries(rosterEntries) {
 }
 
 function getEnhancementStates(armyDefinition, armyState, rosterEntries) {
-  const entries = normalizeRosterEntries(rosterEntries);
+  const entries = normalizeRosterEntries(rosterEntries, armyState);
   const assignments = armyState?.enhancements || [];
   return (armyDefinition?.enhancements || [])
     .filter(item => enhancementAvailable(item, armyState))
@@ -127,8 +144,8 @@ function canBearEnhancement(enhancement, entry) {
 }
 
 function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, rosterEntry) {
-  const entries = normalizeRosterEntries(rosterEntries);
-  const selected = normalizeRosterEntries([rosterEntry])[0] || entries.find(entry => entry.instanceId === rosterEntry?.instanceId);
+  const entries = normalizeRosterEntries(rosterEntries, armyState);
+  const selected = normalizeRosterEntries([rosterEntry], armyState)[0] || entries.find(entry => entry.instanceId === rosterEntry?.instanceId);
   if (!selected) {
     return {
       showWarlord: false,
@@ -276,9 +293,10 @@ function warning(code, message, affectedInstanceIds = [], details = {}) {
 }
 
 const DAEMON_DETACHMENT_GATES = {
-  "Chaos - Death Guard": "Tallyband Summoners",
-  "Chaos - Thousand Sons": "Servants of Change",
-  "Chaos - World Eaters": "Khorne Daemonkin"
+  "Chaos - Death Guard": { detachmentName: "Tallyband Summoners", daemonKeyword: "Nurgle", daemonFactionCategory: "Faction: Plague Legions" },
+  "Chaos - Emperor's Children": { detachmentName: "Carnival of Excess", daemonKeyword: "Slaanesh", daemonFactionCategory: "Faction: Legions of Excess" },
+  "Chaos - Thousand Sons": { detachmentName: "Changehost of Deceit", daemonKeyword: "Tzeentch", daemonFactionCategory: "Faction: Scintillating Legions" },
+  "Chaos - World Eaters": { detachmentName: "Khorne Daemonkin", daemonKeyword: "Khorne", daemonFactionCategory: "Faction: Blood Legions" }
 };
 
 function normalizeName(value) {
@@ -286,25 +304,53 @@ function normalizeName(value) {
 }
 
 function selectedDaemonGate(armyDefinition, armyState) {
-  const requiredDetachmentName = DAEMON_DETACHMENT_GATES[armyDefinition?.faction];
-  if (!requiredDetachmentName) return null;
+  const config = DAEMON_DETACHMENT_GATES[armyDefinition?.faction];
+  if (!config) return null;
   return {
-    requiredDetachmentName,
+    requiredDetachmentName: config.detachmentName,
+    daemonKeyword: config.daemonKeyword,
+    daemonFactionCategory: config.daemonFactionCategory,
     selected: selectedDetachments(armyDefinition, armyState)
-      .some(detachment => normalizeName(detachment.name) === normalizeName(requiredDetachmentName))
+      .some(detachment => normalizeName(detachment.name) === normalizeName(config.detachmentName))
   };
 }
 
+function daemonDetachmentAllowsSummons(armyDefinition, armyState) {
+  const gate = selectedDaemonGate(armyDefinition, armyState);
+  return !gate || gate.selected;
+}
+
+function canAddUnitForSelectedDetachment(armyDefinition, armyState, entry) {
+  const gate = selectedDaemonGate(armyDefinition, armyState);
+  if (!gate) return true;
+  if (entry?.alliedFor?.type === "chaosDaemons" || entry?.unitPackage?.alliedFor?.type === "chaosDaemons") {
+    return gate.selected && daemonUnitMatchesGate(entry, gate);
+  }
+  return gate.selected || !isNativeSummonedDaemon(armyDefinition, entry);
+}
+
+function daemonUnitMatchesGate(entry, gate) {
+  const definition = entry?.definition || entry?.unitPackage?.definition || {};
+  const categories = entry?.categories || entry?.keywords || entry?.unitPackage?.keywords || definition.categories || definition.keywords || [];
+  return categories.some(category => normalizeName(category) === normalizeName(gate.daemonKeyword));
+}
+
 function isNativeSummonedDaemon(armyDefinition, entry) {
-  if (!DAEMON_DETACHMENT_GATES[armyDefinition?.faction]) return false;
-  if (entry.alliedFor?.type) return false;
-  if (entry.faction && entry.faction !== armyDefinition.faction) return false;
-  const categories = entry.categories || [];
-  return categories.includes("Daemon") && categories.includes("Summoned");
+  const definition = entry?.definition || entry?.unitPackage?.definition || {};
+  const config = DAEMON_DETACHMENT_GATES[armyDefinition?.faction];
+  if (!config) return false;
+  if (entry?.alliedFor?.type || entry?.unitPackage?.alliedFor?.type) return false;
+  const faction = entry?.faction || entry?.unitPackage?.faction || definition.faction;
+  if (faction && faction !== armyDefinition.faction) return false;
+  const categories = entry?.categories || entry?.keywords || entry?.unitPackage?.keywords || definition.categories || definition.keywords || [];
+  return categories.includes("Daemon") && (
+    categories.includes("Summoned")
+    || categories.includes(config.daemonFactionCategory)
+  );
 }
 
 function validateRosterLegality(armyDefinition, armyState, rosterEntries, options = {}) {
-  const entries = normalizeRosterEntries(rosterEntries);
+  const entries = normalizeRosterEntries(rosterEntries, armyState);
   const byInstance = new Map(entries.map(entry => [entry.instanceId, entry]));
   const warnings = [];
   const detachments = selectedDetachments(armyDefinition, armyState);
@@ -346,7 +392,9 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
   }
   for (const copies of counts.values()) {
     const unit = copies[0];
-    const limit = Number(unit.rosterRules.maxCopies || (unit.roles.epicHero ? 1 : (unit.roles.battleline || unit.roles.dedicatedTransport) ? 6 : 3));
+    const limit = unit.roles.epicHero ? 1 : (unit.roles.battleline || unit.roles.dedicatedTransport)
+      ? 6
+      : Number(unit.rosterRules.maxCopies || 3);
     if (copies.length <= limit) continue;
     const code = unit.roles.epicHero ? "EPIC_HERO_UNIQUE" : unit.roles.battleline
       ? "BATTLELINE_LIMIT_EXCEEDED" : unit.roles.dedicatedTransport
@@ -393,6 +441,14 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
           `Chaos Daemons allies require the ${daemonGate.requiredDetachmentName} detachment.`,
           ids,
           { requiredDetachmentName: daemonGate.requiredDetachmentName }
+        ));
+      } else if (daemonGate) {
+        const mismatched = allied.filter(entry => !daemonUnitMatchesGate(entry, daemonGate));
+        if (mismatched.length) warnings.push(warning(
+          "DAEMON_ALLEGIANCE_MISMATCH",
+          `${armyDefinition.faction.replace(/^Chaos - /, "")} may only include ${daemonGate.daemonKeyword} Daemons via ${daemonGate.requiredDetachmentName}.`,
+          mismatched.map(entry => entry.instanceId),
+          { requiredDetachmentName: daemonGate.requiredDetachmentName, daemonKeyword: daemonGate.daemonKeyword }
         ));
       }
       const alliedPoints = allied.reduce((sum, item) => sum + item.points, 0);
@@ -501,7 +557,7 @@ function enhancementPointsByBearer(armyDefinition, armyState) {
 }
 
 function getRosterPresentation(armyDefinition, armyState, rosterEntries, options = {}) {
-  const entries = normalizeRosterEntries(rosterEntries);
+  const entries = normalizeRosterEntries(rosterEntries, armyState);
   const byInstance = new Map(entries.map(entry => [entry.instanceId, entry]));
   const enhancementPoints = enhancementPointsByBearer(armyDefinition, armyState);
   const displayPoints = entry => Number(entry?.points || 0) + Number(enhancementPoints.get(entry?.instanceId) || 0);
@@ -561,12 +617,15 @@ function getRosterPresentation(armyDefinition, armyState, rosterEntries, options
 
 const armyApi = {
   calculateArmyOptionPoints,
+  canAddUnitForSelectedDetachment,
   canSelectWarlord,
   createArmyState,
   detachBodyguard,
+  daemonDetachmentAllowsSummons,
   detachmentPointLimitFor,
   availableForceDispositions,
   enhancementPointsByBearer,
+  effectiveKeywordsForEntry,
   getEnhancementStates,
   getRosterPresentation,
   getUnitAssignmentState,

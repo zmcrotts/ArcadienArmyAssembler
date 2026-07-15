@@ -6,7 +6,7 @@ const path = require("path");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
 const { extractAllyDefinitions } = require("../src/bsdata/ally-definitions");
 const { extractNormalizedRuleset } = require("../src/rulesets/sources");
-const { createArmyState, selectDetachment, validateRosterLegality } = require("../src/domain/army");
+const { canAddUnitForSelectedDetachment, createArmyState, selectDetachment, validateRosterLegality } = require("../src/domain/army");
 
 const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
 
@@ -42,9 +42,9 @@ test("god-specific chaos summoned daemons require the daemon detachment", () => 
   const army = ruleset.armies.find(item => item.faction === "Chaos - Thousand Sons");
   assert.ok(army, "Missing Thousand Sons army definition");
 
-  const servantDetachment = army.detachments.find(item => item.name === "Servants of Change");
-  const otherDetachment = army.detachments.find(item => item.name !== "Servants of Change");
-  assert.ok(servantDetachment, "Missing Servants of Change detachment");
+  const daemonDetachment = army.detachments.find(item => item.name === "Changehost of Deceit");
+  const otherDetachment = army.detachments.find(item => item.name !== "Changehost of Deceit");
+  assert.ok(daemonDetachment, "Missing Changehost of Deceit detachment");
   assert.ok(otherDetachment, "Missing non-daemon Thousand Sons detachment");
 
   const nativeHorrors = ["Blue Horrors", "Pink Horrors"].map(name => {
@@ -69,6 +69,8 @@ test("god-specific chaos summoned daemons require the daemon detachment", () => 
   ];
 
   const otherState = selectDetachment(army, createArmyState(army), otherDetachment.id);
+  assert.equal(canAddUnitForSelectedDetachment(army, otherState, nativeHorrors[0].definition), false);
+  assert.equal(canAddUnitForSelectedDetachment(army, otherState, daemonRoster[2]), false);
   const otherResult = validateRosterLegality(army, otherState, daemonRoster);
   const gatedWarnings = otherResult.warnings.filter(item => item.code === "DAEMON_DETACHMENT_REQUIRED");
   assert.equal(gatedWarnings.length, 2);
@@ -77,7 +79,54 @@ test("god-specific chaos summoned daemons require the daemon detachment", () => 
     daemonRoster.map(item => item.instanceId).sort()
   );
 
-  const servantState = selectDetachment(army, createArmyState(army), servantDetachment.id);
-  const servantResult = validateRosterLegality(army, servantState, daemonRoster);
-  assert.equal(servantResult.warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"), false);
+  const daemonState = selectDetachment(army, createArmyState(army), daemonDetachment.id);
+  assert.equal(canAddUnitForSelectedDetachment(army, daemonState, nativeHorrors[0].definition), true);
+  assert.equal(canAddUnitForSelectedDetachment(army, daemonState, daemonRoster[2]), true);
+  const daemonResult = validateRosterLegality(army, daemonState, daemonRoster);
+  assert.equal(daemonResult.warnings.some(item => item.code === "DAEMON_DETACHMENT_REQUIRED"), false);
+});
+
+test("all god-specific Chaos factions hide daemon allies outside their required detachment", () => {
+  const ruleset = extractNormalizedRuleset();
+  const gates = {
+    "Chaos - Thousand Sons": { detachment: "Changehost of Deceit", god: "Tzeentch" },
+    "Chaos - Death Guard": { detachment: "Tallyband Summoners", god: "Nurgle" },
+    "Chaos - World Eaters": { detachment: "Khorne Daemonkin", god: "Khorne" },
+    "Chaos - Emperor's Children": { detachment: "Carnival of Excess", god: "Slaanesh" }
+  };
+
+  for (const [faction, gate] of Object.entries(gates)) {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    assert.ok(army, `Missing army fixture for ${faction}`);
+    const allowed = army.detachments.find(item => item.name === gate.detachment);
+    assert.ok(allowed, `Missing ${gate.detachment} for ${faction}`);
+    const blocked = army.detachments.find(item => item.id !== allowed.id);
+    assert.ok(blocked, `Missing blocked detachment fixture for ${faction}`);
+    const daemon = { faction: "Chaos - Daemons Library", categories: ["Daemon", gate.god], alliedFor: { type: "chaosDaemons", label: "Chaos Daemons" } };
+    const wrongGod = gate.god === "Khorne" ? "Tzeentch" : "Khorne";
+    const mismatchedDaemon = { ...daemon, categories: ["Daemon", wrongGod] };
+    assert.equal(canAddUnitForSelectedDetachment(army, selectDetachment(army, createArmyState(army), blocked.id), daemon), false, faction);
+    assert.equal(canAddUnitForSelectedDetachment(army, selectDetachment(army, createArmyState(army), allowed.id), daemon), true, faction);
+    assert.equal(canAddUnitForSelectedDetachment(army, selectDetachment(army, createArmyState(army), allowed.id), mismatchedDaemon), false, faction);
+  }
+});
+
+test("embedded daemon epic heroes without Summoned are still detachment-gated", () => {
+  const ruleset = extractNormalizedRuleset();
+  const fixtures = [
+    { faction: "Chaos - World Eaters", detachment: "Khorne Daemonkin", unit: "Skarbrand", daemonFaction: "Faction: Blood Legions" },
+    { faction: "Chaos - Emperor's Children", detachment: "Carnival of Excess", unit: "Shalaxi Helbane", daemonFaction: "Faction: Legions of Excess" }
+  ];
+
+  for (const fixture of fixtures) {
+    const army = ruleset.armies.find(item => item.faction === fixture.faction);
+    const unit = ruleset.units.find(item => item.faction === fixture.faction && item.name === fixture.unit);
+    const allowed = army?.detachments.find(item => item.name === fixture.detachment);
+    const blocked = army?.detachments.find(item => item.id !== allowed?.id);
+    assert.ok(army && unit && allowed && blocked, `Missing embedded daemon fixture for ${fixture.faction}`);
+    assert.ok(unit.categories.includes(fixture.daemonFaction));
+    assert.equal(unit.categories.includes("Summoned"), false);
+    assert.equal(canAddUnitForSelectedDetachment(army, selectDetachment(army, createArmyState(army), blocked.id), unit), false);
+    assert.equal(canAddUnitForSelectedDetachment(army, selectDetachment(army, createArmyState(army), allowed.id), unit), true);
+  }
 });

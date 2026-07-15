@@ -122,11 +122,14 @@ function normalizeConstraint(constraint) {
   };
 }
 
-function normalizeModifier(modifier) {
+function normalizeModifier(modifier, indexes) {
   return {
     type: modifier.type,
     field: modifier.field,
     value: numberOrNull(modifier.value) ?? modifier.value,
+    categoryName: modifier.field === "category"
+      ? indexes?.categories?.get(modifier.value)?.name || null
+      : null,
     conditions: asArray(modifier?.conditions?.condition).map(item => ({ ...item })),
     conditionGroups: asArray(modifier?.conditionGroups?.conditionGroup).map(item => ({ ...item })),
     repeats: asArray(modifier?.repeats?.repeat).map(item => ({ ...item })),
@@ -281,7 +284,7 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
       modifiers: [
         ...modifiersFor(definition),
         ...(link && link !== definition ? modifiersFor(link) : [])
-      ].map(normalizeModifier),
+      ].map(modifier => normalizeModifier(modifier, indexes)),
       profiles: [
         ...profilesFor(definition, indexes),
         ...(link && link !== definition ? profilesFor(link, indexes) : [])

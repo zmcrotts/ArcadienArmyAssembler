@@ -354,24 +354,24 @@ function compositionConstraints(unit, indexes) {
   return constraints;
 }
 
-function collectIndexes(node, entries, groups, profiles, rules) {
+function collectIndexes(node, entries, groups, profiles, rules, categories) {
   if (!node || typeof node !== "object") return;
 
   for (const entry of asArray(node?.selectionEntries?.selectionEntry)) {
     if (entry.id) entries.set(entry.id, entry);
-    collectIndexes(entry, entries, groups, profiles, rules);
+    collectIndexes(entry, entries, groups, profiles, rules, categories);
   }
   for (const entry of asArray(node?.sharedSelectionEntries?.selectionEntry)) {
     if (entry.id) entries.set(entry.id, entry);
-    collectIndexes(entry, entries, groups, profiles, rules);
+    collectIndexes(entry, entries, groups, profiles, rules, categories);
   }
   for (const group of asArray(node?.selectionEntryGroups?.selectionEntryGroup)) {
     if (group.id) groups.set(group.id, group);
-    collectIndexes(group, entries, groups, profiles, rules);
+    collectIndexes(group, entries, groups, profiles, rules, categories);
   }
   for (const group of asArray(node?.sharedSelectionEntryGroups?.selectionEntryGroup)) {
     if (group.id) groups.set(group.id, group);
-    collectIndexes(group, entries, groups, profiles, rules);
+    collectIndexes(group, entries, groups, profiles, rules, categories);
   }
   for (const profile of [
     ...asArray(node?.profiles?.profile),
@@ -384,6 +384,9 @@ function collectIndexes(node, entries, groups, profiles, rules) {
     ...asArray(node?.sharedRules?.rule)
   ]) {
     if (rule.id) rules.set(rule.id, rule);
+  }
+  for (const category of asArray(node?.categoryEntries?.categoryEntry)) {
+    if (category.id) categories?.set(category.id, category);
   }
 }
 
@@ -514,14 +517,50 @@ function loadBsdataContext(dataDirectory) {
     entries: new Map(),
     groups: new Map(),
     profiles: new Map(),
-    rules: new Map()
+    rules: new Map(),
+    categories: new Map()
   };
   const gameSystem = loadGameSystem(dataDirectory);
-  if (gameSystem) collectIndexes(gameSystem, indexes.entries, indexes.groups, indexes.profiles, indexes.rules);
+  if (gameSystem) collectIndexes(gameSystem, indexes.entries, indexes.groups, indexes.profiles, indexes.rules, indexes.categories);
   for (const { catalogue } of catalogues) {
-    collectIndexes(catalogue, indexes.entries, indexes.groups, indexes.profiles, indexes.rules);
+    collectIndexes(catalogue, indexes.entries, indexes.groups, indexes.profiles, indexes.rules, indexes.categories);
   }
   return { catalogues, gameSystem, indexes };
+}
+
+function conditionalKeywordsFor(selectionTree) {
+  const grants = new Map();
+
+  function detachmentConditionIds(value, result = new Set()) {
+    if (!value || typeof value !== "object") return result;
+    if (["force", "roster"].includes(value.scope)
+      && value.field === "selections"
+      && value.childId
+      && ["atLeast", "greaterThan", "equalTo", "instanceOf"].includes(value.type)
+      && Number(value.value ?? 1) > 0) result.add(value.childId);
+    for (const child of Object.values(value)) detachmentConditionIds(child, result);
+    return result;
+  }
+
+  function visit(node) {
+    if (!node) return;
+    for (const modifier of asArray(node.modifiers)) {
+      if (modifier.field !== "category" || !["add", "set-primary"].includes(modifier.type)) continue;
+      if (!modifier.categoryName) continue;
+      const detachmentIds = [...detachmentConditionIds({
+        conditions: modifier.conditions,
+        conditionGroups: modifier.conditionGroups
+      })];
+      for (const detachmentId of detachmentIds) {
+        const key = `${modifier.categoryName}|${detachmentId}`;
+        grants.set(key, { keyword: modifier.categoryName, detachmentIds: [detachmentId], source: "bsdata-category-modifier" });
+      }
+    }
+    for (const child of asArray(node.children)) visit(child);
+  }
+
+  visit(selectionTree);
+  return [...grants.values()];
 }
 
 function buildCatalogueLookup(catalogues) {
@@ -619,6 +658,7 @@ function extractUnitDefinitions(dataDirectory) {
         },
         categories,
         keywords: categories,
+        conditionalKeywords: conditionalKeywordsFor(selectionTree),
         roles: {
           battleline,
           dedicatedTransport,

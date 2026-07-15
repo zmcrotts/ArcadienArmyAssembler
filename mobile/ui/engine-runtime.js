@@ -576,7 +576,9 @@
       const fixed = min !== null && max !== null && min === max;
       const delta = newCount - oldCount;
       const preferred = defaultChild(parent);
-      const replacingDefault = preferred && preferred.id !== nodeId;
+      // A fallback repair choice is not a declared default, so it must not
+      // turn an otherwise multi-select group into a replacement choice.
+      const replacingDefault = parent.defaultSelectionId && preferred && preferred.id !== nodeId;
 
       if ((fixed || replacingDefault) && delta !== 0) {
         let remaining = Math.abs(delta);

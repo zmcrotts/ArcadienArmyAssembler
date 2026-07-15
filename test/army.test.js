@@ -504,3 +504,29 @@ test("leader assignment accepts equivalent datasheet names across shared source 
   state = setLeaderAttachment(state, priest.instanceId, bladeguard.instanceId);
   assert.equal(validateRosterLegality(army, state, roster).warnings.some(item => item.code === "LEADER_ATTACHMENT_INVALID"), false);
 });
+
+test("detachment keyword grants affect display roles, copy limits, and upgrade eligibility", () => {
+  const detachment = { id: "wagon-detachment", name: "Rollin' Deff" };
+  const army = {
+    id: "orks",
+    allowedSelectionKeys: ["wagon"],
+    detachments: [detachment],
+    enhancements: [{ id: "ramps", name: "Boarding Ramps", kind: "upgrade", detachmentIds: [detachment.id], eligibleSelectionKeys: ["wagon"] }]
+  };
+  const definition = {
+    selectionKey: "wagon",
+    name: "Battlewagon",
+    keywords: ["Vehicle"],
+    conditionalKeywords: [{ keyword: "Wagon", detachmentIds: [detachment.id] }, { keyword: "Battleline", detachmentIds: [detachment.id] }],
+    roles: {},
+    rosterRules: { maxCopies: 3 }
+  };
+  const roster = Array.from({ length: 6 }, (_, index) => ({ instanceId: `wagon-${index}`, definition }));
+  const state = selectDetachment(army, createArmyState(army), detachment.id);
+  const enhancement = getEnhancementStates(army, state, roster)[0];
+  const legality = validateRosterLegality(army, state, roster);
+
+  assert.equal(enhancement.bearerOptions.every(option => option.eligible), true);
+  assert.equal(legality.warnings.some(item => item.code === "UNIT_COPY_LIMIT_EXCEEDED" || item.code === "BATTLELINE_LIMIT_EXCEEDED"), false);
+  assert.deepEqual(require("../src/domain/army").effectiveKeywordsForEntry(roster[0], state), ["Vehicle", "Wagon", "Battleline"]);
+});

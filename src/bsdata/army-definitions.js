@@ -10,6 +10,11 @@ const {
   nativeUnitLinksFor
 } = require("./unit-definitions");
 const PRIMARY_MISSION_CARD_IMAGES = require("../../ui/assets/11th/primary-missions/manifest.json");
+const { supplementalCategoryNamesFor } = require("../rulesets/detachment-keywords");
+
+function normalizeName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
 
 const DETACHMENT_NAME_EXCLUSIONS_BY_FACTION = {
   "Xenos - Tyranids": new Set([
@@ -313,11 +318,21 @@ function maxSelectionsFor(entry) {
   return values.length ? Math.max(...values) : 1;
 }
 
-function rootInstanceIdsFor(unit) {
-  return new Set([
+function rootInstanceIdsFor(unit, indexes, faction) {
+  const ids = new Set([
     unit.id,
     ...asArray(unit?.categoryLinks?.categoryLink).map(link => link.targetId).filter(Boolean)
   ].filter(Boolean));
+  visitResolved(unit, indexes, node => {
+    for (const modifier of asArray(node?.modifiers?.modifier)) {
+      if (modifier.field === "category" && ["add", "set-primary"].includes(modifier.type) && modifier.value) ids.add(modifier.value);
+    }
+  });
+  const supplementalNames = new Set(supplementalCategoryNamesFor(faction, unit.name).map(normalizeName));
+  for (const [id, category] of indexes.categories || []) {
+    if (supplementalNames.has(normalizeName(category.name))) ids.add(id);
+  }
+  return ids;
 }
 
 function forceDispositionForDetachment(entry, dispositionsByName) {
@@ -454,10 +469,10 @@ function extractArmyDefinitions(dataDirectory) {
       const unit = indexes.entries.get(link.targetId);
       if (!unit || !isRosterUnit(unit)) continue;
       const selectionKey = `${selectionCatalogueId || faction}:${link.id}`;
-      allEligibleUnits.push({ selectionKey, rootInstanceIds: rootInstanceIdsFor(unit) });
+      allEligibleUnits.push({ selectionKey, rootInstanceIds: rootInstanceIdsFor(unit, indexes, faction) });
       for (const groupId of enhancementGroupIdsIn(unit, indexes)) {
         if (!eligibleByGroup.has(groupId)) eligibleByGroup.set(groupId, new Set());
-        eligibleByGroup.get(groupId).add({ selectionKey, rootInstanceIds: rootInstanceIdsFor(unit) });
+        eligibleByGroup.get(groupId).add({ selectionKey, rootInstanceIds: rootInstanceIdsFor(unit, indexes, faction) });
       }
     }
 
@@ -467,7 +482,7 @@ function extractArmyDefinitions(dataDirectory) {
       ...[...eligibleByGroup.keys()].map(id => indexes.groups.get(id)).filter(Boolean)
     ].map(group => [group.id, group])).values()];
 
-    const enhancements = [...new Map(enhancementGroups.flatMap(group =>
+    const extractedEnhancements = [...new Map(enhancementGroups.flatMap(group =>
       enhancementEntriesIn(group, indexes, detachmentIds).map(({ entry, detachmentIds: availableIn, sourceGroup }) => {
         const kind = /upgrade/i.test(sourceGroup?.name || "") ? "upgrade" : "enhancement";
         const eligibleUnits = [
@@ -487,6 +502,7 @@ function extractArmyDefinitions(dataDirectory) {
       })
     ).filter(item => item.detachmentIds.some(id => visibleDetachmentIds.has(id)))
       .map(item => [item.id, item])).values()];
+    const enhancements = mergeDuplicateEnhancements(extractedEnhancements);
 
     definitions.push({
       schemaVersion: 1,
@@ -505,6 +521,51 @@ function extractArmyDefinitions(dataDirectory) {
   }
 
   return { definitions };
+}
+
+function mergeDuplicateEnhancements(enhancements) {
+  const byIdentity = new Map();
+  for (const enhancement of enhancements) {
+    const key = [
+      String(enhancement.kind || "").toLowerCase(),
+      String(enhancement.name || "").trim().toLowerCase(),
+      ...(enhancement.detachmentIds || []).slice().sort()
+    ].join("|");
+    const current = byIdentity.get(key);
+    if (!current) {
+      byIdentity.set(key, enhancement);
+      continue;
+    }
+
+    // Some catalogues expose the same detachment upgrade through both a
+    // presentation group and its live selection group. Keep one card and the
+    // force-wide limit, while retaining any richer profile/rule text.
+    const preferred = Number(enhancement.maxSelections || 1) > Number(current.maxSelections || 1)
+      ? enhancement
+      : current;
+    const alternate = preferred === enhancement ? current : enhancement;
+    byIdentity.set(key, {
+      ...preferred,
+      profiles: richerRecords(preferred.profiles, alternate.profiles),
+      rules: richerRecords(preferred.rules, alternate.rules),
+      eligibleSelectionKeys: [...new Set([
+        ...(preferred.eligibleSelectionKeys || []),
+        ...(alternate.eligibleSelectionKeys || [])
+      ])]
+    });
+  }
+  return [...byIdentity.values()];
+}
+
+function richerRecords(primary = [], alternate = []) {
+  const records = new Map();
+  for (const record of [...primary, ...alternate]) {
+    const key = String(record?.name || record?.id || "").trim().toLowerCase();
+    const existing = records.get(key);
+    const richness = item => JSON.stringify(item || {}).length;
+    if (!existing || richness(record) > richness(existing)) records.set(key, record);
+  }
+  return [...records.values()];
 }
 
 function extractForceDispositions(gameSystem) {

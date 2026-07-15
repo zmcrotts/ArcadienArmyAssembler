@@ -55,13 +55,18 @@ function summarizeUnit(item, services) {
   const entry = item.entry || {};
   const instanceId = item.instanceId || entry.instanceId;
   const points = asNumber(services.entryPoints?.(item), asNumber(item.points));
+  const keywords = clone(services.effectiveKeywords?.(item)
+    || item?.unitPackage?.keywords || definition.keywords || definition.categories || []);
+  const roles = clone(item?.unitPackage?.definition?.roles || definition.roles || item.roles || {});
+  if (keywords.some(keyword => String(keyword).toLowerCase() === "battleline")) roles.battleline = true;
+  if (keywords.some(keyword => String(keyword).toLowerCase() === "character")) roles.character = true;
   return {
     instanceId,
     selectionKey: unitSelectionKey(item),
     name: unitName(item),
     points,
-    roles: clone(item?.unitPackage?.definition?.roles || definition.roles || item.roles || {}),
-    keywords: clone(item?.unitPackage?.keywords || definition.keywords || definition.categories || []),
+    roles,
+    keywords,
     alliedFor: unitAlliedFor(item),
     source: item?.unitPackage?.source || definition.source || null,
     unitSize: services.unitSizeState ? clone(services.unitSizeState(definition, entry)) : null,
