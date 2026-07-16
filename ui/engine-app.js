@@ -1878,7 +1878,7 @@ function showPreview(unitPackage) {
     <h3>${escapeHtml(unitPackage.name)} <span class="pts">${unitPackage.defaultSummary.points} pts</span></h3>
     <p><b>Faction:</b> ${escapeHtml(unitPackage.faction)}</p>
     ${renderKeywords(unitPackage.keywords || unitPackage.definition?.keywords || unitPackage.definition?.categories || [], ruleLookup)}
-    ${renderConfigured(unitPackage.defaultSummary.configured, [], models, { ruleLookup })}
+    ${renderConfigured(unitPackage.defaultSummary.configured, [], models, { ruleLookup, definition: unitPackage.definition })}
     <p><b>Source:</b> ${escapeHtml(unitPackage.source?.sourceFile || "")}</p>
   `;
 }
@@ -1911,7 +1911,7 @@ function showRosterEntry(rosterEntry) {
     ${renderUnitSizeControl(rosterEntry, unitSize)}
     ${renderOptionControls(rosterEntry)}
     ${renderEntryValidation(loadoutErrors, pricing.validationErrors)}
-    ${renderConfigured(configured, effects, models, { isBodyguard, ruleLookup, unitName: unit.name, keywords: effectiveKeywords })}
+    ${renderConfigured(configured, effects, models, { definition: unit.definition, isBodyguard, ruleLookup, unitName: unit.name, keywords: effectiveKeywords })}
     <p><b>Source:</b> ${escapeHtml(unit.source?.sourceFile || "")}</p>
   `;
   bindUnitSizeInputs();
@@ -2655,7 +2655,7 @@ function renderConfigured(configured, effects = [], models = [], context = {}) {
     ${renderUnitProfiles(unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects, context))}
     ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
     ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
-    ${renderAbilities(configured.abilities || [])}
+    ${renderAbilities(configured.abilities || [], context.definition)}
     ${renderTransportProfiles(configured.abilities || [])}
     ${renderRules(configured.rules || [])}
   `;
@@ -2986,19 +2986,36 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
   `;
 }
 
-function renderAbilities(abilities) {
+function renderAbilities(abilities, definition = null) {
   const standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
-  if (!standardAbilities.length) return "";
+  const leaderAbility = renderLeaderAttachmentAbility(definition, standardAbilities);
+  if (!standardAbilities.length && !leaderAbility) return "";
 
   return `
     <details class="configuredSection" open>
       <summary>Abilities</summary>
+      ${leaderAbility}
       ${standardAbilities.map(a => `
         <details class="card ruleDisclosure">
           <summary>${escapeHtml(a.name)}</summary>
           <p>${formatDescription(a.characteristics?.Description || "")}</p>
         </details>
       `).join("")}
+    </details>
+  `;
+}
+
+function renderLeaderAttachmentAbility(definition, abilities = []) {
+  if (!definition?.roles?.leader) return "";
+  if (abilities.some(ability => String(ability?.name || "").trim().toLowerCase() === "leader")) return "";
+  const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
+  if (!targets.length) return "";
+
+  return `
+    <details class="card ruleDisclosure">
+      <summary>Leader</summary>
+      <p>This unit can be attached to the following units:</p>
+      <ul>${targets.map(target => `<li>${escapeHtml(target)}</li>`).join("")}</ul>
     </details>
   `;
 }

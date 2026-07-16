@@ -1461,7 +1461,9 @@ button:hover {
     border-radius: 0;
     bottom: 72px;
     max-height: none;
-    padding-bottom: 18px;
+    /* Let the final unit or keyword section scroll comfortably clear of the
+       fixed Back bar instead of stopping against the bottom edge. */
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     top: 0;
   }
 
