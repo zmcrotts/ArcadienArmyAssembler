@@ -694,10 +694,16 @@ function extractUnitDefinitions(dataDirectory) {
 
   const normalizeName = value => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   for (const definition of definitions) {
-    const targets = new Set((definition.rosterRules.leaderTargetNames || []).map(normalizeName));
-    definition.rosterRules.leaderTargetSelectionKeys = definitions
-      .filter(candidate => candidate.faction === definition.faction && targets.has(normalizeName(candidate.name)))
+    const candidates = definitions.filter(candidate => candidate.faction === definition.faction);
+    const candidateNames = new Set(candidates.map(candidate => normalizeName(candidate.name)));
+    const targetNames = [...new Set(definition.rosterRules.leaderTargetNames || [])]
+      .filter(name => candidateNames.has(normalizeName(name)));
+    const targets = new Set(targetNames.map(normalizeName));
+    definition.rosterRules.leaderTargetNames = targetNames;
+    definition.rosterRules.leaderTargetSelectionKeys = candidates
+      .filter(candidate => targets.has(normalizeName(candidate.name)))
       .map(candidate => candidate.selectionKey);
+    definition.roles.leader = definition.rosterRules.leaderTargetSelectionKeys.length > 0;
   }
 
   return { definitions, unresolved };

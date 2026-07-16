@@ -232,6 +232,22 @@ test("11e ruleset applies MFM leader and support attachment roles", () => {
   assert.equal(canoness.roles.support, false);
   assert.equal(canoness.rosterRules.mfmAttachmentRole, "LEADER");
   assert.ok(canoness.rosterRules.leaderTargetSelectionKeys.includes(battleSisters.selectionKey));
+
+  const leaders = ruleset.units.filter(unit => unit.roles?.leader);
+  assert.ok(leaders.length > 0, "ruleset should contain Leader units");
+  for (const leader of leaders) {
+    const targets = ruleset.units.filter(unit =>
+      unit.faction === leader.faction
+      && leader.rosterRules.leaderTargetSelectionKeys.includes(unit.selectionKey)
+    );
+    const targetNames = new Set(targets.map(unit => unit.name.toLowerCase()));
+    assert.ok(leader.rosterRules.leaderTargetNames.length > 0, `${leader.faction}: ${leader.name} should list Leader target names`);
+    assert.ok(leader.rosterRules.leaderTargetSelectionKeys.length > 0, `${leader.faction}: ${leader.name} should resolve Leader target keys`);
+    assert.ok(targets.length > 0, `${leader.faction}: ${leader.name} should resolve to selectable bodyguard units`);
+    for (const name of leader.rosterRules.leaderTargetNames) {
+      assert.ok(targetNames.has(name.toLowerCase()), `${leader.faction}: ${leader.name} has unavailable Leader target ${name}`);
+    }
+  }
 });
 
 test("11e Space Marine unit wargear controls do not include detachment upgrades", () => {
