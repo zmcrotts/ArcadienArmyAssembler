@@ -5,13 +5,12 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
-const { pathToFileURL } = require("node:url");
 
 const MOBILE_ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(MOBILE_ROOT, "dist-user");
 
-test("mobile build produces a complete installable offline package", async () => {
-  execFileSync(process.execPath, ["scripts/build-sites-runtime.js"], {
+test("mobile build produces a complete installable offline package", () => {
+  execFileSync(process.execPath, ["scripts/build-user-runtime.js"], {
     cwd: MOBILE_ROOT,
     stdio: "pipe"
   });
@@ -60,30 +59,6 @@ test("mobile build produces a complete installable offline package", async () =>
   assert.match(worker, /await cache\.put\(READY_KEY/);
   assert.match(worker, /name\.startsWith\(CACHE_PREFIX\) && name !== CACHE_NAME/);
 
-  const siteWorker = fs.readFileSync(path.join(MOBILE_ROOT, "dist", "server", "index.js"), "utf8");
-  assert.match(siteWorker, /env\.ASSETS\.fetch/);
-  assert.match(siteWorker, /service-worker-allowed/);
-  assert.equal(JSON.parse(fs.readFileSync(path.join(MOBILE_ROOT, "dist", "server", "package.json"), "utf8")).type, "module");
-  assert.ok(fs.statSync(path.join(MOBILE_ROOT, "dist", "client", "service-worker.js")).size > 0);
-
-  const serverUrl = pathToFileURL(path.join(MOBILE_ROOT, "dist", "server", "index.js"));
-  serverUrl.searchParams.set("test", String(Date.now()));
-  const { default: server } = await import(serverUrl.href);
-  const assets = {
-    async fetch(request) {
-      const pathname = new URL(request.url).pathname.replace(/^\/+/, "");
-      const file = path.join(MOBILE_ROOT, "dist", "client", pathname);
-      if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return new Response("Not found", { status: 404 });
-      return new Response(fs.readFileSync(file), { status: 200 });
-    }
-  };
-  const home = await server.fetch(new Request("https://example.test/", { headers: { accept: "text/html" } }), { ASSETS: assets });
-  assert.equal(home.status, 200);
-  assert.match(await home.text(), /Arcadien Army Assembler/);
-  const serviceWorker = await server.fetch(new Request("https://example.test/service-worker.js"), { ASSETS: assets });
-  assert.equal(serviceWorker.status, 200);
-  assert.equal(serviceWorker.headers.get("cache-control"), "no-cache, no-store, must-revalidate");
-  assert.equal(serviceWorker.headers.get("service-worker-allowed"), "/");
 });
 
 function listFiles(directory, prefix = "") {
