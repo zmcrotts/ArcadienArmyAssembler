@@ -36,12 +36,16 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /class="loadoutStep"[^>]+data-delta="-1"/);
   assert.match(engineApp, /applySelection\(input, Math\.max\(minimum, Math\.min\(maximum, requested\)\)\)/);
   assert.match(engineApp, /function renderTransportProfiles\(profiles\)/);
+  assert.match(engineApp, /function renderLeaderAttachmentRule\(definition\)/);
+  assert.match(engineApp, /<summary>Leader<\/summary>/);
   assert.match(engineApp, /function renderSheetTransportProfiles\(abilities\)/);
   assert.match(engineApp, /function positionWeaponPreview\(wrap, popover, token\)/);
   assert.match(engineApp, /const openBelow = availableBelow >= Math\.min\(naturalHeight, 260\) \|\| availableBelow >= availableAbove/);
   assert.match(engineApp, /detailsPanel\?\.addEventListener\("scroll", \(\) => closeOpenWeaponPreview\(\)/);
   assert.match(styles, /\.mobileSheetBackdrop \{[\s\S]*?position: fixed;[\s\S]*?z-index: 60;/);
   assert.match(styles, /\.loadoutStepper \.loadoutStep \{[\s\S]*?min-height: 44px;/);
+  assert.match(offlineApp, /await registration\.update\(\)/);
+  assert.match(offlineApp, /addEventListener\("controllerchange"/);
   assert.doesNotMatch(styles, /\.weaponPreviewWrap\.active \.weaponPreviewPopover \{[\s\S]{0,700}?top: 72px;/);
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.start_url, "./");

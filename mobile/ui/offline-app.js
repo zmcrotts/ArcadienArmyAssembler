@@ -16,6 +16,14 @@
   let registration = null;
   let ready = false;
   let busy = false;
+  const controlledAtStart = Boolean(navigator.serviceWorker?.controller);
+  let reloadingForUpdate = false;
+
+  navigator.serviceWorker?.addEventListener("controllerchange", () => {
+    if (!controlledAtStart || reloadingForUpdate) return;
+    reloadingForUpdate = true;
+    location.reload();
+  });
 
   action.addEventListener("click", async () => {
     if (busy) return;
@@ -79,6 +87,7 @@
     }
     try {
       registration = await navigator.serviceWorker.register("./service-worker.js", { scope: "./" });
+      await registration.update();
       registration = await navigator.serviceWorker.ready;
       requestStatus();
     } catch (error) {

@@ -2655,7 +2655,8 @@ function renderConfigured(configured, effects = [], models = [], context = {}) {
     ${renderUnitProfiles(unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects, context))}
     ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
     ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
-    ${renderAbilities(configured.abilities || [], context.definition)}
+    ${renderLeaderAttachmentRule(context.definition)}
+    ${renderAbilities(configured.abilities || [])}
     ${renderTransportProfiles(configured.abilities || [])}
     ${renderRules(configured.rules || [])}
   `;
@@ -2986,15 +2987,13 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
   `;
 }
 
-function renderAbilities(abilities, definition = null) {
+function renderAbilities(abilities) {
   const standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
-  const leaderAbility = renderLeaderAttachmentAbility(definition, standardAbilities);
-  if (!standardAbilities.length && !leaderAbility) return "";
+  if (!standardAbilities.length) return "";
 
   return `
     <details class="configuredSection" open>
       <summary>Abilities</summary>
-      ${leaderAbility}
       ${standardAbilities.map(a => `
         <details class="card ruleDisclosure">
           <summary>${escapeHtml(a.name)}</summary>
@@ -3005,17 +3004,18 @@ function renderAbilities(abilities, definition = null) {
   `;
 }
 
-function renderLeaderAttachmentAbility(definition, abilities = []) {
+function renderLeaderAttachmentRule(definition) {
   if (!definition?.roles?.leader) return "";
-  if (abilities.some(ability => String(ability?.name || "").trim().toLowerCase() === "leader")) return "";
   const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
   if (!targets.length) return "";
 
   return `
-    <details class="card ruleDisclosure">
+    <details class="configuredSection" open>
       <summary>Leader</summary>
-      <p>This unit can be attached to the following units:</p>
-      <ul>${targets.map(target => `<li>${escapeHtml(target)}</li>`).join("")}</ul>
+      <div class="card">
+        <p>This unit can be attached to the following units:</p>
+        <ul>${targets.map(target => `<li>${escapeHtml(target)}</li>`).join("")}</ul>
+      </div>
     </details>
   `;
 }
