@@ -42,14 +42,14 @@ test("manual sync adds records found only in the shared folder", t => {
   assert.equal(result.saves[0].id, "remote");
 });
 
-test("manual sync preserves both versions of a changed roster", t => {
+test("manual sync keeps the newest same-named roster instead of duplicating it", t => {
   const folder = tempSyncFolder(t);
-  syncRosterLibrary(folder, [record("same", "Older list", "2026-07-15T12:00:00.000Z")]);
+  syncRosterLibrary(folder, [record("desktop", "WAAAAAGH 2k", "2026-07-15T12:00:00.000Z")]);
 
-  const result = syncRosterLibrary(folder, [record("same", "Newer list", "2026-07-15T13:00:00.000Z")]);
+  const result = syncRosterLibrary(folder, [record("phone", "waaaaagh  2K", "2026-07-15T13:00:00.000Z")]);
 
-  assert.equal(result.summary.conflicts, 1);
-  assert.equal(result.saves.length, 2);
-  assert.equal(result.saves.find(item => item.id === "same").document.name, "Newer list");
-  assert.match(result.saves.find(item => item.id !== "same").document.name, /sync conflict/);
+  assert.equal(result.summary.conflicts, 0);
+  assert.equal(result.saves.length, 1);
+  assert.equal(result.saves[0].id, "phone");
+  assert.equal(fs.readdirSync(path.join(folder, "rosters")).filter(name => name.endsWith(".json")).length, 1);
 });

@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -291,7 +292,9 @@ public final class MainActivity extends Activity {
             deviceRequest.put("client_id", ONEDRIVE_CLIENT_ID);
             deviceRequest.put("scope", ONEDRIVE_SCOPE);
             JSONObject device = postMicrosoftForm(MICROSOFT_DEVICE_CODE_URL, deviceRequest);
-            if (device.has("error")) throw new IllegalStateException(device.optString("error_description", "Microsoft sign-in could not start."));
+            if (device.has("error")) {
+                throw new IllegalStateException(device.optString("error_description", "Microsoft sign-in could not start."));
+            }
 
             String deviceCode = device.getString("device_code");
             String userCode = device.getString("user_code");
@@ -306,7 +309,12 @@ public final class MainActivity extends Activity {
                 tokenRequest.put("client_id", ONEDRIVE_CLIENT_ID);
                 tokenRequest.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
                 tokenRequest.put("device_code", deviceCode);
-                JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, tokenRequest);
+                JSONObject token;
+                try {
+                    token = postMicrosoftForm(MICROSOFT_TOKEN_URL, tokenRequest);
+                } catch (IOException transientError) {
+                    continue;
+                }
                 if (token.has("access_token")) {
                     acceptOneDriveToken(token);
                     notifyOneDriveResult(oneDriveAccessToken, null);
@@ -410,6 +418,8 @@ public final class MainActivity extends Activity {
             body.append('=').append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
         HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(15000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setDoOutput(true);

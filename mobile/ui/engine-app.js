@@ -988,6 +988,7 @@ function renderStartScreen() {
       </div>
       <div class="startHeaderActions">
         <button id="startSyncRosters">Sync</button>
+        <button id="startCleanSync">Clean synced lists</button>
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -1013,6 +1014,7 @@ function renderStartScreen() {
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
   document.getElementById("startSyncRosters").onclick = syncSavedRosters;
+  document.getElementById("startCleanSync").onclick = cleanSyncedDuplicates;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
@@ -1524,6 +1526,27 @@ async function syncSavedRosters() {
     showTransientMessage(`Sync could not finish: ${error.message}`);
     button.disabled = false;
     button.textContent = "Sync";
+  }
+}
+
+async function cleanSyncedDuplicates() {
+  const service = window.OneDriveRosterSync;
+  if (!service?.available) return;
+  if (!confirm("For each matching roster name, keep the newest version on this device and in OneDrive? This removes older same-named copies, but leaves differently named rosters alone.")) return;
+  const button = document.getElementById("startCleanSync");
+  try {
+    button.disabled = true;
+    button.textContent = "Cleaning…";
+    const result = await service.cleanDuplicates(savedRosterLibrary());
+    saveRosterLibrary(result.saves);
+    renderStartScreen();
+    const cleanup = result.cleanup || {};
+    const removed = (cleanup.localRemoved || 0) + (cleanup.remoteRemoved || 0);
+    showTransientMessage(`Cleanup finished — ${cleanup.localRemoved || 0} local and ${cleanup.remoteRemoved || 0} cloud older same-name cop${removed === 1 ? "y" : "ies"} removed.`);
+  } catch (error) {
+    showTransientMessage(`Cleanup could not finish: ${error.message}`);
+    button.disabled = false;
+    button.textContent = "Clean synced lists";
   }
 }
 

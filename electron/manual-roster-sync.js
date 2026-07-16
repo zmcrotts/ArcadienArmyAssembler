@@ -34,6 +34,11 @@ function savedAtValue(record) {
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
+function syncKey(record) {
+  const name = String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+  return name ? `name:${name}` : `id:${record.id}`;
+}
+
 function fileNameForRecord(id) {
   return `${crypto.createHash("sha256").update(id).digest("hex")}.json`;
 }
@@ -73,64 +78,35 @@ function writeRemoteRecord(syncFolder, record) {
   fs.renameSync(temporary, target);
 }
 
-function conflictCopy(record, occupiedIds) {
-  const copied = clone(record);
-  const baseId = `${record.id}-conflict-${contentHash(record).slice(0, 8)}`;
-  let id = baseId;
-  let counter = 2;
-  while (occupiedIds.has(id)) id = `${baseId}-${counter++}`;
-  occupiedIds.add(id);
-  copied.id = id;
-  copied.document.name = `${copied.document.name || "Unnamed roster"} (sync conflict)`;
-  return copied;
-}
-
 function syncRosterLibrary(syncFolder, localSaves) {
   fs.mkdirSync(syncFolder, { recursive: true });
   const local = validRecords(localSaves);
   const remote = readRemoteRecords(syncFolder);
-  const remoteById = new Map(remote.map(record => [record.id, record]));
-  const merged = local.map(clone);
-  const mergedById = new Map(merged.map(record => [record.id, record]));
-  const occupiedIds = new Set(merged.map(record => record.id));
+  const localByKey = new Map();
+  const remoteByKey = new Map();
+  for (const record of local) {
+    const key = syncKey(record);
+    const previous = localByKey.get(key);
+    if (!previous || savedAtValue(record) >= savedAtValue(previous)) localByKey.set(key, record);
+  }
+  for (const record of remote) {
+    const key = syncKey(record);
+    const previous = remoteByKey.get(key);
+    if (!previous || savedAtValue(record) >= savedAtValue(previous)) remoteByKey.set(key, record);
+  }
   const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
-
-  for (let index = 0; index < merged.length; index += 1) {
-    const localRecord = merged[index];
-    const remoteRecord = remoteById.get(localRecord.id);
-    if (!remoteRecord) {
-      writeRemoteRecord(syncFolder, localRecord);
-      summary.uploaded += 1;
-      continue;
-    }
-
-    if (contentHash(localRecord) === contentHash(remoteRecord)) continue;
-
-    if (savedAtValue(localRecord) >= savedAtValue(remoteRecord)) {
-      writeRemoteRecord(syncFolder, localRecord);
-      const preservedRemote = conflictCopy(remoteRecord, occupiedIds);
-      merged.push(preservedRemote);
-      mergedById.set(preservedRemote.id, preservedRemote);
-      summary.conflicts += 1;
-    } else {
-      const preservedLocal = conflictCopy(localRecord, occupiedIds);
-      merged[index] = clone(remoteRecord);
-      mergedById.set(remoteRecord.id, merged[index]);
-      merged.push(preservedLocal);
-      mergedById.set(preservedLocal.id, preservedLocal);
-      summary.downloaded += 1;
-      summary.conflicts += 1;
-    }
+  const merged = [];
+  const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
+  for (const key of keys) {
+    const localRecord = localByKey.get(key);
+    const remoteRecord = remoteByKey.get(key);
+    const winner = !remoteRecord || (localRecord && savedAtValue(localRecord) >= savedAtValue(remoteRecord)) ? localRecord : remoteRecord;
+    if (winner === localRecord && (!remoteRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.uploaded += 1;
+    if (winner === remoteRecord && (!localRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.downloaded += 1;
+    merged.push(clone(winner));
   }
-
-  for (const remoteRecord of remote) {
-    if (mergedById.has(remoteRecord.id)) continue;
-    merged.push(clone(remoteRecord));
-    mergedById.set(remoteRecord.id, remoteRecord);
-    occupiedIds.add(remoteRecord.id);
-    summary.downloaded += 1;
-  }
-
+  fs.rmSync(path.join(syncFolder, "rosters"), { recursive: true, force: true });
+  for (const record of merged) writeRemoteRecord(syncFolder, record);
   return { saves: merged, summary };
 }
 

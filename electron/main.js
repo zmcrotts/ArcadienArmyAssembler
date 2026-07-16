@@ -139,15 +139,23 @@ async function connectOneDrive() {
 }
 
 async function syncStatus() {
-  try {
-    return { available: true, connected: Boolean(await oneDriveClient().accessToken()) };
-  } catch {
-    return { available: true, connected: false };
-  }
+  // Merely opening Lists must never contact Microsoft. A stored connection is
+  // enough to present Sync; validation/refresh happens only after its button
+  // is explicitly pressed.
+  return { available: true, connected: Boolean(readOneDriveTokens()) };
 }
 
 async function ensureOneDriveConnected() {
-  if (await oneDriveClient().accessToken()) return;
+  try {
+    if (await oneDriveClient().accessToken()) return;
+  } catch (error) {
+    // Microsoft can revoke/rotate a refresh grant when the same account is
+    // re-authorized on another device. Recover within this manual Sync press
+    // by discarding only the stale local token and opening the normal browser
+    // sign-in; do not make a background retry.
+    if (!/AADSTS70000|invalid_grant|grant is expired/i.test(error.message || "")) throw error;
+    clearOneDriveTokens();
+  }
   await connectOneDrive();
 }
 

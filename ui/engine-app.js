@@ -687,7 +687,7 @@ function renderStartScreen() {
       </div>
       <div class="startHeaderActions">
         ${syncEnabled ? `<button id="startSyncRosters" class="subtleAction">${syncLabel}</button>` : ""}
-        ${syncStatus?.connected && (window.OneDriveRosterSync?.available || window.desktopRosterSync) ? `<button id="startCleanSync" class="subtleAction">Clean duplicates</button>` : ""}
+        ${syncEnabled ? `<button id="startCleanSync" class="subtleAction">Clean synced lists</button>` : ""}
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -778,7 +778,7 @@ async function syncSavedRosters() {
 async function cleanSyncedDuplicates() {
   const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
   if (!syncProvider?.cleanDuplicates) return;
-  if (!confirm("Remove exact duplicate lists from this device and OneDrive? Lists with any different content will be kept.")) return;
+  if (!confirm("For each matching roster name, keep the newest version on this device and in OneDrive? This removes older same-named copies, but leaves differently named rosters alone.")) return;
   const button = document.getElementById("startCleanSync");
   if (button) {
     button.disabled = true;
@@ -789,12 +789,12 @@ async function cleanSyncedDuplicates() {
     saveRosterLibrary(result.saves);
     renderStartScreen();
     const cleanup = result.cleanup || {};
-    showTransientMessage(`Cleanup finished — ${cleanup.localRemoved || 0} local and ${cleanup.remoteRemoved || 0} cloud duplicate${(cleanup.localRemoved || 0) + (cleanup.remoteRemoved || 0) === 1 ? "" : "s"} removed.`);
+    showTransientMessage(`Cleanup finished — ${cleanup.localRemoved || 0} local and ${cleanup.remoteRemoved || 0} cloud older same-name cop${(cleanup.localRemoved || 0) + (cleanup.remoteRemoved || 0) === 1 ? "y" : "ies"} removed.`);
   } catch (error) {
     showTransientMessage(`Cleanup could not finish: ${error.message}`);
     if (button) {
       button.disabled = false;
-      button.textContent = "Clean duplicates";
+      button.textContent = "Clean synced lists";
     }
   }
 }

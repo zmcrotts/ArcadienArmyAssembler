@@ -119,6 +119,11 @@ function recordTime(record) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function syncKey(record) {
+  const name = String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+  return name ? `name:${name}` : `id:${record.id}`;
+}
+
 async function fileName(id) {
   return `${(await sha256(id)).slice(0, 43)}.json`;
 }
@@ -162,87 +167,53 @@ async function uploadRecord(folder, record) {
   });
 }
 
-async function sync(saves) {
+async function reconcileByName(saves) {
   const folder = await rosterFolder();
   const local = Array.isArray(saves) ? saves.filter(validRecord).map(record => structuredClone(record)) : [];
-  const remote = (await remoteEntries(folder)).map(entry => entry.record);
-  const remoteById = new Map(remote.map(record => [record.id, record]));
-  const allIds = new Set(local.map(record => record.id));
-  const result = local.map(record => structuredClone(record));
-  const resultById = new Map(result.map(record => [record.id, record]));
+  const remote = await remoteEntries(folder);
+  const localByKey = new Map();
+  for (const record of local) {
+    const key = syncKey(record);
+    const previous = localByKey.get(key);
+    if (!previous || recordTime(record) >= recordTime(previous)) localByKey.set(key, record);
+  }
+  const remoteByKey = new Map();
+  for (const entry of remote) {
+    const key = syncKey(entry.record);
+    if (!remoteByKey.has(key)) remoteByKey.set(key, []);
+    remoteByKey.get(key).push(entry);
+  }
   const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
-
-  for (let index = 0; index < result.length; index += 1) {
-    const current = result[index];
-    const other = remoteById.get(current.id);
-    if (!other) {
-      await uploadRecord(folder, current);
+  const cleanup = { localRemoved: local.length - localByKey.size, remoteRemoved: 0 };
+  const result = [];
+  const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
+  for (const key of keys) {
+    const localRecord = localByKey.get(key);
+    const remoteEntriesForName = remoteByKey.get(key) || [];
+    const newestRemoteEntry = remoteEntriesForName.reduce((newest, entry) => !newest || recordTime(entry.record) >= recordTime(newest.record) ? entry : newest, null);
+    const remoteRecord = newestRemoteEntry?.record || null;
+    const winner = !remoteRecord || (localRecord && recordTime(localRecord) >= recordTime(remoteRecord)) ? localRecord : remoteRecord;
+    const winnerIsLocal = winner === localRecord;
+    const matchingRemote = remoteEntriesForName.find(entry => entry.record.id === winner.id) || null;
+    if (winnerIsLocal && (!matchingRemote || documentHash(matchingRemote.record) !== documentHash(winner))) {
+      await uploadRecord(folder, winner);
       summary.uploaded += 1;
-      continue;
     }
-    if (documentHash(current) === documentHash(other)) continue;
-    const keepLocal = recordTime(current) >= recordTime(other);
-    const preserved = structuredClone(keepLocal ? other : current);
-    let conflictId = `${preserved.id}-conflict-${(await sha256(documentHash(preserved))).slice(0, 8)}`;
-    let suffix = 2;
-    while (allIds.has(conflictId)) conflictId = `${preserved.id}-conflict-${suffix++}`;
-    allIds.add(conflictId);
-    preserved.id = conflictId;
-    preserved.document.name = `${preserved.document.name || "Unnamed roster"} (sync conflict)`;
-    if (keepLocal) await uploadRecord(folder, current);
-    else {
-      result[index] = structuredClone(other);
-      resultById.set(other.id, result[index]);
+    if (!winnerIsLocal && (!localRecord || localRecord.id !== winner.id || documentHash(localRecord) !== documentHash(winner))) {
       summary.downloaded += 1;
     }
-    result.push(preserved);
-    resultById.set(preserved.id, preserved);
-    summary.conflicts += 1;
-  }
-
-  for (const record of remote) {
-    if (resultById.has(record.id)) continue;
-    result.push(structuredClone(record));
-    resultById.set(record.id, record);
-    summary.downloaded += 1;
-  }
-  return { saves: result, summary };
-}
-
-async function cleanDuplicates(saves) {
-  const folder = await rosterFolder();
-  const remote = await remoteEntries(folder);
-  const source = Array.isArray(saves) ? saves.filter(validRecord) : [];
-  const newestByContent = new Map();
-  for (const record of source) {
-    const key = documentHash(record);
-    if (!newestByContent.has(key) || recordTime(record) > recordTime(newestByContent.get(key))) newestByContent.set(key, record);
-  }
-  const cleanLocal = [...newestByContent.values()].map(record => structuredClone(record));
-  const keptIds = new Set(cleanLocal.map(record => record.id));
-  const remoteByContent = new Map();
-  for (const entry of remote) {
-    const key = documentHash(entry.record);
-    if (!remoteByContent.has(key)) remoteByContent.set(key, []);
-    remoteByContent.get(key).push(entry);
-  }
-  let remoteRemoved = 0;
-  for (const entries of remoteByContent.values()) {
-    const matchingLocal = entries.find(entry => keptIds.has(entry.record.id));
-    const keep = matchingLocal || entries.sort((a, b) => recordTime(b.record) - recordTime(a.record))[0];
-    for (const entry of entries) {
-      if (entry === keep) continue;
+    for (const entry of remoteEntriesForName) {
+      if (entry.record.id === winner.id) continue;
       await graph(`/me/drive/items/${entry.itemId}`, { method: "DELETE" });
-      remoteRemoved += 1;
+      cleanup.remoteRemoved += 1;
     }
-    if (!matchingLocal && cleanLocal.some(record => documentHash(record) === documentHash(keep.record))) {
-      await graph(`/me/drive/items/${keep.itemId}`, { method: "DELETE" });
-      remoteRemoved += 1;
-    }
+    result.push(structuredClone(winner));
   }
-  const synced = await sync(cleanLocal);
-  return { ...synced, cleanup: { localRemoved: source.length - cleanLocal.length, remoteRemoved } };
+  return { saves: result, summary, cleanup };
 }
+
+async function sync(saves) { return reconcileByName(saves); }
+async function cleanDuplicates(saves) { return reconcileByName(saves); }
 
 async function beginSignIn() {
   if (ANDROID_NATIVE) {
