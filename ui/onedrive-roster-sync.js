@@ -1,5 +1,7 @@
 "use strict";
 
+(() => {
+
 // This is a public OAuth client ID, not a secret. The app never requests profile or email data.
 const ONEDRIVE_CLIENT_ID = "30500f7e-c454-428c-8f16-c0318ae6174b";
 const ONEDRIVE_SCOPE = "offline_access https://graph.microsoft.com/Files.ReadWrite.AppFolder";
@@ -580,3 +582,5 @@ window.OneDriveRosterSync = {
     });
   }
 };
+
+})();

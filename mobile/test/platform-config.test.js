@@ -4,9 +4,17 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const read = relative => fs.readFileSync(path.join(ROOT, relative), "utf8");
+
+test("OneDrive sync loads alongside the roster document browser script", () => {
+  const context = vm.createContext({ window: { location: { protocol: "https:" } } });
+  vm.runInContext(read("src/domain/roster-document.js"), context);
+  vm.runInContext(read("ui/onedrive-roster-sync.js"), context);
+  assert.equal(context.window.OneDriveRosterSync?.available, true);
+});
 
 test("supported release targets exclude Linux", () => {
   const packageJson = JSON.parse(read("package.json"));
