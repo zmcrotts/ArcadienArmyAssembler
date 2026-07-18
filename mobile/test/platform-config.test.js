@@ -14,6 +14,7 @@ test("OneDrive sync loads alongside the roster document browser script", () => {
   vm.runInContext(read("src/domain/roster-document.js"), context);
   vm.runInContext(read("ui/onedrive-roster-sync.js"), context);
   assert.equal(context.window.OneDriveRosterSync?.available, true);
+  assert.match(read("mobile/ui/index.html"), /onedrive-roster-sync\.js\?v=[^"]+/);
 });
 
 test("supported release targets exclude Linux", () => {
