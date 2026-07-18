@@ -92,17 +92,18 @@ function clientWithGraph(graph, overrides = {}) {
   });
 }
 
-test("OneDrive sync follows paging and preserves same-named records with different IDs", async () => {
+test("OneDrive sync follows paging and consolidates same-named cross-device records", async () => {
   const graph = fakeGraph([[], [{ itemId: "remote-item", record: record("remote", "Same name", "2026-07-15T12:00:00.000Z") }]]);
   const client = clientWithGraph(graph);
 
   const result = await client.sync([record("local", "Same name", "2026-07-15T13:00:00.000Z")]);
 
-  assert.deepEqual(result.saves.map(item => item.id).sort(), ["local", "remote"]);
+  assert.deepEqual(result.saves.map(item => item.id), ["local"]);
   assert.equal(result.summary.conflicts, 0);
-  assert.equal(result.summary.downloaded, 1);
+  assert.equal(result.summary.uploaded, 1);
+  assert.equal(result.summary.downloaded, 0);
   assert.equal(graph.requests.some(item => item.url.endsWith("children-page-2")), true);
-  assert.equal(graph.requests.some(item => item.options.method === "DELETE"), false);
+  assert.equal(graph.requests.some(item => item.options.method === "DELETE"), true);
 });
 
 test("OneDrive sync keeps the newest same-ID version without manufacturing a conflict copy", async () => {
@@ -264,7 +265,7 @@ test("concurrent sync and repair requests run in order and both execute", async 
     client.cleanDuplicates([duplicate])
   ]);
 
-  assert.equal(syncResult.cleanup.remoteRemoved, 0);
+  assert.equal(syncResult.cleanup.remoteRemoved, 1);
   assert.equal(repairResult.cleanup.remoteRemoved, 1);
   assert.equal(graph.requests.filter(item => item.url.includes("/special/approot")).length, 2);
 });

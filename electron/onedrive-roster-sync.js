@@ -130,6 +130,39 @@ function compareVersions(left, right) {
   return documentHash(left).localeCompare(documentHash(right));
 }
 
+function rosterCandidateGroups(local, remote) {
+  const candidates = [
+    ...local.map(record => ({ record, source: "local" })),
+    ...remote.map(entry => ({ ...entry, source: "remote" }))
+  ];
+  const parents = candidates.map((_, index) => index);
+  const find = index => parents[index] === index ? index : (parents[index] = find(parents[index]));
+  const join = (left, right) => {
+    const leftRoot = find(left);
+    const rightRoot = find(right);
+    if (leftRoot !== rightRoot) parents[rightRoot] = leftRoot;
+  };
+  const byId = new Map();
+  const byName = new Map();
+  candidates.forEach((candidate, index) => {
+    const id = candidate.record.id;
+    const name = String(candidate.record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+    if (byId.has(id)) join(index, byId.get(id));
+    else byId.set(id, index);
+    if (name) {
+      if (byName.has(name)) join(index, byName.get(name));
+      else byName.set(name, index);
+    }
+  });
+  const groups = new Map();
+  candidates.forEach((candidate, index) => {
+    const root = find(index);
+    if (!groups.has(root)) groups.set(root, []);
+    groups.get(root).push(candidate);
+  });
+  return [...groups.values()];
+}
+
 function encodedFileName(crypto, id) {
   return `${crypto.createHash("sha256").update(id).digest("base64url").slice(0, 43)}.json`;
 }
@@ -290,48 +323,33 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
         cleanup.remoteRemoved += 1;
       }
     }
-    const localById = new Map();
-    for (const record of local) {
-      if (!localById.has(record.id)) localById.set(record.id, []);
-      localById.get(record.id).push({ record, source: "local" });
-    }
-    const remoteById = new Map();
-    for (const entry of remote) {
-      if (!remoteById.has(entry.record.id)) remoteById.set(entry.record.id, []);
-      remoteById.get(entry.record.id).push({ ...entry, source: "remote" });
-    }
     const result = [];
-    const pendingUploads = [];
-    const ids = new Set([...localById.keys(), ...remoteById.keys()]);
-    for (const id of ids) {
-      const candidates = [...(localById.get(id) || []), ...(remoteById.get(id) || [])];
-      const canonical = candidates.sort((left, right) => compareVersions(right.record, left.record))[0];
+    for (const candidates of rosterCandidateGroups(local, remote)) {
+      const localCandidates = candidates.filter(candidate => candidate.source === "local");
+      const remoteCandidates = candidates.filter(candidate => candidate.source === "remote");
+      cleanup.localRemoved += Math.max(0, localCandidates.length - 1);
+      const canonical = [...candidates].sort((left, right) => compareVersions(right.record, left.record))[0];
       if (!canonical) continue;
       const winner = clone(canonical.record);
       result.push(winner);
-      const localMatch = local.find(record => sameRecord(record, winner));
-      const remoteMatches = remote.filter(entry => sameRecord(entry.record, winner));
-      if (!localMatch && canonical.source === "remote") summary.downloaded += 1;
+      if (!localCandidates.some(candidate => sameRecord(candidate.record, winner))) summary.downloaded += 1;
+      const remoteMatches = remoteCandidates.filter(entry => sameRecord(entry.record, winner));
+      let keptRemote = remoteMatches[0] || null;
       if (!remoteMatches.length) {
         const expectedFileName = encodedFileName(crypto, winner.id);
-        pendingUploads.push({
-          record: winner,
-          expectedRemote: remote.find(entry => entry.record.id === winner.id && entry.name === expectedFileName) || null
-        });
+        const expectedRemote = remoteCandidates.find(entry => entry.record.id === winner.id && entry.name === expectedFileName) || null;
+        await uploadRecord(folder, winner, expectedRemote);
+        keptRemote = expectedRemote;
+        summary.uploaded += 1;
       }
-      if (options.removeExactRemoteDuplicates && remoteMatches.length > 1) {
-        for (const duplicate of remoteMatches.slice(1)) {
-          await graph(`/me/drive/items/${duplicate.itemId}`, {
+      for (const obsolete of remoteCandidates) {
+        if (keptRemote && obsolete.itemId === keptRemote.itemId) continue;
+        await graph(`/me/drive/items/${obsolete.itemId}`, {
             method: "DELETE",
-            headers: duplicate.eTag ? { "If-Match": duplicate.eTag } : {}
-          });
-          cleanup.remoteRemoved += 1;
-        }
+            headers: obsolete.eTag ? { "If-Match": obsolete.eTag } : {}
+        });
+        cleanup.remoteRemoved += 1;
       }
-    }
-    for (const upload of pendingUploads) {
-      await uploadRecord(folder, upload.record, upload.expectedRemote);
-      summary.uploaded += 1;
     }
     return { saves: result, summary, cleanup };
   }
