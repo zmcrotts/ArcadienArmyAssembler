@@ -303,7 +303,7 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
     let local = assertValidCollection(saves).map(clone);
     const folder = await rosterFolder();
     let remote = await remoteEntries(folder);
-    const cloudFolder = crypto.createHash("sha256").update(String(folder.id || "")).digest("hex").slice(0, 8).toUpperCase();
+    const cloudFolder = crypto.createHash("sha256").update(String(folder.id || "")).digest("base64url").slice(0, 8).toUpperCase();
     const summary = { uploaded: 0, downloaded: 0, conflicts: 0, cloudRecords: remote.length, localRecords: local.length, cloudFolder };
     const cleanup = { localRemoved: 0, remoteRemoved: 0, conflictCopiesRemoved: 0 };
     if (options.removeGeneratedConflictCopies) {

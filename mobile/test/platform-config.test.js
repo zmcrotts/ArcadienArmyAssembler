@@ -17,6 +17,13 @@ test("OneDrive sync loads alongside the roster document browser script", () => {
   assert.match(read("mobile/ui/index.html"), /onedrive-roster-sync\.js\?v=[^"]+/);
 });
 
+test("browser policy permits Microsoft OneDrive content redirects", () => {
+  const index = read("mobile/ui/index.html");
+  assert.match(index, /connect-src[^;]*https:\/\/graph\.microsoft\.com/);
+  assert.match(index, /connect-src[^;]*https:\/\/\*\.1drv\.com/);
+  assert.match(index, /connect-src[^;]*https:\/\/\*\.sharepoint\.com/);
+});
+
 test("supported release targets exclude Linux", () => {
   const packageJson = JSON.parse(read("package.json"));
   assert.equal(Object.keys(packageJson.scripts).some(name => name.includes("linux")), false);
