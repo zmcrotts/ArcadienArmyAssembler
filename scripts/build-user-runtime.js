@@ -7,6 +7,7 @@ const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
 
 const FILES = [
+  ["ui/bootstrap-app.js", "bootstrap-app.js"],
   ["ui/styles.css", "styles.css"],
   ["ui/engine-app.js", "engine-app.js"],
   ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],

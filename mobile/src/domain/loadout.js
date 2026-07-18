@@ -5,6 +5,28 @@ function asArray(value) {
   return Array.isArray(value) ? value : [value];
 }
 
+function isLocalConstraint(constraint) {
+  return !["force", "roster"].includes(constraint?.scope);
+}
+
+function normalizedConstraintValue(value, type) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return type === "max" ? Infinity : 0;
+  if (number >= 0) return number;
+  // BSData uses negative values as an inactive conditional sentinel. An
+  // inactive minimum imposes no selection, while an inactive maximum is
+  // unbounded; treating both as Infinity creates impossible default minima.
+  return type === "max" ? Infinity : 0;
+}
+
+function localSelectionConstraints(node, type = null) {
+  return (node?.constraints || []).filter(constraint =>
+    constraint.field === "selections"
+    && (!type || constraint.type === type)
+    && isLocalConstraint(constraint)
+  );
+}
+
 function buildTreeIndex(unitDefinition) {
   const byId = new Map();
   const byDefinitionId = new Map();
@@ -84,6 +106,8 @@ function evaluateRawCondition(condition, entry, index, unitDefinition) {
   if (condition?.type === "instanceOf" || condition?.type === "notInstanceOf") {
     const instances = new Set([
       unitDefinition?.source?.catalogueId,
+      unitDefinition?.source?.selectionCatalogueId,
+      String(unitDefinition?.selectionKey || "").split(":")[0] || null,
       ...(entry.context?.instanceOf || [])
     ].filter(Boolean));
     const present = instances.has(condition.childId);
@@ -151,7 +175,8 @@ function repeatCount(repeat, entry, index) {
   if (!every) return 0;
   const actual = selectionCount(entry, index, repeat.childId || repeat.scope);
   const quotient = actual / every;
-  const occurrences = repeat.roundUp === "true" ? Math.ceil(quotient) : Math.floor(quotient);
+  const roundUp = repeat.roundUp === true || String(repeat.roundUp).trim().toLowerCase() === "true";
+  const occurrences = roundUp ? Math.ceil(quotient) : Math.floor(quotient);
   const amountPerOccurrence = repeat.repeats === undefined ? 1 : Number(repeat.repeats);
   return Math.max(0, occurrences * amountPerOccurrence);
 }
@@ -172,7 +197,7 @@ function effectiveConstraintValue(constraint, unitDefinition, entry, index) {
       else if (modifier.type === "decrement") value -= amount;
     }
   }
-  return value < 0 ? Infinity : value;
+  return normalizedConstraintValue(value, constraint.type);
 }
 
 function nearestSelectedParentCount(node, entry, index) {
@@ -197,6 +222,7 @@ function validateLoadout(unitDefinition, entry) {
     if (!nodeIsActive(node, entry, index, unitDefinition, true)) continue;
     for (const constraint of node.constraints || []) {
       if (constraint.field !== "selections" || !["min", "max"].includes(constraint.type)) continue;
+      if (!isLocalConstraint(constraint)) continue;
       const multiplier = constraint.scope === "parent"
         ? nearestSelectedParentCount(node, entry, index)
         : 1;
@@ -216,10 +242,12 @@ function validateLoadout(unitDefinition, entry) {
 
 function constraintValue(node, type, scope = null) {
   const matches = (node.constraints || []).filter(item =>
-    item.field === "selections" && item.type === type && (!scope || item.scope === scope)
+    item.field === "selections"
+    && item.type === type
+    && (scope ? item.scope === scope : isLocalConstraint(item))
   );
   if (!matches.length) return null;
-  return Number(matches[0].value);
+  return normalizedConstraintValue(matches[0].value, type);
 }
 
 function defaultChild(group) {
@@ -237,7 +265,7 @@ function simpleMaximum(node, parentCount) {
 }
 
 function dynamicMaximum(node, parentCount, selections, unitDefinition, index) {
-  const constraints = (node.constraints || []).filter(item => item.field === "selections" && item.type === "max");
+  const constraints = localSelectionConstraints(node, "max");
   if (!constraints.length) return Infinity;
   return Math.min(...constraints.map(constraint => {
     const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index);
@@ -246,7 +274,7 @@ function dynamicMaximum(node, parentCount, selections, unitDefinition, index) {
 }
 
 function dynamicMinimum(node, parentCount, selections, unitDefinition, index) {
-  const constraints = (node.constraints || []).filter(item => item.field === "selections" && item.type === "min");
+  const constraints = localSelectionConstraints(node, "min");
   if (!constraints.length) return 0;
   return Math.max(...constraints.map(constraint => {
     const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index);
@@ -501,9 +529,8 @@ function createDefaultRosterEntry(unitDefinition, instanceId = `${unitDefinition
 
 function evaluatedLimits(node, entry, index, unitDefinition) {
   const parentCount = nearestSelectedParentCount(node, entry, index);
-  const constraints = (node.constraints || []).filter(item =>
-    item.field === "selections" && ["min", "max"].includes(item.type)
-  );
+  const constraints = localSelectionConstraints(node)
+    .filter(item => ["min", "max"].includes(item.type));
   const values = type => constraints
     .filter(constraint => constraint.type === type)
     .map(constraint => {
@@ -521,9 +548,7 @@ function evaluatedLimits(node, entry, index, unitDefinition) {
 function potentialMaximum(node, fallbackMaximum) {
   if (!Number.isFinite(fallbackMaximum)) return fallbackMaximum;
   let maximum = fallbackMaximum;
-  const maxConstraints = (node.constraints || []).filter(constraint =>
-    constraint.field === "selections" && constraint.type === "max"
-  );
+  const maxConstraints = localSelectionConstraints(node, "max");
   for (const constraint of maxConstraints) {
     const base = Number(constraint.value || 0);
     for (const modifier of node.modifiers || []) {
@@ -627,8 +652,9 @@ function setSelection(unitDefinition, entry, nodeId, count, enforceOptionState =
     const fixed = min !== null && max !== null && min === max;
     const delta = newCount - oldCount;
     const preferred = defaultChild(parent);
-    // A fallback repair choice is not a declared default, so it must not
-    // turn an otherwise multi-select group into a replacement choice.
+    // A group may have no declared default. In that case defaultChild() falls
+    // back to the first visible option for repair purposes, but choosing a
+    // different option must not make the whole group mutually exclusive.
     const replacingDefault = parent.defaultSelectionId && preferred && preferred.id !== nodeId;
 
     if ((fixed || replacingDefault) && delta !== 0) {
@@ -839,7 +865,11 @@ function getConfiguredProfiles(unitDefinition, entry) {
 
   for (const node of index.all) {
     if (!nodeIsActive(node, entry, index, unitDefinition, true)) continue;
-    const count = node.kind === "unit" ? 1 : Number(entry.selections[node.id] || 0);
+    const count = node.kind === "unit"
+      ? 1
+      : node.kind === "group"
+        ? groupCount(node, entry)
+        : Number(entry.selections[node.id] || 0);
     if (count <= 0) continue;
     for (const profile of node.profiles || []) {
       const key = profile.typeName === "Unit"

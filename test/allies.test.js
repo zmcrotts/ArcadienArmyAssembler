@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("path");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
 const { extractAllyDefinitions } = require("../src/bsdata/ally-definitions");
@@ -9,8 +10,9 @@ const { extractNormalizedRuleset } = require("../src/rulesets/sources");
 const { canAddUnitForSelectedDetachment, createArmyState, selectDetachment, validateRosterLegality } = require("../src/domain/army");
 
 const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
+const legacyTest = fs.existsSync(BSDATA) ? test : test.skip;
 
-test("Space Marines inherit structured Imperial ally catalogues from BSData", () => {
+legacyTest("Space Marines inherit structured Imperial ally catalogues from BSData", () => {
   const units = extractUnitDefinitions(BSDATA).definitions;
   const allies = extractAllyDefinitions(BSDATA, units)["Imperium - Adeptus Astartes - Space Marines"];
   assert.ok(allies.some(item => item.type === "agents" && item.selectionKeys.length > 10));

@@ -9,6 +9,7 @@ const {
   loadBsdataContext,
   nativeUnitLinksFor
 } = require("./unit-definitions");
+const { bsdataFlagIsTrue } = require("./flags");
 const PRIMARY_MISSION_CARD_IMAGES = require("../../ui/assets/11th/primary-missions/manifest.json");
 const { supplementalCategoryNamesFor } = require("../rulesets/detachment-keywords");
 
@@ -287,10 +288,10 @@ function modifierAppliesToCatalogue(modifier, catalogueId) {
 }
 
 function hiddenForCatalogue(entry, catalogueId) {
-  let hidden = entry.hidden === "true";
+  let hidden = bsdataFlagIsTrue(entry.hidden);
   for (const modifier of asArray(entry?.modifiers?.modifier)) {
     if (modifier.type === "set" && modifier.field === "hidden" && modifierAppliesToCatalogue(modifier, catalogueId)) {
-      hidden = String(modifier.value).toLowerCase() === "true";
+      hidden = bsdataFlagIsTrue(modifier.value);
     }
   }
   return hidden;
@@ -324,9 +325,16 @@ function rootInstanceIdsFor(unit, indexes, faction) {
     ...asArray(unit?.categoryLinks?.categoryLink).map(link => link.targetId).filter(Boolean)
   ].filter(Boolean));
   visitResolved(unit, indexes, node => {
-    for (const modifier of asArray(node?.modifiers?.modifier)) {
-      if (modifier.field === "category" && ["add", "set-primary"].includes(modifier.type) && modifier.value) ids.add(modifier.value);
+    function collectCategoryGrants(value) {
+      if (!value || typeof value !== "object") return;
+      if (value.field === "category" && ["add", "set-primary"].includes(value.type) && value.value) ids.add(value.value);
+      for (const child of Object.values(value)) {
+        if (Array.isArray(child)) child.forEach(collectCategoryGrants);
+        else collectCategoryGrants(child);
+      }
     }
+    collectCategoryGrants(node?.modifiers);
+    collectCategoryGrants(node?.modifierGroups);
   });
   const supplementalNames = new Set(supplementalCategoryNamesFor(faction, unit.name).map(normalizeName));
   for (const [id, category] of indexes.categories || []) {
@@ -343,37 +351,60 @@ function forceDispositionForDetachment(entry, dispositionsByName) {
   return null;
 }
 
-function requiredRootInstanceIds(entry) {
-  const ids = new Set();
-
-  function visitCondition(condition) {
-    if (condition?.type === "notInstanceOf" && ["root-entry", "ancestor"].includes(condition.scope) && condition.childId) {
-      ids.add(condition.childId);
-    }
-  }
-
-  function visitConditionGroup(group) {
-    for (const condition of asArray(group?.conditions?.condition)) visitCondition(condition);
-    for (const child of asArray(group?.conditionGroups?.conditionGroup)) visitConditionGroup(child);
-  }
-
-  for (const modifier of asArray(entry?.modifiers?.modifier)) {
-    if (modifier.type !== "set" || modifier.field !== "hidden" || String(modifier.value).toLowerCase() !== "true") continue;
-    for (const condition of asArray(modifier?.conditions?.condition)) visitCondition(condition);
-    for (const group of asArray(modifier?.conditionGroups?.conditionGroup)) visitConditionGroup(group);
-  }
-
-  return ids;
+function isRootInstanceCondition(condition) {
+  return ["instanceOf", "notInstanceOf"].includes(condition?.type)
+    && ["root-entry", "ancestor"].includes(condition?.scope)
+    && Boolean(condition?.childId);
 }
 
-function eligibleKeysForEntry(entry, eligibleUnits, options = {}) {
-  const required = requiredRootInstanceIds(entry);
-  if (!required.size) return eligibleUnits.map(item => item.selectionKey);
-  const match = options.match || "any";
+function hasRootInstanceCondition(value) {
+  if (!value || typeof value !== "object") return false;
+  if (isRootInstanceCondition(value)) return true;
+  return Object.values(value).some(child => Array.isArray(child)
+    ? child.some(hasRootInstanceCondition)
+    : hasRootInstanceCondition(child));
+}
+
+function rootConditionProjection(condition, rootInstanceIds) {
+  if (!isRootInstanceCondition(condition)) return null;
+  const present = rootInstanceIds.has(condition.childId);
+  return condition.type === "instanceOf" ? present : !present;
+}
+
+function rootConditionGroupProjection(group, rootInstanceIds) {
+  const results = [
+    ...asArray(group?.conditions?.condition).map(condition => rootConditionProjection(condition, rootInstanceIds)),
+    ...asArray(group?.conditionGroups?.conditionGroup).map(child => rootConditionGroupProjection(child, rootInstanceIds))
+  ].filter(result => result !== null);
+  if (!results.length) return null;
+  return String(group?.type || "and").toLowerCase() === "or"
+    ? results.some(Boolean)
+    : results.every(Boolean);
+}
+
+function modifierRootResult(modifier, rootInstanceIds) {
+  const results = [
+    ...asArray(modifier?.conditions?.condition).map(condition => rootConditionProjection(condition, rootInstanceIds)),
+    ...asArray(modifier?.conditionGroups?.conditionGroup).map(group => rootConditionGroupProjection(group, rootInstanceIds))
+  ].filter(result => result !== null);
+  if (!results.length) return null;
+  return results.every(Boolean);
+}
+
+function enhancementVisibleForRoot(entry, rootInstanceIds) {
+  let hidden = bsdataFlagIsTrue(entry?.hidden);
+  for (const modifier of asArray(entry?.modifiers?.modifier)) {
+    if (modifier.type !== "set" || modifier.field !== "hidden" || !hasRootInstanceCondition(modifier)) continue;
+    if (modifierRootResult(modifier, rootInstanceIds) !== true) continue;
+    hidden = bsdataFlagIsTrue(modifier.value);
+  }
+  return !hidden;
+}
+
+function eligibleKeysForEntry(entry, eligibleUnits) {
+  const hasRootGate = hasRootInstanceCondition(entry?.modifiers);
   return eligibleUnits
-    .filter(item => match === "all"
-      ? [...required].every(id => item.rootInstanceIds.has(id))
-      : [...required].some(id => item.rootInstanceIds.has(id)))
+    .filter(item => !hasRootGate || enhancementVisibleForRoot(entry, item.rootInstanceIds))
     .map(item => item.selectionKey);
 }
 
@@ -465,7 +496,7 @@ function extractArmyDefinitions(dataDirectory) {
     const nativeUnitLinks = nativeUnitLinksFor({ file, catalogue }, catalogueLookup);
 
     for (const { link, selectionCatalogueId } of nativeUnitLinks) {
-      if (link.type !== "selectionEntry" || link.hidden === "true") continue;
+      if (link.type !== "selectionEntry" || bsdataFlagIsTrue(link.hidden)) continue;
       const unit = indexes.entries.get(link.targetId);
       if (!unit || !isRosterUnit(unit)) continue;
       const selectionKey = `${selectionCatalogueId || faction}:${link.id}`;
@@ -485,9 +516,17 @@ function extractArmyDefinitions(dataDirectory) {
     const extractedEnhancements = [...new Map(enhancementGroups.flatMap(group =>
       enhancementEntriesIn(group, indexes, detachmentIds).map(({ entry, detachmentIds: availableIn, sourceGroup }) => {
         const kind = /upgrade/i.test(sourceGroup?.name || "") ? "upgrade" : "enhancement";
-        const eligibleUnits = [
+        const directlyEligibleUnits = [
           ...(eligibleByGroup.get(sourceGroup?.id) || eligibleByGroup.get(group.id) || (kind === "upgrade" ? allEligibleUnits : []))
         ];
+        // Root/ancestor visibility conditions are the authoritative bearer
+        // predicate. Evaluate them against every unit, preserving the source's
+        // boolean groups (e.g. Cronos OR Talos) instead of requiring every
+        // referenced ID. Without a root predicate, prefer the linked group and
+        // fall back to the faction's units for global enhancement groups.
+        const eligibleUnits = hasRootInstanceCondition(entry?.modifiers)
+          ? allEligibleUnits
+          : directlyEligibleUnits.length ? directlyEligibleUnits : allEligibleUnits;
         return {
           id: entry.id,
           name: entry.name || "Unnamed enhancement",
@@ -495,7 +534,7 @@ function extractArmyDefinitions(dataDirectory) {
           maxSelections: maxSelectionsFor(entry),
           points: Number(directPoints(entry) || 0),
           detachmentIds: availableIn,
-          eligibleSelectionKeys: eligibleKeysForEntry(entry, eligibleUnits, { match: kind === "upgrade" ? "all" : "any" }),
+          eligibleSelectionKeys: eligibleKeysForEntry(entry, eligibleUnits),
           profiles: asArray(entry?.profiles?.profile).map(normalizeProfile),
           rules: rulesFor(entry, indexes)
         };
@@ -513,7 +552,7 @@ function extractArmyDefinitions(dataDirectory) {
       armyRules: catalogueArmyRules(catalogue, indexes, faction),
       forceDispositions,
       allowedSelectionKeys: nativeUnitLinks
-        .filter(({ link }) => link.type === "selectionEntry" && link.hidden !== "true" && isRosterUnit(indexes.entries.get(link.targetId)))
+        .filter(({ link }) => link.type === "selectionEntry" && !bsdataFlagIsTrue(link.hidden) && isRosterUnit(indexes.entries.get(link.targetId)))
         .map(({ link, selectionCatalogueId }) => `${selectionCatalogueId || faction}:${link.id}`),
       detachments,
       enhancements
@@ -574,7 +613,7 @@ function extractForceDispositions(gameSystem) {
   return entries.map(entry => ({
     id: entry.id,
     name: entry.name || "Unnamed disposition",
-    hidden: String(entry.hidden || "").toLowerCase() === "true",
+    hidden: bsdataFlagIsTrue(entry.hidden),
     missionMap: dispositionMissionMap(entry.name)
   }));
 }

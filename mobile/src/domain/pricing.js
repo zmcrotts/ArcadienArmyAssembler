@@ -169,6 +169,8 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
       ...rosterEntry?.context,
       instanceOf: [
         unitDefinition?.source?.catalogueId,
+        unitDefinition?.source?.selectionCatalogueId,
+        String(unitDefinition?.selectionKey || "").split(":")[0] || null,
         ...(rosterEntry?.context?.instanceOf || [])
       ].filter(Boolean),
       modelSelectionIds: (unitDefinition.composition || []).map(item => item.id)

@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("path");
 const { extractArmyDefinitions } = require("../src/bsdata/army-definitions");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
@@ -24,8 +25,10 @@ const {
 } = require("../src/domain/army");
 
 const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
-const armies = extractArmyDefinitions(BSDATA).definitions;
-const units = extractUnitDefinitions(BSDATA).definitions;
+const hasLegacyBsdata = fs.existsSync(BSDATA);
+const legacyTest = hasLegacyBsdata ? test : test.skip;
+const armies = hasLegacyBsdata ? extractArmyDefinitions(BSDATA).definitions : [];
+const units = hasLegacyBsdata ? extractUnitDefinitions(BSDATA).definitions : [];
 
 function worldEaters() {
   const found = armies.find(item => item.faction === "Chaos - World Eaters");
@@ -39,7 +42,7 @@ function rosterUnit(name, instanceId) {
   return { instanceId, selectionKey: unit.selectionKey };
 }
 
-test("World Eaters detachments retain rules and detachment-gated enhancements", () => {
+legacyTest("World Eaters detachments retain rules and detachment-gated enhancements", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   assert.equal(army.detachments.length, 6);
@@ -51,7 +54,7 @@ test("World Eaters detachments retain rules and detachment-gated enhancements", 
   assert.ok(glaive.eligibleSelectionKeys.length > 0);
 });
 
-test("catalogue-level faction rules are exposed as army rules", () => {
+legacyTest("catalogue-level faction rules are exposed as army rules", () => {
   const orks = armies.find(item => item.faction === "Xenos - Orks");
   assert.ok(orks, "Missing Orks army definition");
   const waaagh = orks.armyRules.find(item => item.name === "Waaagh!");
@@ -61,7 +64,7 @@ test("catalogue-level faction rules are exposed as army rules", () => {
   assert.equal(orks.armyRules.some(item => item.name === "Void Waaagh!"), false);
 });
 
-test("chapter catalogues inherit only context-legal Astartes detachments", () => {
+legacyTest("chapter catalogues inherit only context-legal Astartes detachments", () => {
   const bloodAngels = armies.find(item => item.faction === "Imperium - Adeptus Astartes - Blood Angels");
   assert.ok(bloodAngels);
   const names = bloodAngels.detachments.map(item => item.name);
@@ -70,7 +73,7 @@ test("chapter catalogues inherit only context-legal Astartes detachments", () =>
   assert.ok(!names.includes("Unforgiven Task Force"));
 });
 
-test("nested enhancement groups inherit their detachment gate", () => {
+legacyTest("nested enhancement groups inherit their detachment gate", () => {
   const tyranids = armies.find(item => item.faction === "Xenos - Tyranids");
   const invasionFleet = tyranids.detachments.find(item => item.name === "Invasion Fleet");
   const alienCunning = tyranids.enhancements.find(item => item.name === "Alien Cunning");
@@ -79,7 +82,7 @@ test("nested enhancement groups inherit their detachment gate", () => {
   assert.ok(alienCunning.eligibleSelectionKeys.length > 0);
 });
 
-test("enhancements require an eligible bearer and contribute points", () => {
+legacyTest("enhancements require an eligible bearer and contribute points", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   const glaive = army.enhancements.find(item => item.name === "Berzerker Glaive");
@@ -197,7 +200,7 @@ test("roster legality is authoritative but advisory across core army rules", () 
   assert.equal(roster.length, 23, "illegal choices remain in roster state");
 });
 
-test("changing detachments preserves selections and warns about stale enhancements", () => {
+legacyTest("changing detachments preserves selections and warns about stale enhancements", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   const vessels = army.detachments.find(item => item.name === "Vessels of Wrath");
@@ -236,7 +239,7 @@ test("multiple 11th detachments spend detachment points by battle size", () => {
   assert.equal(validateRosterLegality(army, state, [], { pointsLimit: 2000 }).warnings.some(item => item.code === "DETACHMENT_POINTS_EXCEEDED"), true);
 });
 
-test("assigning and removing unit relationships never mutates unit identity or configuration", () => {
+legacyTest("assigning and removing unit relationships never mutates unit identity or configuration", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   const glaive = army.enhancements.find(item => item.name === "Berzerker Glaive");
@@ -433,7 +436,7 @@ test("detaching and removing attached units splits groups without losing remaini
   assert.deepEqual(roster[0], before[1], "bodyguard configuration survives leader removal");
 });
 
-test("unit assignment state only offers controls relevant to the selected unit", () => {
+legacyTest("unit assignment state only offers controls relevant to the selected unit", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   const glaive = army.enhancements.find(item => item.name === "Berzerker Glaive");

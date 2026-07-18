@@ -29,14 +29,38 @@ function contentHash(record) {
   return crypto.createHash("sha256").update(JSON.stringify(record.document)).digest("hex");
 }
 
+function sameRecord(left, right) {
+  return Boolean(left && right)
+    && left.id === right.id
+    && String(left.savedAt || "") === String(right.savedAt || "")
+    && contentHash(left) === contentHash(right);
+}
+
 function savedAtValue(record) {
   const timestamp = Date.parse(record.savedAt || "");
   return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
-function syncKey(record) {
-  const name = String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
-  return name ? `name:${name}` : `id:${record.id}`;
+function compareVersions(left, right) {
+  const timeDifference = savedAtValue(left) - savedAtValue(right);
+  if (timeDifference) return timeDifference;
+  return contentHash(left).localeCompare(contentHash(right));
+}
+
+function conflictRecord(record, originalId) {
+  const hash = crypto.createHash("sha256")
+    .update(`${originalId}\n${JSON.stringify(record.document)}`)
+    .digest("base64url")
+    .slice(0, 24);
+  const timestamp = record.savedAt && Number.isFinite(Date.parse(record.savedAt))
+    ? new Date(record.savedAt).toISOString().slice(0, 10)
+    : "undated";
+  const result = clone(record);
+  const originalName = String(result.document.name || "Unnamed roster").replace(/\s+\(conflict copy[^)]*\)$/i, "");
+  result.id = `roster-conflict-${hash}`;
+  result.conflictOf = originalId;
+  result.document.name = `${originalName} (conflict copy ${timestamp})`;
+  return result;
 }
 
 function fileNameForRecord(id) {
@@ -82,31 +106,52 @@ function syncRosterLibrary(syncFolder, localSaves) {
   fs.mkdirSync(syncFolder, { recursive: true });
   const local = validRecords(localSaves);
   const remote = readRemoteRecords(syncFolder);
-  const localByKey = new Map();
-  const remoteByKey = new Map();
+  const localById = new Map();
+  const remoteById = new Map();
   for (const record of local) {
-    const key = syncKey(record);
-    const previous = localByKey.get(key);
-    if (!previous || savedAtValue(record) >= savedAtValue(previous)) localByKey.set(key, record);
+    if (!localById.has(record.id)) localById.set(record.id, []);
+    localById.get(record.id).push({ record, source: "local" });
   }
   for (const record of remote) {
-    const key = syncKey(record);
-    const previous = remoteByKey.get(key);
-    if (!previous || savedAtValue(record) >= savedAtValue(previous)) remoteByKey.set(key, record);
+    if (!remoteById.has(record.id)) remoteById.set(record.id, []);
+    remoteById.get(record.id).push({ record, source: "remote" });
   }
   const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
   const merged = [];
-  const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
-  for (const key of keys) {
-    const localRecord = localByKey.get(key);
-    const remoteRecord = remoteByKey.get(key);
-    const winner = !remoteRecord || (localRecord && savedAtValue(localRecord) >= savedAtValue(remoteRecord)) ? localRecord : remoteRecord;
-    if (winner === localRecord && (!remoteRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.uploaded += 1;
-    if (winner === remoteRecord && (!localRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.downloaded += 1;
-    merged.push(clone(winner));
+  const pendingWrites = [];
+  const ids = new Set([...localById.keys(), ...remoteById.keys()]);
+  for (const id of ids) {
+    const candidates = [...(localById.get(id) || []), ...(remoteById.get(id) || [])];
+    const distinctByDocument = new Map();
+    for (const candidate of candidates) {
+      const hash = contentHash(candidate.record);
+      const previous = distinctByDocument.get(hash);
+      if (!previous || compareVersions(candidate.record, previous.record) > 0 || (candidate.source === "local" && previous.source !== "local")) {
+        distinctByDocument.set(hash, candidate);
+      }
+    }
+    const versions = [...distinctByDocument.values()].sort((left, right) => compareVersions(right.record, left.record));
+    if (!versions.length) continue;
+    const outputs = [{ ...versions[0], record: clone(versions[0].record) }];
+    for (const version of versions.slice(1)) {
+      outputs.push({ ...version, record: conflictRecord(version.record, id) });
+      summary.conflicts += 1;
+    }
+    for (const output of outputs) {
+      if (merged.some(record => sameRecord(record, output.record))) continue;
+      merged.push(output.record);
+      if (!remote.some(record => sameRecord(record, output.record))) {
+        pendingWrites.push(output.record);
+        summary.uploaded += 1;
+      }
+      if (output.source === "remote" && !local.some(record => sameRecord(record, output.record))) summary.downloaded += 1;
+    }
   }
-  fs.rmSync(path.join(syncFolder, "rosters"), { recursive: true, force: true });
-  for (const record of merged) writeRemoteRecord(syncFolder, record);
+  // Conflict copies are committed first so a failed canonical replacement
+  // cannot erase the only surviving form of the older content.
+  for (const record of pendingWrites.sort((left, right) => Number(Boolean(right.conflictOf)) - Number(Boolean(left.conflictOf)))) {
+    writeRemoteRecord(syncFolder, record);
+  }
   return { saves: merged, summary };
 }
 

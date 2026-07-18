@@ -2,13 +2,16 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("path");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { createDefaultRosterEntry } = require("../src/domain/loadout");
 
 const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
-const extracted = extractUnitDefinitions(BSDATA);
+const hasLegacyBsdata = fs.existsSync(BSDATA);
+const legacyTest = hasLegacyBsdata ? test : test.skip;
+const extracted = hasLegacyBsdata ? extractUnitDefinitions(BSDATA) : { definitions: [] };
 
 function unit(faction, name) {
   const found = extracted.definitions.find(item => item.faction === faction && item.name === name);
@@ -27,14 +30,14 @@ function entryFor(definition, counts = {}) {
   };
 }
 
-test("Arco-Flagellants use BSData base price at three models", () => {
+legacyTest("Arco-Flagellants use BSData base price at three models", () => {
   const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
   const model = definition.composition.find(item => item.name === "Arco-Flagellant");
   const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 3 }));
   assert.equal(result.points, 45);
 });
 
-test("Arco-Flagellants apply the BSData conditional price above three models", () => {
+legacyTest("Arco-Flagellants apply the BSData conditional price above three models", () => {
   const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
   const model = definition.composition.find(item => item.name === "Arco-Flagellant");
   const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 10 }));
@@ -42,7 +45,7 @@ test("Arco-Flagellants apply the BSData conditional price above three models", (
   assert.equal(result.applied.at(-1).operation, "set");
 });
 
-test("composition limits reject illegal model counts", () => {
+legacyTest("composition limits reject illegal model counts", () => {
   const definition = unit("Imperium - Adepta Sororitas", "Arco-Flagellants");
   const model = definition.composition.find(item => item.name === "Arco-Flagellant");
   assert.throws(
@@ -51,14 +54,14 @@ test("composition limits reject illegal model counts", () => {
   );
 });
 
-test("per-model BSData costs are included for units without a unit-level base", () => {
+legacyTest("per-model BSData costs are included for units without a unit-level base", () => {
   const definition = unit("Imperium - Adeptus Mechanicus", "Ironstrider Ballistarii");
   const model = definition.composition[0];
   const result = calculateEntryPoints(definition, entryFor(definition, { [model.id]: 1 }));
   assert.equal(result.points, 85);
 });
 
-test("aggregate model-count modifiers support mixed model selections", () => {
+legacyTest("aggregate model-count modifiers support mixed model selections", () => {
   const definition = unit("Xenos - Aeldari", "Windriders");
   const counts = Object.fromEntries(definition.composition.map((item, index) => [item.id, index === 0 ? 6 : 0]));
   const result = calculateEntryPoints(definition, entryFor(definition, counts));
@@ -95,7 +98,7 @@ test("point modifiers can multiply a base value", () => {
   assert.equal(result.applied.at(-1).operation, "multiply");
 });
 
-test("generated entries bridge occurrence IDs into composition validation", () => {
+legacyTest("generated entries bridge occurrence IDs into composition validation", () => {
   for (const definition of [
     unit("Xenos - Tyranids", "Barbgaunts"),
     unit("Xenos - Tyranids", "Barbed Hierodule [Legends]")

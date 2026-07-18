@@ -106,4 +106,4 @@ if (require.main === module) {
   console.log(`Wrote ${pngWritten}`);
 }
 
-module.exports = { ensureCrosshairIcon, ensureCrosshairPng };
+module.exports = { createCrosshairPng, ensureCrosshairIcon, ensureCrosshairPng };

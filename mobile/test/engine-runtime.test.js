@@ -2,9 +2,17 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 
 global.window = {};
 require("../ui/engine-runtime.js");
+
+test("mobile and desktop browser engine runtimes stay byte-identical", () => {
+  const mobileRuntime = fs.readFileSync(path.join(__dirname, "..", "ui", "engine-runtime.js"));
+  const desktopRuntime = fs.readFileSync(path.join(__dirname, "..", "..", "ui", "engine-runtime.js"));
+  assert.deepEqual(mobileRuntime, desktopRuntime);
+});
 
 test("configured profiles retain Transport and other non-weapon datasheet profiles", () => {
   const unit = {

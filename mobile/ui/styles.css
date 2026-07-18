@@ -262,6 +262,14 @@ button:hover {
   transition: grid-template-columns 180ms ease;
 }
 
+@media (min-width: 861px) and (max-width: 1199px) {
+  html[data-mobile-ui="false"] .layout {
+    gap: 8px;
+    grid-template-columns: minmax(250px, 30vw) minmax(350px, 34vw) minmax(280px, 1fr);
+    padding: 8px;
+  }
+}
+
 .layout.availableUnitsCollapsed {
   align-items: stretch;
   grid-template-columns: 64px minmax(420px, 32vw) minmax(360px, 1fr);
@@ -1096,6 +1104,7 @@ button:hover {
   body {
     background: #0b1118;
     color: #eef4f6;
+    min-height: 100dvh;
   }
 
   button,
@@ -1127,8 +1136,8 @@ button:hover {
     color: #e9f1f3;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    min-height: 100vh;
-    padding-bottom: 74px;
+    min-height: 100dvh;
+    padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobileRosterHeader {
@@ -1212,7 +1221,7 @@ button:hover {
     display: grid;
     gap: 12px;
     grid-auto-rows: max-content;
-    padding: 12px;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobileConfigCard,
@@ -1449,9 +1458,9 @@ button:hover {
     color: #e9f1f3;
     display: none;
     left: 0;
-    max-height: 86vh;
+    max-height: min(86vh, calc(100dvh - env(safe-area-inset-top, 0px)));
     overflow: auto;
-    padding: 14px;
+    padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
     position: fixed;
     right: 0;
     z-index: 70;
@@ -1459,7 +1468,7 @@ button:hover {
 
   body.mobileAddOpen .availablePanel {
     border-radius: 0;
-    bottom: 72px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     max-height: none;
     /* Let the final unit or keyword section scroll comfortably clear of the
        fixed Back bar instead of stopping against the bottom edge. */
@@ -1687,7 +1696,8 @@ button:hover {
   .modalBackdrop {
     align-items: stretch;
     justify-items: stretch;
-    padding: 10px;
+    min-height: 100dvh;
+    padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
   }
 
   .modalPanel,
@@ -1695,7 +1705,7 @@ button:hover {
     background: #111b26;
     border-color: #31545d;
     color: #eef4f6;
-    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - max(20px, env(safe-area-inset-top, 0px)) - max(20px, env(safe-area-inset-bottom, 0px)));
     width: 100%;
   }
 
@@ -1798,6 +1808,7 @@ button:hover {
     display: flex;
     gap: 8px;
     justify-content: flex-end;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     padding-top: 10px;
     position: sticky;
   }
@@ -1817,7 +1828,7 @@ button:hover {
   body .appTransientMessage {
     background: #075d4d;
     border-color: #35d3ad;
-    bottom: 88px;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     color: #ffffff;
     font-size: 16px;
     padding: 12px 16px;

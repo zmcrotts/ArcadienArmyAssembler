@@ -147,4 +147,3 @@ function main() {
 }
 
 main();
-'@ | Set-Content scripts\extract-builder-rules.js

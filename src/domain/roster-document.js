@@ -211,7 +211,7 @@ function createRosterDocument(options) {
     schemaVersion: ROSTER_DOCUMENT_SCHEMA_VERSION,
     name: options.name || null,
     ruleset: {
-      id: options.rulesetId || options.engineData?.rulesetId || armyDefinition?.rulesetId || armyState?.rulesetId || "wh40k-10e-bsdata",
+      id: options.rulesetId || options.engineData?.rulesetId || armyDefinition?.rulesetId || armyState?.rulesetId || "wh40k-11e-vflam",
       source: options.source || options.engineData?.source || "bsdata",
       generatedAt: options.engineData?.generatedAt || null
     },
@@ -751,8 +751,8 @@ function formatHeaderLines(document, records) {
 }
 
 function exportTournamentText(document, format) {
-  const compact = format === "WTC-Compact";
-  const gw = format === "GW";
+  const compact = format === "WTC-Compact" || format === "GW-Compact";
+  const gw = format === "GW" || format === "GW-Compact";
   const records = sortedExportRecords(document);
   const enhancementsByBearer = enhancementBearerMap(document);
   const characterIndexes = characterIndexMap(records);
@@ -807,7 +807,7 @@ function exportRosterText(document, options = {}) {
   const exportOptions = typeof options === "string" ? { format: options } : (options || {});
   const format = exportOptions.format;
   if (format === "NR") return exportNrText(document);
-  if (["WTC", "WTC-Compact", "GW"].includes(format)) return exportTournamentText(document, format);
+  if (["WTC", "WTC-Compact", "GW", "GW-Compact"].includes(format)) return exportTournamentText(document, format);
   if (format === "DISCORD") return exportDiscordText(document, exportOptions);
   if (format === "DISCORD_COMPACT") return exportDiscordText(document, { ...exportOptions, compact: true });
   if (format === "DISCORD_COMPACT_FLAT") return exportDiscordText(document, { ...exportOptions, compact: true, hideSubunits: true });

@@ -5,6 +5,7 @@ const path = require("path");
 const { XMLParser } = require("fast-xml-parser");
 const { buildSelectionTree } = require("./selection-tree");
 const { nativeImportedCatalogueLinks } = require("./catalogue-aliases");
+const { bsdataFlagIsTrue } = require("./flags");
 
 const POINTS_FIELD_ID = "51b2-306e-1021-d207";
 
@@ -53,6 +54,10 @@ function asArray(value) {
 
 function normalizeBsdataJson(value) {
   if (Array.isArray(value)) return value.map(normalizeBsdataJson);
+  // The XML parser represents BSData flags as strings. Normalize JSON boolean
+  // primitives to the same shape so every downstream consumer sees identical
+  // hidden/collective/repeat/child-selection semantics for both source formats.
+  if (typeof value === "boolean") return value ? "true" : "false";
   if (!value || typeof value !== "object") return value;
 
   const normalized = {};
@@ -84,7 +89,11 @@ function directPoints(node) {
 }
 
 function selectionLimits(node) {
-  const constraints = asArray(node?.constraints?.constraint);
+  // Force/roster constraints describe how often an option may appear across
+  // the army. They are not per-unit composition limits and must not seed an
+  // individual unit's default model counts.
+  const constraints = asArray(node?.constraints?.constraint)
+    .filter(constraint => !["force", "roster"].includes(constraint.scope));
   const min = constraints.find(c => c.field === "selections" && c.type === "min");
   const max = constraints.find(c => c.field === "selections" && c.type === "max");
   const minimum = numberOrNull(min?.value);
@@ -121,7 +130,7 @@ function conditionFromBsdata(condition) {
     operator,
     value: Number(condition.value),
     scope: condition.scope || null,
-    includeChildSelections: condition.includeChildSelections === "true",
+    includeChildSelections: bsdataFlagIsTrue(condition.includeChildSelections),
     raw
   };
 }
@@ -141,9 +150,14 @@ function conditionGroupFromBsdata(group) {
 
 function localConditionGroupFromBsdata(group) {
   const conditions = asArray(group?.conditions?.condition);
-  const beforeSelf = conditions.some(condition => condition?.type === "before" && condition?.childId === "self");
+  // Current catalogues use both `before:self` and `before:any` for the same
+  // "previous copies of this roster entry" test. The latter still identifies
+  // the copied unit through the accompanying instanceOf condition.
+  const beforeCurrent = conditions.some(condition =>
+    condition?.type === "before" && ["self", "any"].includes(condition?.childId)
+  );
   const instanceOf = conditions.find(condition => condition?.type === "instanceOf" && condition?.childId);
-  const supported = beforeSelf
+  const supported = beforeCurrent
     && instanceOf
     && group?.field === "selections"
     && ["atLeast", "atMost", "equalTo", "notEqualTo", "greaterThan", "lessThan"].includes(group?.type)
@@ -406,7 +420,7 @@ function isRosterUnit(entry) {
 
 function categoryNames(...nodes) {
   return [...new Set(nodes.flatMap(node => asArray(node?.categoryLinks?.categoryLink))
-    .filter(link => link.hidden !== "true")
+    .filter(link => !bsdataFlagIsTrue(link.hidden))
     .map(link => link.name)
     .filter(Boolean))];
 }
@@ -414,7 +428,7 @@ function categoryNames(...nodes) {
 function hasEntryLinkNamed(name, ...nodes) {
   const wanted = String(name).trim().toLowerCase();
   return nodes.some(node => asArray(node?.entryLinks?.entryLink).some(link =>
-    link.hidden !== "true" && String(link.name || "").trim().toLowerCase() === wanted
+    !bsdataFlagIsTrue(link.hidden) && String(link.name || "").trim().toLowerCase() === wanted
   ));
 }
 
@@ -429,6 +443,12 @@ function descriptionText(characteristics) {
 function profileDescriptions(unit, indexes, profileName = null) {
   const descriptions = [];
   const visited = new Set();
+
+  function isNonUnitProfileBranch(node) {
+    const name = String(node?.name || "").trim().toLowerCase();
+    return ["crusade", "enhancements", "enhancements - upgrades", "upgrades"].includes(name);
+  }
+
   function visit(node) {
     if (!node || visited.has(node.id)) return;
     if (node.id) visited.add(node.id);
@@ -437,10 +457,16 @@ function profileDescriptions(unit, indexes, profileName = null) {
       const text = descriptionText(profile.characteristics);
       if (text) descriptions.push(text);
     }
-    for (const entry of asArray(node?.selectionEntries?.selectionEntry)) visit(entry);
-    for (const group of asArray(node?.selectionEntryGroups?.selectionEntryGroup)) visit(group);
+    for (const entry of asArray(node?.selectionEntries?.selectionEntry)) {
+      if (!isNonUnitProfileBranch(entry)) visit(entry);
+    }
+    for (const group of asArray(node?.selectionEntryGroups?.selectionEntryGroup)) {
+      if (!isNonUnitProfileBranch(group)) visit(group);
+    }
     for (const link of asArray(node?.entryLinks?.entryLink)) {
-      visit(link.type === "selectionEntryGroup" ? indexes.groups.get(link.targetId) : indexes.entries.get(link.targetId));
+      if (isNonUnitProfileBranch(link)) continue;
+      const target = link.type === "selectionEntryGroup" ? indexes.groups.get(link.targetId) : indexes.entries.get(link.targetId);
+      if (!isNonUnitProfileBranch(target)) visit(target);
     }
   }
   visit(unit);
@@ -476,6 +502,13 @@ function allowsMultipleLeadersAsBodyguard(unit, indexes) {
   return profileDescriptions(unit, indexes).some(text =>
     /up\s+to\s+two\s+leader\s+units/i.test(text)
     || /one\s+or\s+more[\s\S]{0,80}(?:leader|character)[\s\S]{0,80}already\s*(?:been\s*)?attached/i.test(text)
+  );
+}
+
+function isNonUnitTerrainFeature(unit, indexes) {
+  if (hasUnitProfile(unit)) return false;
+  return profileDescriptions(unit, indexes).some(text =>
+    /\bthis\s+(?:model|selection)\s+is\s+(?:an?\s+)?terrain\s+feature\b/i.test(text)
   );
 }
 
@@ -613,7 +646,7 @@ function extractUnitDefinitions(dataDirectory) {
   for (const catalogueItem of catalogues) {
     for (const linkContext of nativeUnitLinksFor(catalogueItem, catalogueLookup)) {
       const { file, faction, link, selectionCatalogueId, sourceCatalogueId, sourceFaction } = linkContext;
-      if (link.type !== "selectionEntry" || link.hidden === "true") continue;
+      if (link.type !== "selectionEntry" || bsdataFlagIsTrue(link.hidden)) continue;
       const unit = indexes.entries.get(link.targetId);
       if (isCrucibleSelection(link, unit)) continue;
       if (!unit) {
@@ -630,8 +663,19 @@ function extractUnitDefinitions(dataDirectory) {
         ...directPointModifiers(unit, "bsdata-unit"),
         ...directPointModifiers(link, "bsdata-faction-link")
       ];
-      if (unit.type === "model" && !hasUsableRosterPoints(base, composition, modifiers)) continue;
+      const hasRosterPoints = hasUsableRosterPoints(base, composition, modifiers);
+      const nonUnitTerrainFeature = isNonUnitTerrainFeature(unit, indexes);
+      const rosterSelectable = hasRosterPoints && !nonUnitTerrainFeature;
+      if (unit.type === "model" && !hasRosterPoints && !nonUnitTerrainFeature) continue;
+      const defaultModelEntries = composition
+        .filter(item => Number(item.defaultCount || 0) > 0 && item.source !== "self-model")
+        .map(item => indexes.entries.get(item.id))
+        .filter(Boolean);
       const categories = categoryNames(unit, link);
+      if (categoryNames(...defaultModelEntries).some(item => item.toLowerCase() === "character")
+        && !categories.some(item => item.toLowerCase() === "character")) {
+        categories.push("Character");
+      }
       const hasCategory = name => categories.some(item => item.toLowerCase() === name.toLowerCase());
       const epicHero = hasCategory("Epic Hero");
       const battleline = hasCategory("Battleline");
@@ -648,8 +692,13 @@ function extractUnitDefinitions(dataDirectory) {
         selectionKey: `${selectionCatalogueId || faction}:${link.id}`,
         name: link.name || unit.name,
         faction,
+        rosterSelectable,
+        sourceDisposition: nonUnitTerrainFeature
+          ? "non-unit-terrain-feature"
+          : rosterSelectable ? "priced-roster-unit" : "zero-point-placeholder",
         source: {
           catalogueId: sourceCatalogueId,
+          selectionCatalogueId: selectionCatalogueId || null,
           sourceFile: file,
           importedAsFaction: sourceFaction && sourceFaction !== faction ? faction : null,
           importedFromFaction: sourceFaction && sourceFaction !== faction ? sourceFaction : null,
@@ -668,10 +717,11 @@ function extractUnitDefinitions(dataDirectory) {
           support
         },
         rosterRules: {
-          canBeWarlord: hasEntryLinkNamed("Warlord", unit, link),
+          canBeWarlord: hasEntryLinkNamed("Warlord", unit, link, ...defaultModelEntries),
           maxCopies: epicHero ? 1 : (battleline || dedicatedTransport) ? 6 : 3,
           leaderTargetNames: leaderTargets,
           leaderTargetSelectionKeys: [],
+          leaderTargetPredicates: [],
           allowsAdditionalLeader: allowsAdditionalLeader(unit, indexes),
           allowsMultipleLeadersAsBodyguard: allowsMultipleLeadersAsBodyguard(unit, indexes)
         },

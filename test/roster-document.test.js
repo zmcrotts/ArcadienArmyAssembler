@@ -229,7 +229,7 @@ test("exports include independent units, grouped presentation, warnings, points,
   assert.match(text, /10x bolter/);
 });
 
-test("exports support NR, WTC, WTC-Compact, and GW text formats", () => {
+test("exports support NR, WTC, WTC-Compact, GW, and GW-Compact text formats", () => {
   const leader = rosterEntry("leader", "leader-1", 55, { blessedBlade: 1 });
   const bodyguard = rosterEntry("bodyguard", "bodyguard-1", 120, { bolter: 10 }, 10);
   const roster = [leader, bodyguard];
@@ -242,6 +242,7 @@ test("exports support NR, WTC, WTC-Compact, and GW text formats", () => {
   const wtc = exportRosterText(document, { format: "WTC" });
   const compact = exportRosterText(document, { format: "WTC-Compact" });
   const gw = exportRosterText(document, { format: "GW" });
+  const gwCompact = exportRosterText(document, { format: "GW-Compact" });
 
   assert.match(nr, /Imperium - Adepta Sororitas -/);
   assert.match(nr, /- Enhancement: Saintly Example \(20 pts\)/);
@@ -252,6 +253,8 @@ test("exports support NR, WTC, WTC-Compact, and GW text formats", () => {
   assert.match(compact, /Canoness \(55 pts\): Enhancement: Saintly Example \(\+20 pts\), blessedBlade/);
   assert.doesNotMatch(compact, /\nCHARACTER\n/);
   assert.match(gw, /Canoness \(55 points\)/);
+  assert.match(gwCompact, /Canoness \(55 points\)/);
+  assert.doesNotMatch(gwCompact, /\nCHARACTER\n/);
 });
 
 test("exports Discord compact list chunks with hide-subunit and combine options", () => {

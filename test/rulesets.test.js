@@ -20,6 +20,7 @@ const {
   validateLoadout
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
+const { leaderCanTarget } = require("../src/domain/army");
 
 test("ruleset registry exposes the default 11e source", () => {
   const source = getRulesetSource(DEFAULT_RULESET_SOURCE_ID);
@@ -27,6 +28,7 @@ test("ruleset registry exposes the default 11e source", () => {
   assert.equal(source.id, "wh40k-11e-vflam");
   assert.equal(source.format, "bsdata-json");
   assert.equal(source.primary, true);
+  assert.equal(source.available, true);
   assert.ok(fs.existsSync(source.sourcePath));
 });
 
@@ -36,6 +38,15 @@ test("ruleset registry lists sources as copies", () => {
 
   assert.equal(getRulesetSource(DEFAULT_RULESET_SOURCE_ID).id, "wh40k-11e-vflam");
   assert.equal(getRulesetSource("wh40k-10e-bsdata").format, "bsdata-xml");
+});
+
+test("normalized rulesets are memoized within a process", () => {
+  const first = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const second = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  assert.strictEqual(first, second);
+  assert.equal(Object.isFrozen(first), true);
+  assert.equal(Object.isFrozen(first.units), true);
+  assert.equal(Object.isFrozen(first.units[0]), true);
 });
 
 test("ruleset registry rejects unknown sources", () => {
@@ -550,4 +561,175 @@ test("11e selected wargear direct points are included in entry totals", () => {
     && item.name === "Ion accelerator"
     && item.value === 20
   ));
+});
+
+test("11e roster normalization excludes explicitly classified zero-point placeholders", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const zeroPointPlaceholders = ruleset.excludedUnits.filter(unit =>
+    unit.sourceDisposition === "zero-point-placeholder"
+  );
+
+  assert.ok(zeroPointPlaceholders.length > 0);
+  assert.equal(ruleset.units.some(unit => unit.rosterSelectable === false), false);
+  assert.equal(ruleset.units.some(unit =>
+    calculateEntryPoints(unit, createDefaultRosterEntry(unit), { allowInvalid: true }).points === 0
+  ), false);
+  assert.equal(ruleset.armies.some(army =>
+    (army.allowedSelectionKeys || []).some(key => !ruleset.units.some(unit => unit.selectionKey === key))
+  ), false);
+});
+
+test("11e roster normalization classifies non-unit terrain features instead of exposing them as units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const searchlight = ruleset.excludedUnits.find(unit => unit.name === "Searchlight");
+
+  assert.ok(searchlight);
+  assert.equal(searchlight.sourceDisposition, "non-unit-terrain-feature");
+  assert.equal(ruleset.units.some(unit => unit.name === "Searchlight"), false);
+});
+
+test("enhancement branches cannot turn ordinary Astra Militarum units into Leaders", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  for (const name of ["Cadian Shock Troops", "Baneblade", "Basilisk", "Chimera", "Leman Russ Battle Tank"]) {
+    const definition = ruleset.units.find(unit => unit.faction === "Imperium - Astra Militarum" && unit.name === name);
+    assert.ok(definition, name);
+    assert.equal(definition.roles.leader, false, name);
+    assert.deepEqual(definition.rosterRules.leaderTargetSelectionKeys, [], name);
+  }
+});
+
+test("compound Leaders inherit Character and Warlord status from their required models", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  for (const [faction, name] of [
+    ["Imperium - Astra Militarum", "Hell's Last [Legends]"],
+    ["Imperium - Adeptus Astartes - Ultramarines", "Marneus Calgar"]
+  ]) {
+    const definition = ruleset.units.find(unit => unit.faction === faction && unit.name === name);
+    assert.ok(definition, `${faction}: ${name}`);
+    assert.equal(definition.roles.leader, true, name);
+    assert.equal(definition.roles.character, true, name);
+    assert.equal(definition.rosterRules.canBeWarlord, true, name);
+  }
+});
+
+test("omitted root hidden flags stay visible for native and allied Imperial Knights", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const names = [
+    "Knight Destrier", "Canis Rex", "Armiger Warglaive", "Armiger Helverin",
+    "Knight Paladin", "Knight Errant", "Knight Gallant", "Knight Warden",
+    "Knight Crusader", "Knight Preceptor", "Knight Castellan", "Knight Valiant",
+    "Knight Defender"
+  ];
+
+  for (const faction of ["Imperium - Imperial Knights", "Imperium - Imperial Knights - Library"]) {
+    for (const name of names) {
+      const definition = ruleset.units.find(unit => unit.faction === faction && unit.name === name);
+      assert.ok(definition, `${faction}: ${name}`);
+      assert.equal(definition.selectionTree.forceVisible, true, `${faction}: ${name}`);
+      assert.equal(
+        getConfiguredProfiles(definition, createDefaultRosterEntry(definition)).units.length > 0,
+        true,
+        `${faction}: ${name}`
+      );
+    }
+  }
+
+  const nativeCanis = ruleset.units.find(unit => unit.faction === "Imperium - Imperial Knights" && unit.name === "Canis Rex");
+  assert.deepEqual(
+    getConfiguredProfiles(nativeCanis, createDefaultRosterEntry(nativeCanis)).units.map(profile => profile.name).sort(),
+    ["Canis Rex", "Sir Hekhtur"]
+  );
+  assert.equal(nativeCanis.source.selectionCatalogueId, nativeCanis.selectionKey.split(":")[0]);
+});
+
+test("before-any copy-count modifiers apply their later-copy points tax", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  for (const [faction, name, previousCopies, expectedPoints] of [
+    ["Chaos - Chaos Daemons", "Khorne Soul Grinder", 2, 195],
+    ["Chaos - Chaos Space Marines", "Noise Marines", 2, 160],
+    ["Chaos - Thousand Sons", "Rubric Marines", 3, 110]
+  ]) {
+    const definition = ruleset.units.find(unit => unit.faction === faction && unit.name === name);
+    assert.ok(definition, `${faction}: ${name}`);
+    const entry = createDefaultRosterEntry(definition);
+    entry.context = { previousCopies };
+    assert.equal(calculateEntryPoints(definition, entry).points, expectedPoints, name);
+    assert.equal(definition.pricing.modifiers.every(modifier => modifier.supported !== false), true, name);
+  }
+});
+
+test("generic MFM keyword targets let allied Inquisitors lead Imperium Battleline Infantry", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const target = ruleset.units.find(unit =>
+    unit.faction === "Imperium - Astra Militarum" && unit.name === "Cadian Shock Troops"
+  );
+  assert.ok(target);
+
+  for (const name of ["Inquisitor", "Inquisitor Coteaz", "Inquisitor Draxus", "Inquisitor Greyfax"]) {
+    const leader = ruleset.units.find(unit =>
+      unit.faction === "Imperium - Agents of the Imperium" && unit.name === name
+    );
+    assert.ok(leader, name);
+    assert.equal(leader.rosterRules.leaderTargetPredicates.some(predicate =>
+      predicate.kind === "keywords-all"
+      && ["battleline", "imperium", "infantry"].every(keyword => predicate.keywords.includes(keyword))
+    ), true, name);
+    assert.equal(leaderCanTarget(leader, target), true, name);
+  }
+});
+
+test("root-condition enhancement eligibility resolves to retained bearer units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const retainedEnhancementNames = new Set([
+    "Assassin's Eye",
+    "Elixir of the Corpse Courts",
+    "Parasitic Woe-reaper",
+    "Lancet of the Worldsore",
+    "Precognicient Volleys",
+    "Boons of Deimos",
+    "Predestined Coordinates",
+    "Astral Overlap",
+    "Magos Questoris",
+    "Unmasking Suite",
+    "Encircling Horrors"
+  ]);
+  const sourceOnlyEnhancementNames = new Set([
+    "Thermoneutronic Projector",
+    "Plasma Accelerator Rifle",
+    "Supernova Launcher"
+  ]);
+  const allEnhancements = ruleset.armies.flatMap(army => army.enhancements || []);
+  const affected = allEnhancements.filter(enhancement => retainedEnhancementNames.has(enhancement.name));
+  const retainedKeys = new Set(ruleset.units.map(unit => unit.selectionKey));
+
+  assert.equal(new Set(affected.map(enhancement => enhancement.name)).size, retainedEnhancementNames.size);
+  assert.equal(affected.every(enhancement =>
+    enhancement.eligibleSelectionKeys.length > 0
+    && enhancement.eligibleSelectionKeys.every(key => retainedKeys.has(key))
+  ), true);
+  assert.equal(allEnhancements.some(enhancement => sourceOnlyEnhancementNames.has(enhancement.name)), false);
+});
+
+test("root-condition enhancement eligibility projects bearer keyword gates through mixed source conditions", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const chaosSpaceMarines = ruleset.armies.find(army => army.faction === "Chaos - Chaos Space Marines");
+  const unitName = key => ruleset.units.find(unit => unit.selectionKey === key)?.name;
+  const eligibleNames = name => {
+    const enhancement = chaosSpaceMarines.enhancements.find(item => item.name === name);
+    assert.ok(enhancement, `Missing enhancement ${name}`);
+    return enhancement.eligibleSelectionKeys.map(unitName).filter(Boolean);
+  };
+
+  assert.equal(eligibleNames("Talisman of Burning Blood").includes("Chaos Lord"), false);
+  assert.equal(eligibleNames("Talisman of Burning Blood").includes("Chaos Lord on Juggernaut [Legends]"), true);
+  assert.deepEqual(eligibleNames("Eye of Tzeentch"), [
+    "Rubric Marines",
+    "Sorcerer on Disc of Tzeentch [Legends]",
+    "Chaos Lord on Disc of Tzeentch [Legends]"
+  ]);
+  assert.deepEqual(eligibleNames("Intoxicating Elixir"), [
+    "Noise Marines",
+    "Chaos Lord on Steed of Slaanesh [Legends]",
+    "Sorcerer on Steed of Slaanesh [Legends]"
+  ]);
 });

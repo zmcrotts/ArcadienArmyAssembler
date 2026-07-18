@@ -5,22 +5,127 @@ const CLIENT_ID = "30500f7e-c454-428c-8f16-c0318ae6174b";
 const SCOPE = "offline_access https://graph.microsoft.com/Files.ReadWrite.AppFolder";
 const GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
 const RECORD_KIND = "arcadien-roster-sync-record";
+const ROSTER_DOCUMENT_KIND = "roster-engine.savedRoster";
+const MAX_RESPONSE_BYTES = 10 * 1024 * 1024;
+const MAX_RECORD_BYTES = 9 * 1024 * 1024;
+const MAX_RECORDS = 500;
+const MAX_ROSTER_ENTRIES = 2000;
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function validRecord(record) {
-  return Boolean(record)
-    && typeof record === "object"
-    && typeof record.id === "string"
-    && record.id.length > 0
-    && record.document
-    && typeof record.document === "object";
+function recordError(message) {
+  const error = new Error(`A synced roster was rejected: ${message}`);
+  error.code = "ONEDRIVE_INVALID_RECORD";
+  return error;
+}
+
+function savedRosterEntries(document) {
+  for (const key of ["rosterEntries", "units", "roster"]) {
+    if (document[key] == null) continue;
+    if (!Array.isArray(document[key])) throw recordError(`${key} must be an array.`);
+    return document[key];
+  }
+  return [];
+}
+
+function assertValidRecord(record) {
+  if (!record || typeof record !== "object" || Array.isArray(record)) throw recordError("the record is not an object.");
+  if (typeof record.id !== "string" || !record.id || record.id.length > 240) throw recordError("the saved-record ID is invalid.");
+  if (!Number.isFinite(Date.parse(record.savedAt || ""))) throw recordError("the save timestamp is invalid.");
+  const document = record.document;
+  if (!document || typeof document !== "object" || Array.isArray(document)) throw recordError("the roster document is invalid.");
+  if (document.kind != null && document.kind !== ROSTER_DOCUMENT_KIND) throw recordError("the roster document kind is unsupported.");
+  if (document.schemaVersion != null) {
+    const schemaVersion = Number(document.schemaVersion);
+    if (!Number.isInteger(schemaVersion) || schemaVersion < 1 || schemaVersion > 2) throw recordError("the roster schema version is unsupported.");
+  }
+  if (typeof document.faction !== "string" || !document.faction.trim() || document.faction.length > 240) throw recordError("the faction is invalid.");
+  if (!document.armyState || typeof document.armyState !== "object" || Array.isArray(document.armyState)) throw recordError("the army configuration is invalid.");
+  if (document.name != null && (typeof document.name !== "string" || document.name.length > 240)) throw recordError("the roster name is invalid.");
+  if (document.pointsLimit != null) {
+    const pointsLimit = Number(document.pointsLimit);
+    if (!Number.isFinite(pointsLimit) || pointsLimit <= 0 || pointsLimit > 100000) throw recordError("the points limit is invalid.");
+  }
+  const entries = savedRosterEntries(document);
+  if (entries.length > MAX_ROSTER_ENTRIES) throw recordError("the roster contains too many entries.");
+  if (entries.some(entry => !entry || typeof entry !== "object" || Array.isArray(entry))) throw recordError("a roster entry is invalid.");
+  let serialized;
+  try {
+    serialized = JSON.stringify(record);
+  } catch {
+    throw recordError("the record cannot be serialized safely.");
+  }
+  if (Buffer.byteLength(serialized, "utf8") > MAX_RECORD_BYTES) throw recordError("the record is too large to sync safely.");
+  return record;
+}
+
+function assertValidCollection(records) {
+  if (!Array.isArray(records)) throw recordError("the local roster library is invalid.");
+  if (records.length > MAX_RECORDS) throw recordError(`the roster library exceeds ${MAX_RECORDS} records.`);
+  for (const record of records) assertValidRecord(record);
+  return records;
+}
+
+function responseTooLargeError() {
+  const error = new Error("OneDrive returned more than the 10 MB safety limit.");
+  error.code = "ONEDRIVE_RESPONSE_TOO_LARGE";
+  return error;
+}
+
+async function readBoundedResponseText(response) {
+  const declaredLength = Number(response.headers?.get?.("content-length") || 0);
+  if (declaredLength > MAX_RESPONSE_BYTES) throw responseTooLargeError();
+  if (!response.body?.getReader) {
+    const text = await response.text();
+    if (Buffer.byteLength(text, "utf8") > MAX_RESPONSE_BYTES) throw responseTooLargeError();
+    return text;
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let bytes = 0;
+  let text = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    bytes += value.byteLength;
+    if (bytes > MAX_RESPONSE_BYTES) {
+      await reader.cancel().catch(() => {});
+      throw responseTooLargeError();
+    }
+    text += decoder.decode(value, { stream: true });
+  }
+  return text + decoder.decode();
+}
+
+function boundedResponse(response) {
+  let textPromise = null;
+  const text = () => {
+    if (!textPromise) textPromise = readBoundedResponseText(response);
+    return textPromise;
+  };
+  return {
+    ok: response.ok,
+    status: response.status,
+    headers: response.headers,
+    text,
+    json: async () => {
+      const body = await text();
+      return body ? JSON.parse(body) : {};
+    }
+  };
 }
 
 function documentHash(record) {
   return JSON.stringify(record.document);
+}
+
+function sameRecord(left, right) {
+  return Boolean(left && right)
+    && left.id === right.id
+    && String(left.savedAt || "") === String(right.savedAt || "")
+    && documentHash(left) === documentHash(right);
 }
 
 function recordTime(record) {
@@ -28,9 +133,29 @@ function recordTime(record) {
   return Number.isFinite(value) ? value : 0;
 }
 
-function syncKey(record) {
-  const name = String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
-  return name ? `name:${name}` : `id:${record.id}`;
+function compareVersions(left, right) {
+  const timeDifference = recordTime(left) - recordTime(right);
+  if (timeDifference) return timeDifference;
+  return documentHash(left).localeCompare(documentHash(right));
+}
+
+function conflictRecord(crypto, record, originalId) {
+  const hash = crypto.createHash("sha256")
+    .update(`${originalId}\n${documentHash(record)}`)
+    .digest("base64url")
+    .slice(0, 24);
+  const timestamp = record.savedAt && Number.isFinite(Date.parse(record.savedAt))
+    ? new Date(record.savedAt).toISOString().slice(0, 10)
+    : "undated";
+  const document = clone(record.document);
+  const originalName = String(document.name || "Unnamed roster").replace(/\s+\(conflict copy[^)]*\)$/i, "");
+  document.name = `${originalName} (conflict copy ${timestamp})`;
+  return {
+    ...clone(record),
+    id: `roster-conflict-${hash}`,
+    conflictOf: originalId,
+    document
+  };
 }
 
 function encodedFileName(crypto, id) {
@@ -39,7 +164,7 @@ function encodedFileName(crypto, id) {
 
 function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clearTokens }) {
   async function tokenRequest(body) {
-    const response = await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/token", {
+    const response = boundedResponse(await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/token", {
       method: "POST",
       // The existing registration uses the localhost redirect as a browser app.
       // Supplying its registered origin keeps this public PKCE handoff compatible
@@ -49,9 +174,13 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
         Origin: "http://localhost:4173"
       },
       body: new URLSearchParams(body)
-    });
+    }));
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error_description || "Microsoft sign-in could not finish.");
+    if (!response.ok) {
+      const error = new Error(data.error_description || "Microsoft sign-in could not finish.");
+      error.code = data.error || "oauth_error";
+      throw error;
+    }
     return data;
   }
 
@@ -60,12 +189,20 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
     if (!tokens) return null;
     if (tokens.access_token && Number(tokens.expires_at || 0) > Date.now()) return tokens.access_token;
     if (!tokens.refresh_token) return null;
-    const refreshed = await tokenRequest({
-      client_id: CLIENT_ID,
-      grant_type: "refresh_token",
-      refresh_token: tokens.refresh_token,
-      scope: SCOPE
-    });
+    let refreshed;
+    try {
+      refreshed = await tokenRequest({
+        client_id: CLIENT_ID,
+        grant_type: "refresh_token",
+        refresh_token: tokens.refresh_token,
+        scope: SCOPE
+      });
+    } catch (error) {
+      if (error.code === "invalid_grant" || /AADSTS70000|invalid_grant|grant is expired|grant has been revoked/i.test(error.message || "")) {
+        clearTokens();
+      }
+      throw error;
+    }
     saveTokens({
       access_token: refreshed.access_token,
       refresh_token: refreshed.refresh_token || tokens.refresh_token,
@@ -75,30 +212,41 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
   }
 
   async function graph(resource, options = {}) {
+    const { allowStatuses = [], ...fetchOptions } = options;
     const token = await accessToken();
     if (!token) throw new Error("Connect OneDrive first.");
-    const response = await fetch(`${GRAPH_ROOT}${resource}`, {
-      ...options,
-      headers: { Authorization: `Bearer ${token}`, ...(options.headers || {}) }
-    });
+    let url = `${GRAPH_ROOT}${resource}`;
+    if (/^https:\/\//i.test(resource)) {
+      const parsed = new URL(resource);
+      if (parsed.origin !== "https://graph.microsoft.com" || !parsed.pathname.startsWith("/v1.0/")) {
+        throw new Error("OneDrive returned an unexpected paging address.");
+      }
+      url = parsed.href;
+    }
+    const response = boundedResponse(await fetch(url, {
+      ...fetchOptions,
+      headers: { Authorization: `Bearer ${token}`, ...(fetchOptions.headers || {}) }
+    }));
     if (response.status === 401) {
       clearTokens();
-      throw new Error("Your OneDrive connection expired. Press Sync to connect it again.");
+      const error = new Error("Your OneDrive connection expired. Press Sync to connect it again.");
+      error.code = "ONEDRIVE_AUTH_REQUIRED";
+      throw error;
     }
-    if (!response.ok) {
+    if (!response.ok && !allowStatuses.includes(response.status)) {
       const data = await response.json().catch(() => ({}));
-      throw new Error(data?.error?.message || "OneDrive could not complete that sync.");
+      const error = new Error(data?.error?.message || "OneDrive could not complete that sync.");
+      error.code = "ONEDRIVE_GRAPH_FAILED";
+      error.status = response.status;
+      throw error;
     }
     return response;
   }
 
   async function rosterFolder() {
     const root = await (await graph("/me/drive/special/approot")).json();
-    const existing = await graph(`/me/drive/items/${root.id}:/rosters`).catch(error => {
-      if (/item.*not.*found|not.*found/i.test(error.message)) return null;
-      throw error;
-    });
-    if (existing) return existing.json();
+    const existing = await graph(`/me/drive/items/${root.id}:/rosters`, { allowStatuses: [404] });
+    if (existing.status !== 404) return existing.json();
     const created = await graph(`/me/drive/items/${root.id}/children`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -108,76 +256,127 @@ function createOneDriveRosterSync({ crypto, fetch, readTokens, saveTokens, clear
   }
 
   async function remoteEntries(folder) {
-    const listing = await (await graph(`/me/drive/items/${folder.id}/children?$select=id,name,file`)).json();
     const records = [];
-    for (const item of listing.value || []) {
-      if (!item.file || !item.name.endsWith(".json")) continue;
-      try {
-        const response = await graph(`/me/drive/items/${item.id}/content`);
-        const parsed = JSON.parse(await response.text());
-        if (parsed?.kind === RECORD_KIND && validRecord(parsed.record)) records.push({ record: parsed.record, itemId: item.id });
-      } catch {
-        // An unrelated or incomplete file cannot block the rest of a manual sync.
+    let inspectedJsonFiles = 0;
+    let nextPage = `/me/drive/items/${folder.id}/children?$select=id,name,file,size,eTag`;
+    while (nextPage) {
+      const listing = await (await graph(nextPage)).json();
+      for (const item of listing.value || []) {
+        if (!item.file || !item.name.endsWith(".json")) continue;
+        inspectedJsonFiles += 1;
+        if (inspectedJsonFiles > MAX_RECORDS) throw recordError(`the cloud folder exceeds ${MAX_RECORDS} JSON records.`);
+        if (Number(item.size || 0) > MAX_RESPONSE_BYTES) throw responseTooLargeError();
+        try {
+          const response = await graph(`/me/drive/items/${item.id}/content`);
+          const parsed = JSON.parse(await response.text());
+          if (parsed?.kind !== RECORD_KIND) continue;
+          if (parsed.version !== 1) throw recordError("the cloud record version is unsupported.");
+          assertValidRecord(parsed.record);
+          records.push({ record: parsed.record, itemId: item.id, eTag: item.eTag || null, name: item.name });
+        } catch (error) {
+          if (["ONEDRIVE_AUTH_REQUIRED", "ONEDRIVE_GRAPH_FAILED", "ONEDRIVE_INVALID_RECORD", "ONEDRIVE_RESPONSE_TOO_LARGE"].includes(error.code)) throw error;
+          // An unrelated or incomplete file cannot block the rest of a manual sync.
+        }
       }
+      nextPage = listing["@odata.nextLink"] || null;
     }
     return records;
   }
 
-  async function uploadRecord(folder, record) {
-    await graph(`/me/drive/items/${folder.id}:/${encodedFileName(crypto, record.id)}:/content`, {
+  async function uploadRecord(folder, record, expectedRemote = null) {
+    assertValidRecord(record);
+    const conditionalHeaders = expectedRemote?.eTag ? { "If-Match": expectedRemote.eTag } : {};
+    const createCondition = expectedRemote ? "" : "?@microsoft.graph.conflictBehavior=fail";
+    await graph(`/me/drive/items/${folder.id}:/${encodedFileName(crypto, record.id)}:/content${createCondition}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...conditionalHeaders },
       body: JSON.stringify({ kind: RECORD_KIND, version: 1, record }, null, 2)
     });
   }
 
-  async function reconcileByName(saves) {
+  async function reconcileById(saves, options = {}) {
+    const local = assertValidCollection(saves).map(clone);
     const folder = await rosterFolder();
-    const local = Array.isArray(saves) ? saves.filter(validRecord).map(clone) : [];
     const remote = await remoteEntries(folder);
-    const localByKey = new Map();
+    const localById = new Map();
     for (const record of local) {
-      const key = syncKey(record);
-      const previous = localByKey.get(key);
-      if (!previous || recordTime(record) >= recordTime(previous)) localByKey.set(key, record);
+      if (!localById.has(record.id)) localById.set(record.id, []);
+      localById.get(record.id).push({ record, source: "local" });
     }
-    const remoteByKey = new Map();
+    const remoteById = new Map();
     for (const entry of remote) {
-      const key = syncKey(entry.record);
-      if (!remoteByKey.has(key)) remoteByKey.set(key, []);
-      remoteByKey.get(key).push(entry);
+      if (!remoteById.has(entry.record.id)) remoteById.set(entry.record.id, []);
+      remoteById.get(entry.record.id).push({ ...entry, source: "remote" });
     }
     const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
-    const cleanup = { localRemoved: local.length - localByKey.size, remoteRemoved: 0 };
+    const cleanup = { localRemoved: 0, remoteRemoved: 0 };
     const result = [];
-    const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
-    for (const key of keys) {
-      const localRecord = localByKey.get(key);
-      const remoteEntriesForName = remoteByKey.get(key) || [];
-      const newestRemoteEntry = remoteEntriesForName.reduce((newest, entry) => !newest || recordTime(entry.record) >= recordTime(newest.record) ? entry : newest, null);
-      const remoteRecord = newestRemoteEntry?.record || null;
-      const winner = !remoteRecord || (localRecord && recordTime(localRecord) >= recordTime(remoteRecord)) ? localRecord : remoteRecord;
-      const winnerIsLocal = winner === localRecord;
-      const matchingRemote = remoteEntriesForName.find(entry => entry.record.id === winner.id) || null;
-      if (winnerIsLocal && (!matchingRemote || documentHash(matchingRemote.record) !== documentHash(winner))) {
-        await uploadRecord(folder, winner);
-        summary.uploaded += 1;
+    const pendingUploads = [];
+    const ids = new Set([...localById.keys(), ...remoteById.keys()]);
+    for (const id of ids) {
+      const candidates = [...(localById.get(id) || []), ...(remoteById.get(id) || [])];
+      const distinctByDocument = new Map();
+      for (const candidate of candidates) {
+        const hash = documentHash(candidate.record);
+        const previous = distinctByDocument.get(hash);
+        if (!previous || compareVersions(candidate.record, previous.record) > 0 || (candidate.source === "local" && previous.source !== "local")) {
+          distinctByDocument.set(hash, candidate);
+        }
       }
-      if (!winnerIsLocal && (!localRecord || localRecord.id !== winner.id || documentHash(localRecord) !== documentHash(winner))) {
-        summary.downloaded += 1;
+      const versions = [...distinctByDocument.values()].sort((left, right) => compareVersions(right.record, left.record));
+      if (!versions.length) continue;
+      const canonical = versions[0];
+      const outputs = [{ ...canonical, record: clone(canonical.record) }];
+      for (const version of versions.slice(1)) {
+        const conflict = conflictRecord(crypto, version.record, id);
+        assertValidRecord(conflict);
+        outputs.push({ ...version, record: conflict });
+        summary.conflicts += 1;
       }
-      for (const entry of remoteEntriesForName) {
-        if (entry.record.id === winner.id) continue;
-        await graph(`/me/drive/items/${entry.itemId}`, { method: "DELETE" });
-        cleanup.remoteRemoved += 1;
+      for (const output of outputs) {
+        if (result.some(record => sameRecord(record, output.record))) continue;
+        result.push(clone(output.record));
+        const localMatch = local.find(record => sameRecord(record, output.record));
+        const remoteMatches = remote.filter(entry => sameRecord(entry.record, output.record));
+        if (!localMatch && output.source === "remote") summary.downloaded += 1;
+        if (!remoteMatches.length) {
+          const expectedFileName = encodedFileName(crypto, output.record.id);
+          pendingUploads.push({
+            record: output.record,
+            expectedRemote: remote.find(entry => entry.record.id === output.record.id && entry.name === expectedFileName) || null
+          });
+        }
+        if (options.removeExactRemoteDuplicates && remoteMatches.length > 1) {
+          for (const duplicate of remoteMatches.slice(1)) {
+            await graph(`/me/drive/items/${duplicate.itemId}`, {
+              method: "DELETE",
+              headers: duplicate.eTag ? { "If-Match": duplicate.eTag } : {}
+            });
+            cleanup.remoteRemoved += 1;
+          }
+        }
       }
-      result.push(clone(winner));
+    }
+    // Preserve every conflict copy in the cloud before replacing a canonical ID.
+    pendingUploads.sort((left, right) => Number(Boolean(left.record.conflictOf)) - Number(Boolean(right.record.conflictOf))).reverse();
+    for (const upload of pendingUploads) {
+      await uploadRecord(folder, upload.record, upload.expectedRemote);
+      summary.uploaded += 1;
     }
     return { saves: result, summary, cleanup };
   }
 
-  async function sync(saves) { return reconcileByName(saves); }
-  async function cleanDuplicates(saves) { return reconcileByName(saves); }
+  let operationQueue = Promise.resolve();
+  function runExclusive(operation) {
+    const result = operationQueue.then(operation, operation);
+    operationQueue = result.catch(() => {});
+    return result;
+  }
+
+  async function sync(saves) { return runExclusive(() => reconcileById(saves)); }
+  async function cleanDuplicates(saves) {
+    return runExclusive(() => reconcileById(saves, { removeExactRemoteDuplicates: true }));
+  }
 
   return { accessToken, tokenRequest, sync, cleanDuplicates };
 }

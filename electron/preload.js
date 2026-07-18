@@ -8,3 +8,13 @@ contextBridge.exposeInMainWorld("desktopRosterSync", {
   cleanDuplicates: saves => ipcRenderer.invoke("roster-sync:clean-duplicates", saves),
   disconnect: () => ipcRenderer.invoke("roster-sync:disconnect")
 });
+
+contextBridge.exposeInMainWorld("desktopLifecycle", {
+  onCloseRequested: callback => {
+    if (typeof callback !== "function") throw new TypeError("Close handler must be a function.");
+    const listener = () => callback();
+    ipcRenderer.on("app:close-requested", listener);
+    return () => ipcRenderer.removeListener("app:close-requested", listener);
+  },
+  respondToClose: allow => ipcRenderer.send("app:close-response", allow === true)
+});

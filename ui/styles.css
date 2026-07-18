@@ -255,6 +255,14 @@ button:hover {
   transition: grid-template-columns 180ms ease;
 }
 
+@media (min-width: 861px) and (max-width: 1199px) {
+  .layout {
+    gap: 8px;
+    grid-template-columns: minmax(250px, 30vw) minmax(350px, 34vw) minmax(280px, 1fr);
+    padding: 8px;
+  }
+}
+
 .layout.availableUnitsCollapsed {
   align-items: stretch;
   grid-template-columns: 64px minmax(420px, 32vw) minmax(360px, 1fr);

@@ -3,12 +3,14 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { createCrosshairPng } = require("../../scripts/write-crosshair-icon");
 
 const ROOT = path.resolve(__dirname, "..");
 const PROJECT_ROOT = path.resolve(ROOT, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
 
 const FILES = [
+  ["ui/bootstrap-app.js", "bootstrap-app.js"],
   ["ui/styles.css", "styles.css"],
   ["ui/engine-app.js", "engine-app.js"],
   ["ui/engine-runtime.js", "engine-runtime.js"],
@@ -74,6 +76,17 @@ function buildIndex() {
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), html, "utf8");
 }
 
+function writeInstallIcons() {
+  const icons = [
+    ["app-icon-192.png", 192],
+    ["app-icon-512.png", 512],
+    ["app-icon-maskable-512.png", 512]
+  ];
+  for (const [name, size] of icons) {
+    fs.writeFileSync(path.join(OUT_DIR, name), createCrosshairPng(size));
+  }
+}
+
 function writeReadme() {
   const readme = [
     "Roster Builder",
@@ -130,7 +143,10 @@ const OFFLINE_FILES = ${JSON.stringify(urls, null, 2)};
 const TOTAL_BYTES = ${totalBytes};
 let offlineReady = false;
 
-self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("install", () => {
+  // A first install activates normally. Updates wait until the page has
+  // confirmed that no roster edits would be lost by reloading.
+});
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
@@ -141,6 +157,7 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("message", event => {
   const type = event.data?.type;
+  if (type === "SKIP_WAITING") event.waitUntil(self.skipWaiting());
   if (type === "GET_OFFLINE_STATUS") event.waitUntil(sendStatus(event.source));
   if (type === "DOWNLOAD_OFFLINE") event.waitUntil(downloadOfflineCopy(event.source));
 });
@@ -189,9 +206,12 @@ async function downloadOfflineCopy(client) {
     for (let index = 0; index < OFFLINE_FILES.length; index += 1) {
       const url = OFFLINE_FILES[index];
       const request = new Request(url, { cache: "reload", credentials: "same-origin" });
-      const response = await fetch(request);
-      if (!response.ok) throw new Error(\`Could not download \${url} (\${response.status})\`);
-      await cache.put(request, response);
+      const existing = await cache.match(request, { ignoreSearch: true });
+      if (!existing) {
+        const response = await fetch(request);
+        if (!response.ok) throw new Error(\`Could not download \${url} (\${response.status})\`);
+        await cache.put(request, response);
+      }
       client?.postMessage({
         type: "OFFLINE_PROGRESS",
         completed: index + 1,
@@ -217,9 +237,8 @@ async function downloadOfflineCopy(client) {
       totalBytes: TOTAL_BYTES
     });
   } catch (error) {
-    await caches.delete(CACHE_NAME);
     offlineReady = false;
-    client?.postMessage({ type: "OFFLINE_ERROR", message: error?.message || "Offline download failed." });
+    client?.postMessage({ type: "OFFLINE_ERROR", message: (error?.message || "Offline download failed.") + " Progress was saved for the next retry." });
   }
 }
 
@@ -261,6 +280,7 @@ function main() {
   for (const [source, target] of PROJECT_FILES) copyProjectFile(source, target);
   copyProjectDirectory("ui/engine-data", "engine-data");
   copyProjectDirectory("ui/assets", "assets");
+  writeInstallIcons();
   buildIndex();
   writeReadme();
   writeServiceWorker();

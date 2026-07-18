@@ -3,7 +3,7 @@
 function createArmyState(armyDefinition) {
   return {
     schemaVersion: 1,
-    rulesetId: armyDefinition?.rulesetId || "wh40k-10e-bsdata",
+    rulesetId: armyDefinition?.rulesetId || "wh40k-11e-vflam",
     armyId: armyDefinition?.id || null,
     detachmentId: null,
     detachmentIds: [],
@@ -45,7 +45,18 @@ function leaderCanTarget(leader, target) {
   const rules = leader.rosterRules || {};
   if ((rules.leaderTargetSelectionKeys || []).includes(target.selectionKey)) return true;
   const targetName = normalizeTargetName(target.name);
-  return Boolean(targetName && (rules.leaderTargetNames || []).some(name => normalizeTargetName(name) === targetName));
+  if (targetName && (rules.leaderTargetNames || []).some(name => normalizeTargetName(name) === targetName)) return true;
+
+  const definition = target.definition || target.unitPackage?.definition || {};
+  const targetKeywords = new Set([
+    ...(target.keywords || target.unitPackage?.keywords || definition.keywords || []),
+    ...(target.categories || definition.categories || [])
+  ].map(normalizeTargetName).filter(Boolean));
+  return (rules.leaderTargetPredicates || []).some(predicate =>
+    predicate?.kind === "keywords-all"
+    && (predicate.keywords || []).length > 0
+    && predicate.keywords.every(keyword => targetKeywords.has(normalizeTargetName(keyword)))
+  );
 }
 
 function effectiveKeywordsForEntry(item, armyState) {

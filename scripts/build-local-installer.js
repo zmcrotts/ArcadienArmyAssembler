@@ -5,6 +5,8 @@ const path = require("path");
 const os = require("os");
 const { execFileSync } = require("child_process");
 const { ensureCrosshairIcon } = require("./write-crosshair-icon");
+const { verifyUnpackedApp } = require("./build-electron-dir");
+const { version: APP_VERSION } = require("../package.json");
 
 const ROOT = path.resolve(__dirname, "..");
 const RELEASE_DIR = path.join(ROOT, "release");
@@ -22,6 +24,7 @@ function assertUnpackedApp() {
   if (!fs.existsSync(exe)) {
     throw new Error(`Missing release/win-unpacked/${APP_EXE_NAME}. Run electron-builder --win dir first.`);
   }
+  verifyUnpackedApp(UNPACKED_DIR);
 }
 
 function run(command, args, options = {}) {
@@ -86,6 +89,7 @@ function writeDotnetProject() {
 `;
 
     const program = String.raw`using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -98,9 +102,11 @@ using Microsoft.Win32;
 internal static class Program
 {
     private const string AppName = "Arcadien Army Assembler";
+    private const string AppVersion = "${APP_VERSION}";
     private const string AppExeName = "Arcadien Army Assembler.exe";
     private const string LegacyAppExeName = "Roster Builder.exe";
     private const string RegistryKeyPath = @"Software\Arcadien Army Assembler";
+    private const string UninstallRegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Arcadien Army Assembler";
 
     private static readonly string[] AppItems =
     {
@@ -285,18 +291,6 @@ internal static class Program
             if (IsRosterBuilderInstall(candidate)) return Path.GetFullPath(candidate!);
         }
 
-        foreach (var drive in DriveInfo.GetDrives().Where(item => item.IsReady && item.DriveType == DriveType.Fixed))
-        {
-            try
-            {
-                foreach (var directory in Directory.EnumerateDirectories(drive.RootDirectory.FullName))
-                {
-                    if (IsRosterBuilderInstall(directory)) return Path.GetFullPath(directory);
-                }
-            }
-            catch { }
-        }
-
         return null;
     }
 
@@ -328,16 +322,89 @@ internal static class Program
         catch { return null; }
     }
 
+    private sealed class RegistryValueSnapshot
+    {
+        internal string Name { get; }
+        internal object Value { get; }
+        internal RegistryValueKind Kind { get; }
+
+        internal RegistryValueSnapshot(string name, object value, RegistryValueKind kind)
+        {
+            Name = name;
+            Value = value;
+            Kind = kind;
+        }
+    }
+
+    private sealed class RegistryKeySnapshot
+    {
+        internal bool Existed { get; }
+        internal List<RegistryValueSnapshot> Values { get; }
+
+        internal RegistryKeySnapshot(bool existed, List<RegistryValueSnapshot>? values = null)
+        {
+            Existed = existed;
+            Values = values ?? new List<RegistryValueSnapshot>();
+        }
+    }
+
+    private static RegistryKeySnapshot CaptureRegistryKey(string path)
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(path);
+        if (key == null) return new RegistryKeySnapshot(false);
+        var values = new List<RegistryValueSnapshot>();
+        foreach (var name in key.GetValueNames())
+        {
+            var value = key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
+            if (value != null) values.Add(new RegistryValueSnapshot(name, value, key.GetValueKind(name)));
+        }
+        return new RegistryKeySnapshot(true, values);
+    }
+
+    private static void RestoreRegistryKey(string path, RegistryKeySnapshot snapshot)
+    {
+        Registry.CurrentUser.DeleteSubKeyTree(path, throwOnMissingSubKey: false);
+        if (!snapshot.Existed) return;
+        using var key = Registry.CurrentUser.CreateSubKey(path)
+            ?? throw new InvalidOperationException("Could not restore installer registry metadata.");
+        foreach (var value in snapshot.Values) key.SetValue(value.Name, value.Value, value.Kind);
+    }
+
+    private static byte[]? CaptureFile(string path)
+    {
+        return File.Exists(path) ? File.ReadAllBytes(path) : null;
+    }
+
+    private static void RestoreFile(string path, byte[]? contents)
+    {
+        if (contents == null)
+        {
+            if (File.Exists(path)) File.Delete(path);
+            return;
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllBytes(path, contents);
+    }
+
+    private static void DeleteDirectoryIfNewAndEmpty(string path, bool existed)
+    {
+        if (!existed && Directory.Exists(path) && !Directory.EnumerateFileSystemEntries(path).Any())
+            Directory.Delete(path);
+    }
+
     private static void InstallTo(string installRoot, bool createDesktopShortcut)
     {
+        installRoot = Path.GetFullPath(installRoot);
+        var installRootExisted = Directory.Exists(installRoot);
         var marker = Path.Combine(installRoot, ".roster-builder-install");
-        Directory.CreateDirectory(installRoot);
+        var parent = Directory.GetParent(installRoot)?.FullName
+            ?? throw new InvalidOperationException("Install folder must have a parent folder.");
+        Directory.CreateDirectory(parent);
 
-        var existingItems = Directory.EnumerateFileSystemEntries(installRoot).ToArray();
-        var isExistingRosterBuilderInstall =
-            File.Exists(marker) ||
-            File.Exists(Path.Combine(installRoot, AppExeName)) ||
-            File.Exists(Path.Combine(installRoot, LegacyAppExeName));
+        var existingItems = Directory.Exists(installRoot)
+            ? Directory.EnumerateFileSystemEntries(installRoot).ToArray()
+            : Array.Empty<string>();
+        var isExistingRosterBuilderInstall = IsRosterBuilderInstall(installRoot);
 
         if (existingItems.Length > 0 && !isExistingRosterBuilderInstall)
         {
@@ -347,42 +414,176 @@ internal static class Program
                 ". Choose another install folder or move the existing folder first.");
         }
 
-        foreach (var item in AppItems)
-        {
-            var target = Path.Combine(installRoot, item);
-            if (Directory.Exists(target)) Directory.Delete(target, recursive: true);
-            else if (File.Exists(target)) File.Delete(target);
-        }
+        var stagingRoot = Path.Combine(parent, "." + Path.GetFileName(installRoot) + ".installing-" + Guid.NewGuid().ToString("N"));
+        var backupRoot = Path.Combine(parent, "." + Path.GetFileName(installRoot) + ".backup-" + Guid.NewGuid().ToString("N"));
+        var installedItems = new List<string>();
+        var backedUpItems = new List<string>();
+        var transactionItems = AppItems.Concat(new[] { "Uninstall Roster Builder.ps1", "Uninstall Roster Builder.cmd" }).ToArray();
+        var markerExisted = File.Exists(marker);
+        var userDataFolder = Path.Combine(installRoot, "user-data");
+        var rostersFolder = Path.Combine(installRoot, "rosters");
+        var exportsFolder = Path.Combine(installRoot, "exports");
+        var userDataFolderExisted = Directory.Exists(userDataFolder);
+        var rostersFolderExisted = Directory.Exists(rostersFolder);
+        var exportsFolderExisted = Directory.Exists(exportsFolder);
+        var desktopShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), AppName + ".lnk");
+        var startMenuFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), AppName);
+        var startMenuShortcut = Path.Combine(startMenuFolder, AppName + ".lnk");
+        var startMenuFolderExisted = Directory.Exists(startMenuFolder);
+        var desktopShortcutSnapshot = createDesktopShortcut ? CaptureFile(desktopShortcut) : null;
+        var startMenuShortcutSnapshot = CaptureFile(startMenuShortcut);
+        var registrySnapshot = CaptureRegistryKey(RegistryKeyPath);
+        var uninstallRegistrySnapshot = CaptureRegistryKey(UninstallRegistryKeyPath);
+        var completed = false;
 
+        try
+        {
+            ExtractPayload(stagingRoot);
+            ValidatePayload(stagingRoot);
+            WriteUninstaller(stagingRoot);
+
+            Directory.CreateDirectory(installRoot);
+            Directory.CreateDirectory(backupRoot);
+            foreach (var item in transactionItems)
+            {
+                var source = Path.Combine(stagingRoot, item);
+                var target = Path.Combine(installRoot, item);
+                var backup = Path.Combine(backupRoot, item);
+                if (Directory.Exists(target) || File.Exists(target))
+                {
+                    MovePath(target, backup);
+                    backedUpItems.Add(item);
+                }
+                MovePath(source, target);
+                installedItems.Add(item);
+            }
+
+            ValidatePayload(installRoot);
+            Directory.CreateDirectory(userDataFolder);
+            Directory.CreateDirectory(rostersFolder);
+            Directory.CreateDirectory(exportsFolder);
+            File.WriteAllText(marker, "Arcadien Army Assembler local install");
+
+            var exe = Path.Combine(installRoot, AppExeName);
+            RegisterInstall(installRoot, exe);
+            if (createDesktopShortcut)
+            {
+                CreateShortcut(desktopShortcut, exe, installRoot);
+            }
+
+            Directory.CreateDirectory(startMenuFolder);
+            CreateShortcut(startMenuShortcut, exe, installRoot);
+            completed = true;
+        }
+        catch (Exception installError)
+        {
+            try
+            {
+                foreach (var item in installedItems.AsEnumerable().Reverse()) DeletePath(Path.Combine(installRoot, item));
+                foreach (var item in backedUpItems.AsEnumerable().Reverse()) MovePath(Path.Combine(backupRoot, item), Path.Combine(installRoot, item));
+                if (!markerExisted && File.Exists(marker)) File.Delete(marker);
+                RestoreRegistryKey(RegistryKeyPath, registrySnapshot);
+                RestoreRegistryKey(UninstallRegistryKeyPath, uninstallRegistrySnapshot);
+                if (createDesktopShortcut) RestoreFile(desktopShortcut, desktopShortcutSnapshot);
+                RestoreFile(startMenuShortcut, startMenuShortcutSnapshot);
+                DeleteDirectoryIfNewAndEmpty(startMenuFolder, startMenuFolderExisted);
+                DeleteDirectoryIfNewAndEmpty(userDataFolder, userDataFolderExisted);
+                DeleteDirectoryIfNewAndEmpty(rostersFolder, rostersFolderExisted);
+                DeleteDirectoryIfNewAndEmpty(exportsFolder, exportsFolderExisted);
+                DeleteDirectoryIfNewAndEmpty(installRoot, installRootExisted);
+                DeletePath(backupRoot);
+            }
+            catch (Exception rollbackError)
+            {
+                throw new AggregateException(
+                    "Installation failed and automatic rollback was incomplete. The preserved backup is: " + backupRoot,
+                    installError,
+                    rollbackError);
+            }
+            throw;
+        }
+        finally
+        {
+            TryDeletePath(stagingRoot);
+            if (completed) TryDeletePath(backupRoot);
+        }
+    }
+
+    private static void ExtractPayload(string stagingRoot)
+    {
+        Directory.CreateDirectory(stagingRoot);
+        var stagingPrefix = Path.GetFullPath(stagingRoot) + Path.DirectorySeparatorChar;
         using var payload = Assembly.GetExecutingAssembly().GetManifestResourceStream("roster-builder-app.zip")
             ?? throw new InvalidOperationException("Installer payload is missing.");
         using var archive = new ZipArchive(payload, ZipArchiveMode.Read);
-        archive.ExtractToDirectory(installRoot, overwriteFiles: true);
+        foreach (var entry in archive.Entries)
+        {
+            var destination = Path.GetFullPath(Path.Combine(stagingRoot, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
+            if (!destination.StartsWith(stagingPrefix, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Installer payload contains an unsafe path.");
+            if (string.IsNullOrEmpty(entry.Name))
+            {
+                Directory.CreateDirectory(destination);
+                continue;
+            }
+            Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+            entry.ExtractToFile(destination, overwrite: false);
+        }
+    }
 
-        Directory.CreateDirectory(Path.Combine(installRoot, "user-data"));
-        Directory.CreateDirectory(Path.Combine(installRoot, "rosters"));
-        Directory.CreateDirectory(Path.Combine(installRoot, "exports"));
-        File.WriteAllText(marker, "Roster Builder local install");
+    private static void ValidatePayload(string root)
+    {
+        foreach (var item in AppItems)
+        {
+            var target = Path.Combine(root, item);
+            if (!Directory.Exists(target) && !File.Exists(target))
+                throw new InvalidOperationException("Installer payload is incomplete: " + item);
+        }
+        foreach (var file in new[] { AppExeName, "resources.pak", Path.Combine("resources", "app.asar") })
+        {
+            var target = Path.Combine(root, file);
+            if (!File.Exists(target) || new FileInfo(target).Length == 0)
+                throw new InvalidOperationException("Installer payload contains an empty required file: " + file);
+        }
+    }
+
+    private static void MovePath(string source, string destination)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+        if (Directory.Exists(source)) Directory.Move(source, destination);
+        else if (File.Exists(source)) File.Move(source, destination);
+        else throw new FileNotFoundException("Installer item is missing.", source);
+    }
+
+    private static void DeletePath(string target)
+    {
+        if (Directory.Exists(target)) Directory.Delete(target, recursive: true);
+        else if (File.Exists(target)) File.Delete(target);
+    }
+
+    private static void TryDeletePath(string target)
+    {
+        try { DeletePath(target); }
+        catch { }
+    }
+
+    private static void RegisterInstall(string installRoot, string exe)
+    {
         using (var key = Registry.CurrentUser.CreateSubKey(RegistryKeyPath))
         {
-            key.SetValue("InstallLocation", Path.GetFullPath(installRoot), RegistryValueKind.String);
+            key.SetValue("InstallLocation", installRoot, RegistryValueKind.String);
         }
-
-        var exe = Path.Combine(installRoot, AppExeName);
-        if (!File.Exists(exe)) throw new FileNotFoundException("Installed app executable not found.", exe);
-
-        WriteUninstaller(installRoot);
-        if (createDesktopShortcut)
+        using (var key = Registry.CurrentUser.CreateSubKey(UninstallRegistryKeyPath))
         {
-            CreateShortcut(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), AppName + ".lnk"),
-                exe,
-                installRoot);
+            key.SetValue("DisplayName", AppName, RegistryValueKind.String);
+            key.SetValue("DisplayVersion", AppVersion, RegistryValueKind.String);
+            key.SetValue("Publisher", "zmcrotts", RegistryValueKind.String);
+            key.SetValue("InstallLocation", installRoot, RegistryValueKind.String);
+            key.SetValue("DisplayIcon", exe, RegistryValueKind.String);
+            key.SetValue("UninstallString", "\"" + Path.Combine(installRoot, "Uninstall Roster Builder.cmd") + "\"", RegistryValueKind.String);
+            key.SetValue("NoModify", 1, RegistryValueKind.DWord);
+            key.SetValue("NoRepair", 1, RegistryValueKind.DWord);
         }
-
-        var startMenuFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), AppName);
-        Directory.CreateDirectory(startMenuFolder);
-        CreateShortcut(Path.Combine(startMenuFolder, AppName + ".lnk"), exe, installRoot);
     }
 
     private static void WriteUninstaller(string installRoot)
@@ -437,6 +638,11 @@ $registeredLocation = (Get-ItemProperty -LiteralPath $registryKey -Name InstallL
 if ($registeredLocation -and ([IO.Path]::GetFullPath($registeredLocation) -eq [IO.Path]::GetFullPath($installRoot))) {
   Remove-Item -LiteralPath $registryKey -Recurse -Force -ErrorAction SilentlyContinue
 }
+$uninstallRegistryKey = ""HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Arcadien Army Assembler""
+$registeredUninstallLocation = (Get-ItemProperty -LiteralPath $uninstallRegistryKey -Name InstallLocation -ErrorAction SilentlyContinue).InstallLocation
+if ($registeredUninstallLocation -and ([IO.Path]::GetFullPath($registeredUninstallLocation) -eq [IO.Path]::GetFullPath($installRoot))) {
+  Remove-Item -LiteralPath $uninstallRegistryKey -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 Write-Host ""Arcadien Army Assembler app files removed. Local rosters, exports, and user-data were left in:""
 Write-Host $installRoot
@@ -447,13 +653,17 @@ Write-Host $installRoot
 
     private static void CreateShortcut(string shortcutPath, string targetPath, string workingDirectory)
     {
-        var shellType = Type.GetTypeFromProgID("WScript.Shell");
-        if (shellType == null) return;
-        dynamic shell = Activator.CreateInstance(shellType)!;
-        dynamic shortcut = shell.CreateShortcut(shortcutPath);
-        shortcut.TargetPath = targetPath;
-        shortcut.WorkingDirectory = workingDirectory;
-        shortcut.Save();
+        try
+        {
+            var shellType = Type.GetTypeFromProgID("WScript.Shell");
+            if (shellType == null) return;
+            dynamic shell = Activator.CreateInstance(shellType)!;
+            dynamic shortcut = shell.CreateShortcut(shortcutPath);
+            shortcut.TargetPath = targetPath;
+            shortcut.WorkingDirectory = workingDirectory;
+            shortcut.Save();
+        }
+        catch { }
     }
 }
 `;
@@ -474,7 +684,6 @@ Write-Host $installRoot
 }
 
 function publishInstaller() {
-  fs.rmSync(INSTALLER_EXE, { force: true });
   for (const file of fs.readdirSync(RELEASE_DIR)) {
     if (file.startsWith("RosterBuilderInstaller.")) fs.rmSync(path.join(RELEASE_DIR, file), { force: true });
   }
@@ -508,7 +717,21 @@ function publishInstaller() {
     "RosterBuilderInstaller.exe"
   );
   if (!fs.existsSync(built)) throw new Error(`dotnet did not create ${built}`);
-  fs.copyFileSync(built, INSTALLER_EXE);
+  if (fs.statSync(built).size === 0) throw new Error(`dotnet created an empty installer: ${built}`);
+  const replacement = `${INSTALLER_EXE}.new`;
+  const previous = `${INSTALLER_EXE}.previous`;
+  fs.rmSync(replacement, { force: true });
+  fs.rmSync(previous, { force: true });
+  fs.copyFileSync(built, replacement);
+  try {
+    if (fs.existsSync(INSTALLER_EXE)) fs.renameSync(INSTALLER_EXE, previous);
+    fs.renameSync(replacement, INSTALLER_EXE);
+    fs.rmSync(previous, { force: true });
+  } catch (error) {
+    fs.rmSync(replacement, { force: true });
+    if (!fs.existsSync(INSTALLER_EXE) && fs.existsSync(previous)) fs.renameSync(previous, INSTALLER_EXE);
+    throw error;
+  }
 }
 
 function main() {

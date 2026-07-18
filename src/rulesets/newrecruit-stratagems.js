@@ -10,18 +10,31 @@ function normalizeName(value) {
     .trim();
 }
 
-function emptyStratagems() {
+function sourceIssue(code, message, filePath, details = {}) {
+  return {
+    code,
+    severity: "error",
+    message,
+    filePath: filePath || null,
+    ...details
+  };
+}
+
+function emptyStratagems(issue = null) {
   return {
     source: null,
     core: [],
     byDetachmentName: new Map(),
-    all: []
+    all: [],
+    issues: issue ? [issue] : []
   };
 }
 
 function readNewRecruitStratagems(filePath) {
   if (!filePath || !fs.existsSync(filePath)) {
-    return emptyStratagems();
+    return emptyStratagems(filePath
+      ? sourceIssue("configured-source-missing", `Configured New Recruit stratagem source is missing: ${filePath}`, filePath)
+      : null);
   }
 
   const document = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -32,15 +45,29 @@ function readNewRecruitStratagems(filePath) {
     fetchedAt: document.fetchedAt || null,
     name: document.metadata?.name || "Stratagems",
     nrversion: document.metadata?.nrversion || null,
-    lastUpdated: document.metadata?.last_updated || null
+    lastUpdated: document.metadata?.last_updated || null,
+    deleted: document.metadata?.deleted === true,
+    playable: document.metadata?.playable ?? null
   };
 
-  return buildStratagemIndex(rawStratagems, source);
+  const issues = [];
+  if (source.deleted) {
+    issues.push(sourceIssue(
+      "upstream-source-deleted",
+      `New Recruit marks the configured stratagem source as deleted: ${source.name}`,
+      filePath,
+      { sourceName: source.name, lastUpdated: source.lastUpdated }
+    ));
+  }
+
+  return buildStratagemIndex(rawStratagems, source, { issues });
 }
 
 function readLocalCoreStratagems(filePath) {
   if (!filePath || !fs.existsSync(filePath)) {
-    return emptyStratagems();
+    return emptyStratagems(filePath
+      ? sourceIssue("configured-source-missing", `Configured core stratagem source is missing: ${filePath}`, filePath)
+      : null);
   }
 
   const document = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -58,7 +85,9 @@ function readLocalCoreStratagems(filePath) {
 
 function readLocalDetachmentStratagems(filePath) {
   if (!filePath || !fs.existsSync(filePath)) {
-    return emptyStratagems();
+    return emptyStratagems(filePath
+      ? sourceIssue("configured-source-missing", `Configured detachment stratagem source is missing: ${filePath}`, filePath)
+      : null);
   }
 
   const document = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -71,23 +100,43 @@ function readLocalDetachmentStratagems(filePath) {
     lastUpdated: document.updatedAt || null
   };
 
-  return buildStratagemIndex(rawStratagems, source);
+  const mismatchedUrls = rawStratagems
+    .map(item => item?.sourceUrl)
+    .filter(url => typeof url === "string" && /\/wh40k10ed\//i.test(url));
+  const claimsEleventhEdition = /11e|11th/i.test(`${document.name || ""} ${document.version || ""}`);
+  const issues = claimsEleventhEdition && mismatchedUrls.length
+    ? [sourceIssue(
+      "edition-source-url-mismatch",
+      `${mismatchedUrls.length} record(s) in an 11e stratagem source link to explicitly 10e URLs`,
+      filePath,
+      { affectedRecords: mismatchedUrls.length }
+    )]
+    : [];
+
+  return buildStratagemIndex(rawStratagems, source, { issues });
 }
 
 function mergeStratagemSources(...sources) {
   const present = sources.filter(source => source?.source);
-  if (!present.length) return emptyStratagems();
+  const issues = sources.flatMap(source => Array.isArray(source?.issues) ? source.issues : []);
+  if (!present.length) {
+    const empty = emptyStratagems();
+    empty.issues = issues;
+    return empty;
+  }
 
   const merged = {
     source: {
       kind: "merged-stratagem-sources",
       name: present.map(source => source.source.name).filter(Boolean).join(" + "),
       nrversion: present.map(source => source.source.nrversion).filter(Boolean).join(" + ") || null,
-      sources: present.map(source => source.source)
+      sources: present.map(source => source.source),
+      issues
     },
     core: [],
     byDetachmentName: new Map(),
-    all: []
+    all: [],
+    issues
   };
 
   for (const source of present) {
@@ -114,7 +163,8 @@ function buildStratagemIndex(rawStratagems, source, options = {}) {
       source,
       core: [],
       byDetachmentName: new Map(),
-      all: []
+      all: [],
+      issues: [...(options.issues || [])]
     };
   }
 
@@ -138,7 +188,8 @@ function buildStratagemIndex(rawStratagems, source, options = {}) {
     source,
     core,
     byDetachmentName,
-    all
+    all,
+    issues: [...(options.issues || [])]
   };
 }
 

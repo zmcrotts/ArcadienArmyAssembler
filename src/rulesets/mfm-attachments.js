@@ -74,18 +74,42 @@ function buildRecordLookup(payload) {
 }
 
 function resolveLeaderTargetSelectionKeys(definitions) {
+  const knownKeywords = new Set(definitions.flatMap(definition =>
+    [...(definition.categories || []), ...(definition.keywords || [])].map(normalizeName)
+  ).filter(Boolean));
+  let predicateCount = 0;
+  let unresolvedCount = 0;
+
+  function keywordPredicateFor(targetName) {
+    const keywords = normalizeName(targetName).split(/\s+/).filter(Boolean);
+    if (keywords.length < 2 || !keywords.every(keyword => knownKeywords.has(keyword))) return null;
+    return { kind: "keywords-all", keywords, label: targetName, source: "mfm-attachment" };
+  }
+
   for (const definition of definitions) {
     const candidates = definitions.filter(candidate => candidate.faction === definition.faction);
     const candidateNames = new Set(candidates.map(candidate => normalizeName(candidate.name)));
-    const targetNames = [...new Set(definition.rosterRules.leaderTargetNames || [])]
-      .filter(name => candidateNames.has(normalizeName(name)));
+    const declaredTargets = [...new Set(definition.rosterRules.leaderTargetNames || [])];
+    const targetNames = declaredTargets.filter(name => candidateNames.has(normalizeName(name)));
+    const inferredPredicates = declaredTargets
+      .filter(name => !candidateNames.has(normalizeName(name)))
+      .map(keywordPredicateFor)
+      .filter(Boolean);
+    predicateCount += inferredPredicates.length;
+    unresolvedCount += declaredTargets.length - targetNames.length - inferredPredicates.length;
     const targets = new Set(targetNames.map(normalizeName));
     definition.rosterRules.leaderTargetNames = targetNames;
     definition.rosterRules.leaderTargetSelectionKeys = candidates
       .filter(candidate => targets.has(normalizeName(candidate.name)))
       .map(candidate => candidate.selectionKey);
-    definition.roles.leader = definition.rosterRules.leaderTargetSelectionKeys.length > 0;
+    definition.rosterRules.leaderTargetPredicates = [...new Map([
+      ...(definition.rosterRules.leaderTargetPredicates || []),
+      ...inferredPredicates
+    ].map(predicate => [JSON.stringify(predicate), predicate])).values()];
+    definition.roles.leader = definition.rosterRules.leaderTargetSelectionKeys.length > 0
+      || definition.rosterRules.leaderTargetPredicates.length > 0;
   }
+  return { predicateCount, unresolvedCount };
 }
 
 function applyMfmAttachments(definitions, payload) {
@@ -112,6 +136,7 @@ function applyMfmAttachments(definitions, payload) {
       ...(definition.rosterRules || {}),
       leaderTargetNames: targets,
       leaderTargetSelectionKeys: [],
+      leaderTargetPredicates: [],
       allowsAdditionalLeader: record.role === "SUPPORT"
         ? true
         : Boolean(definition.rosterRules?.allowsAdditionalLeader),
@@ -135,8 +160,8 @@ function applyMfmAttachments(definitions, payload) {
     unmatched += (faction.attachments || []).filter(record => !localNames.has(normalizeName(record.unitName))).length;
   }
 
-  resolveLeaderTargetSelectionKeys(definitions);
-  return { definitions, summary: { matched, unmatched } };
+  const targetSummary = resolveLeaderTargetSelectionKeys(definitions);
+  return { definitions, summary: { matched, unmatched, ...targetSummary } };
 }
 
 module.exports = {

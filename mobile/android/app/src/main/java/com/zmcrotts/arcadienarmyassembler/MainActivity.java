@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,8 +12,6 @@ import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
 import android.webkit.MimeTypeMap;
 import android.webkit.ValueCallback;
@@ -32,11 +29,8 @@ import org.json.JSONObject;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -55,6 +49,8 @@ import android.util.Base64;
 
 public final class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 4102;
+    private static final int EXPORT_FILE_REQUEST = 4103;
+    private static final String GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
     private static final String ONEDRIVE_CLIENT_ID = "30500f7e-c454-428c-8f16-c0318ae6174b";
     private static final String ONEDRIVE_SCOPE = "offline_access https://graph.microsoft.com/Files.ReadWrite.AppFolder";
     private static final String MICROSOFT_DEVICE_CODE_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
@@ -62,12 +58,18 @@ public final class MainActivity extends Activity {
     private static final String ONEDRIVE_KEY_ALIAS = "arcadien-onedrive-refresh-token";
     private static final String ONEDRIVE_PREFS = "arcadien-onedrive";
     private static final String ONEDRIVE_REFRESH_TOKEN = "refresh-token";
+    private static final int MAX_ONEDRIVE_RESPONSE_BYTES = 10 * 1024 * 1024;
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
+    private byte[] pendingExportBytes;
+    private String pendingExportName;
     private volatile String oneDriveAccessToken;
     private volatile long oneDriveAccessTokenExpiresAt;
     private volatile String lastOneDriveConnectionError = "";
     private boolean oneDriveSignInInProgress;
+    private volatile boolean oneDriveSignInCancelled;
+    private volatile Thread oneDriveSignInThread;
+    private boolean forceExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +117,9 @@ public final class MainActivity extends Activity {
         settings.setDatabaseEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
-        settings.setAllowFileAccessFromFileURLs(true);
-        // The bundled UI is trusted app content. This allows it to call the
-        // narrowly-scoped Microsoft Graph endpoint after native sign-in.
-        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setAllowContentAccess(false);
+        settings.setAllowFileAccessFromFileURLs(false);
+        settings.setAllowUniversalAccessFromFileURLs(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
         settings.setMediaPlaybackRequiresUserGesture(true);
@@ -134,7 +134,9 @@ public final class MainActivity extends Activity {
         webView.setWebChromeClient(new LocalWebChromeClient());
 
         webView.clearCache(true);
-        webView.loadUrl("file:///android_asset/www/index.html?v=" + BuildConfig.VERSION_CODE);
+        if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
+            webView.loadUrl("file:///android_asset/www/index.html?v=" + BuildConfig.VERSION_CODE);
+        }
     }
 
     @Override
@@ -145,15 +147,51 @@ public final class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
+        if (forceExit || webView == null) {
             super.onBackPressed();
+            return;
         }
+        webView.evaluateJavascript(
+            "Boolean(window.ArcadienApp && window.ArcadienApp.handleNativeBack && window.ArcadienApp.handleNativeBack())",
+            handled -> {
+                if ("true".equals(handled)) return;
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                    return;
+                }
+                confirmExitIfNeeded();
+            }
+        );
+    }
+
+    private void confirmExitIfNeeded() {
+        webView.evaluateJavascript(
+            "Boolean(window.ArcadienApp && window.ArcadienApp.hasUnsavedChanges && window.ArcadienApp.hasUnsavedChanges())",
+            unsaved -> {
+                if (!"true".equals(unsaved)) {
+                    exitNow();
+                    return;
+                }
+                new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Discard unsaved changes?")
+                    .setMessage("This list has changes that have not been saved.")
+                    .setNegativeButton("Keep editing", null)
+                    .setPositiveButton("Discard and exit", (dialog, which) -> {
+                        exitNow();
+                    })
+                    .show();
+            }
+        );
+    }
+
+    private void exitNow() {
+        forceExit = true;
+        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
+        cancelOneDriveSignIn(false);
         if (webView != null) {
             webView.removeJavascriptInterface("AndroidFiles");
             webView.removeJavascriptInterface("AndroidOneDrive");
@@ -170,6 +208,20 @@ public final class MainActivity extends Activity {
                 : null;
             if (fileChooserCallback != null) fileChooserCallback.onReceiveValue(result);
             fileChooserCallback = null;
+            return;
+        }
+        if (requestCode == EXPORT_FILE_REQUEST) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null && pendingExportBytes != null) {
+                try (OutputStream stream = getContentResolver().openOutputStream(data.getData())) {
+                    if (stream == null) throw new IllegalStateException("Could not open the selected file.");
+                    stream.write(pendingExportBytes);
+                    Toast.makeText(this, "Saved " + pendingExportName, Toast.LENGTH_LONG).show();
+                } catch (Exception error) {
+                    Toast.makeText(this, "Could not save " + pendingExportName, Toast.LENGTH_LONG).show();
+                }
+            }
+            pendingExportBytes = null;
+            pendingExportName = null;
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -195,10 +247,30 @@ public final class MainActivity extends Activity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             Uri uri = request.getUrl();
-            if ("file".equalsIgnoreCase(uri.getScheme()) || "blob".equalsIgnoreCase(uri.getScheme())) return false;
-            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            if ("blob".equalsIgnoreCase(uri.getScheme())) return false;
+            if ("file".equalsIgnoreCase(uri.getScheme())) {
+                String path = uri.getPath() == null ? "" : Uri.decode(uri.getPath());
+                if (path.startsWith("/android_asset/www/") && !path.contains("..") && path.indexOf('\\') < 0) return false;
+                Toast.makeText(MainActivity.this, "That local link was blocked.", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            if (!isTrustedExternal(uri)) {
+                Toast.makeText(MainActivity.this, "That external link was blocked.", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            } catch (Exception error) {
+                Toast.makeText(MainActivity.this, "No browser is available.", Toast.LENGTH_LONG).show();
+            }
             return true;
         }
+    }
+
+    private boolean isTrustedExternal(Uri uri) {
+        if (!"https".equalsIgnoreCase(uri.getScheme())) return false;
+        String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase();
+        return "ko-fi.com".equals(host) || "www.ko-fi.com".equals(host) || "login.microsoftonline.com".equals(host);
     }
 
     public final class AndroidFiles {
@@ -217,34 +289,27 @@ public final class MainActivity extends Activity {
         public void saveText(String requestedName, String text) {
             String fileName = safeFileName(requestedName);
             byte[] bytes = (text == null ? "" : text).getBytes(StandardCharsets.UTF_8);
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
-                    values.put(MediaStore.Downloads.MIME_TYPE, mimeType(fileName));
-                    values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Arcadien Army Assembler");
-                    Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
-                    if (uri == null) throw new IllegalStateException("Could not create download.");
-                    try (OutputStream stream = getContentResolver().openOutputStream(uri)) {
-                        if (stream == null) throw new IllegalStateException("Could not open download.");
-                        stream.write(bytes);
-                    }
-                } else {
-                    File directory = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "Arcadien Army Assembler");
-                    if (!directory.exists() && !directory.mkdirs()) throw new IllegalStateException("Could not create download folder.");
-                    try (OutputStream stream = new FileOutputStream(new File(directory, fileName))) {
-                        stream.write(bytes);
-                    }
+            runOnUiThread(() -> {
+                pendingExportBytes = bytes;
+                pendingExportName = fileName;
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType(mimeType(fileName));
+                intent.putExtra(Intent.EXTRA_TITLE, fileName);
+                try {
+                    startActivityForResult(intent, EXPORT_FILE_REQUEST);
+                } catch (Exception error) {
+                    pendingExportBytes = null;
+                    pendingExportName = null;
+                    Toast.makeText(MainActivity.this, "No document saver is available.", Toast.LENGTH_LONG).show();
                 }
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Saved " + fileName, Toast.LENGTH_LONG).show());
-            } catch (Exception error) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Could not save " + fileName, Toast.LENGTH_LONG).show());
-            }
+            });
         }
 
         private String safeFileName(String requestedName) {
             String name = requestedName == null ? "roster.txt" : requestedName.trim();
             name = name.replaceAll("[\\\\/:*?\"<>|]", "-");
+            if (name.length() > 120) name = name.substring(0, 120);
             return name.isEmpty() ? "roster.txt" : name;
         }
 
@@ -257,9 +322,9 @@ public final class MainActivity extends Activity {
 
     public final class AndroidOneDrive {
         @JavascriptInterface
-        public String getCachedAccessToken() {
-            if (oneDriveAccessToken == null || oneDriveAccessTokenExpiresAt <= System.currentTimeMillis()) return "";
-            return oneDriveAccessToken;
+        public boolean hasCachedConnection() {
+            return oneDriveAccessToken != null && oneDriveAccessTokenExpiresAt > System.currentTimeMillis()
+                || !readRefreshToken().isEmpty();
         }
 
         @JavascriptInterface
@@ -267,73 +332,106 @@ public final class MainActivity extends Activity {
             synchronized (MainActivity.this) {
                 if (oneDriveSignInInProgress) return;
                 oneDriveSignInInProgress = true;
-            }
-            new Thread(() -> {
-                if (!refreshOneDriveAccessToken()) {
-                    if (!lastOneDriveConnectionError.isEmpty()) {
-                        showOneDriveConnectionProblem(lastOneDriveConnectionError);
+                oneDriveSignInCancelled = false;
+                oneDriveSignInThread = new Thread(() -> {
+                    String errorMessage = null;
+                    try {
+                        if (!refreshOneDriveAccessToken(true)) runOneDriveDeviceSignIn();
+                        if (oneDriveSignInCancelled) throw new InterruptedException("Microsoft sign-in was cancelled.");
+                    } catch (Exception error) {
+                        errorMessage = error.getMessage() == null ? "Microsoft sign-in could not finish." : error.getMessage();
+                    } finally {
+                        synchronized (MainActivity.this) {
+                            oneDriveSignInInProgress = false;
+                            if (oneDriveSignInThread == Thread.currentThread()) oneDriveSignInThread = null;
+                        }
                     }
-                    runOneDriveDeviceSignIn();
-                }
-            }).start();
+                    notifyOneDriveSignIn(errorMessage);
+                }, "Arcadien-OneDrive-SignIn");
+                oneDriveSignInThread.start();
+            }
+        }
+
+        @JavascriptInterface
+        public void cancelSignIn() {
+            cancelOneDriveSignIn(true);
         }
 
         @JavascriptInterface
         public void disconnect() {
+            cancelOneDriveSignIn(false);
             oneDriveAccessToken = null;
             oneDriveAccessTokenExpiresAt = 0;
             securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
         }
-    }
 
-    private void runOneDriveDeviceSignIn() {
-        try {
-            Map<String, String> deviceRequest = new LinkedHashMap<>();
-            deviceRequest.put("client_id", ONEDRIVE_CLIENT_ID);
-            deviceRequest.put("scope", ONEDRIVE_SCOPE);
-            JSONObject device = postMicrosoftForm(MICROSOFT_DEVICE_CODE_URL, deviceRequest);
-            if (device.has("error")) {
-                throw new IllegalStateException(device.optString("error_description", "Microsoft sign-in could not start."));
-            }
-
-            String deviceCode = device.getString("device_code");
-            String userCode = device.getString("user_code");
-            String verificationUri = device.getString("verification_uri");
-            int intervalSeconds = Math.max(3, device.optInt("interval", 5));
-            showOneDriveCode(userCode, verificationUri);
-
-            long deadline = System.currentTimeMillis() + (Math.max(60, device.optInt("expires_in", 900)) * 1000L);
-            while (System.currentTimeMillis() < deadline) {
-                try { Thread.sleep(intervalSeconds * 1000L); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); return; }
-                Map<String, String> tokenRequest = new LinkedHashMap<>();
-                tokenRequest.put("client_id", ONEDRIVE_CLIENT_ID);
-                tokenRequest.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
-                tokenRequest.put("device_code", deviceCode);
-                JSONObject token;
+        @JavascriptInterface
+        public void graphRequest(String requestId, String method, String relativePath, String body, String ifMatch) {
+            if (requestId == null || requestId.length() > 128) return;
+            new Thread(() -> {
+                int status = 0;
+                String responseBody = "";
+                String errorMessage = null;
                 try {
-                    token = postMicrosoftForm(MICROSOFT_TOKEN_URL, tokenRequest);
-                } catch (IOException transientError) {
-                    continue;
+                    GraphResponse response = performGraphRequest(method, relativePath, body, ifMatch);
+                    status = response.status;
+                    responseBody = response.body;
+                } catch (Exception error) {
+                    errorMessage = error.getMessage() == null ? "OneDrive request failed." : error.getMessage();
                 }
-                if (token.has("access_token")) {
-                    acceptOneDriveToken(token);
-                    notifyOneDriveResult(oneDriveAccessToken, null);
-                    return;
-                }
-                String error = token.optString("error", "");
-                if ("authorization_pending".equals(error)) continue;
-                if ("slow_down".equals(error)) { intervalSeconds += 5; continue; }
-                throw new IllegalStateException(token.optString("error_description", "Microsoft sign-in could not finish."));
-            }
-            throw new IllegalStateException("Microsoft sign-in timed out. Press Sync to try again.");
-        } catch (Exception error) {
-            notifyOneDriveResult(null, error.getMessage());
-        } finally {
-            synchronized (MainActivity.this) { oneDriveSignInInProgress = false; }
+                notifyGraphResponse(requestId, status, responseBody, errorMessage);
+            }, "Arcadien-OneDrive-Graph").start();
         }
     }
 
-    private boolean refreshOneDriveAccessToken() {
+    private void runOneDriveDeviceSignIn() throws Exception {
+        if (oneDriveSignInCancelled) throw new InterruptedException("Microsoft sign-in was cancelled.");
+        Map<String, String> deviceRequest = new LinkedHashMap<>();
+        deviceRequest.put("client_id", ONEDRIVE_CLIENT_ID);
+        deviceRequest.put("scope", ONEDRIVE_SCOPE);
+        JSONObject device = postMicrosoftForm(MICROSOFT_DEVICE_CODE_URL, deviceRequest);
+        if (oneDriveSignInCancelled) throw new InterruptedException("Microsoft sign-in was cancelled.");
+        if (device.has("error")) {
+            throw new IllegalStateException(device.optString("error_description", "Microsoft sign-in could not start."));
+        }
+
+        String deviceCode = device.getString("device_code");
+        String userCode = device.getString("user_code");
+        String verificationUri = device.getString("verification_uri");
+        int intervalSeconds = Math.max(3, device.optInt("interval", 5));
+        showOneDriveCode(userCode, verificationUri);
+
+        long deadline = System.currentTimeMillis() + (Math.max(60, device.optInt("expires_in", 900)) * 1000L);
+        while (System.currentTimeMillis() < deadline) {
+            if (oneDriveSignInCancelled) throw new InterruptedException("Microsoft sign-in was cancelled.");
+            Thread.sleep(intervalSeconds * 1000L);
+            Map<String, String> tokenRequest = new LinkedHashMap<>();
+            tokenRequest.put("client_id", ONEDRIVE_CLIENT_ID);
+            tokenRequest.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
+            tokenRequest.put("device_code", deviceCode);
+            JSONObject token;
+            try {
+                token = postMicrosoftForm(MICROSOFT_TOKEN_URL, tokenRequest);
+            } catch (IOException transientError) {
+                continue;
+            }
+            if (token.has("access_token")) {
+                acceptOneDriveToken(token, true);
+                return;
+            }
+            String error = token.optString("error", "");
+            if ("authorization_pending".equals(error)) continue;
+            if ("slow_down".equals(error)) { intervalSeconds += 5; continue; }
+            throw new IllegalStateException(token.optString("error_description", "Microsoft sign-in could not finish."));
+        }
+        throw new IllegalStateException("Microsoft sign-in timed out. Press Sync to try again.");
+    }
+
+    private boolean refreshOneDriveAccessToken() throws Exception {
+        return refreshOneDriveAccessToken(false);
+    }
+
+    private boolean refreshOneDriveAccessToken(boolean signInFlow) throws Exception {
         lastOneDriveConnectionError = "";
         String refreshToken = readRefreshToken();
         if (refreshToken.isEmpty()) return false;
@@ -346,26 +444,136 @@ public final class MainActivity extends Activity {
             JSONObject token = postMicrosoftForm(MICROSOFT_TOKEN_URL, request);
             if (!token.has("access_token")) {
                 lastOneDriveConnectionError = token.optString("error_description", "The saved OneDrive connection was rejected by Microsoft.");
-                securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
-                return false;
+                if ("invalid_grant".equals(token.optString("error", ""))) {
+                    securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
+                    return false;
+                }
+                throw new IOException(lastOneDriveConnectionError);
             }
-            acceptOneDriveToken(token);
-            notifyOneDriveResult(oneDriveAccessToken, null);
-            synchronized (MainActivity.this) { oneDriveSignInInProgress = false; }
+            acceptOneDriveToken(token, signInFlow);
             return true;
         } catch (Exception error) {
             lastOneDriveConnectionError = error.getMessage() == null ? "The saved OneDrive connection could not be restored." : error.getMessage();
-            return false;
+            throw error;
+        }
+    }
+
+    private void cancelOneDriveSignIn(boolean notifyIfIdle) {
+        Thread thread;
+        boolean wasInProgress;
+        synchronized (this) {
+            wasInProgress = oneDriveSignInInProgress;
+            oneDriveSignInCancelled = true;
+            thread = oneDriveSignInThread;
+            if (wasInProgress) {
+                oneDriveAccessToken = null;
+                oneDriveAccessTokenExpiresAt = 0;
+                securePreferences().edit().remove(ONEDRIVE_REFRESH_TOKEN).commit();
+            }
+        }
+        if (thread != null) thread.interrupt();
+        else if (notifyIfIdle) notifyOneDriveSignIn("Microsoft sign-in was cancelled.");
+    }
+
+    private synchronized String requireOneDriveAccessToken() throws Exception {
+        if (oneDriveAccessToken != null && oneDriveAccessTokenExpiresAt > System.currentTimeMillis()) {
+            return oneDriveAccessToken;
+        }
+        if (refreshOneDriveAccessToken() && oneDriveAccessToken != null) return oneDriveAccessToken;
+        throw new IllegalStateException(lastOneDriveConnectionError.isEmpty()
+            ? "OneDrive is not connected."
+            : lastOneDriveConnectionError);
+    }
+
+    private GraphResponse performGraphRequest(String requestedMethod, String relativePath, String body, String ifMatch) throws Exception {
+        String method = requestedMethod == null ? "GET" : requestedMethod.trim().toUpperCase();
+        if (!("GET".equals(method) || "POST".equals(method) || "PUT".equals(method) || "DELETE".equals(method))) {
+            throw new IllegalArgumentException("Unsupported OneDrive request method.");
+        }
+        if (!allowedGraphPath(relativePath)) throw new IllegalArgumentException("Blocked OneDrive request path.");
+        if (body != null && body.getBytes(StandardCharsets.UTF_8).length > MAX_ONEDRIVE_RESPONSE_BYTES) {
+            throw new IllegalArgumentException("OneDrive request is too large.");
+        }
+        if (ifMatch != null && (ifMatch.length() > 256 || ifMatch.indexOf('\r') >= 0 || ifMatch.indexOf('\n') >= 0)) {
+            throw new IllegalArgumentException("Invalid OneDrive version condition.");
+        }
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(GRAPH_ROOT + relativePath).openConnection();
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(30000);
+        connection.setRequestMethod(method);
+        connection.setRequestProperty("Authorization", "Bearer " + requireOneDriveAccessToken());
+        connection.setRequestProperty("Accept", "application/json");
+        if (ifMatch != null && !ifMatch.isEmpty()) connection.setRequestProperty("If-Match", ifMatch);
+        if (body != null && !("GET".equals(method) || "DELETE".equals(method))) {
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            connection.setDoOutput(true);
+            try (OutputStream stream = connection.getOutputStream()) {
+                stream.write(body.getBytes(StandardCharsets.UTF_8));
+            }
+        }
+
+        int status = connection.getResponseCode();
+        String responseBody = readResponseBody(status >= 400 ? connection.getErrorStream() : connection.getInputStream());
+        connection.disconnect();
+        if (status == 401) {
+            oneDriveAccessToken = null;
+            oneDriveAccessTokenExpiresAt = 0;
+        }
+        return new GraphResponse(status, responseBody);
+    }
+
+    private boolean allowedGraphPath(String path) {
+        if (path == null || path.length() > 2048 || path.indexOf('\\') >= 0 || path.indexOf('\r') >= 0 || path.indexOf('\n') >= 0) return false;
+        String rawPath = path.split("\\?", 2)[0];
+        String decoded = Uri.decode(rawPath);
+        if (decoded.contains("..") || decoded.contains("//")) return false;
+        return path.matches("^/me/drive/special/approot(?:\\?.*)?$")
+            || path.matches("^/me/drive/items/[^/?#:]+:/rosters(?:\\?.*)?$")
+            || path.matches("^/me/drive/items/[^/?#]+(?:/children|/content|:/[^?#]+:/content)?(?:\\?.*)?$");
+    }
+
+    private String readResponseBody(InputStream stream) throws IOException {
+        if (stream == null) return "";
+        try (InputStream input = stream; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int total = 0;
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                total += read;
+                if (total > MAX_ONEDRIVE_RESPONSE_BYTES) {
+                    throw new IOException("OneDrive returned more than the 10 MB safety limit.");
+                }
+                output.write(buffer, 0, read);
+            }
+            return output.toString(StandardCharsets.UTF_8.name());
+        }
+    }
+
+    private static final class GraphResponse {
+        private final int status;
+        private final String body;
+
+        private GraphResponse(int status, String body) {
+            this.status = status;
+            this.body = body;
         }
     }
 
     private void acceptOneDriveToken(JSONObject token) throws Exception {
-        oneDriveAccessToken = token.getString("access_token");
-        oneDriveAccessTokenExpiresAt = System.currentTimeMillis() + Math.max(60, token.optInt("expires_in", 3600) - 60) * 1000L;
+        acceptOneDriveToken(token, false);
+    }
+
+    private synchronized void acceptOneDriveToken(JSONObject token, boolean signInFlow) throws Exception {
+        if (signInFlow && oneDriveSignInCancelled) throw new InterruptedException("Microsoft sign-in was cancelled.");
+        String accessToken = token.getString("access_token");
         String refreshToken = token.optString("refresh_token", "");
+        if (refreshToken.isEmpty()) refreshToken = readRefreshToken();
         if (refreshToken.isEmpty()) throw new IllegalStateException("Microsoft did not provide a refresh credential. Try Sync again.");
         writeRefreshToken(refreshToken);
         if (!refreshToken.equals(readRefreshToken())) throw new IllegalStateException("OneDrive connection could not be saved securely on this device.");
+        oneDriveAccessToken = accessToken;
+        oneDriveAccessTokenExpiresAt = System.currentTimeMillis() + Math.max(60, token.optInt("expires_in", 3600) - 60) * 1000L;
     }
 
     private SharedPreferences securePreferences() {
@@ -427,22 +635,16 @@ public final class MainActivity extends Activity {
             stream.write(body.toString().getBytes(StandardCharsets.UTF_8));
         }
         int status = connection.getResponseCode();
-        InputStream stream = status >= 400 ? connection.getErrorStream() : connection.getInputStream();
-        StringBuilder text = new StringBuilder();
-        if (stream != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = reader.readLine()) != null) text.append(line);
-            }
-        }
-        return new JSONObject(text.toString());
+        String text = readResponseBody(status >= 400 ? connection.getErrorStream() : connection.getInputStream());
+        connection.disconnect();
+        return new JSONObject(text);
     }
 
     private void showOneDriveCode(String userCode, String verificationUri) {
         runOnUiThread(() -> new AlertDialog.Builder(MainActivity.this)
             .setTitle("Connect OneDrive")
             .setMessage("Microsoft will ask for this one-time code:\n\n" + userCode + "\n\nYour password stays with Microsoft. After approving, return here and the manual sync will continue.")
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("Cancel", (dialog, which) -> cancelOneDriveSignIn(false))
             .setPositiveButton("Open Microsoft", (dialog, which) -> {
                 try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(verificationUri))); }
                 catch (Exception error) { Toast.makeText(MainActivity.this, "Could not open Microsoft sign-in.", Toast.LENGTH_LONG).show(); }
@@ -450,15 +652,18 @@ public final class MainActivity extends Activity {
             .show());
     }
 
-    private void showOneDriveConnectionProblem(String message) {
-        runOnUiThread(() -> Toast.makeText(MainActivity.this, "Saved OneDrive connection failed: " + message, Toast.LENGTH_LONG).show());
+    private void notifyOneDriveSignIn(String error) {
+        String script = "window.OneDriveRosterSync && window.OneDriveRosterSync.androidSignInCompleted("
+            + (error == null ? "null" : JSONObject.quote(error)) + ");";
+        webView.post(() -> webView.evaluateJavascript(script, null));
     }
 
-    private void notifyOneDriveResult(String token, String error) {
-        if (error != null && !error.isEmpty()) showOneDriveConnectionProblem(error);
-        String script = "window.OneDriveRosterSync && window.OneDriveRosterSync.androidAccessTokenReceived("
-            + JSONObject.quote(token == null ? "" : token) + ","
-            + JSONObject.quote(error == null ? "" : error) + ");";
+    private void notifyGraphResponse(String requestId, int status, String body, String error) {
+        String script = "window.OneDriveRosterSync && window.OneDriveRosterSync.androidGraphResponseReceived("
+            + JSONObject.quote(requestId) + ","
+            + status + ","
+            + JSONObject.quote(body == null ? "" : body) + ","
+            + (error == null ? "null" : JSONObject.quote(error)) + ");";
         webView.post(() -> webView.evaluateJavascript(script, null));
     }
 }

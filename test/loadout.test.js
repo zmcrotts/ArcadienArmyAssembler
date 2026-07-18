@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("path");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
 const {
@@ -17,7 +18,9 @@ const {
 } = require("../src/domain/loadout");
 
 const BSDATA = path.join(__dirname, "..", "data", "wh40K", "wh40k-10e-main", "wh40k-10e-main");
-const extracted = extractUnitDefinitions(BSDATA);
+const hasLegacyBsdata = fs.existsSync(BSDATA);
+const legacyTest = hasLegacyBsdata ? test : test.skip;
+const extracted = hasLegacyBsdata ? extractUnitDefinitions(BSDATA) : { definitions: [] };
 const VFLAM_11E = path.join(__dirname, "..", "data", "rulesets", "wh40k-11e-vflam");
 let extracted11e = null;
 
@@ -47,7 +50,7 @@ function option(definition, name, parentName = null) {
   return found;
 }
 
-test("Hive Tyrant defaults to both BSData default weapon choices", () => {
+legacyTest("Hive Tyrant defaults to both BSData default weapon choices", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   const entry = createDefaultRosterEntry(definition);
   const bonesword = option(definition, "Monstrous bonesword and lash whip", "Monstrous Bonesword and Lash Whip");
@@ -56,7 +59,7 @@ test("Hive Tyrant defaults to both BSData default weapon choices", () => {
   assert.equal(entry.selections[talons.id], 1);
 });
 
-test("Hive Tyrant one-of group swaps its selected weapon", () => {
+legacyTest("Hive Tyrant one-of group swaps its selected weapon", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   const entry = createDefaultRosterEntry(definition);
   const bonesword = option(definition, "Monstrous bonesword and lash whip", "Monstrous Bonesword and Lash Whip");
@@ -69,7 +72,7 @@ test("Hive Tyrant one-of group swaps its selected weapon", () => {
   assert.ok(!weaponNames.includes("Monstrous bonesword and lash whip"));
 });
 
-test("Battle Sister specialist replaces one default Battle Sister", () => {
+legacyTest("Battle Sister specialist replaces one default Battle Sister", () => {
   const definition = unit("Imperium - Adepta Sororitas", "Battle Sisters Squad");
   const entry = createDefaultRosterEntry(definition);
   const ordinary = option(definition, "Battle Sister");
@@ -80,7 +83,7 @@ test("Battle Sister specialist replaces one default Battle Sister", () => {
   assert.equal(changed.selections[ordinary.id], 8);
 });
 
-test("Termagant special weapon replaces a default model and scales one per ten", () => {
+legacyTest("Termagant special weapon replaces a default model and scales one per ten", () => {
   const definition = unit("Xenos - Tyranids", "Termagants");
   const entry = createDefaultRosterEntry(definition);
   const ordinary = option(definition, "Termagants");
@@ -105,7 +108,7 @@ test("Termagant special weapon replaces a default model and scales one per ten",
   assert.equal(stateAtTwenty.maximum, 2);
 });
 
-test("mandatory and fixed selections are engine-locked", () => {
+legacyTest("mandatory and fixed selections are engine-locked", () => {
   const definition = unit("Imperium - Adepta Sororitas", "Battle Sisters Squad");
   const entry = createDefaultRosterEntry(definition);
   const superior = option(definition, "Sister Superior");
@@ -117,7 +120,7 @@ test("mandatory and fixed selections are engine-locked", () => {
   assert.throws(() => setSelection(definition, entry, superior.id, 0), /not editable/);
 });
 
-test("fixed-total groups still expose genuine alternatives", () => {
+legacyTest("fixed-total groups still expose genuine alternatives", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   const entry = createDefaultRosterEntry(definition);
   const cannon = option(definition, "Heavy venom cannon", "Monstrous Bonesword and Lash Whip");
@@ -128,7 +131,7 @@ test("fixed-total groups still expose genuine alternatives", () => {
   assert.equal(state.editable, true);
 });
 
-test("option states expose compact-group limits, required choices, and exclusivity", () => {
+legacyTest("option states expose compact-group limits, required choices, and exclusivity", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   const entry = createDefaultRosterEntry(definition);
   const bonesword = option(definition, "Monstrous bonesword and lash whip", "Monstrous Bonesword and Lash Whip");
@@ -150,7 +153,7 @@ test("option states expose compact-group limits, required choices, and exclusivi
   assert.equal(alternative.mutuallyExclusive, true);
 });
 
-test("visible Legends links retain profiles without false composition warnings", () => {
+legacyTest("visible Legends links retain profiles without false composition warnings", () => {
   const definition = unit("Xenos - Tyranids", "Barbed Hierodule [Legends]");
   const entry = createDefaultRosterEntry(definition);
   const configured = getConfiguredProfiles(definition, entry);
@@ -159,7 +162,7 @@ test("visible Legends links retain profiles without false composition warnings",
   assert.equal(configured.weapons.some(profile => profile.name === "Bio-cannon"), true);
 });
 
-test("unit keywords expose BSData category links for rules queries", () => {
+legacyTest("unit keywords expose BSData category links for rules queries", () => {
   const norn = unit("Xenos - Tyranids", "Norn Assimilator");
   assert.ok(norn.keywords.includes("Harvester"));
   assert.ok(norn.keywords.includes("Synapse"));
@@ -169,7 +172,7 @@ test("unit keywords expose BSData category links for rules queries", () => {
   assert.ok(termagants.keywords.includes("Faction: Tyranids"));
 });
 
-test("direct weapon rules are included with configured selected wargear", () => {
+legacyTest("direct weapon rules are included with configured selected wargear", () => {
   const definition = unit("Xenos - Tyranids", "Norn Assimilator");
   const configured = getConfiguredProfiles(definition, createDefaultRosterEntry(definition));
   const harpooned = configured.rules.find(rule => rule.name === "Harpooned");
@@ -186,14 +189,14 @@ test("linked rule name modifiers preserve values for compact unit rules", () => 
   assert.ok(ruleNames.includes("Scouts 8\""));
 });
 
-test("fixed-size units default their required models without a minimum warning", () => {
+legacyTest("fixed-size units default their required models without a minimum warning", () => {
   const definition = unit("Xenos - Tyranids", "Barbgaunts");
   const entry = createDefaultRosterEntry(definition);
   assert.deepEqual(validateLoadout(definition, entry), []);
   assert.equal(getConfiguredProfiles(definition, entry).units[0].count, 5);
 });
 
-test("variable unit size can be changed without exposing model rows as wargear", () => {
+legacyTest("variable unit size can be changed without exposing model rows as wargear", () => {
   const definition = unit("Xenos - Tyranids", "Hormagaunts");
   const entry = createDefaultRosterEntry(definition);
   assert.deepEqual(getUnitSizeState(definition, entry), { current: 10, minimum: 10, maximum: 20, editable: true });
@@ -203,14 +206,14 @@ test("variable unit size can be changed without exposing model rows as wargear",
   assert.deepEqual(validateLoadout(definition, twenty), []);
 });
 
-test("single-model units report a size of one", () => {
+legacyTest("single-model units report a size of one", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   assert.deepEqual(getUnitSizeState(definition, createDefaultRosterEntry(definition)), {
     current: 1, minimum: 1, maximum: 1, editable: false
   });
 });
 
-test("unit size preserves specialist models and fixed-size units stay locked", () => {
+legacyTest("unit size preserves specialist models and fixed-size units stay locked", () => {
   const termagants = unit("Xenos - Tyranids", "Termagants");
   const entry = createDefaultRosterEntry(termagants);
   const shardlauncher = option(termagants, "Termagant w/ Shardlauncher");
@@ -299,4 +302,46 @@ test("multi-model epic heroes expose physical model loadouts", () => {
   assert.ok(models[0].equipment.includes("Shardstorm burst system"));
   assert.ok(models[0].equipment.some(item => item.includes("MV15 Gun Drone") && item.includes("Twin pulse blaster")));
   assert.ok(models[1].equipment.includes("Ion scattercannon"));
+});
+
+test("force-scoped War Dog limits do not become impossible per-unit defaults", () => {
+  for (const faction of ["Chaos - Chaos Knights", "Chaos - Chaos Knights Library"]) {
+    for (const name of [
+      "War Dog Brigand",
+      "War Dog Executioner",
+      "War Dog Huntsman",
+      "War Dog Karnivore",
+      "War Dog Moirax",
+      "War Dog Stalker"
+    ]) {
+      const definition = unit11e(faction, name);
+      const entry = createDefaultRosterEntry(definition);
+      assert.deepEqual(validateLoadout(definition, entry), [], `${faction}: ${name}`);
+    }
+  }
+});
+
+test("inactive negative minimum sentinels never create non-finite Assassin defaults", () => {
+  for (const name of [
+    "Vindicare Assassin",
+    "Culexus Assassin",
+    "Eversor Assassin",
+    "Callidus Assassin"
+  ]) {
+    const definition = unit11e("Imperium - Agents of the Imperium", name);
+    const entry = createDefaultRosterEntry(definition);
+    assert.equal(Object.values(entry.selections).every(Number.isFinite), true, name);
+    assert.deepEqual(validateLoadout(definition, entry), [], name);
+  }
+});
+
+test("selected group-level Unit profiles contribute their descendant model count", () => {
+  for (const [faction, name, expectedCount] of [
+    ["Imperium - Adeptus Astartes - Space Wolves", "Wulfen", 5],
+    ["Imperium - Adeptus Astartes - Ultramarines", "Victrix Honour Guard", 1]
+  ]) {
+    const definition = unit11e(faction, name);
+    const units = getConfiguredProfiles(definition, createDefaultRosterEntry(definition)).units;
+    assert.equal(units.find(profile => profile.name === name)?.count, expectedCount, name);
+  }
 });

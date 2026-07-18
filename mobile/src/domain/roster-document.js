@@ -211,7 +211,7 @@ function createRosterDocument(options) {
     schemaVersion: ROSTER_DOCUMENT_SCHEMA_VERSION,
     name: options.name || null,
     ruleset: {
-      id: options.rulesetId || options.engineData?.rulesetId || armyDefinition?.rulesetId || armyState?.rulesetId || "wh40k-10e-bsdata",
+      id: options.rulesetId || options.engineData?.rulesetId || armyDefinition?.rulesetId || armyState?.rulesetId || "wh40k-11e-vflam",
       source: options.source || options.engineData?.source || "bsdata",
       generatedAt: options.engineData?.generatedAt || null
     },

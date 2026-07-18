@@ -9,8 +9,12 @@ on:
       - ".github/workflows/mobile-pages.yml"
       - "data/**"
       - "mobile/**"
+      - "package.json"
+      - "package-lock.json"
+      - "ui/assets/**"
       - "ui/onedrive-roster-sync.js"
       - "scripts/build-engine-ui-data.js"
+      - "scripts/write-crosshair-icon.js"
       - "src/**"
 
 permissions:
@@ -46,6 +50,10 @@ jobs:
       - name: Build mobile web app
         working-directory: mobile
         run: npm run build
+
+      - name: Test source and built mobile app
+        working-directory: mobile
+        run: npm test && npm run test:built
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

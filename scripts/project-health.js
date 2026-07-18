@@ -6,6 +6,11 @@ const { execFileSync } = require("child_process");
 
 const { auditSource } = require("./audit-ruleset-source");
 const {
+  auditGeneratedData,
+  auditNormalizedRuleset
+} = require("./check-release-readiness");
+const { auditRuntimeParity } = require("./runtime-parity");
+const {
   DEFAULT_RULESET_SOURCE_ID,
   extractNormalizedRuleset,
   getRulesetSource,
@@ -84,6 +89,11 @@ function healthReport() {
   const detachments = armies.flatMap(army => army.detachments || []);
   const detachmentStratagems = detachments.flatMap(detachment => detachment.stratagems || []);
   const coreStratagems = armies.flatMap(army => army.coreStratagems || []);
+  const readinessFindings = [
+    ...auditNormalizedRuleset(ruleset),
+    ...auditGeneratedData(source),
+    ...auditRuntimeParity()
+  ];
 
   return {
     generatedAt: new Date().toISOString(),
@@ -116,6 +126,12 @@ function healthReport() {
     },
     generatedBundle: bundleSummary(ENGINE_BUNDLE),
     splitGeneratedData: splitDataSummary(),
+    releaseReadiness: {
+      ready: !readinessFindings.some(item => item.severity === "error"),
+      errors: readinessFindings.filter(item => item.severity === "error").length,
+      warnings: readinessFindings.filter(item => item.severity === "warning").length,
+      findings: readinessFindings
+    },
     git: gitSummary()
   };
 }
@@ -152,6 +168,13 @@ function printReport(report) {
     `- ${report.generatedBundle.path}: ${report.generatedBundle.exists ? report.generatedBundle.size : "missing"}`,
     `- ${report.splitGeneratedData.manifest.path}: ${report.splitGeneratedData.manifest.exists ? report.splitGeneratedData.manifest.size : "missing"}`,
     `- ${report.splitGeneratedData.chunkDirectory}: ${report.splitGeneratedData.chunks} chunk(s), ${report.splitGeneratedData.chunkSize}`,
+    "",
+    "## Release Readiness",
+    "",
+    `- ${report.releaseReadiness.ready ? "Ready" : "Blocked"}`,
+    `- Errors: ${report.releaseReadiness.errors}`,
+    `- Warnings: ${report.releaseReadiness.warnings}`,
+    ...report.releaseReadiness.findings.map(item => `- [${item.severity.toUpperCase()}] ${item.code}: ${item.message}`),
     "",
     "## Git",
     "",

@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const path = require("path");
 
 const { extractUnitDefinitions } = require("../bsdata/unit-definitions");
@@ -39,7 +40,6 @@ const RULESET_SOURCES = {
     auxiliarySources: {
       coreStratagems: path.join(ROOT, "data", "manual-rules", "wh40k-11e-core-stratagems.json"),
       detachmentStratagems: [
-        path.join(ROOT, "data", "manual-rules", "wh40k-11e-tyranids-detachment-stratagems.json"),
         path.join(ROOT, "data", "manual-rules", "wh40k-11e-wahapedia-detachment-stratagems.json")
       ],
       armyRules: path.join(ROOT, "data", "manual-rules", "wh40k-11e-army-rules.json"),
@@ -52,19 +52,33 @@ const RULESET_SOURCES = {
 };
 
 const DEFAULT_RULESET_SOURCE_ID = "wh40k-11e-vflam";
+const normalizedRulesetCache = new Map();
 
 function getRulesetSource(id = DEFAULT_RULESET_SOURCE_ID) {
   const source = RULESET_SOURCES[id];
   if (!source) throw new Error(`Unknown ruleset source: ${id}`);
-  return { ...source };
+  return copyRulesetSource(source);
 }
 
 function listRulesetSources() {
-  return Object.values(RULESET_SOURCES).map(source => ({ ...source }));
+  return Object.values(RULESET_SOURCES).map(copyRulesetSource);
 }
 
-function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID) {
+function copyRulesetSource(source) {
+  return {
+    ...source,
+    auxiliarySources: source.auxiliarySources ? {
+      ...source.auxiliarySources,
+      detachmentStratagems: asArray(source.auxiliarySources.detachmentStratagems).slice()
+    } : undefined,
+    available: fs.existsSync(source.sourcePath)
+  };
+}
+
+function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) {
+  if (!options.fresh && normalizedRulesetCache.has(id)) return normalizedRulesetCache.get(id);
   const source = getRulesetSource(id);
+  if (!source.available) throw new Error(`Ruleset source is not available: ${id} (${source.sourcePath})`);
   if (!["bsdata-xml", "bsdata-json"].includes(source.format)) {
     throw new Error(`No extractor registered for ruleset source format: ${source.format}`);
   }
@@ -83,15 +97,19 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID) {
   const armiesWithRules = applyManualArmyRules(armyDefinitions, armyRules);
   const mfmAttachments = readMfmAttachments(source.auxiliarySources?.mfmAttachments);
   const mfmAttachmentResult = applyMfmAttachments(unitsResult.definitions, mfmAttachments);
-  const unitDefinitions = applyDetachmentKeywordCorrections(applyManualLoadoutCorrections(mfmAttachmentResult.definitions.map(unit => ({
+  const correctedUnitDefinitions = applyDetachmentKeywordCorrections(applyManualLoadoutCorrections(mfmAttachmentResult.definitions.map(unit => ({
     ...unit,
     rulesetId: source.id
   }))), armiesWithRules);
+  const normalized = reconcileSelectableUnits(correctedUnitDefinitions, armiesWithRules);
+  const unitDefinitions = normalized.units;
+  const reconciledArmies = normalized.armies;
 
-  return {
+  const result = {
     source,
     units: unitDefinitions,
-    armies: armiesWithRules,
+    excludedUnits: normalized.excludedUnits,
+    armies: reconciledArmies,
     allies: extractAllyDefinitions(source.sourcePath, unitDefinitions),
     stratagemSource: stratagemSource.source,
     mfmAttachmentSource: {
@@ -99,13 +117,52 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID) {
       generatedAt: mfmAttachments.generatedAt,
       ...mfmAttachmentResult.summary
     },
+    sourceIssues: [...(armyRules.issues || [])],
+    armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };
+  const immutableResult = deepFreeze(result);
+  normalizedRulesetCache.set(id, immutableResult);
+  return immutableResult;
+}
+
+function clearNormalizedRulesetCache(id = null) {
+  if (id) normalizedRulesetCache.delete(id);
+  else normalizedRulesetCache.clear();
+}
+
+function collectRulesetSourceIssues(ruleset) {
+  const seen = new Set();
+  return [
+    ...(ruleset?.stratagemSource?.issues || []),
+    ...(ruleset?.sourceIssues || []),
+    ...(ruleset?.armyRuleSourceIssues || [])
+  ].filter(issue => {
+    const key = JSON.stringify([
+      issue?.code || "",
+      issue?.severity || "",
+      issue?.message || "",
+      issue?.filePath || issue?.sourcePath || "",
+      issue?.cause || ""
+    ]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function deepFreeze(value, seen = new WeakSet()) {
+  if (!value || typeof value !== "object" || seen.has(value)) return value;
+  seen.add(value);
+  for (const child of Object.values(value)) deepFreeze(child, seen);
+  return Object.freeze(value);
 }
 
 module.exports = {
   DEFAULT_RULESET_SOURCE_ID,
   RULESET_SOURCES,
+  clearNormalizedRulesetCache,
+  collectRulesetSourceIssues,
   extractNormalizedRuleset,
   getRulesetSource,
   listRulesetSources
@@ -116,10 +173,65 @@ function asArray(value) {
   return Array.isArray(value) ? value : [value];
 }
 
+function reconcileSelectableUnits(units, armies) {
+  const excludedUnits = units
+    .filter(unit => unit.rosterSelectable === false)
+    .map(unit => ({
+      selectionKey: unit.selectionKey,
+      faction: unit.faction,
+      name: unit.name,
+      sourceDisposition: unit.sourceDisposition || "unavailable"
+    }));
+  const selectableUnits = units.filter(unit => unit.rosterSelectable !== false);
+  const selectableKeys = new Set(selectableUnits.map(unit => unit.selectionKey));
+  const selectableNamesByFaction = new Map();
+  for (const unit of selectableUnits) {
+    if (!selectableNamesByFaction.has(unit.faction)) selectableNamesByFaction.set(unit.faction, new Set());
+    selectableNamesByFaction.get(unit.faction).add(normalizeUnitName(unit.name));
+  }
+
+  for (const unit of selectableUnits) {
+    const rules = unit.rosterRules || {};
+    rules.leaderTargetSelectionKeys = (rules.leaderTargetSelectionKeys || []).filter(key => selectableKeys.has(key));
+    const factionNames = selectableNamesByFaction.get(unit.faction) || new Set();
+    rules.leaderTargetNames = (rules.leaderTargetNames || []).filter(name => factionNames.has(normalizeUnitName(name)));
+    unit.rosterRules = rules;
+    unit.roles.leader = rules.leaderTargetSelectionKeys.length > 0
+      || (rules.leaderTargetPredicates || []).length > 0;
+  }
+
+  const reconciledArmies = armies.map(army => ({
+    ...army,
+    allowedSelectionKeys: (army.allowedSelectionKeys || []).filter(key => selectableKeys.has(key)),
+    enhancements: (army.enhancements || []).map(enhancement => ({
+      ...enhancement,
+      eligibleSelectionKeys: (enhancement.eligibleSelectionKeys || []).filter(key => selectableKeys.has(key))
+    })).filter(enhancement => enhancement.eligibleSelectionKeys.length > 0)
+  }));
+
+  return { units: selectableUnits, armies: reconciledArmies, excludedUnits };
+}
+
+function normalizeUnitName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
 function readManualArmyRules(filePath) {
-  if (!filePath) return { rules: [], source: null };
+  if (!filePath) return { rules: [], source: null, issues: [] };
+  if (!fs.existsSync(filePath)) {
+    return {
+      rules: [],
+      source: null,
+      issues: [{
+        code: "manual-army-rules-missing",
+        severity: "error",
+        message: `Configured manual Army Rules source is missing: ${filePath}`,
+        filePath
+      }]
+    };
+  }
   try {
-    const document = JSON.parse(require("fs").readFileSync(filePath, "utf8"));
+    const document = JSON.parse(fs.readFileSync(filePath, "utf8"));
     return {
       rules: Array.isArray(document?.rules) ? document.rules : [],
       source: {
@@ -128,10 +240,21 @@ function readManualArmyRules(filePath) {
         nrversion: document?.nrversion || null,
         lastUpdated: document?.lastUpdated || null,
         filePath
-      }
+      },
+      issues: []
     };
-  } catch {
-    return { rules: [], source: null };
+  } catch (error) {
+    return {
+      rules: [],
+      source: null,
+      issues: [{
+        code: "manual-army-rules-invalid",
+        severity: "error",
+        message: `Configured manual Army Rules source could not be parsed: ${filePath}`,
+        filePath,
+        cause: error.message
+      }]
+    };
   }
 }
 

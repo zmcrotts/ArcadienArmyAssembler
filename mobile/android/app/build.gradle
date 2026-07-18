@@ -2,6 +2,17 @@ plugins {
     id "com.android.application"
 }
 
+def signingValue = { String name ->
+    providers.gradleProperty(name).orElse(providers.environmentVariable(name)).orNull
+}
+def sideloadSigning = [
+    storeFile: signingValue("ARCADIEN_KEYSTORE_FILE"),
+    storePassword: signingValue("ARCADIEN_KEYSTORE_PASSWORD"),
+    keyAlias: signingValue("ARCADIEN_KEY_ALIAS"),
+    keyPassword: signingValue("ARCADIEN_KEY_PASSWORD")
+]
+def hasSideloadSigning = sideloadSigning.values().every { it != null && !it.trim().isEmpty() }
+
 android {
     namespace "com.zmcrotts.arcadienarmyassembler"
     compileSdk 35
@@ -14,14 +25,39 @@ android {
         applicationId "com.zmcrotts.arcadienarmyassembler"
         minSdk 26
         targetSdk 35
-        versionCode 30
-        versionName "0.1.29"
+        versionCode 31
+        versionName "0.1.30"
+    }
+
+    signingConfigs {
+        if (hasSideloadSigning) {
+            sideloadRelease {
+                storeFile rootProject.file(sideloadSigning.storeFile)
+                storePassword sideloadSigning.storePassword
+                keyAlias sideloadSigning.keyAlias
+                keyPassword sideloadSigning.keyPassword
+            }
+        }
     }
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
+        sideload {
+            initWith release
+            debuggable false
+            if (hasSideloadSigning) signingConfig signingConfigs.sideloadRelease
+            matchingFallbacks = ["release"]
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def createsSideloadApk = graph.allTasks.any { task -> task.path.toLowerCase().contains("sideload") }
+    if (createsSideloadApk && !hasSideloadSigning) {
+        throw new GradleException("Sideload signing is required. Set ARCADIEN_KEYSTORE_FILE, ARCADIEN_KEYSTORE_PASSWORD, ARCADIEN_KEY_ALIAS, and ARCADIEN_KEY_PASSWORD as Gradle properties or environment variables.")
     }
 }

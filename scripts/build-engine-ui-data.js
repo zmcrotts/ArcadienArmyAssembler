@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const {
+  collectRulesetSourceIssues,
   DEFAULT_RULESET_SOURCE_ID,
   extractNormalizedRuleset
 } = require("../src/rulesets/sources");
@@ -15,11 +16,13 @@ const {
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { buildFactionNavigation } = require("../src/domain/factions");
+const { sourceFingerprint } = require("./ruleset-source-fingerprint");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(ROOT, "ui", "engine-data-milestone15.js");
 const MANIFEST_OUT = path.join(ROOT, "ui", "engine-data-manifest.js");
 const FACTION_OUT_DIR = path.join(ROOT, "ui", "engine-data");
+const WRITE_RETRY_SIGNAL = new Int32Array(new SharedArrayBuffer(4));
 const CORE_RULE_NAMES = new Set([
   "Anti",
   "Assault",
@@ -101,6 +104,43 @@ function factionFileName(faction) {
     .replace(/^-+|-+$/g, "") || "faction"}.js`;
 }
 
+function compactSourceIssue(issue) {
+  const compact = { ...issue };
+  if (compact.filePath) compact.filePath = path.relative(ROOT, compact.filePath).replace(/\\/g, "/");
+  return compact;
+}
+
+function writeTextFile(filePath, contents) {
+  try {
+    if (fs.readFileSync(filePath, "utf8") === contents) return false;
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  let lastError = null;
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    try {
+      fs.writeFileSync(filePath, contents, "utf8");
+      return true;
+    } catch (error) {
+      if (!["EACCES", "EBUSY", "EPERM"].includes(error.code)) throw error;
+      lastError = error;
+      Atomics.wait(WRITE_RETRY_SIGNAL, 0, 0, 100 * (attempt + 1));
+    }
+  }
+  throw lastError;
+}
+
+function readWindowData(filePath) {
+  try {
+    const contents = fs.readFileSync(filePath, "utf8");
+    const assignment = contents.indexOf("=");
+    if (assignment < 0) return null;
+    return JSON.parse(contents.slice(assignment + 1).trim().replace(/;$/, ""));
+  } catch {
+    return null;
+  }
+}
+
 function coreRulesFromSource(sourcePath) {
   const gameSystemPath = path.join(sourcePath, "Warhammer 40,000.json");
   if (!fs.existsSync(gameSystemPath)) return [];
@@ -121,6 +161,7 @@ function coreRulesFromSource(sourcePath) {
 
 function main() {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const inputFingerprint = sourceFingerprint(ruleset.source);
   const definitions = ruleset.units;
   const armyDefinitions = ruleset.armies;
   const allyDefinitions = ruleset.allies;
@@ -162,6 +203,8 @@ function main() {
     rulesetId: ruleset.source.id,
     generatedAt: new Date().toISOString(),
     source: path.relative(ROOT, ruleset.source.sourcePath),
+    sourceFingerprint: inputFingerprint,
+    sourceIssues: collectRulesetSourceIssues(ruleset).map(compactSourceIssue),
     unresolvedCount: unresolved.length,
     coreRules,
     armies: Object.fromEntries(armyDefinitions.map(army => [army.faction, army])),
@@ -171,17 +214,23 @@ function main() {
   };
 
   const factionFiles = {};
-  fs.rmSync(FACTION_OUT_DIR, { recursive: true, force: true });
+  let factionDataChanged = false;
   fs.mkdirSync(FACTION_OUT_DIR, { recursive: true });
+  const staleFactionFiles = new Set(fs.readdirSync(FACTION_OUT_DIR));
   for (const [faction, units] of Object.entries(factions)) {
     const fileName = factionFileName(faction);
     factionFiles[faction] = `engine-data/${fileName}`;
-    fs.writeFileSync(
+    staleFactionFiles.delete(fileName);
+    factionDataChanged = writeTextFile(
       path.join(FACTION_OUT_DIR, fileName),
       "window.ROSTER_ENGINE_FACTIONS = window.ROSTER_ENGINE_FACTIONS || {};\n"
-        + `window.ROSTER_ENGINE_FACTIONS[${JSON.stringify(faction)}] = ${JSON.stringify(units)};\n`,
-      "utf8"
-    );
+        + `window.ROSTER_ENGINE_FACTIONS[${JSON.stringify(faction)}] = ${JSON.stringify(units)};\n`
+    ) || factionDataChanged;
+  }
+  for (const fileName of staleFactionFiles) {
+    try {
+      fs.rmSync(path.join(FACTION_OUT_DIR, fileName), { force: true, maxRetries: 4, retryDelay: 100 });
+    } catch {}
   }
 
   const manifest = {
@@ -189,6 +238,8 @@ function main() {
     rulesetId: payload.rulesetId,
     generatedAt: payload.generatedAt,
     source: payload.source,
+    sourceFingerprint: payload.sourceFingerprint,
+    sourceIssues: payload.sourceIssues,
     unresolvedCount: payload.unresolvedCount,
     coreRules: payload.coreRules,
     armies: payload.armies,
@@ -198,15 +249,23 @@ function main() {
     factions: {}
   };
 
-  fs.writeFileSync(
+  const previousManifest = readWindowData(MANIFEST_OUT);
+  if (previousManifest && !factionDataChanged) {
+    const previousComparable = { ...previousManifest, generatedAt: null };
+    const nextComparable = { ...manifest, generatedAt: null };
+    if (JSON.stringify(previousComparable) === JSON.stringify(nextComparable)) {
+      payload.generatedAt = previousManifest.generatedAt;
+      manifest.generatedAt = previousManifest.generatedAt;
+    }
+  }
+
+  writeTextFile(
     OUT,
-    "window.ROSTER_ENGINE_DATA = " + JSON.stringify(payload) + ";\n",
-    "utf8"
+    "window.ROSTER_ENGINE_DATA = " + JSON.stringify(payload) + ";\n"
   );
-  fs.writeFileSync(
+  writeTextFile(
     MANIFEST_OUT,
-    "window.ROSTER_ENGINE_DATA = " + JSON.stringify(manifest) + ";\n",
-    "utf8"
+    "window.ROSTER_ENGINE_DATA = " + JSON.stringify(manifest) + ";\n"
   );
 
   const stats = fs.statSync(OUT);

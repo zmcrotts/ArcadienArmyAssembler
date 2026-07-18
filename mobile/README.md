@@ -15,7 +15,7 @@ Serve `mobile/dist-user/` with a static web server for browser or device testing
 
 ## iPad and GitHub Pages app
 
-The mobile web app is published from `main` by `.github/workflows/mobile-pages.yml`. On a supported iPad, open the GitHub Pages address in Safari, choose **Add to Home Screen** and **Open as Web App**, then use **Download for offline use**. Do not rely on the app away from a connection until it reports **Offline ready**.
+The mobile web app is published from `main` by `.github/workflows/mobile-pages.yml`. On a supported iPhone or iPad, open [https://zmcrotts.github.io/ArcadienArmyAssembler/](https://zmcrotts.github.io/ArcadienArmyAssembler/) in Safari, choose **Add to Home Screen** and **Open as Web App**, then use **Download for offline use**. Do not rely on the app away from a connection until it reports **Offline ready**.
 
 ## Android
 

@@ -57,6 +57,144 @@ test("browser pricing applies roster copy-count modifiers from context", () => {
   assert.equal(window.RosterEngine.calculateEntryPoints(definition, { unitId: "taxed-unit", selections: {}, context: { previousCopies: 2 } }).points, 120);
 });
 
+test("browser loadout runtime ignores force constraints and normalizes negative sentinels", () => {
+  const definition = {
+    id: "constraint-unit",
+    selectionKey: "constraint-unit",
+    composition: [],
+    compositionConstraints: [],
+    pricing: { base: 10, modifiers: [] },
+    selectionTree: {
+      id: "constraint-unit",
+      kind: "unit",
+      constraints: [],
+      children: [{
+        id: "force-option",
+        kind: "upgrade",
+        name: "Force option",
+        constraints: [
+          { id: "force-min", field: "selections", type: "min", scope: "force", value: 3 },
+          { id: "local-max", field: "selections", type: "max", scope: "parent", value: 1 }
+        ],
+        children: []
+      }, {
+        id: "sentinel-option",
+        kind: "upgrade",
+        name: "Sentinel option",
+        constraints: [
+          { id: "sentinel-min", field: "selections", type: "min", scope: "parent", value: -1 },
+          { id: "sentinel-max", field: "selections", type: "max", scope: "parent", value: 1 }
+        ],
+        children: []
+      }]
+    }
+  };
+
+  const entry = window.RosterEngine.createDefaultRosterEntry(definition);
+  assert.equal(entry.selections["force-option"] || 0, 0);
+  assert.equal(entry.selections["sentinel-option"] || 0, 0);
+  assert.equal(Object.values(entry.selections).every(Number.isFinite), true);
+  assert.deepEqual(window.RosterEngine.validateLoadout(definition, entry), []);
+});
+
+test("browser loadout runtime accepts boolean round-up repeat flags", () => {
+  const definition = {
+    id: "repeat-unit",
+    selectionKey: "repeat-unit",
+    composition: [],
+    compositionConstraints: [],
+    pricing: { base: 10, modifiers: [] },
+    selectionTree: {
+      id: "repeat-unit",
+      kind: "unit",
+      constraints: [],
+      modifiers: [],
+      children: [{
+        id: "models",
+        kind: "model",
+        name: "Models",
+        constraints: [],
+        modifiers: [],
+        children: []
+      }, {
+        id: "special-weapon",
+        kind: "upgrade",
+        name: "Special weapon",
+        constraints: [{ id: "special-max", field: "selections", type: "max", scope: "parent", value: 0 }],
+        modifiers: [],
+        children: []
+      }, {
+        id: "repeat-rule",
+        kind: "upgrade",
+        name: "Repeat rule",
+        constraints: [],
+        modifiers: [{
+          field: "special-max",
+          type: "increment",
+          value: 1,
+          conditions: [],
+          conditionGroups: [],
+          repeats: [{ childId: "models", value: 2, repeats: 1, roundUp: true }]
+        }],
+        children: []
+      }]
+    }
+  };
+
+  const state = window.RosterEngine.getOptionStates(definition, {
+    unitId: definition.id,
+    selections: { models: 3 }
+  }).find(option => option.id === "special-weapon");
+
+  assert.equal(state.maximum, 2);
+});
+
+test("browser configured profiles count selected descendants of profile groups", () => {
+  const definition = {
+    id: "profile-unit",
+    selectionKey: "profile-unit",
+    selectionTree: {
+      id: "profile-unit",
+      kind: "unit",
+      constraints: [],
+      profiles: [],
+      children: [{
+        id: "profile-group",
+        kind: "group",
+        name: "Profile group",
+        constraints: [],
+        profiles: [{ id: "profile", name: "Grouped models", typeName: "Unit", characteristics: {} }],
+        children: [{ id: "models", kind: "model", name: "Models", constraints: [], profiles: [], children: [] }]
+      }]
+    }
+  };
+  const configured = window.RosterEngine.getConfiguredProfiles(definition, {
+    unitId: definition.id,
+    selections: { models: 5 }
+  });
+
+  assert.equal(configured.units[0].name, "Grouped models");
+  assert.equal(configured.units[0].count, 5);
+});
+
+test("browser army runtime evaluates generic all-keyword Leader targets", () => {
+  const leader = {
+    rosterRules: {
+      leaderTargetSelectionKeys: [],
+      leaderTargetNames: [],
+      leaderTargetPredicates: [{ kind: "keywords-all", keywords: ["battleline", "imperium", "infantry"] }]
+    }
+  };
+  const target = {
+    selectionKey: "cadians",
+    name: "Cadian Shock Troops",
+    categories: ["Battleline", "Imperium", "Infantry"]
+  };
+
+  assert.equal(window.ArmyEngine.leaderCanTarget(leader, target), true);
+  assert.equal(window.ArmyEngine.leaderCanTarget(leader, { ...target, categories: ["Imperium", "Infantry"] }), false);
+});
+
 test("browser army runtime filters unit assignment controls to relevant units", () => {
   const army = {
     id: "army",

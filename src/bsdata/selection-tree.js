@@ -1,5 +1,7 @@
 "use strict";
 
+const { bsdataFlagIsTrue } = require("./flags");
+
 function asArray(value) {
   if (!value) return [];
   return Array.isArray(value) ? value : [value];
@@ -75,7 +77,7 @@ function profilesFor(node, indexes) {
 
 function rulesFor(node, indexes) {
   const rules = asArray(node?.rules?.rule)
-    .filter(rule => rule.hidden !== "true")
+    .filter(rule => !bsdataFlagIsTrue(rule.hidden))
     .map(rule => ({
       id: rule.id || null,
       name: rule.name || "Unnamed rule",
@@ -116,8 +118,8 @@ function normalizeConstraint(constraint) {
     scope: constraint.scope,
     value: numberOrNull(constraint.value),
     childId: constraint.childId || null,
-    includeChildSelections: constraint.includeChildSelections === "true",
-    includeChildForces: constraint.includeChildForces === "true",
+    includeChildSelections: bsdataFlagIsTrue(constraint.includeChildSelections),
+    includeChildForces: bsdataFlagIsTrue(constraint.includeChildForces),
     raw: constraint
   };
 }
@@ -241,7 +243,7 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
         children.push(build(group, null, nextAncestry, "group", occurrenceId));
       }
       for (const entryLink of asArray(container?.entryLinks?.entryLink)) {
-        if (entryLink.hidden === "true") continue;
+        if (bsdataFlagIsTrue(entryLink.hidden)) continue;
         if (!shouldIncludeEntryLink(entryLink, definition)) continue;
         if (entryLink.type === "selectionEntry") {
           const target = indexes.entries.get(entryLink.targetId);
@@ -273,9 +275,9 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
       name: link?.name || definition?.name || "Unnamed selection",
       kind,
       points: Number(directPoints(definition) || 0) + Number(link && link !== definition ? directPoints(link) || 0 : 0),
-      collective: (link?.collective ?? definition?.collective) === "true",
-      hidden: (link?.hidden ?? definition?.hidden) === "true",
-      forceVisible: Boolean(parentPath === null && link?.hidden === "false"),
+      collective: bsdataFlagIsTrue(link?.collective ?? definition?.collective),
+      hidden: bsdataFlagIsTrue(link?.hidden ?? definition?.hidden),
+      forceVisible: Boolean(parentPath === null && !bsdataFlagIsTrue(link?.hidden)),
       defaultSelectionId: link?.defaultSelectionEntryId || definition?.defaultSelectionEntryId || null,
       constraints: [
         ...asArray(definition?.constraints?.constraint),

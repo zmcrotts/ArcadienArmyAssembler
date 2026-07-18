@@ -4,21 +4,32 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const crypto = require("crypto");
-const { app, BrowserWindow, ipcMain, safeStorage, shell } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } = require("electron");
 const { CLIENT_ID, SCOPE, createOneDriveRosterSync } = require("./onedrive-roster-sync");
 
 const APP_NAME = "Arcadien Army Assembler";
-let isQuitting = false;
+let allowAppQuit = false;
 
 app.setName(APP_NAME);
 
 function userDataRoot() {
-  if (app.isPackaged) return path.dirname(app.getPath("exe"));
+  if (app.isPackaged && process.platform === "win32") {
+    const executableRoot = path.dirname(app.getPath("exe"));
+    if (
+      fs.existsSync(path.join(executableRoot, ".roster-builder-install"))
+      || fs.existsSync(path.join(executableRoot, "user-data"))
+    ) return executableRoot;
+    return null;
+  }
   return path.join(app.getPath("documents"), APP_NAME);
 }
 
 function ensureLocalDataFolders() {
   const root = userDataRoot();
+  if (!root) {
+    fs.mkdirSync(app.getPath("userData"), { recursive: true });
+    return;
+  }
   const folders = [
     root,
     path.join(root, "user-data"),
@@ -27,6 +38,28 @@ function ensureLocalDataFolders() {
   ];
   for (const folder of folders) fs.mkdirSync(folder, { recursive: true });
   app.setPath("userData", path.join(root, "user-data"));
+}
+
+const EXTERNAL_HOSTS = new Set([
+  "ko-fi.com",
+  "www.ko-fi.com",
+  "login.microsoftonline.com"
+]);
+
+function trustedExternalUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && EXTERNAL_HOSTS.has(url.hostname.toLowerCase()) ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function openTrustedExternal(value) {
+  const url = trustedExternalUrl(value);
+  if (!url) return false;
+  void shell.openExternal(url);
+  return true;
 }
 
 function oneDriveTokenPath() {
@@ -51,14 +84,17 @@ function clearOneDriveTokens() {
   try { fs.rmSync(oneDriveTokenPath(), { force: true }); } catch {}
 }
 
+let oneDriveClientInstance = null;
+
 function oneDriveClient() {
-  return createOneDriveRosterSync({
+  if (!oneDriveClientInstance) oneDriveClientInstance = createOneDriveRosterSync({
     crypto,
     fetch,
     readTokens: readOneDriveTokens,
     saveTokens: writeOneDriveTokens,
     clearTokens: clearOneDriveTokens
   });
+  return oneDriveClientInstance;
 }
 
 function base64Url(bytes) {
@@ -121,7 +157,9 @@ async function connectOneDrive() {
     code_challenge: sha256Base64Url(verifier),
     code_challenge_method: "S256"
   });
-  await shell.openExternal(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?${query}`);
+  if (!openTrustedExternal(`https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?${query}`)) {
+    throw new Error("The Microsoft sign-in URL could not be opened safely.");
+  }
   const code = await callback;
   const tokens = await oneDriveClient().tokenRequest({
     client_id: CLIENT_ID,
@@ -145,34 +183,52 @@ async function syncStatus() {
   return { available: true, connected: Boolean(readOneDriveTokens()) };
 }
 
+let oneDriveConnectionInFlight = null;
+
 async function ensureOneDriveConnected() {
+  if (oneDriveConnectionInFlight) return oneDriveConnectionInFlight;
+  oneDriveConnectionInFlight = (async () => {
+    try {
+      if (await oneDriveClient().accessToken()) return;
+    } catch (error) {
+      // Microsoft can revoke/rotate a refresh grant when the same account is
+      // re-authorized on another device. Recover within this manual Sync press
+      // by discarding only the stale local token and opening the normal browser
+      // sign-in; do not make a background retry.
+      if (!/AADSTS70000|invalid_grant|grant is expired/i.test(error.message || "")) throw error;
+      clearOneDriveTokens();
+    }
+    await connectOneDrive();
+  })();
   try {
-    if (await oneDriveClient().accessToken()) return;
-  } catch (error) {
-    // Microsoft can revoke/rotate a refresh grant when the same account is
-    // re-authorized on another device. Recover within this manual Sync press
-    // by discarding only the stale local token and opening the normal browser
-    // sign-in; do not make a background retry.
-    if (!/AADSTS70000|invalid_grant|grant is expired/i.test(error.message || "")) throw error;
-    clearOneDriveTokens();
+    await oneDriveConnectionInFlight;
+  } finally {
+    oneDriveConnectionInFlight = null;
   }
-  await connectOneDrive();
+}
+
+let rosterSyncQueue = Promise.resolve();
+
+function runRosterSyncOperation(operation) {
+  const result = rosterSyncQueue.then(operation, operation);
+  rosterSyncQueue = result.catch(() => {});
+  return result;
 }
 
 function registerRosterSyncHandlers() {
   ipcMain.handle("roster-sync:get-status", () => syncStatus());
-  ipcMain.handle("roster-sync:disconnect", async () => {
+  ipcMain.handle("roster-sync:disconnect", () => runRosterSyncOperation(async () => {
     clearOneDriveTokens();
     return syncStatus();
-  });
-  ipcMain.handle("roster-sync:sync", async (event, saves) => {
+  }));
+  ipcMain.handle("roster-sync:sync", (event, saves) => runRosterSyncOperation(async () => {
     await ensureOneDriveConnected();
     return { canceled: false, ...(await syncStatus()), ...(await oneDriveClient().sync(saves)) };
-  });
-  ipcMain.handle("roster-sync:clean-duplicates", async (event, saves) => {
+  }));
+  ipcMain.handle("roster-sync:clean-duplicates", (event, saves) => runRosterSyncOperation(async () => {
     await ensureOneDriveConnected();
     return { ...(await syncStatus()), ...(await oneDriveClient().cleanDuplicates(saves)) };
-  });
+  }));
 }
 
 function createWindow() {
@@ -191,29 +247,74 @@ function createWindow() {
     }
   });
 
+  let closeRequestPending = false;
+  let forceClose = false;
+  let closeFallbackTimer = null;
+
+  const clearCloseFallback = () => {
+    if (closeFallbackTimer) clearTimeout(closeFallbackTimer);
+    closeFallbackTimer = null;
+  };
+
+  const finishClose = () => {
+    clearCloseFallback();
+    forceClose = true;
+    allowAppQuit = true;
+    app.quit();
+  };
+
+  const requestRendererCloseDecision = () => {
+    if (closeRequestPending || mainWindow.isDestroyed()) return;
+    closeRequestPending = true;
+    mainWindow.webContents.send("app:close-requested");
+    closeFallbackTimer = setTimeout(async () => {
+      if (!closeRequestPending || mainWindow.isDestroyed()) return;
+      const result = await dialog.showMessageBox(mainWindow, {
+        type: "warning",
+        buttons: ["Keep app open", "Close anyway"],
+        defaultId: 0,
+        cancelId: 0,
+        title: APP_NAME,
+        message: "The roster editor did not answer the close request.",
+        detail: "Keep the app open if you may have unsaved changes."
+      });
+      closeRequestPending = false;
+      if (result.response === 1) finishClose();
+    }, 5000);
+  };
+
+  const handleCloseResponse = (event, allow) => {
+    if (event.sender !== mainWindow.webContents || !closeRequestPending) return;
+    clearCloseFallback();
+    closeRequestPending = false;
+    if (allow === true) finishClose();
+  };
+  ipcMain.on("app:close-response", handleCloseResponse);
+
   mainWindow.removeMenu();
-  mainWindow.loadFile(path.join(__dirname, "..", "dist-user", "index.html"));
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("blob:") || url.startsWith("file:")) return { action: "allow" };
-    shell.openExternal(url);
+    if (url.startsWith("blob:")) return { action: "allow" };
+    openTrustedExternal(url);
     return { action: "deny" };
   });
 
-  mainWindow.on("close", event => {
-    if (process.platform === "darwin" || isQuitting) return;
-    isQuitting = true;
+  mainWindow.webContents.on("will-navigate", (event, url) => {
     event.preventDefault();
-    app.exit(0);
+    openTrustedExternal(url);
+  });
+
+  mainWindow.loadFile(path.join(__dirname, "..", "dist-user", "index.html"));
+
+  mainWindow.on("close", event => {
+    if (forceClose || allowAppQuit) return;
+    event.preventDefault();
+    requestRendererCloseDecision();
   });
 
   mainWindow.on("closed", () => {
-    if (process.platform === "darwin" || isQuitting) return;
-    isQuitting = true;
-    for (const window of BrowserWindow.getAllWindows()) {
-      if (!window.isDestroyed()) window.destroy();
-    }
-    app.quit();
+    clearCloseFallback();
+    ipcMain.removeListener("app:close-response", handleCloseResponse);
   });
 }
 
@@ -227,10 +328,18 @@ app.whenReady().then(() => {
   });
 });
 
-app.on("before-quit", () => {
-  isQuitting = true;
+app.on("before-quit", event => {
+  if (allowAppQuit) return;
+  const window = BrowserWindow.getAllWindows().find(candidate => !candidate.isDestroyed());
+  if (!window) {
+    allowAppQuit = true;
+    return;
+  }
+  event.preventDefault();
+  window.close();
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  allowAppQuit = true;
+  app.quit();
 });

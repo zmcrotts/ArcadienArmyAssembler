@@ -61,6 +61,9 @@ const DEFAULT_CATALOGUE_PREFERENCES = {
   legends: true,
   crucible: false
 };
+const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
+const MAX_IMPORT_RECORDS = 500;
+const MAX_ROSTER_ENTRIES_PER_IMPORT = 2000;
 
 let currentFaction = "";
 let currentSubfaction = "";
@@ -86,6 +89,9 @@ let pendingRosterSectionFocusKey = null;
 let rulePopupCounter = 0;
 let transientMessageTimer = null;
 let syncStatus = null;
+let syncActionInFlight = false;
+let rosterStorageWarning = null;
+let rosterStorageReadFailed = false;
 
 function init() {
   applySavedTheme();
@@ -231,6 +237,11 @@ function init() {
     if (!hasUnsavedRosterChanges()) return;
     event.preventDefault();
     event.returnValue = "";
+  });
+  window.desktopLifecycle?.onCloseRequested?.(() => {
+    const allow = !hasUnsavedRosterChanges()
+      || window.confirm("This list has unsaved changes. Close the app and lose those changes?");
+    window.desktopLifecycle.respondToClose(allow);
   });
   newRosterModal.addEventListener("click", event => {
     if (event.target === newRosterModal) closeNewRosterModal();
@@ -393,10 +404,14 @@ async function loadSelectedFactionData() {
   await Promise.all(required.map(loadFactionData));
 }
 
-function nativeLibraryFactions() {
-  if (currentFaction === "Imperium - Imperial Knights") return ["Imperium - Imperial Knights - Library"];
-  if (currentFaction === "Chaos - Chaos Knights") return ["Chaos - Chaos Knights Library"];
+function nativeLibraryFactionsFor(faction) {
+  if (faction === "Imperium - Imperial Knights") return ["Imperium - Imperial Knights - Library"];
+  if (faction === "Chaos - Chaos Knights") return ["Chaos - Chaos Knights Library"];
   return [];
+}
+
+function nativeLibraryFactions() {
+  return nativeLibraryFactionsFor(currentFaction);
 }
 
 function isNativeAllyType(type) {
@@ -687,11 +702,13 @@ function renderStartScreen() {
       </div>
       <div class="startHeaderActions">
         ${syncEnabled ? `<button id="startSyncRosters" class="subtleAction">${syncLabel}</button>` : ""}
-        ${syncEnabled ? `<button id="startCleanSync" class="subtleAction">Clean synced lists</button>` : ""}
+        ${syncEnabled ? `<button id="startCleanSync" class="subtleAction">Repair sync duplicates</button>` : ""}
+        ${syncEnabled && syncStatus?.connected ? `<button id="startDisconnectSync" class="subtleAction">Disconnect OneDrive</button>` : ""}
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
     </div>
+    ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
     <div class="savedRosterCards">
       ${saves.length ? saves.map(save => `
         <div class="savedRosterCard">
@@ -713,6 +730,8 @@ function renderStartScreen() {
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const cleanSyncButton = document.getElementById("startCleanSync");
   if (cleanSyncButton) cleanSyncButton.onclick = cleanSyncedDuplicates;
+  const disconnectSyncButton = document.getElementById("startDisconnectSync");
+  if (disconnectSyncButton) disconnectSyncButton.onclick = disconnectRosterSync;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
@@ -739,12 +758,9 @@ async function refreshSyncStatus() {
 
 async function syncSavedRosters() {
   const oneDrive = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : null;
-  if (!oneDrive && !window.desktopRosterSync) return;
-  const button = document.getElementById("startSyncRosters");
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Syncing…";
-  }
+  if ((!oneDrive && !window.desktopRosterSync) || syncActionInFlight) return;
+  syncActionInFlight = true;
+  setSyncButtonsDisabled(true, "Syncing…");
   try {
     if (oneDrive && !syncStatus?.connected) {
       await oneDrive.beginSignIn();
@@ -753,11 +769,17 @@ async function syncSavedRosters() {
     const result = oneDrive
       ? await oneDrive.sync(savedRosterLibrary())
       : await window.desktopRosterSync.sync(savedRosterLibrary());
-    syncStatus = result;
+    syncStatus = {
+      ...(syncStatus || {}),
+      ...result,
+      available: true,
+      connected: result.connected ?? true
+    };
     if (result.canceled) {
       showTransientMessage("Sync was cancelled.");
     } else {
-      saveRosterLibrary(Array.isArray(result.saves) ? result.saves : savedRosterLibrary());
+      const syncedSaves = await validateSyncedRosterLibrary(result.saves);
+      saveRosterLibrary(syncedSaves);
       renderStartScreen();
       const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
       const parts = [];
@@ -767,35 +789,75 @@ async function syncSavedRosters() {
       showTransientMessage(parts.length ? `Synced — ${parts.join(", ")}.` : "Synced — your lists already match.");
     }
   } catch (error) {
-    showTransientMessage(`Sync could not finish: ${error.message}`);
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Sync";
+    try {
+      syncStatus = oneDrive
+        ? await oneDrive.getStatus()
+        : await window.desktopRosterSync.getStatus();
+    } catch {
+      syncStatus = null;
     }
+    if (appMode === "library") renderStartScreen();
+    showTransientMessage(`Sync could not finish: ${error.message}`);
+  } finally {
+    syncActionInFlight = false;
+    setSyncButtonsDisabled(false);
   }
 }
 
 async function cleanSyncedDuplicates() {
   const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
-  if (!syncProvider?.cleanDuplicates) return;
-  if (!confirm("For each matching roster name, keep the newest version on this device and in OneDrive? This removes older same-named copies, but leaves differently named rosters alone.")) return;
-  const button = document.getElementById("startCleanSync");
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Cleaning…";
-  }
+  if (!syncProvider?.cleanDuplicates || syncActionInFlight) return;
+  if (!confirm("Repair exact duplicate cloud files? Differing rosters and same-named rosters will all be kept.")) return;
+  syncActionInFlight = true;
+  setSyncButtonsDisabled(true, "Repairing…");
   try {
     const result = await syncProvider.cleanDuplicates(savedRosterLibrary());
-    saveRosterLibrary(result.saves);
+    const syncedSaves = await validateSyncedRosterLibrary(result.saves);
+    syncStatus = {
+      ...(syncStatus || {}),
+      ...result,
+      available: true,
+      connected: result.connected ?? true
+    };
+    saveRosterLibrary(syncedSaves);
     renderStartScreen();
     const cleanup = result.cleanup || {};
-    showTransientMessage(`Cleanup finished — ${cleanup.localRemoved || 0} local and ${cleanup.remoteRemoved || 0} cloud older same-name cop${(cleanup.localRemoved || 0) + (cleanup.remoteRemoved || 0) === 1 ? "y" : "ies"} removed.`);
+    const conflicts = result.summary?.conflicts || 0;
+    showTransientMessage(`Repair finished — ${cleanup.remoteRemoved || 0} exact cloud duplicate${cleanup.remoteRemoved === 1 ? "" : "s"} removed${conflicts ? `; ${conflicts} differing version${conflicts === 1 ? "" : "s"} kept safely` : ""}.`);
   } catch (error) {
-    showTransientMessage(`Cleanup could not finish: ${error.message}`);
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Clean synced lists";
+    try {
+      syncStatus = await syncProvider.getStatus();
+    } catch {
+      syncStatus = null;
     }
+    if (appMode === "library") renderStartScreen();
+    showTransientMessage(`Repair could not finish: ${error.message}`);
+  } finally {
+    syncActionInFlight = false;
+    setSyncButtonsDisabled(false);
+  }
+}
+
+function setSyncButtonsDisabled(disabled, activeLabel = "") {
+  const syncButton = document.getElementById("startSyncRosters");
+  const cleanButton = document.getElementById("startCleanSync");
+  const disconnectButton = document.getElementById("startDisconnectSync");
+  for (const button of [syncButton, cleanButton, disconnectButton].filter(Boolean)) button.disabled = disabled;
+  if (syncButton) syncButton.textContent = disabled && activeLabel ? activeLabel : "Sync";
+  if (cleanButton) cleanButton.textContent = "Repair sync duplicates";
+}
+
+async function disconnectRosterSync() {
+  if (syncActionInFlight) return;
+  const provider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  if (!provider?.disconnect || !confirm("Disconnect this device from OneDrive? Synced roster files will remain in OneDrive.")) return;
+  try {
+    syncStatus = await provider.disconnect();
+    if (!syncStatus || typeof syncStatus !== "object") syncStatus = { available: true, connected: false };
+    renderStartScreen();
+    showTransientMessage("OneDrive disconnected from this device.");
+  } catch (error) {
+    showTransientMessage(`OneDrive could not disconnect: ${error.message}`);
   }
 }
 
@@ -2655,10 +2717,9 @@ function renderConfigured(configured, effects = [], models = [], context = {}) {
     ${renderUnitProfiles(unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects, context))}
     ${renderWeapons("Ranged Weapons", effectiveConfigured.weapons || [], "Ranged Weapons", ruleLookup)}
     ${renderWeapons("Melee Weapons", effectiveConfigured.weapons || [], "Melee Weapons", ruleLookup)}
-    ${renderLeaderAttachmentRule(context.definition)}
-    ${renderAbilities(configured.abilities || [])}
+    ${renderAbilities(configured.abilities || [], context.definition)}
     ${renderTransportProfiles(configured.abilities || [])}
-    ${renderRules(configured.rules || [])}
+    ${renderRules(configured.rules || [], context.definition)}
   `;
 }
 
@@ -2987,8 +3048,25 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
   `;
 }
 
-function renderAbilities(abilities) {
-  const standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
+function renderAbilities(abilities, definition = null) {
+  let standardAbilities = abilities.filter(ability => ability.typeName !== "Transport");
+  if (definition?.roles?.leader) {
+    const attachmentName = definition.roles.support ? "Support" : "Leader";
+    const isAttachmentProfile = ability => /^(?:Leader|Support)$/i.test(String(ability?.name || "").trim());
+    const matchingProfile = standardAbilities.find(ability =>
+      String(ability?.name || "").trim().toLowerCase() === attachmentName.toLowerCase()
+    );
+    standardAbilities = standardAbilities.filter(ability => !isAttachmentProfile(ability) || ability === matchingProfile);
+    const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
+    if (!matchingProfile && targets.length) {
+      standardAbilities.push({
+        name: attachmentName,
+        characteristics: {
+          Description: `This unit can be attached to the following units:\n${targets.map(target => `■ ${target}`).join("\n")}`
+        }
+      });
+    }
+  }
   if (!standardAbilities.length) return "";
 
   return `
@@ -3000,22 +3078,6 @@ function renderAbilities(abilities) {
           <p>${formatDescription(a.characteristics?.Description || "")}</p>
         </details>
       `).join("")}
-    </details>
-  `;
-}
-
-function renderLeaderAttachmentRule(definition) {
-  if (!definition?.roles?.leader) return "";
-  const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
-  if (!targets.length) return "";
-
-  return `
-    <details class="configuredSection" open>
-      <summary>Leader</summary>
-      <div class="card">
-        <p>This unit can be attached to the following units:</p>
-        <ul>${targets.map(target => `<li>${escapeHtml(target)}</li>`).join("")}</ul>
-      </div>
     </details>
   `;
 }
@@ -3037,13 +3099,21 @@ function renderTransportProfiles(profiles) {
   `;
 }
 
-function renderRules(rules) {
-  if (!rules.length) return "";
+function renderRules(rules, definition = null) {
+  const attachmentName = definition?.roles?.leader
+    ? definition.roles.support ? "Support" : "Leader"
+    : null;
+  const visibleRules = rules.filter(rule => {
+    const name = String(rule?.name || rule || "").trim();
+    const description = String(rule?.description || "").trim();
+    return description || !attachmentName || name.toLowerCase() !== attachmentName.toLowerCase();
+  });
+  if (!visibleRules.length) return "";
 
   return `
     <details class="configuredSection" open>
       <summary>Rules</summary>
-      ${rules.map(rule => {
+      ${visibleRules.map(rule => {
         const name = rule.name || rule;
         const description = rule.description || "";
         return description
@@ -3195,26 +3265,106 @@ function currentRosterDocument() {
 
 function savedRosterLibrary() {
   try {
-    const parsed = JSON.parse(localStorage.getItem("engineRosterSaves") || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
+    const raw = localStorage.getItem("engineRosterSaves");
+    if (!raw) {
+      rosterStorageReadFailed = false;
+      return [];
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.some(record => !validRosterSaveRecord(record))) {
+      throw new Error("The saved-roster library has an invalid structure.");
+    }
+    rosterStorageReadFailed = false;
+    rosterStorageWarning = null;
+    return parsed;
+  } catch (error) {
+    rosterStorageReadFailed = true;
+    rosterStorageWarning = `Saved rosters could not be read and were left untouched: ${error.message}`;
     return [];
   }
 }
 
 function saveRosterLibrary(saves) {
-  localStorage.setItem("engineRosterSaves", JSON.stringify(saves));
+  if (rosterStorageReadFailed) {
+    throw new Error("The existing saved-roster library could not be read, so it was not overwritten. Export this roster and recover the library before saving.");
+  }
+  if (!Array.isArray(saves) || saves.some(record => !validRosterSaveRecord(record))) {
+    throw new Error("The roster library is invalid and was not saved.");
+  }
+  const serialized = JSON.stringify(saves);
+  try {
+    localStorage.setItem("engineRosterSaves", serialized);
+    if (localStorage.getItem("engineRosterSaves") !== serialized) throw new Error("storage did not retain the saved data");
+  } catch (error) {
+    throw new Error(`This device could not save the roster library (${error.message}). Export JSON before leaving this page.`);
+  }
+  rosterStorageWarning = null;
+  try {
+    localStorage.removeItem("engineRoster");
+  } catch {
+    rosterStorageWarning = "The roster library was saved, but an obsolete legacy copy could not be removed.";
+  }
 }
 
-function normalizeImportedRosterRecord(input) {
+function validRosterSaveRecord(record) {
+  return Boolean(record)
+    && typeof record === "object"
+    && typeof record.id === "string"
+    && record.id.length > 0
+    && record.id.length <= 240
+    && record.document
+    && typeof record.document === "object"
+    && !Array.isArray(record.document);
+}
+
+function newRosterSaveId() {
+  if (typeof crypto?.randomUUID === "function") return `roster-${crypto.randomUUID()}`;
+  return `roster-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function normalizedRosterName(record) {
+  return String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+}
+
+function savedEntriesFromDocument(document) {
+  if (Array.isArray(document?.rosterEntries)) return document.rosterEntries;
+  if (Array.isArray(document?.units)) return document.units;
+  if (Array.isArray(document?.roster)) return document.roster;
+  return [];
+}
+
+function validateImportedRosterDocument(document, index) {
+  const label = `Roster ${index + 1}`;
+  if (!document || typeof document !== "object" || Array.isArray(document)) throw new Error(`${label} is not a roster object.`);
+  if (document.kind && document.kind !== "roster-engine.savedRoster") throw new Error(`${label} has an unsupported document kind.`);
+  if (document.schemaVersion != null && (!Number.isInteger(Number(document.schemaVersion)) || Number(document.schemaVersion) < 1 || Number(document.schemaVersion) > 2)) {
+    throw new Error(`${label} uses a newer unsupported schema version.`);
+  }
+  if (typeof document.faction !== "string" || !document.faction.trim()) throw new Error(`${label} has no faction.`);
+  const factionRecord = factionRecords().find(item => item.id === document.faction || (item.modes || []).some(mode => mode.id === document.faction));
+  if (!factionRecord) throw new Error(`${label} uses an unavailable faction (${document.faction}).`);
+  if (!document.armyState || typeof document.armyState !== "object" || Array.isArray(document.armyState)) throw new Error(`${label} has no valid army configuration.`);
+  if (document.name != null && (typeof document.name !== "string" || document.name.length > 240)) throw new Error(`${label} has an invalid or overly long name.`);
+  if (document.pointsLimit != null) {
+    const limit = Number(document.pointsLimit);
+    if (!Number.isFinite(limit) || limit <= 0 || limit > 100000) throw new Error(`${label} has an invalid points limit.`);
+  }
+  const entries = savedEntriesFromDocument(document);
+  if (entries.length > MAX_ROSTER_ENTRIES_PER_IMPORT) throw new Error(`${label} contains too many roster entries.`);
+  if (entries.some(entry => !entry || typeof entry !== "object" || Array.isArray(entry))) throw new Error(`${label} contains an invalid roster entry.`);
+  return factionRecord;
+}
+
+function normalizeImportedRosterRecord(input, index) {
   const document = input?.document || input;
-  if (!document || typeof document !== "object") return null;
-  if (!document.faction || !document.armyState) return null;
-  const id = input?.id || `roster-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  validateImportedRosterDocument(document, index);
+  const id = input?.document ? input.id : null;
+  if (id != null && (typeof id !== "string" || !id || id.length > 240)) throw new Error(`Roster ${index + 1} has an invalid saved-record ID.`);
+  if (input?.savedAt != null && !Number.isFinite(Date.parse(input.savedAt))) throw new Error(`Roster ${index + 1} has an invalid save timestamp.`);
   return {
-    id,
+    id: id || newRosterSaveId(),
     savedAt: input?.savedAt || new Date().toISOString(),
-    document
+    document: structuredClone(document)
   };
 }
 
@@ -3226,20 +3376,83 @@ function importedRosterRecords(input) {
       : Array.isArray(input?.saves)
         ? input.saves
         : [input];
-  return source.map(normalizeImportedRosterRecord).filter(Boolean);
+  if (source.length > MAX_IMPORT_RECORDS) throw new Error(`The import contains more than ${MAX_IMPORT_RECORDS} rosters.`);
+  const records = source.map(normalizeImportedRosterRecord);
+  const ids = new Set();
+  for (const record of records) {
+    if (ids.has(record.id)) throw new Error(`The import contains the saved-record ID ${record.id} more than once.`);
+    ids.add(record.id);
+  }
+  return records;
 }
 
 function mergeRosterSaves(records) {
   const saves = savedRosterLibrary();
   for (const record of records) {
-    const name = String(record.document?.name || "").trim().toLowerCase();
-    const existingIndex = saves.findIndex(save => save.id === record.id
-      || (name && String(save.document?.name || "").trim().toLowerCase() === name));
+    const existingIndex = saves.findIndex(save => save.id === record.id);
     if (existingIndex >= 0) saves[existingIndex] = record;
     else saves.push(record);
   }
   saveRosterLibrary(saves);
   renderRosterSaveBrowser();
+}
+
+async function validateImportedRosterHydration(record, index) {
+  const factionRecord = validateImportedRosterDocument(record.document, index);
+  const faction = factionRecord.id;
+  const subfaction = record.document.subfaction
+    || ((factionRecord.modes || []).some(mode => mode.id === record.document.faction) ? record.document.faction : factionRecord.defaultMode)
+    || faction;
+  const ownSources = [...new Set([faction, subfaction, ...nativeLibraryFactionsFor(faction)].filter(Boolean))];
+  const allies = ownSources.flatMap(source => engineData.allies?.[source] || []);
+  const dataSources = [...new Set([...ownSources, ...allies.map(ally => ally.sourceFaction)].filter(Boolean))];
+  await Promise.all(dataSources.map(loadFactionData));
+  const unitPackages = [];
+  const seenKeys = new Set();
+  for (const source of dataSources) {
+    for (const unit of engineData.factions?.[source] || []) {
+      const key = unit.selectionKey || unit.id || `${source}:${unit.name}`;
+      if (seenKeys.has(key)) continue;
+      seenKeys.add(key);
+      unitPackages.push(unit);
+    }
+  }
+  const armyDefinition = engineData.armies?.[subfaction] || engineData.armies?.[faction] || null;
+  if (!armyDefinition) throw new Error(`Roster ${index + 1} has no available army definition.`);
+  const loaded = rosterDocument.hydrateRosterDocument(record.document, {
+    unitPackages,
+    createArmyState: () => armyEngine.createArmyState(armyDefinition),
+    pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster
+  });
+  if (savedEntriesFromDocument(record.document).length && !loaded.roster.length) {
+    throw new Error(`Roster ${index + 1} contains no units recognized by the installed rules data.`);
+  }
+  return loaded;
+}
+
+async function validateSyncedRosterLibrary(records) {
+  if (!Array.isArray(records)) throw new Error("OneDrive returned an invalid roster library.");
+  if (records.length > MAX_IMPORT_RECORDS) throw new Error(`OneDrive returned more than ${MAX_IMPORT_RECORDS} rosters.`);
+  const ids = new Set();
+  for (let index = 0; index < records.length; index += 1) {
+    const record = records[index];
+    if (!validRosterSaveRecord(record)) throw new Error(`Synced roster ${index + 1} has an invalid saved-record structure.`);
+    if (!Number.isFinite(Date.parse(record.savedAt || ""))) throw new Error(`Synced roster ${index + 1} has an invalid save timestamp.`);
+    if (ids.has(record.id)) throw new Error(`OneDrive returned the saved-record ID ${record.id} more than once.`);
+    ids.add(record.id);
+    let serialized;
+    try {
+      serialized = JSON.stringify(record);
+    } catch {
+      throw new Error(`Synced roster ${index + 1} cannot be serialized safely.`);
+    }
+    if (new TextEncoder().encode(serialized).byteLength > MAX_IMPORT_BYTES) throw new Error(`Synced roster ${index + 1} is larger than the 10 MB safety limit.`);
+    const loaded = await validateImportedRosterHydration(record, index);
+    if (loaded.roster.length !== savedEntriesFromDocument(record.document).length) {
+      throw new Error(`Synced roster ${index + 1} contains units not recognized by the installed rules data.`);
+    }
+  }
+  return records;
 }
 
 function rosterSaveLabel(document) {
@@ -3277,35 +3490,52 @@ function saveRoster() {
   const document = currentRosterDocument();
   document.name = document.name || `${currentSubfaction || currentFaction} roster`;
   const saves = savedRosterLibrary();
-  const matchingName = saves.find(save => String(save.document?.name || "").toLowerCase() === document.name.toLowerCase());
   const active = saves.find(save => save.id === currentRosterSaveId);
-  const id = matchingName?.id
-    || (active && String(active.document?.name || "").toLowerCase() === document.name.toLowerCase() ? active.id : null)
-    || `roster-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const id = active?.id || newRosterSaveId();
+  const nameCollision = saves.find(save => save.id !== id && normalizedRosterName(save) === normalizedRosterName({ document }));
+  if (nameCollision && !confirm(`Another saved roster is already named “${document.name}”. Save this as a separate roster with the same name?`)) return;
   const record = { id, savedAt: new Date().toISOString(), document };
   const existingIndex = saves.findIndex(save => save.id === id);
   if (existingIndex >= 0) saves[existingIndex] = record;
   else saves.push(record);
+  try {
+    saveRosterLibrary(saves);
+  } catch (error) {
+    alert(`Save failed: ${error.message}`);
+    return;
+  }
   currentRosterSaveId = id;
   rosterNameInput.value = document.name;
-  saveRosterLibrary(saves);
-  localStorage.setItem("engineRoster", JSON.stringify(document));
   markRosterClean();
   renderRosterSaveBrowser();
-  alert("Saved.");
+  showTransientMessage(`✓ Saved “${document.name}” on this device.`);
 }
 
 async function loadRoster() {
   if (!confirmDiscardUnsavedRoster()) return;
   const saves = savedRosterLibrary();
   const selected = saves.find(save => save.id === (rosterSavesSelect.value || currentRosterSaveId));
-  const raw = selected ? JSON.stringify(selected.document) : localStorage.getItem("engineRoster");
+  let raw = selected ? JSON.stringify(selected.document) : null;
+  if (!raw) {
+    try {
+      raw = localStorage.getItem("engineRoster");
+    } catch (error) {
+      alert(`Saved roster could not be read: ${error.message}`);
+      return;
+    }
+  }
   if (!raw) {
     alert("No saved roster.");
     return;
   }
 
-  const save = JSON.parse(raw);
+  let save;
+  try {
+    save = JSON.parse(raw);
+  } catch (error) {
+    alert(`Saved roster is damaged and was left untouched: ${error.message}`);
+    return;
+  }
   if (selected) currentRosterSaveId = selected.id;
   await loadRosterDocument(save);
 }
@@ -3359,20 +3589,42 @@ async function importRosterJsonFile(event) {
   const file = event.target.files?.[0];
   event.target.value = "";
   if (!file) return;
-  if (!confirmDiscardUnsavedRoster()) return;
 
   try {
-    const parsed = JSON.parse(await file.text());
+    if (Number(file.size || 0) > MAX_IMPORT_BYTES) throw new Error("The JSON file is larger than the 10 MB import limit.");
+    const text = await file.text();
+    if (text.length > MAX_IMPORT_BYTES) throw new Error("The JSON file is larger than the 10 MB import limit.");
+    const parsed = JSON.parse(text);
     const records = importedRosterRecords(parsed);
     if (!records.length) {
       alert("No roster records were found in that JSON file.");
       return;
     }
+    const hydrated = [];
+    for (let index = 0; index < records.length; index += 1) {
+      hydrated.push(await validateImportedRosterHydration(records[index], index));
+    }
+    const existing = savedRosterLibrary();
+    const replacements = records.filter(record => existing.some(save => save.id === record.id));
+    if (replacements.length && !confirm(`This import contains ${replacements.length} roster${replacements.length === 1 ? "" : "s"} with the same internal ID as an existing save. Replace only those exact-ID saves?`)) return;
+    const combined = [...existing, ...records];
+    const importedIds = new Set(records.map(record => record.id));
+    const nameCounts = new Map();
+    for (const record of combined) {
+      const name = normalizedRosterName(record);
+      if (!name) continue;
+      if (!nameCounts.has(name)) nameCounts.set(name, new Set());
+      nameCounts.get(name).add(record.id);
+    }
+    const sameNameCount = [...nameCounts.values()].filter(ids => ids.size > 1 && [...ids].some(id => importedIds.has(id))).length;
+    if (sameNameCount && !confirm(`This import creates ${sameNameCount} same-name roster group${sameNameCount === 1 ? "" : "s"}. Keep each as a separate saved roster?`)) return;
+    if (!confirmDiscardUnsavedRoster()) return;
     mergeRosterSaves(records);
     currentRosterSaveId = records[0].id;
     const loaded = await loadRosterDocument(records[0].document, { showWarnings: false });
-    const warningText = loaded.warnings.length
-      ? ` Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}.`
+    const warningCount = hydrated.reduce((sum, item) => sum + item.warnings.length, 0);
+    const warningText = warningCount
+      ? ` Validated with ${warningCount} recoverable warning${warningCount === 1 ? "" : "s"}.`
       : "";
     showTransientMessage(`${records.length === 1 ? "Imported 1 roster." : `Imported ${records.length} rosters.`}${warningText}`);
     restoreTypingFocus(unitSearch);
@@ -3439,7 +3691,12 @@ function deleteRosterById(id) {
   const target = savesBefore.find(save => save.id === id);
   if (!target) return;
   const saves = savesBefore.filter(save => save.id !== id);
-  saveRosterLibrary(saves);
+  try {
+    saveRosterLibrary(saves);
+  } catch (error) {
+    alert(`Delete failed: ${error.message}`);
+    return;
+  }
   if (currentRosterSaveId === id) currentRosterSaveId = null;
   renderRosterSaveBrowser();
   if (appMode === "library") renderStartScreen();
@@ -3656,7 +3913,33 @@ function openSheetPreview(kind) {
     alert("The sheet preview was blocked by the browser.");
     return;
   }
-  preview.addEventListener?.("load", () => URL.revokeObjectURL(previewUrl), { once: true });
+  preview.addEventListener?.("load", () => {
+    URL.revokeObjectURL(previewUrl);
+    initializeSheetPreview(preview);
+  }, { once: true });
+}
+
+function initializeSheetPreview(preview) {
+  const previewDocument = preview?.document;
+  if (!previewDocument) return;
+  const fitSheetsToA4 = () => {
+    previewDocument.querySelectorAll(".sheet").forEach(sheet => {
+      sheet.classList.remove("fitDense", "fitCompact", "fitTiny");
+      let size = 14;
+      sheet.style.setProperty("--sheet-font-size", `${size}px`);
+      while (sheet.scrollHeight > sheet.clientHeight + 1 && size > 8.5) {
+        size -= 0.5;
+        sheet.style.setProperty("--sheet-font-size", `${size}px`);
+        if (size <= 13) sheet.classList.add("fitDense");
+        if (size <= 11.5) sheet.classList.add("fitCompact");
+        if (size <= 10) sheet.classList.add("fitTiny");
+      }
+    });
+  };
+  previewDocument.getElementById("printSheets")?.addEventListener("click", () => preview.print());
+  fitSheetsToA4();
+  preview.setTimeout(fitSheetsToA4, 100);
+  preview.addEventListener("beforeprint", fitSheetsToA4);
 }
 
 function buildSheetPreviewHtml(sheets, kind, options = {}) {
@@ -3729,30 +4012,9 @@ function buildSheetPreviewHtml(sheets, kind, options = {}) {
 <body>
   <div class="toolbar">
     <div><b>${escapeHtml(title)}</b> <span>${escapeHtml(sheets.rosterName)} - ${sheets.totalPoints}/${sheets.pointsLimit} pts</span></div>
-    <button onclick="window.print()">Print</button>
+    <button id="printSheets" type="button">Print</button>
   </div>
   ${body || `<main class="sheet"><p>No sheets available.</p></main>`}
-  <script>
-    function fitSheetsToA4() {
-      document.querySelectorAll(".sheet").forEach(sheet => {
-        sheet.classList.remove("fitDense", "fitCompact", "fitTiny");
-        let size = 14;
-        sheet.style.setProperty("--sheet-font-size", size + "px");
-        while (sheet.scrollHeight > sheet.clientHeight + 1 && size > 8.5) {
-          size -= 0.5;
-          sheet.style.setProperty("--sheet-font-size", size + "px");
-          if (size <= 13) sheet.classList.add("fitDense");
-          if (size <= 11.5) sheet.classList.add("fitCompact");
-          if (size <= 10) sheet.classList.add("fitTiny");
-        }
-      });
-    }
-    window.addEventListener("load", () => {
-      fitSheetsToA4();
-      setTimeout(fitSheetsToA4, 100);
-    });
-    window.addEventListener("beforeprint", fitSheetsToA4);
-  </script>
 </body>
 </html>`;
 }
