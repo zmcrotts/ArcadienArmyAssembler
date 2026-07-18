@@ -105,7 +105,7 @@ test("OneDrive sync follows paging and preserves same-named records with differe
   assert.equal(graph.requests.some(item => item.options.method === "DELETE"), false);
 });
 
-test("OneDrive sync writes a divergent same-ID version as a conflict before replacing canonical content", async () => {
+test("OneDrive sync keeps the newest same-ID version without manufacturing a conflict copy", async () => {
   const remote = record("shared", "Desktop version", "2026-07-15T12:00:00.000Z");
   const graph = fakeGraph([[{
     itemId: "remote-item",
@@ -117,19 +117,37 @@ test("OneDrive sync writes a divergent same-ID version as a conflict before repl
 
   const result = await client.sync([record("shared", "Phone version", "2026-07-15T13:00:00.000Z")]);
 
-  assert.equal(result.summary.conflicts, 1);
-  assert.equal(result.saves.length, 2);
+  assert.equal(result.summary.conflicts, 0);
+  assert.equal(result.saves.length, 1);
   assert.equal(result.saves.some(item => item.id === "shared" && item.document.name === "Phone version"), true);
-  const conflict = result.saves.find(item => item.conflictOf === "shared");
-  assert.match(conflict.document.name, /^Desktop version \(conflict copy 2026-07-15\)$/);
   const uploads = graph.requests.filter(item => item.options.method === "PUT")
     .map(item => JSON.parse(item.options.body).record);
-  assert.equal(uploads.length, 2);
-  assert.equal(uploads[0].conflictOf, "shared");
-  assert.equal(uploads[1].id, "shared");
+  assert.equal(uploads.length, 1);
+  assert.equal(uploads[0].id, "shared");
   const canonicalUpload = graph.requests.find(item => item.options.method === "PUT" && JSON.parse(item.options.body).record.id === "shared");
   assert.equal(canonicalUpload.options.headers["If-Match"], "\"shared-old\"");
   assert.equal(graph.requests.some(item => item.options.method === "DELETE"), false);
+});
+
+test("OneDrive repair removes generated conflict copies when their canonical roster exists", async () => {
+  const canonical = record("shared", "Current version", "2026-07-15T13:00:00.000Z");
+  const generatedConflict = {
+    ...record("roster-conflict-old", "Old version (conflict copy 2026-07-15)", "2026-07-15T12:00:00.000Z"),
+    conflictOf: "shared"
+  };
+  const graph = fakeGraph([[
+    { itemId: "canonical-item", record: canonical },
+    { itemId: "conflict-item", record: generatedConflict }
+  ]]);
+  const client = clientWithGraph(graph);
+
+  const result = await client.cleanDuplicates([canonical, generatedConflict]);
+
+  assert.deepEqual(result.saves, [canonical]);
+  assert.equal(result.cleanup.localRemoved, 1);
+  assert.equal(result.cleanup.remoteRemoved, 1);
+  assert.equal(result.cleanup.conflictCopiesRemoved, 1);
+  assert.equal(graph.requests.some(item => item.options.method === "DELETE" && item.url.endsWith("/items/conflict-item")), true);
 });
 
 test("OneDrive repair removes only redundant exact cloud copies", async () => {
@@ -207,14 +225,19 @@ test("declared oversized Graph responses are rejected before parsing", async () 
   assert.equal(requests.length, 1);
 });
 
-test("unsupported synced roster schemas block the sync without uploads", async () => {
-  const invalid = record("future", "Future schema", "2026-07-15T12:00:00.000Z");
-  invalid.document.schemaVersion = 99;
-  const graph = fakeGraph([[{ itemId: "future", record: invalid }]]);
+test("sync preserves roster data from other rules and app versions", async () => {
+  const future = record("future", "Future schema", "2026-07-15T12:00:00.000Z");
+  future.document.schemaVersion = 99;
+  future.document.faction = "rules-not-installed-here";
+  future.document.armyState = null;
+  future.document.pointsLimit = 0;
+  const graph = fakeGraph([[{ itemId: "future", record: future }]]);
   const client = clientWithGraph(graph);
 
-  await assert.rejects(client.sync([]), /schema version is unsupported/);
-  assert.equal(graph.requests.some(item => item.options.method === "PUT"), false);
+  const result = await client.sync([]);
+
+  assert.deepEqual(result.saves, [future]);
+  assert.equal(result.summary.downloaded, 1);
 });
 
 test("invalid local records are rejected before any cloud request", async () => {

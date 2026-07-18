@@ -786,7 +786,12 @@ async function syncSavedRosters() {
       if (uploaded) parts.push(`${uploaded} uploaded`);
       if (downloaded) parts.push(`${downloaded} added`);
       if (conflicts) parts.push(`${conflicts} conflict${conflicts === 1 ? "" : "s"} kept safely`);
-      showTransientMessage(parts.length ? `Synced — ${parts.join(", ")}.` : "Synced — your lists already match.");
+      const emptyCloud = !savedRosterLibrary().length && Number(result.summary?.cloudRecords || 0) === 0;
+      showTransientMessage(parts.length
+        ? `Synced — ${parts.join(", ")}.`
+        : emptyCloud
+          ? "OneDrive’s roster folder is empty. If another device has lists, disconnect and reconnect with the same Microsoft account."
+          : "Synced — your lists already match.");
     }
   } catch (error) {
     try {
@@ -823,7 +828,8 @@ async function cleanSyncedDuplicates() {
     renderStartScreen();
     const cleanup = result.cleanup || {};
     const conflicts = result.summary?.conflicts || 0;
-    showTransientMessage(`Repair finished — ${cleanup.remoteRemoved || 0} exact cloud duplicate${cleanup.remoteRemoved === 1 ? "" : "s"} removed${conflicts ? `; ${conflicts} differing version${conflicts === 1 ? "" : "s"} kept safely` : ""}.`);
+    const conflictCopiesRemoved = cleanup.conflictCopiesRemoved || 0;
+    showTransientMessage(`Repair finished — ${cleanup.remoteRemoved || 0} cloud duplicate${cleanup.remoteRemoved === 1 ? "" : "s"} removed${conflictCopiesRemoved ? `, including ${conflictCopiesRemoved} generated conflict cop${conflictCopiesRemoved === 1 ? "y" : "ies"}` : ""}${conflicts ? `; ${conflicts} differing version${conflicts === 1 ? "" : "s"} kept safely` : ""}.`);
   } catch (error) {
     try {
       syncStatus = await syncProvider.getStatus();
@@ -3447,9 +3453,10 @@ async function validateSyncedRosterLibrary(records) {
       throw new Error(`Synced roster ${index + 1} cannot be serialized safely.`);
     }
     if (new TextEncoder().encode(serialized).byteLength > MAX_IMPORT_BYTES) throw new Error(`Synced roster ${index + 1} is larger than the 10 MB safety limit.`);
-    const loaded = await validateImportedRosterHydration(record, index);
-    if (loaded.roster.length !== savedEntriesFromDocument(record.document).length) {
-      throw new Error(`Synced roster ${index + 1} contains units not recognized by the installed rules data.`);
+    const entries = savedEntriesFromDocument(record.document);
+    if (entries.length > MAX_ROSTER_ENTRIES_PER_IMPORT) throw new Error(`Synced roster ${index + 1} contains too many roster entries.`);
+    if (entries.some(entry => !entry || typeof entry !== "object" || Array.isArray(entry))) {
+      throw new Error(`Synced roster ${index + 1} contains an invalid roster entry.`);
     }
   }
   return records;

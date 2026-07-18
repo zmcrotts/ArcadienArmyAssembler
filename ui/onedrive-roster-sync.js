@@ -9,7 +9,6 @@ const ONEDRIVE_TOKEN_KEY = "arcadienOneDriveTokens";
 const ONEDRIVE_PKCE_KEY = "arcadienOneDrivePkce";
 const GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
 const RECORD_KIND = "arcadien-roster-sync-record";
-const ROSTER_DOCUMENT_KIND = "roster-engine.savedRoster";
 const MAX_RESPONSE_BYTES = 10 * 1024 * 1024;
 const MAX_RECORD_BYTES = 9 * 1024 * 1024;
 const MAX_RECORDS = 500;
@@ -226,18 +225,10 @@ function assertValidRecord(record) {
   if (!Number.isFinite(Date.parse(record.savedAt || ""))) throw recordError("the save timestamp is invalid.");
   const document = record.document;
   if (!document || typeof document !== "object" || Array.isArray(document)) throw recordError("the roster document is invalid.");
-  if (document.kind != null && document.kind !== ROSTER_DOCUMENT_KIND) throw recordError("the roster document kind is unsupported.");
-  if (document.schemaVersion != null) {
-    const schemaVersion = Number(document.schemaVersion);
-    if (!Number.isInteger(schemaVersion) || schemaVersion < 1 || schemaVersion > 2) throw recordError("the roster schema version is unsupported.");
-  }
-  if (typeof document.faction !== "string" || !document.faction.trim() || document.faction.length > 240) throw recordError("the faction is invalid.");
-  if (!document.armyState || typeof document.armyState !== "object" || Array.isArray(document.armyState)) throw recordError("the army configuration is invalid.");
   if (document.name != null && (typeof document.name !== "string" || document.name.length > 240)) throw recordError("the roster name is invalid.");
-  if (document.pointsLimit != null) {
-    const pointsLimit = Number(document.pointsLimit);
-    if (!Number.isFinite(pointsLimit) || pointsLimit <= 0 || pointsLimit > 100000) throw recordError("the points limit is invalid.");
-  }
+  // Sync preserves roster documents across app and rules-data versions. Domain
+  // compatibility (schema, faction, army state, and points limits) is checked
+  // only when a user opens/imports a roster, never while transporting it.
   const entries = savedRosterEntries(document);
   if (entries.length > MAX_ROSTER_ENTRIES) throw recordError("the roster contains too many entries.");
   if (entries.some(entry => !entry || typeof entry !== "object" || Array.isArray(entry))) throw recordError("a roster entry is invalid.");
@@ -329,19 +320,6 @@ function compareVersions(left, right) {
   return documentHash(left).localeCompare(documentHash(right));
 }
 
-async function conflictRecord(record, originalId) {
-  const hash = (await sha256(`${originalId}\n${documentHash(record)}`)).slice(0, 24);
-  const timestamp = record.savedAt && Number.isFinite(Date.parse(record.savedAt))
-    ? new Date(record.savedAt).toISOString().slice(0, 10)
-    : "undated";
-  const result = structuredClone(record);
-  const originalName = String(result.document.name || "Unnamed roster").replace(/\s+\(conflict copy[^)]*\)$/i, "");
-  result.id = `roster-conflict-${hash}`;
-  result.conflictOf = originalId;
-  result.document.name = `${originalName} (conflict copy ${timestamp})`;
-  return result;
-}
-
 async function fileName(id) {
   return `${(await sha256(id)).slice(0, 43)}.json`;
 }
@@ -400,9 +378,29 @@ async function uploadRecord(folder, record, expectedRemote = null) {
 }
 
 async function reconcileById(saves, options = {}) {
-  const local = assertValidCollection(saves).map(record => structuredClone(record));
+  let local = assertValidCollection(saves).map(record => structuredClone(record));
   const folder = await rosterFolder();
-  const remote = await remoteEntries(folder);
+  let remote = await remoteEntries(folder);
+  const summary = { uploaded: 0, downloaded: 0, conflicts: 0, cloudRecords: remote.length, localRecords: local.length };
+  const cleanup = { localRemoved: 0, remoteRemoved: 0, conflictCopiesRemoved: 0 };
+  if (options.removeGeneratedConflictCopies) {
+    const canonicalIds = new Set([...local, ...remote.map(entry => entry.record)]
+      .filter(record => !record.conflictOf)
+      .map(record => record.id));
+    const generatedLocal = local.filter(record => record.conflictOf && canonicalIds.has(record.conflictOf));
+    const generatedRemote = remote.filter(entry => entry.record.conflictOf && canonicalIds.has(entry.record.conflictOf));
+    cleanup.conflictCopiesRemoved = new Set([...generatedLocal.map(record => record.id), ...generatedRemote.map(entry => entry.record.id)]).size;
+    local = local.filter(record => !generatedLocal.includes(record));
+    remote = remote.filter(entry => !generatedRemote.includes(entry));
+    cleanup.localRemoved += generatedLocal.length;
+    for (const entry of generatedRemote) {
+      await graph(`/me/drive/items/${entry.itemId}`, {
+        method: "DELETE",
+        headers: entry.eTag ? { "If-Match": entry.eTag } : {}
+      });
+      cleanup.remoteRemoved += 1;
+    }
+  }
   const localById = new Map();
   for (const record of local) {
     if (!localById.has(record.id)) localById.set(record.id, []);
@@ -413,56 +411,35 @@ async function reconcileById(saves, options = {}) {
     if (!remoteById.has(entry.record.id)) remoteById.set(entry.record.id, []);
     remoteById.get(entry.record.id).push({ ...entry, source: "remote" });
   }
-  const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
-  const cleanup = { localRemoved: 0, remoteRemoved: 0 };
   const result = [];
   const pendingUploads = [];
   const ids = new Set([...localById.keys(), ...remoteById.keys()]);
   for (const id of ids) {
     const candidates = [...(localById.get(id) || []), ...(remoteById.get(id) || [])];
-    const distinctByDocument = new Map();
-    for (const candidate of candidates) {
-      const hash = documentHash(candidate.record);
-      const previous = distinctByDocument.get(hash);
-      if (!previous || compareVersions(candidate.record, previous.record) > 0 || (candidate.source === "local" && previous.source !== "local")) {
-        distinctByDocument.set(hash, candidate);
-      }
+    const canonical = candidates.sort((left, right) => compareVersions(right.record, left.record))[0];
+    if (!canonical) continue;
+    const winner = structuredClone(canonical.record);
+    result.push(winner);
+    const localMatch = local.find(record => sameRecord(record, winner));
+    const remoteMatches = remote.filter(entry => sameRecord(entry.record, winner));
+    if (!localMatch && canonical.source === "remote") summary.downloaded += 1;
+    if (!remoteMatches.length) {
+      const expectedFileName = await fileName(winner.id);
+      pendingUploads.push({
+        record: winner,
+        expectedRemote: remote.find(entry => entry.record.id === winner.id && entry.name === expectedFileName) || null
+      });
     }
-    const versions = [...distinctByDocument.values()].sort((left, right) => compareVersions(right.record, left.record));
-    if (!versions.length) continue;
-    const canonical = versions[0];
-    const outputs = [{ ...canonical, record: structuredClone(canonical.record) }];
-    for (const version of versions.slice(1)) {
-      const conflict = await conflictRecord(version.record, id);
-      assertValidRecord(conflict);
-      outputs.push({ ...version, record: conflict });
-      summary.conflicts += 1;
-    }
-    for (const output of outputs) {
-      if (result.some(record => sameRecord(record, output.record))) continue;
-      result.push(structuredClone(output.record));
-      const localMatch = local.find(record => sameRecord(record, output.record));
-      const remoteMatches = remote.filter(entry => sameRecord(entry.record, output.record));
-      if (!localMatch && output.source === "remote") summary.downloaded += 1;
-      if (!remoteMatches.length) {
-        const expectedFileName = await fileName(output.record.id);
-        pendingUploads.push({
-          record: output.record,
-          expectedRemote: remote.find(entry => entry.record.id === output.record.id && entry.name === expectedFileName) || null
+    if (options.removeExactRemoteDuplicates && remoteMatches.length > 1) {
+      for (const duplicate of remoteMatches.slice(1)) {
+        await graph(`/me/drive/items/${duplicate.itemId}`, {
+          method: "DELETE",
+          headers: duplicate.eTag ? { "If-Match": duplicate.eTag } : {}
         });
-      }
-      if (options.removeExactRemoteDuplicates && remoteMatches.length > 1) {
-        for (const duplicate of remoteMatches.slice(1)) {
-          await graph(`/me/drive/items/${duplicate.itemId}`, {
-            method: "DELETE",
-            headers: duplicate.eTag ? { "If-Match": duplicate.eTag } : {}
-          });
-          cleanup.remoteRemoved += 1;
-        }
+        cleanup.remoteRemoved += 1;
       }
     }
   }
-  pendingUploads.sort((left, right) => Number(Boolean(left.record.conflictOf)) - Number(Boolean(right.record.conflictOf))).reverse();
   for (const upload of pendingUploads) {
     await uploadRecord(folder, upload.record, upload.expectedRemote);
     summary.uploaded += 1;
@@ -478,7 +455,7 @@ function runExclusive(operation) {
 
 async function sync(saves) { return runExclusive(() => reconcileById(saves)); }
 async function cleanDuplicates(saves) {
-  return runExclusive(() => reconcileById(saves, { removeExactRemoteDuplicates: true }));
+  return runExclusive(() => reconcileById(saves, { removeExactRemoteDuplicates: true, removeGeneratedConflictCopies: true }));
 }
 
 async function beginSignIn() {
