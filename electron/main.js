@@ -153,6 +153,7 @@ async function connectOneDrive() {
     redirect_uri: "http://localhost:4173/",
     response_mode: "query",
     scope: SCOPE,
+    prompt: "select_account",
     state,
     code_challenge: sha256Base64Url(verifier),
     code_challenge_method: "S256"

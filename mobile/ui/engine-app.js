@@ -1570,11 +1570,12 @@ async function syncSavedRosters() {
     const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
     const details = [uploaded && `${uploaded} uploaded`, downloaded && `${downloaded} added`, conflicts && `${conflicts} kept safely`].filter(Boolean);
     const emptyCloud = !savedRosterLibrary().length && Number(result.summary?.cloudRecords || 0) === 0;
+    const folderLabel = result.summary?.cloudFolder ? ` OneDrive folder ${result.summary.cloudFolder}.` : "";
     showTransientMessage(details.length
-      ? `Synced — ${details.join(", ")}.`
+      ? `Synced — ${details.join(", ")}.${folderLabel}`
       : emptyCloud
-        ? "OneDrive’s roster folder is empty. If another device has lists, disconnect and reconnect with the same Microsoft account."
-        : "Synced — your lists already match.");
+        ? `OneDrive folder ${result.summary?.cloudFolder || "unknown"} is empty. Reconnect and select the same Microsoft account shown on the other device.`
+        : `Synced — your lists already match.${folderLabel}`);
   } catch (error) {
     try {
       syncStatus = await service.getStatus();

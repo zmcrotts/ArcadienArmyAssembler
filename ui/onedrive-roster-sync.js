@@ -414,7 +414,8 @@ async function reconcileById(saves, options = {}) {
   let local = assertValidCollection(saves).map(record => structuredClone(record));
   const folder = await rosterFolder();
   let remote = await remoteEntries(folder);
-  const summary = { uploaded: 0, downloaded: 0, conflicts: 0, cloudRecords: remote.length, localRecords: local.length };
+  const cloudFolder = (await sha256(String(folder.id || ""))).slice(0, 8).toUpperCase();
+  const summary = { uploaded: 0, downloaded: 0, conflicts: 0, cloudRecords: remote.length, localRecords: local.length, cloudFolder };
   const cleanup = { localRemoved: 0, remoteRemoved: 0, conflictCopiesRemoved: 0 };
   if (options.removeGeneratedConflictCopies) {
     const canonicalIds = new Set([...local, ...remote.map(entry => entry.record)]
@@ -489,6 +490,7 @@ async function beginSignIn() {
     redirect_uri: redirectUri(),
     response_mode: "query",
     scope: ONEDRIVE_SCOPE,
+    prompt: "select_account",
     code_challenge: await sha256(verifier),
     code_challenge_method: "S256"
   });

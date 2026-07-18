@@ -787,11 +787,12 @@ async function syncSavedRosters() {
       if (downloaded) parts.push(`${downloaded} added`);
       if (conflicts) parts.push(`${conflicts} conflict${conflicts === 1 ? "" : "s"} kept safely`);
       const emptyCloud = !savedRosterLibrary().length && Number(result.summary?.cloudRecords || 0) === 0;
+      const folderLabel = result.summary?.cloudFolder ? ` OneDrive folder ${result.summary.cloudFolder}.` : "";
       showTransientMessage(parts.length
-        ? `Synced — ${parts.join(", ")}.`
+        ? `Synced — ${parts.join(", ")}.${folderLabel}`
         : emptyCloud
-          ? "OneDrive’s roster folder is empty. If another device has lists, disconnect and reconnect with the same Microsoft account."
-          : "Synced — your lists already match.");
+          ? `OneDrive folder ${result.summary?.cloudFolder || "unknown"} is empty. Reconnect and select the same Microsoft account shown on the other device.`
+          : `Synced — your lists already match.${folderLabel}`);
     }
   } catch (error) {
     try {
