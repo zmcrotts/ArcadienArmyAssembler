@@ -22,6 +22,7 @@ test("browser policy permits Microsoft OneDrive content redirects", () => {
   assert.match(index, /connect-src[^;]*https:\/\/graph\.microsoft\.com/);
   assert.match(index, /connect-src[^;]*https:\/\/\*\.1drv\.com/);
   assert.match(index, /connect-src[^;]*https:\/\/\*\.sharepoint\.com/);
+  assert.match(index, /connect-src[^;]*https:\/\/\*\.microsoftpersonalcontent\.com/);
 });
 
 test("supported release targets exclude Linux", () => {
