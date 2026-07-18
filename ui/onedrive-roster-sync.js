@@ -149,6 +149,28 @@ function cloudDownloadError(message) {
   return error;
 }
 
+function downloadWithBrowserRequest(downloadUrl) {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("GET", downloadUrl.href, true);
+    request.responseType = "text";
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        resolve({
+          ok: true,
+          status: request.status,
+          text: async () => request.responseText
+        });
+        return;
+      }
+      reject(cloudDownloadError(`OneDrive could not download a synced roster (HTTP ${request.status}).`));
+    };
+    request.onerror = () => reject(cloudDownloadError(`Safari blocked the OneDrive file download from ${downloadUrl.hostname}.`));
+    request.onabort = () => reject(cloudDownloadError("The OneDrive file download was cancelled."));
+    request.send();
+  });
+}
+
 async function downloadCloudItem(item) {
   if (ANDROID_NATIVE) return graph(`/me/drive/items/${item.id}/content`);
 
@@ -169,16 +191,9 @@ async function downloadCloudItem(item) {
   }
   if (downloadUrl.protocol !== "https:") throw cloudDownloadError("OneDrive provided an unsafe browser download address.");
 
-  let response;
-  try {
-    // Intentionally no OAuth or other custom headers: this must remain a simple
-    // CORS request so Safari can download the preauthenticated file.
-    response = await fetch(downloadUrl.href);
-  } catch {
-    throw cloudDownloadError(`Safari blocked the OneDrive file download from ${downloadUrl.hostname}.`);
-  }
-  if (!response.ok) throw cloudDownloadError(`OneDrive could not download a synced roster (HTTP ${response.status}).`);
-  return response;
+  // Intentionally no OAuth or other custom headers. Microsoft specifically
+  // documents XMLHttpRequest for this preauthenticated browser download.
+  return downloadWithBrowserRequest(downloadUrl);
 }
 
 async function remoteEntries(folder) {

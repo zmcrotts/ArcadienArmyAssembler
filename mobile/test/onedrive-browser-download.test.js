@@ -31,6 +31,19 @@ function browserSync(fetch) {
     removeItem: key => storage.delete(key)
   };
   const window = { location: { protocol: "https:", href: "https://example.test/app/" } };
+  class XMLHttpRequest {
+    open(method, url) {
+      this.method = method;
+      this.url = url;
+    }
+    send() {
+      Promise.resolve(fetch(this.url)).then(async result => {
+        this.status = result.status;
+        this.responseText = await result.text();
+        this.onload?.();
+      }).catch(() => this.onerror?.());
+    }
+  }
   const context = vm.createContext({
     window,
     localStorage,
@@ -40,6 +53,7 @@ function browserSync(fetch) {
     TextEncoder,
     URL,
     URLSearchParams,
+    XMLHttpRequest,
     structuredClone,
     btoa: value => Buffer.from(value, "binary").toString("base64"),
     console
