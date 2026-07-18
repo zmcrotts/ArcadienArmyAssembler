@@ -156,7 +156,7 @@ async function downloadCloudItem(item) {
   // documents that browser JavaScript must instead request this temporary,
   // preauthenticated URL and download it without an Authorization header.
   const metadata = await (await graph(
-    `/me/drive/items/${encodeURIComponent(item.id)}?$select=id,@microsoft.graph.downloadUrl`
+    `/me/drive/items/${encodeURIComponent(item.id)}?select=id,@microsoft.graph.downloadUrl`
   )).json();
   const rawDownloadUrl = metadata?.["@microsoft.graph.downloadUrl"];
   if (!rawDownloadUrl) throw cloudDownloadError("OneDrive did not provide a browser download address for a synced roster.");

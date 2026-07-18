@@ -63,7 +63,7 @@ function graphFixture(directDownload) {
     if (String(url).includes("/items/rosters/children")) {
       return response(200, { value: [{ id: "cloud-item", name: "cloud-item.json", file: {} }] });
     }
-    if (String(url).includes("/items/cloud-item?$select=id,@microsoft.graph.downloadUrl")) {
+    if (String(url).includes("/items/cloud-item?select=id,@microsoft.graph.downloadUrl")) {
       return response(200, { id: "cloud-item", "@microsoft.graph.downloadUrl": downloadUrl });
     }
     if (String(url) === downloadUrl) return directDownload(record);
