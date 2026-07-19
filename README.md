@@ -16,71 +16,31 @@ Arcadien Army Assembler is a local-first list builder focused on practical roste
 - Printable unit sheets, rules references, core/detachment stratagem references, and Crusade sheets.
 - Light/dark themes and standard or custom roster grouping.
 
-## Installer
+## Install
 
-The Windows installer is published from the project release folder:
+### Windows
 
-```text
-release/Arcadien Army Assembler Setup.exe
-```
+Run **Arcadien Army Assembler Setup.exe** and follow the installer. Windows SmartScreen may warn because the installer is not yet code-signed; choose **More info**, then **Run anyway** if you received it from the official project source.
 
-The installer is currently unsigned, so Windows SmartScreen may warn before running it. That does not mean it is malware; it means the app does not yet have a paid code-signing certificate. The source is provided so the app can be inspected and built locally.
+### iPhone or iPad
 
-## Build Locally
+1. Open the [Arcadien Army Assembler install site](https://zmcrotts.github.io/ArcadienArmyAssembler/) in Safari.
+2. Tap **Share**.
+3. Choose **Add to Home Screen**.
+4. Open Arcadien Army Assembler from the new Home Screen icon.
 
-Requires Node.js and npm.
+### Android
 
-```powershell
-npm install
-npm test
-npm run dist:local-installer
-```
+1. Download the current Arcadien Army Assembler APK provided by the project owner.
+2. Open the APK on the Android device.
+3. If Android asks, allow installation from that source.
+4. Choose **Install**.
 
-The installer will be written to `release/`.
+## Optional OneDrive Sync
 
-Note: ruleset source snapshots are local project inputs. A checkout must include the required ruleset data before the builder can generate a working app bundle.
+Lists are saved locally on each device. To share them between devices, press **Sync**, connect the same Microsoft account on each device, and press **Sync** whenever you want to exchange changes.
 
-## Supported Platforms
-
-- Windows desktop is supported through the local installer.
-- The mobile web app can be installed as a PWA in a compatible browser. On iPhone or iPad, open the [Arcadien Army Assembler install site](https://zmcrotts.github.io/ArcadienArmyAssembler/) in Safari and choose **Add to Home Screen**.
-- Android is distributed only as a manually sideloaded APK. There is no Play Store release at this time.
-- Linux packaging and runtime support have been removed. Linux is not currently supported.
-
-## Android Manual Sideload
-
-The production sideload task creates a non-debuggable APK and requires a stable release keystore owned by the distributor. It never falls back to Android's debug certificate. Preserve the same keystore and credentials for every version or Android will not allow an existing installation to be upgraded in place.
-
-Provide these Gradle properties or environment variables without committing them:
-
-```text
-ARCADIEN_KEYSTORE_FILE
-ARCADIEN_KEYSTORE_PASSWORD
-ARCADIEN_KEY_ALIAS
-ARCADIEN_KEY_PASSWORD
-```
-
-With a compatible Android SDK and Gradle available locally, run:
-
-```powershell
-npm run dist:android:sideload
-```
-
-The APK is written under `mobile/android/app/build/outputs/apk/sideload/` for direct installation. This process does not publish to the Play Store or any other service.
-
-## Development
-
-```powershell
-npm run desktop
-```
-
-Useful checks:
-
-```powershell
-npm test
-npm run health
-npm run audit:ruleset-source
-```
+OneDrive sync is optional. The roster builder works without an account or internet connection after installation.
 
 ## License
 
