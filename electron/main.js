@@ -9,6 +9,7 @@ const { CLIENT_ID, SCOPE, createOneDriveRosterSync } = require("./onedrive-roste
 
 const APP_NAME = "Arcadien Army Assembler";
 let allowAppQuit = false;
+let mainWindow = null;
 
 app.setName(APP_NAME);
 
@@ -38,6 +39,18 @@ function ensureLocalDataFolders() {
   ];
   for (const folder of folders) fs.mkdirSync(folder, { recursive: true });
   app.setPath("userData", path.join(root, "user-data"));
+}
+
+// Chromium opens the profile database while Electron is starting. Select the
+// portable install profile before `ready`, then use that same profile as the
+// scope for Electron's single-instance lock. A second process must never open
+// the same Local Storage database: Chromium will otherwise expose an empty
+// store in that process even though the saved rosters are still on disk.
+ensureLocalDataFolders();
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+if (!hasSingleInstanceLock) {
+  allowAppQuit = true;
+  app.quit();
 }
 
 const EXTERNAL_HOSTS = new Set([
@@ -233,7 +246,14 @@ function registerRosterSyncHandlers() {
 }
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+    return mainWindow;
+  }
+
+  mainWindow = new BrowserWindow({
     width: 1440,
     height: 960,
     minWidth: 1100,
@@ -316,31 +336,45 @@ function createWindow() {
   mainWindow.on("closed", () => {
     clearCloseFallback();
     ipcMain.removeListener("app:close-response", handleCloseResponse);
+    mainWindow = null;
   });
+
+  return mainWindow;
 }
 
-app.whenReady().then(() => {
-  ensureLocalDataFolders();
-  registerRosterSyncHandlers();
-  createWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+if (hasSingleInstanceLock) {
+  app.on("second-instance", () => {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+      if (app.isReady()) createWindow();
+      return;
+    }
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
   });
-});
 
-app.on("before-quit", event => {
-  if (allowAppQuit) return;
-  const window = BrowserWindow.getAllWindows().find(candidate => !candidate.isDestroyed());
-  if (!window) {
+  app.whenReady().then(() => {
+    registerRosterSyncHandlers();
+    createWindow();
+
+    app.on("activate", () => {
+      if (!mainWindow || mainWindow.isDestroyed()) createWindow();
+    });
+  });
+
+  app.on("before-quit", event => {
+    if (allowAppQuit) return;
+    const window = mainWindow && !mainWindow.isDestroyed() ? mainWindow : null;
+    if (!window) {
+      allowAppQuit = true;
+      return;
+    }
+    event.preventDefault();
+    window.close();
+  });
+
+  app.on("window-all-closed", () => {
     allowAppQuit = true;
-    return;
-  }
-  event.preventDefault();
-  window.close();
-});
-
-app.on("window-all-closed", () => {
-  allowAppQuit = true;
-  app.quit();
-});
+    app.quit();
+  });
+}
