@@ -110,3 +110,61 @@ test("a blocked Safari download is reported instead of pretending OneDrive is em
     /Safari blocked the OneDrive file download/
   );
 });
+
+test("Android sync uses the current native connection and Graph bridge", async () => {
+  const requests = [];
+  const record = {
+    id: "android-remote",
+    savedAt: "2026-07-18T13:00:00.000Z",
+    document: { name: "Android remote", rosterEntries: [] }
+  };
+  const window = { location: { protocol: "file:", href: "file:///android_asset/www/index.html" } };
+  window.AndroidOneDrive = {
+    hasCachedConnection: () => true,
+    graphRequest: (requestId, method, requestPath, body, ifMatch) => {
+      requests.push({ method, path: requestPath, body, ifMatch });
+      let status = 200;
+      let responseBody;
+      if (requestPath === "/me/drive/special/approot") responseBody = { id: "app-root" };
+      else if (requestPath === "/me/drive/items/app-root:/rosters") responseBody = { id: "rosters" };
+      else if (requestPath.includes("/me/drive/items/rosters/children")) {
+        responseBody = { value: [{ id: "android-item", name: "android-item.json", file: {} }] };
+      } else if (requestPath === "/me/drive/items/android-item/content") {
+        responseBody = { kind: "arcadien-roster-sync-record", version: 1, record };
+      } else {
+        status = 404;
+        responseBody = { error: { message: `Unexpected native request ${requestPath}` } };
+      }
+      queueMicrotask(() => window.OneDriveRosterSync.androidGraphResponseReceived(
+        requestId,
+        status,
+        JSON.stringify(responseBody),
+        null
+      ));
+    },
+    beginSignIn: () => { throw new Error("Sign-in should not start for a cached connection."); },
+    disconnect: () => {}
+  };
+  const storage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+  const context = vm.createContext({
+    window,
+    localStorage: storage,
+    sessionStorage: storage,
+    fetch: async () => { throw new Error("Android must not expose its token to browser fetch."); },
+    crypto: webcrypto,
+    TextEncoder,
+    URL,
+    URLSearchParams,
+    structuredClone,
+    btoa: value => Buffer.from(value, "binary").toString("base64"),
+    queueMicrotask,
+    console
+  });
+  vm.runInContext(source, context);
+
+  const result = await window.OneDriveRosterSync.sync([]);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result.saves)), [record]);
+  assert.equal(result.summary.downloaded, 1);
+  assert.equal(requests.some(request => request.path === "/me/drive/items/android-item/content"), true);
+});

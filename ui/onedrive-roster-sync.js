@@ -9,6 +9,8 @@ const GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
 const RECORD_KIND = "arcadien-roster-sync-record";
 const ANDROID_NATIVE = Boolean(window.AndroidOneDrive);
 let pendingAndroidToken = null;
+let nativeGraphRequestCounter = 0;
+const pendingNativeGraphRequests = new Map();
 
 function usableHere() {
   return /^https?:$/.test(window.location.protocol) || ANDROID_NATIVE;
@@ -33,8 +35,26 @@ function hasStoredConnection() {
   // Opening the Lists screen must never start an OAuth flow or make a network
   // request. A saved (even expired) browser token is enough to show Sync; the
   // token is refreshed only inside the user's explicit Sync request.
-  if (ANDROID_NATIVE) return Boolean(window.AndroidOneDrive.getCachedAccessToken());
+  if (ANDROID_NATIVE) {
+    try {
+      return Boolean(window.AndroidOneDrive.hasCachedConnection());
+    } catch {
+      return false;
+    }
+  }
   return Boolean(readTokens());
+}
+
+function clearStoredConnection() {
+  if (ANDROID_NATIVE) {
+    try {
+      window.AndroidOneDrive.disconnect();
+    } catch {
+      // The native token cache may already be unavailable during teardown.
+    }
+  } else {
+    localStorage.removeItem(ONEDRIVE_TOKEN_KEY);
+  }
 }
 
 function saveTokens(tokens) {
@@ -67,12 +87,22 @@ async function tokenRequest(body) {
 
 async function accessToken() {
   if (ANDROID_NATIVE) {
-    const cached = window.AndroidOneDrive.getCachedAccessToken();
-    if (cached) return cached;
-    return new Promise((resolve, reject) => {
-      pendingAndroidToken = { resolve, reject };
-      window.AndroidOneDrive.beginSignIn();
+    if (hasStoredConnection()) return "native";
+    if (pendingAndroidToken) return pendingAndroidToken.promise;
+    let resolveConnection;
+    let rejectConnection;
+    const promise = new Promise((resolve, reject) => {
+      resolveConnection = resolve;
+      rejectConnection = reject;
     });
+    pendingAndroidToken = { promise, resolve: resolveConnection, reject: rejectConnection };
+    try {
+      window.AndroidOneDrive.beginSignIn();
+    } catch (error) {
+      pendingAndroidToken = null;
+      rejectConnection(error);
+    }
+    return promise;
   }
   const tokens = readTokens();
   if (!tokens) return null;
@@ -88,18 +118,43 @@ async function accessToken() {
   return refreshed.access_token;
 }
 
-async function graph(path, options = {}) {
-  const token = await accessToken();
-  if (!token) throw new Error("Connect OneDrive first.");
-  const response = await fetch(`${GRAPH_ROOT}${path}`, {
-    ...options,
-    headers: { Authorization: `Bearer ${token}`, ...(options.headers || {}) }
+async function nativeGraph(path, options = {}) {
+  await accessToken();
+  const relativePath = String(path || "");
+  if (!relativePath.startsWith("/me/drive/")) throw new Error("OneDrive requested an unsupported resource.");
+  const requestId = `graph-${Date.now()}-${++nativeGraphRequestCounter}`;
+  const method = String(options.method || "GET").toUpperCase();
+  const body = options.body == null ? null : String(options.body);
+  const ifMatch = options.headers?.["If-Match"] || options.headers?.["if-match"] || null;
+  return new Promise((resolve, reject) => {
+    pendingNativeGraphRequests.set(requestId, { resolve, reject });
+    try {
+      window.AndroidOneDrive.graphRequest(requestId, method, relativePath, body, ifMatch);
+    } catch (error) {
+      pendingNativeGraphRequests.delete(requestId);
+      reject(error);
+    }
   });
+}
+
+async function graph(path, options = {}) {
+  const { allowStatuses = [], ...requestOptions } = options;
+  let response;
+  if (ANDROID_NATIVE) {
+    response = await nativeGraph(path, requestOptions);
+  } else {
+    const token = await accessToken();
+    if (!token) throw new Error("Connect OneDrive first.");
+    response = await fetch(`${GRAPH_ROOT}${path}`, {
+      ...requestOptions,
+      headers: { Authorization: `Bearer ${token}`, ...(requestOptions.headers || {}) }
+    });
+  }
   if (response.status === 401) {
-    localStorage.removeItem(ONEDRIVE_TOKEN_KEY);
+    clearStoredConnection();
     throw new Error("Your OneDrive connection expired. Connect it again to sync.");
   }
-  if (!response.ok) {
+  if (!response.ok && !allowStatuses.includes(response.status)) {
     const data = await response.json().catch(() => ({}));
     throw new Error(data?.error?.message || "OneDrive could not complete that sync.");
   }
@@ -130,11 +185,8 @@ async function fileName(id) {
 
 async function rosterFolder() {
   const root = await (await graph("/me/drive/special/approot")).json();
-  const existing = await fetch(`${GRAPH_ROOT}/me/drive/items/${root.id}:/rosters`, {
-    headers: { Authorization: `Bearer ${await accessToken()}` }
-  });
-  if (existing.ok) return existing.json();
-  if (existing.status !== 404) throw new Error("OneDrive could not open the Arcadien sync folder.");
+  const existing = await graph(`/me/drive/items/${root.id}:/rosters`, { allowStatuses: [404] });
+  if (existing.status !== 404) return existing.json();
   const created = await graph(`/me/drive/items/${root.id}/children`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -321,15 +373,47 @@ window.OneDriveRosterSync = {
   completeSignIn,
   sync,
   cleanDuplicates,
+  cancelPendingSignIn: () => {
+    const pending = pendingAndroidToken;
+    pendingAndroidToken = null;
+    if (pending) pending.reject(new Error("Microsoft sign-in was cancelled."));
+    if (ANDROID_NATIVE && typeof window.AndroidOneDrive.cancelSignIn === "function") window.AndroidOneDrive.cancelSignIn();
+  },
   disconnect: () => {
-    if (ANDROID_NATIVE) window.AndroidOneDrive.disconnect();
-    else localStorage.removeItem(ONEDRIVE_TOKEN_KEY);
+    const pending = pendingAndroidToken;
+    pendingAndroidToken = null;
+    if (pending) pending.reject(new Error("Microsoft sign-in was cancelled."));
+    clearStoredConnection();
   },
   androidAccessTokenReceived: (token, error) => {
     const pending = pendingAndroidToken;
     pendingAndroidToken = null;
     if (!pending) return;
-    if (token) pending.resolve(token);
+    if (token) pending.resolve("native");
     else pending.reject(new Error(error || "Microsoft sign-in did not finish."));
+  },
+  androidSignInCompleted: error => {
+    const pending = pendingAndroidToken;
+    pendingAndroidToken = null;
+    if (!pending) return;
+    if (error) pending.reject(new Error(error));
+    else pending.resolve("native");
+  },
+  androidGraphResponseReceived: (requestId, status, body, error) => {
+    const pending = pendingNativeGraphRequests.get(requestId);
+    pendingNativeGraphRequests.delete(requestId);
+    if (!pending) return;
+    if (error) {
+      pending.reject(new Error(error));
+      return;
+    }
+    const responseBody = String(body || "");
+    const responseStatus = Number(status || 0);
+    pending.resolve({
+      ok: responseStatus >= 200 && responseStatus < 300,
+      status: responseStatus,
+      text: async () => responseBody,
+      json: async () => responseBody ? JSON.parse(responseBody) : {}
+    });
   }
 };
