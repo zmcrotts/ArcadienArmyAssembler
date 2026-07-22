@@ -80,6 +80,42 @@ const DEFAULT_CATALOGUE_PREFERENCES = {
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
 const MAX_IMPORT_RECORDS = 500;
 const MAX_ROSTER_ENTRIES_PER_IMPORT = 2000;
+const SAVED_ROSTER_FACTION_ICONS = Object.freeze({
+  "Imperium - Adepta Sororitas": "adepta-sororitas.svg",
+  "Imperium - Adeptus Custodes": "adeptus-custodes.svg",
+  "Imperium - Adeptus Mechanicus": "adeptus-mechanicus.svg",
+  "Imperium - Agents of the Imperium": "agents-of-the-imperium.svg",
+  "Imperium - Astra Militarum": "astra-militarum.svg",
+  "Imperium - Grey Knights": "grey-knights.svg",
+  "Imperium - Imperial Knights": "imperial-knights.svg",
+  "Imperium - Adeptus Astartes - Space Marines": "space-marines.svg",
+  "Imperium - Adeptus Astartes - Black Templars": "black-templars.svg",
+  "Imperium - Adeptus Astartes - Blood Angels": "blood-angels.svg",
+  "Imperium - Adeptus Astartes - Dark Angels": "dark-angels.svg",
+  "Imperium - Adeptus Astartes - Deathwatch": "deathwatch.svg",
+  "Imperium - Adeptus Astartes - Imperial Fists": "imperial-fists.svg",
+  "Imperium - Adeptus Astartes - Iron Hands": "iron-hands.svg",
+  "Imperium - Adeptus Astartes - Raven Guard": "raven-guard.svg",
+  "Imperium - Adeptus Astartes - Salamanders": "salamanders.svg",
+  "Imperium - Adeptus Astartes - Space Wolves": "space-wolves.svg",
+  "Imperium - Adeptus Astartes - Ultramarines": "ultramarines.svg",
+  "Imperium - Adeptus Astartes - White Scars": "white-scars.svg",
+  "Chaos - Chaos Daemons": "chaos-daemons.svg",
+  "Chaos - Chaos Knights": "chaos-knights.svg",
+  "Chaos - Chaos Space Marines": "chaos-space-marines.svg",
+  "Chaos - Death Guard": "death-guard.svg",
+  "Chaos - Emperor's Children": "emperors-children.svg",
+  "Chaos - Thousand Sons": "thousand-sons.svg",
+  "Chaos - World Eaters": "world-eaters.svg",
+  "Xenos - Aeldari": "aeldari.svg",
+  "Xenos - Drukhari": "drukhari.svg",
+  "Xenos - Genestealer Cults": "genestealer-cults.svg",
+  "Xenos - Leagues of Votann": "leagues-of-votann.svg",
+  "Xenos - Necrons": "necrons.svg",
+  "Xenos - Orks": "orks.svg",
+  "Xenos - T'au Empire": "tau-empire.svg",
+  "Xenos - Tyranids": "tyranids.svg"
+});
 
 let currentFaction = "";
 let currentSubfaction = "";
@@ -96,6 +132,8 @@ let availableUnitsCollapsed = loadAvailableUnitsCollapsed();
 const sidebarDisclosureState = {};
 const unitSectionDisclosureState = {};
 let appMode = "library";
+let savedRosterSearchText = "";
+let savedRosterFactionFilter = "";
 let newRosterDraft = null;
 let compactorSkippableWargear = {};
 let lastDiscordExportText = "";
@@ -1023,7 +1061,8 @@ function handleMobileRosterAction(button) {
 }
 
 function renderStartScreen() {
-  const saves = savedRosterLibrary();
+  const saves = sortedSavedRosterLibrary();
+  const factionOptions = savedRosterFactionOptions(saves);
   startScreen.innerHTML = `
     <div class="startHeader">
       <div class="startBrandRow">
@@ -1043,19 +1082,43 @@ function renderStartScreen() {
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
+    <div class="startRosterFilters">
+      <label class="startRosterSearch">
+        <span>Search lists</span>
+        <input id="startRosterSearch" type="search" placeholder="Search list names" value="${escapeHtml(savedRosterSearchText)}">
+      </label>
+      <label class="startRosterFactionFilter">
+        <span>Faction</span>
+        <select id="startRosterFactionFilter">
+          <option value="">All factions</option>
+          ${factionOptions.map(option => `<option value="${escapeHtml(option.id)}" ${option.id === savedRosterFactionFilter ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+        </select>
+      </label>
+      <small id="savedRosterFilterSummary" class="muted"></small>
+    </div>
     <div class="savedRosterCards">
-      ${saves.length ? saves.map(save => `
-        <div class="savedRosterCard">
-          <div>
-            <b>${escapeHtml(save.document?.name || "Unnamed roster")}</b>
-            <small>${escapeHtml(rosterSaveLabel(save.document || {}))}</small>
+      ${saves.length ? saves.map(save => {
+        const faction = savedRosterFaction(save);
+        return `
+        <div class="savedRosterCard" data-roster-name="${escapeHtml(normalizedRosterName(save))}" data-faction-id="${escapeHtml(faction.id)}">
+          <div class="savedRosterIdentity">
+            <span class="savedRosterFactionMark" data-allegiance="${escapeHtml(faction.allegiance)}" aria-hidden="true">
+              <img src="assets/factions/${escapeHtml(faction.icon)}" alt="">
+            </span>
+            <div class="savedRosterText">
+              <b>${escapeHtml(save.document?.name || "Unnamed roster")}</b>
+              <small>${escapeHtml(savedRosterMetadata(save.document || {}, faction))}</small>
+            <small class="savedRosterEdited"><time datetime="${escapeHtml(savedRosterEditedIso(save))}">Last edited ${escapeHtml(formatSavedRosterEditedAt(save))}</time></small>
+            </div>
           </div>
           <div class="savedRosterActions">
             <button class="startLoadRoster" data-save-id="${escapeHtml(save.id)}">Load</button>
             <button class="startDeleteRoster" data-save-id="${escapeHtml(save.id)}">Delete</button>
           </div>
         </div>
-      `).join("") : `<p class="muted">No saved rosters yet.</p>`}
+      `;
+      }).join("") : `<p class="muted">No saved rosters yet.</p>`}
+      <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
     </div>
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
@@ -1064,12 +1127,42 @@ function renderStartScreen() {
   const disconnectSyncButton = document.getElementById("startDisconnectSync");
   if (disconnectSyncButton) disconnectSyncButton.onclick = disconnectRosterSync;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
+  const rosterSearch = document.getElementById("startRosterSearch");
+  if (rosterSearch) rosterSearch.oninput = event => {
+    savedRosterSearchText = event.target.value;
+    applySavedRosterFilters();
+  };
+  const rosterFactionFilter = document.getElementById("startRosterFactionFilter");
+  if (rosterFactionFilter) rosterFactionFilter.onchange = event => {
+    savedRosterFactionFilter = event.target.value;
+    applySavedRosterFilters();
+  };
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
   }
   for (const button of startScreen.querySelectorAll(".startDeleteRoster")) {
     button.onclick = () => requestDeleteRoster(button.dataset.saveId);
   }
+  applySavedRosterFilters();
+}
+
+function applySavedRosterFilters() {
+  if (!startScreen) return;
+  const query = savedRosterSearchText.trim().toLocaleLowerCase();
+  const cards = [...startScreen.querySelectorAll(".savedRosterCard")];
+  let visibleCount = 0;
+  for (const card of cards) {
+    const visible = (!query || card.dataset.rosterName.includes(query))
+      && (!savedRosterFactionFilter || card.dataset.factionId === savedRosterFactionFilter);
+    card.hidden = !visible;
+    if (visible) visibleCount += 1;
+  }
+  const summary = document.getElementById("savedRosterFilterSummary");
+  if (summary) summary.textContent = query || savedRosterFactionFilter
+    ? `${visibleCount} of ${cards.length} saved roster${cards.length === 1 ? "" : "s"}`
+    : `${cards.length} saved roster${cards.length === 1 ? "" : "s"} · newest first`;
+  const noMatches = document.getElementById("savedRosterNoMatches");
+  if (noMatches) noMatches.hidden = cards.length === 0 || visibleCount > 0;
 }
 
 function openNewRosterModal() {
@@ -3753,6 +3846,9 @@ function formatSheetTotalPoints(sheet) {
 function rosterCopyContexts() {
   const seen = new Map();
   const contexts = new Map();
+  const allModelsHaveImperiumKeyword = roster.length > 0 && roster.every(item =>
+    (item.unitPackage?.definition?.keywords || []).some(keyword => String(keyword).toLowerCase() === "imperium")
+  );
   for (const item of roster) {
     const key = item.unitPackage?.selectionKey || item.unitPackage?.definition?.selectionKey || item.unitPackage?.definition?.id;
     const previousCopies = seen.get(key) || 0;
@@ -3760,7 +3856,10 @@ function rosterCopyContexts() {
     contexts.set(item.instanceId, {
       rosterCopyIndex: previousCopies + 1,
       previousCopies,
-      rosterCopyCount: seen.get(key)
+      rosterCopyCount: seen.get(key),
+      mfmContext: allModelsHaveImperiumKeyword
+        ? "Every model has the Imperium keyword"
+        : "Imperial Agents army"
     });
   }
   return contexts;
@@ -3908,6 +4007,56 @@ function normalizedRosterName(record) {
   return String(record?.document?.name || "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
 }
 
+function savedRosterEditedIso(record) {
+  const value = record?.lastEditedAt || record?.savedAt || "";
+  return Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : "";
+}
+
+function savedRosterEditedTime(record) {
+  const iso = savedRosterEditedIso(record);
+  return iso ? Date.parse(iso) : 0;
+}
+
+function formatSavedRosterEditedAt(record) {
+  const iso = savedRosterEditedIso(record);
+  if (!iso) return "date unavailable";
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+}
+
+function sortedSavedRosterLibrary(saves = savedRosterLibrary()) {
+  return [...saves].sort((left, right) =>
+    savedRosterEditedTime(right) - savedRosterEditedTime(left)
+    || normalizedRosterName(left).localeCompare(normalizedRosterName(right))
+  );
+}
+
+function savedRosterFaction(record) {
+  const sourceId = record?.document?.subfaction || record?.document?.faction || "";
+  const faction = factionRecords().find(item => item.id === sourceId || (item.modes || []).some(mode => mode.id === sourceId));
+  const mode = (faction?.modes || []).find(item => item.id === sourceId);
+  return {
+    id: sourceId || faction?.id || "unknown",
+    label: sourceId === faction?.id ? faction.label : mode?.label || faction?.label || factionLabelFor(sourceId) || "Unknown faction",
+    allegiance: faction?.allegiance || sourceId.split(" - ")[0] || "Unknown",
+    icon: SAVED_ROSTER_FACTION_ICONS[sourceId] || SAVED_ROSTER_FACTION_ICONS[faction?.id] || "unknown.svg"
+  };
+}
+
+function savedRosterMetadata(document, faction) {
+  const detachment = (document.detachments || []).map(item => item.name).join(" + ") || document.detachment?.name || "No detachment";
+  const points = `${document.totalPoints || 0}/${document.pointsLimit || 0} pts`;
+  return `${faction.label} · ${detachment} · ${points}`;
+}
+
+function savedRosterFactionOptions(saves) {
+  const factions = new Map();
+  for (const save of saves) {
+    const faction = savedRosterFaction(save);
+    factions.set(faction.id, faction);
+  }
+  return [...factions.values()].sort((left, right) => left.label.localeCompare(right.label));
+}
+
 function savedEntriesFromDocument(document) {
   if (Array.isArray(document?.rosterEntries)) return document.rosterEntries;
   if (Array.isArray(document?.units)) return document.units;
@@ -3943,9 +4092,12 @@ function normalizeImportedRosterRecord(input, index) {
   const id = input?.document ? input.id : null;
   if (id != null && (typeof id !== "string" || !id || id.length > 240)) throw new Error(`Roster ${index + 1} has an invalid saved-record ID.`);
   if (input?.savedAt != null && !Number.isFinite(Date.parse(input.savedAt))) throw new Error(`Roster ${index + 1} has an invalid save timestamp.`);
+  if (input?.lastEditedAt != null && !Number.isFinite(Date.parse(input.lastEditedAt))) throw new Error(`Roster ${index + 1} has an invalid last-edited timestamp.`);
+  const lastEditedAt = input?.lastEditedAt || input?.savedAt || new Date().toISOString();
   return {
     id: id || newRosterSaveId(),
-    savedAt: input?.savedAt || new Date().toISOString(),
+    savedAt: input?.savedAt || lastEditedAt,
+    lastEditedAt,
     document: structuredClone(document)
   };
 }
@@ -4020,6 +4172,7 @@ async function validateSyncedRosterLibrary(records) {
     const record = records[index];
     if (!validRosterSaveRecord(record)) throw new Error(`Synced roster ${index + 1} has an invalid saved-record structure.`);
     if (!Number.isFinite(Date.parse(record.savedAt || ""))) throw new Error(`Synced roster ${index + 1} has an invalid save timestamp.`);
+    if (record.lastEditedAt != null && !Number.isFinite(Date.parse(record.lastEditedAt))) throw new Error(`Synced roster ${index + 1} has an invalid last-edited timestamp.`);
     if (ids.has(record.id)) throw new Error(`OneDrive returned the saved-record ID ${record.id} more than once.`);
     ids.add(record.id);
     let serialized;
@@ -4047,7 +4200,7 @@ function rosterSaveLabel(document) {
 
 function renderRosterSaveBrowser() {
   if (!rosterSavesSelect) return;
-  const saves = savedRosterLibrary();
+  const saves = sortedSavedRosterLibrary();
   rosterSavesSelect.innerHTML = saves.length
     ? `<option value="">Saved rosters...</option>` + saves.map(save => `<option value="${escapeHtml(save.id)}">${escapeHtml(rosterSaveLabel(save.document))}</option>`).join("")
     : `<option value="">No saved rosters</option>`;
@@ -4077,7 +4230,8 @@ function saveRoster() {
   const id = active?.id || newRosterSaveId();
   const nameCollision = saves.find(save => save.id !== id && normalizedRosterName(save) === normalizedRosterName({ document }));
   if (nameCollision && !confirm(`Another saved roster is already named “${document.name}”. Save this as a separate roster with the same name?`)) return;
-  const record = { id, savedAt: new Date().toISOString(), document };
+  const lastEditedAt = new Date().toISOString();
+  const record = { id, savedAt: lastEditedAt, lastEditedAt, document };
   const existingIndex = saves.findIndex(save => save.id === id);
   if (existingIndex >= 0) saves[existingIndex] = record;
   else saves.push(record);

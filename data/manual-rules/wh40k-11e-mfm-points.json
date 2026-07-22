@@ -1,0 +1,6357 @@
+{
+  "schemaVersion": 1,
+  "source": "https://mfm.warhammer-community.com/en",
+  "version": "1.1",
+  "generatedAt": "2026-07-22T15:46:03.074363Z",
+  "changes": [
+    {
+      "kind": "enhancement",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "detachmentName": "PENITENT HOST",
+      "enhancementName": "Catechism of Divine Penitence",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "detachmentName": "PENITENT HOST",
+      "enhancementName": "Psalm of Righteous Judgement",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "detachmentName": "PENITENT HOST",
+      "enhancementName": "Refrain of Enduring Faith",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "LIONS OF THE EMPEROR",
+      "enhancementName": "Admonimortis",
+      "points": 30
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "SHIELD HOST",
+      "enhancementName": "From the Hall of Armouries",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Fusillade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Temporal Corridor",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "detachmentName": "SCINTILLATING LEGION",
+      "enhancementName": "Inescapable Eye",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "detachmentName": "SCINTILLATING LEGION",
+      "enhancementName": "Infernal Puppeteer",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "detachmentName": "SCINTILLATING LEGION",
+      "enhancementName": "Neverblade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "detachmentName": "SOULFORGED WARPACK",
+      "enhancementName": "Tempting Addendum",
+      "points": 40
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Fusillade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Temporal Corridor",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "LION’S BLADE TASK FORCE",
+      "enhancementName": "Stalwart Champion",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Fusillade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Temporal Corridor",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "detachmentName": "VEILED BLADE ELIMINATION FORCE",
+      "enhancementName": "Decoy Targets",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "detachmentName": "VEILED BLADE ELIMINATION FORCE",
+      "enhancementName": "Esoteric Explosives",
+      "points": 10
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "detachmentName": "VEILED BLADE ELIMINATION FORCE",
+      "enhancementName": "Introneural Biotech",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "detachmentName": "VEILED BLADE ELIMINATION FORCE",
+      "enhancementName": "Micromelta Rounds",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "detachmentName": "ARMOURED TRAILBLAZERS",
+      "enhancementName": "Saturation Rounds (Upgrade)",
+      "points": 15
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "BLADE OF ULTRAMAR",
+      "enhancementName": "Armour of Antoninus",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Fusillade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Temporal Corridor",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "GLADIUS TASK FORCE",
+      "enhancementName": "Artificer Armour",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "IRONSTORM SPEARHEAD",
+      "enhancementName": "The Flesh Is Weak",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Fusillade",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "LIBRARIUS CONCLAVE",
+      "enhancementName": "Temporal Corridor",
+      "points": 25
+    },
+    {
+      "kind": "enhancement",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "detachmentName": "VANGUARD ONSLAUGHT",
+      "enhancementName": "Hunting Grounds",
+      "points": 30
+    },
+    {
+      "kind": "enhancement",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "detachmentName": "BUTCHERS OF KHORNE",
+      "enhancementName": "Gore-stained Veterans (Upgrade)",
+      "points": 20
+    },
+    {
+      "kind": "enhancement",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "detachmentName": "VESSELS OF WRATH",
+      "enhancementName": "Archslaughterer",
+      "points": 30
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "CELESTIAN SACRESANTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "CELESTIAN SACRESANTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "CELESTIAN SACRESANTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "CELESTIAN SACRESANTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "DOMINION SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "DOMINION SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "HOSPITALLER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "HOSPITALLER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "IMAGIFIER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "IMMOLATOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "IMMOLATOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "INTRANZIA FRAYE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 135
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "JUNITH ERUITA",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "MORVENN VAHL",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "REPENTIA SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "REPENTIA SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SERAPHIM SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SERAPHIM SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SERAPHIM SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SERAPHIM SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SISTERS NOVITIATE SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SORORITAS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "SORORITAS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "ZEPHYRIM SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "ZEPHYRIM SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "ZEPHYRIM SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "ZEPHYRIM SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "ALEYA",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "ANATHEMA PSYKANA RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "ANATHEMA PSYKANA RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "CUSTODIAN WARDENS",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "4 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "CUSTODIAN WARDENS",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "5 models",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "CUSTODIAN WARDENS",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "4 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "CUSTODIAN WARDENS",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "5 models",
+      "points": 270
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VENATARI CUSTODIANS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VENATARI CUSTODIANS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VENATARI CUSTODIANS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VENATARI CUSTODIANS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 310
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "HASTARII EXTERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "HASTARII EXTERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "2 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "2 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 265
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "KATAPHRON BREACHERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "KATAPHRON BREACHERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 310
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "KATAPHRON DESTROYERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "KATAPHRON DESTROYERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SERBERYS RAIDERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SERBERYS RAIDERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SERBERYS SULPHURHOUNDS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SERBERYS SULPHURHOUNDS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SKITARII VANGUARD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SKORPIUS DUNERIDER",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "SKORPIUS DUNERIDER",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "AUTARCH",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "AUTARCH WAYLEAPER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "AVATAR OF KHAINE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "CORSAIR SKYREAVERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "CORSAIR SKYREAVERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "CORSAIR VOIDSCARRED",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "CORSAIR VOIDSCARRED",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "DEATH JESTER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "FARSEER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "FARSEER SKYRUNNER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SHADOWSEER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SHINING SPEARS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SHINING SPEARS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SHROUD RUNNERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SHROUD RUNNERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SKYWEAVERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SKYWEAVERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "STARWEAVER",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "STARWEAVER",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SWOOPING HAWKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SWOOPING HAWKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SWOOPING HAWKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 205
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "SWOOPING HAWKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WAR WALKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WAR WALKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WARLOCK SKYRUNNERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WARLOCK SKYRUNNERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WARP SPIDERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WARP SPIDERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WARP SPIDERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WAVE SERPENT",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WAVE SERPENT",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WINDRIDERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WINDRIDERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WRAITHKNIGHT",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 385
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WRAITHKNIGHT",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 405
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WRAITHKNIGHT WITH GHOSTGLAIVE",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 380
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WRAITHKNIGHT WITH GHOSTGLAIVE",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 400
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "YNNARI RAIDER",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "YNNARI RAIDER",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "YNNARI VENOM",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "YNNARI VENOM",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "BANEHAMMER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 385
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "BANEHAMMER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 420
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "BANESWORD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 415
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "BANESWORD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 450
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "CADIAN COMMAND SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "CENTAUR RSV",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "CENTAUR RSV",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "CHIMERA",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "CHIMERA",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "COMMISSAR YARRICK",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "DOOMHAMMER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 380
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "DOOMHAMMER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 410
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "HELLHAMMER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 385
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "HELLHAMMER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 415
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "KASRKIN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "KASRKIN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "KRIEG COMMAND SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "LEMAN RUSS COMMANDER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 215
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "LEMAN RUSS COMMANDER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 230
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "LEMAN RUSS DEMOLISHER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "LEMAN RUSS DEMOLISHER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "MILITARUM TEMPESTUS COMMAND SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "MILITARUM TEMPESTUS COMMAND SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "SHADOWSWORD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 375
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "SHADOWSWORD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 405
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "STORMLORD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 395
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "STORMLORD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 430
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "STORMSWORD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 430
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "STORMSWORD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 465
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TAUROX",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TAUROX",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TAUROX PRIME",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TAUROX PRIME",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TEMPESTUS AQUILONS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TEMPESTUS SCIONS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TEMPESTUS SCIONS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TEMPESTUS SCIONS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "TEMPESTUS SCIONS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "CHAPLAIN GRIMALDUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "CRUSADE ANCIENT",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 40
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "EMPEROR’S CHAMPION",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "EXECRATOR",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "HIGH MARSHAL HELBRECHT",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "MARSHAL",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "MARSHAL",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 255
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 275
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 265
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 230
+    },
+    {
+      "kind": "unit",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BEASTS OF NURGLE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BEASTS OF NURGLE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "FLUXMASTER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "KAIROS FATEWEAVER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 305
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "LORD OF CHANGE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 320
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "LORD OF CHANGE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Daemons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
+      "unitName": "SHALAXI HELBANE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 315
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-knights",
+      "unitName": "WAR DOG HUNTSMAN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 135
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-knights",
+      "unitName": "WAR DOG STALKER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 135
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "ABADDON THE DESPOILER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 295
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "ACCURSED CULTISTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "16 models",
+      "points": 195
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "ACCURSED CULTISTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "8 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "ACCURSED CULTISTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "16 models",
+      "points": 215
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "ACCURSED CULTISTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "8 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS LORD WITH JUMP PACK",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 145
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 155
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS PREDATOR DESTRUCTOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS PREDATOR DESTRUCTOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 350
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHAOS TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHOSEN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 270
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHOSEN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 135
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHOSEN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 280
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "CHOSEN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 145
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DARK COMMUNE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DARK COMMUNE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "HURON BLACKHEART",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "MASTERS OF THE MAELSTROM",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 145
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "MUTILATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "MUTILATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "NEMESIS CLAW",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "NEMESIS CLAW",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "RED CORSAIRS REAVE-CAPTAIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "VASHTORR THE ARKIFANE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "VENOMCRAWLER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "VENOMCRAWLER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INNER CIRCLE COMPANIONS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INNER CIRCLE COMPANIONS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INNER CIRCLE COMPANIONS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "INNER CIRCLE COMPANIONS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LAND SPEEDER VENGEANCE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LAND SPEEDER VENGEANCE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "LION EL’JONSON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 265
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "NEPHILIM JETFIGHTER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RAVENWING COMMAND SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RAVENWING COMMAND SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RAVENWING DARKSHROUD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "SAMMAEL",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEATHSHROUD TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEATHSHROUD TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 305
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEATHSHROUD TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEATHSHROUD TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 315
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "MORTARION",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 390
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "PLAGUE MARINES",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "PLAGUE MARINES",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "PLAGUE MARINES",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "7 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "RAIDER",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "RAIDER",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "RAVAGER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "VENOM",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "VENOM",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "FULGRIM",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "LUCIUS THE ETERNAL",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "MAULERFIEND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "MAULERFIEND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "SHALAXI HELBANE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 315
+    },
+    {
+      "kind": "unit",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "SORCERER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ABERRANTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 280
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ABERRANTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ABERRANTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 290
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ABERRANTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ACOLYTE HYBRIDS WITH HAND FLAMERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "9 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "ATALAN JACKALS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "9 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "GOLIATH TRUCK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "GOLIATH TRUCK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "HYBRID METAMORPHS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "HYBRID METAMORPHS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "HYBRID METAMORPHS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "HYBRID METAMORPHS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "NEOPHYTE HYBRIDS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "NEOPHYTE HYBRIDS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "20 models",
+      "points": 135
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "PURESTRAIN GENESTEALERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "PURESTRAIN GENESTEALERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "PURESTRAIN GENESTEALERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "PURESTRAIN GENESTEALERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "REDUCTUS SABOTEUR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Genestealer Cults",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/genestealer-cults",
+      "unitName": "REDUCTUS SABOTEUR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "BROTHERHOOD TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 360
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "BROTHERHOOD TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "BROTHERHOOD TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "BROTHERHOOD TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "8 models",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "GRAND MASTER VOLDUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "STRIKE SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 230
+    },
+    {
+      "kind": "unit",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "STRIKE SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "DEATHWATCH KILL TEAM",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "DEATHWATCH KILL TEAM",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "EVERSOR ASSASSIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "EVERSOR ASSASSIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "GREY KNIGHTS TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "GREY KNIGHTS TERMINATOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "IMPERIAL RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "IMPERIAL RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "IMPERIAL RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "IMPERIAL RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "INQUISITORIAL CHIMERA",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "INQUISITORIAL CHIMERA",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "INQUISITORIAL CHIMERA",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "INQUISITORIAL CHIMERA",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "SISTERS OF BATTLE IMMOLATOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "SISTERS OF BATTLE IMMOLATOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "SISTERS OF BATTLE IMMOLATOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "SISTERS OF BATTLE IMMOLATOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "SISTERS OF BATTLE SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "WATCH MASTER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "BEREHK STORNBRÖW",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "BRÔKHYR IRON-MASTER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "BURI AEGNIRSSEN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "KAPRICUS CARRIER",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "KAPRICUS CARRIER",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "SAGITAUR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Leagues of Votann",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/leagues-of-votann",
+      "unitName": "SAGITAUR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "CANOPTEK REANIMATOR",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "CHRONOMANCER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "CHRONOMANCER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "DOOMSDAY ARK",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "DOOMSDAY ARK",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 230
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 40
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "2 models",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "2 models",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "2 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "2 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "LOKHUST HEAVY DESTROYERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "NEKROSOR AMMENTAR",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 185
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "SKORPEKH LORD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "SKORPEKH LORD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "TESSERACT VAULT",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 465
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "TESSERACT VAULT",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 485
+    },
+    {
+      "kind": "unit",
+      "faction": "Necrons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
+      "unitName": "THE SILENT KING",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 420
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BIG MEK DAKKARIG",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BIG MEK WITH SHOKK ATTACK GUN",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BIG MEK WITH SHOKK ATTACK GUN",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BOYZ",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "10 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BOYZ",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "20 models",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BOYZ",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "10 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "BOYZ",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "20 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "GRETCHIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 Runtherd, 10 Gretchin",
+      "points": 45
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "GRETCHIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 Runtherd, 20 Gretchin",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "GRETCHIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 Gretchin",
+      "points": 45
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "GRETCHIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 Runtherd, 20 Gretchin",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "GRETCHIN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "20 Gretchin",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "MEK",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "PAINBOSS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "PAINBOY",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "TRUKK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "TRUKK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "unitName": "WARBOSS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "CAPTAIN TITUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "CATO SICARIUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "CHIEF LIBRARIAN TIGURIUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 265
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "MARNEUS CALGAR IN ARMOUR OF ANTILOCHUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 155
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 255
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 275
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "ROBOUTE GUILLIMAN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 355
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "SUBODEN KHAN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "URIEL VENTRIS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "3 models",
+      "points": 110
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "6 models",
+      "points": 230
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "3 models",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "6 models",
+      "points": 250
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "WARDENS OF ULTRAMAR",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "AGGRESSOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "ARJAC ROCKFIST",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 60
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "DROP POD",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "ERADICATOR SQUAD WITH HEAVY BOLTERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "IMPULSOR",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "INCEPTOR SQUAD",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "INFERNUS SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "IRON PRIEST",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "LAND SPEEDER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "LIBRARIAN",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "LIEUTENANT WITH COMBI-WEAPON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "LOGAN GRIMNAR",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "NJAL STORMCALLER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "RAGNAR BLACKMANE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "RAZORBACK",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "STERNGUARD VETERAN SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "STORM SPEEDER HAMMERSTRIKE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "SUPPRESSOR SQUAD",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "VANGUARD VETERAN SQUAD WITH JUMP PACKS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF GUARD TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF GUARD TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF GUARD TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 315
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF GUARD TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF SCOUTS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "12 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF SCOUTS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "CHAOS PREDATOR DESTRUCTOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 300
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "KAIROS FATEWEAVER",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 305
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "LORD OF CHANGE",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 320
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "LORD OF CHANGE",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SCARAB OCCULT TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 385
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SCARAB OCCULT TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 180
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SCARAB OCCULT TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 400
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SCARAB OCCULT TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 195
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SEKHETAR ROBOTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "2 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SEKHETAR ROBOTS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "4 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SEKHETAR ROBOTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "2 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SEKHETAR ROBOTS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "4 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SORCERER",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "SORCERER",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "TZAANGOR ENLIGHTENED",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "TZAANGOR ENLIGHTENED",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "TZAANGOR SHAMAN",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 65
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "MALECEPTOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "MALECEPTOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "NEUROTYRANT",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "TOXICRENE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 120
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "TYRANNOCYTE",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 80
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "TYRANNOCYTE",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "VON RYAN’S LEAPERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "VON RYAN’S LEAPERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 105
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "ZOANTHROPES",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Tyranids",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tyranids",
+      "unitName": "ZOANTHROPES",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "6 models",
+      "points": 200
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "2 models",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 255
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "2 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 275
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "COMMANDER FARSIGHT",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 70
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "DEVILFISH",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "DEVILFISH",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "GHOSTKEEL BATTLESUIT",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "GHOSTKEEL BATTLESUIT",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "HAMMERHEAD GUNSHIP",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "HAMMERHEAD GUNSHIP",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 160
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "PATHFINDER TEAM",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "PATHFINDER TEAM",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "RIPTIDE BATTLESUIT",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "RIPTIDE BATTLESUIT",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "STORMSURGE",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 375
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "STORMSURGE",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 400
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "THE TWIN LANCE",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 220
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "TIGER SHARK",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 375
+    },
+    {
+      "kind": "unit",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "TIGER SHARK",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 425
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "ANGRON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 330
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 190
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 115
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "BLOODCRUSHERS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 210
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS PREDATOR ANNIHILATOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS PREDATOR DESTRUCTOR",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS PREDATOR DESTRUCTOR",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models",
+      "points": 330
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS TERMINATORS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models",
+      "points": 165
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models",
+      "points": 340
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS TERMINATORS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models",
+      "points": 175
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 1ST UNIT COSTS",
+      "label": "1 model",
+      "points": 270
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "DEFILER",
+      "costBand": "YOUR 2ND + UNIT COSTS",
+      "label": "1 model",
+      "points": 310
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EIGHTBOUND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 125
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EIGHTBOUND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 255
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EIGHTBOUND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EIGHTBOUND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 270
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EXALTED EIGHTBOUND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "3 models",
+      "points": 130
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EXALTED EIGHTBOUND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "6 models",
+      "points": 265
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EXALTED EIGHTBOUND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "3 models",
+      "points": 145
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "EXALTED EIGHTBOUND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "6 models",
+      "points": 280
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "FORGEFIEND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "FORGEFIEND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 155
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "KHORNE BERZERKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 170
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "KHORNE BERZERKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "20 models",
+      "points": 330
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "LORD INVOCATUS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "LORD ON JUGGERNAUT",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model",
+      "points": 95
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "MAULERFIEND",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "1 model",
+      "points": 140
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "MAULERFIEND",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "1 model",
+      "points": 150
+    },
+    {
+      "kind": "wargear",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "DOMINION SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Meltagun",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Adepta Sororitas",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
+      "unitName": "IMMOLATOR",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin multi-melta",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VENATARI CUSTODIANS",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Venatari lance",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Adeptus Mechanicus",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
+      "unitName": "IRONSTRIDER BALLISTARII",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin cognis lascannon",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Aeldari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
+      "unitName": "WRAITHKNIGHT",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy wraithcannon",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Astra Militarum",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
+      "unitName": "LEMAN RUSS COMMANDER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Demolisher battle cannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Black Templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Blood Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Hades lascannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Chaos Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy reaper autocannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Dark Angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Hades lascannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Death Guard",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/death-guard",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy reaper autocannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Drukhari",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
+      "unitName": "RAVAGER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Dark lance",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Hades lascannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Emperor’s Children",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy reaper autocannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Grey Knights",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/grey-knights",
+      "unitName": "BROTHERHOOD TERMINATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Psycannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "GREY KNIGHTS TERMINATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Psycannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Imperial Agents",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/imperial-agents",
+      "unitName": "GREY KNIGHTS TERMINATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Psycannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Banner of Macragge",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "unitName": "VICTRIX HONOUR GUARD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Blades of honour",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "CENTURION DEVASTATOR SQUAD",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Twin lascannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "REPULSOR EXECUTIONER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy laser destroyer",
+      "points": 10
+    },
+    {
+      "kind": "wargear",
+      "faction": "Space Wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "unitName": "WOLF GUARD TERMINATORS",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Storm Shield",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Hades lascannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy reaper autocannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "Thousand Sons",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
+      "unitName": "FORGEFIEND",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Ectoplasma cannon",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "BROADSIDE BATTLESUITS",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per High-yield missile pods",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "GHOSTKEEL BATTLESUIT",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Cyclic Ion Raker",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "PATHFINDER TEAM",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Ion rifle",
+      "points": 5
+    },
+    {
+      "kind": "wargear",
+      "faction": "T’au Empire",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
+      "unitName": "RIPTIDE BATTLESUIT",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Ion accelerator",
+      "points": 25
+    },
+    {
+      "kind": "wargear",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Hades lascannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "DEFILER",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Heavy reaper autocannon",
+      "points": 15
+    },
+    {
+      "kind": "wargear",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "FORGEFIEND",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per Ectoplasma cannon",
+      "points": 5
+    }
+  ]
+}

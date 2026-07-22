@@ -154,6 +154,34 @@ function selectedTreePointAdjustments(unitDefinition, rosterEntry) {
   return adjustments;
 }
 
+function normalizedMfmName(value) {
+  return String(value || "").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function matchesMfmComposition(row, unitDefinition, rosterEntry) {
+  const selections = unitDefinition?.composition || [];
+  if (row.modelCount !== null && row.modelCount !== undefined) {
+    return selections.reduce((sum, selection) => sum + selectedCount(rosterEntry, selection.id), 0) === Number(row.modelCount);
+  }
+  if (!Array.isArray(row.composition) || !row.composition.length) return true;
+  const wanted = new Map(row.composition.map(item => [normalizedMfmName(item.name).replace(/s$/, ""), Number(item.count)]));
+  return selections.every(selection => {
+    const name = normalizedMfmName(selection.name).replace(/s$/, "");
+    return selectedCount(rosterEntry, selection.id) === Number(wanted.get(name) || 0);
+  });
+}
+
+function matchingMfmRow(unitDefinition, rosterEntry) {
+  const previousCopies = Number(rosterEntry?.context?.previousCopies || 0);
+  const context = rosterEntry?.context?.mfmContext || null;
+  return (unitDefinition?.pricing?.mfmRows || []).find(row => {
+    if (row.context && row.context !== context) return false;
+    if (previousCopies < Number(row.copies?.min || 0)) return false;
+    if (row.copies?.max !== null && row.copies?.max !== undefined && previousCopies > Number(row.copies.max)) return false;
+    return matchesMfmComposition(row, unitDefinition, rosterEntry);
+  }) || null;
+}
+
 function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
   const validationErrors = validateRosterEntry(unitDefinition, rosterEntry);
   if (validationErrors.length && options.allowInvalid !== true) {
@@ -171,6 +199,7 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
         unitDefinition?.source?.catalogueId,
         unitDefinition?.source?.selectionCatalogueId,
         String(unitDefinition?.selectionKey || "").split(":")[0] || null,
+        ...(unitDefinition?.categoryIds || []),
         ...(rosterEntry?.context?.instanceOf || [])
       ].filter(Boolean),
       modelSelectionIds: (unitDefinition.composition || []).map(item => item.id)
@@ -184,14 +213,15 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
       .reduce((sum, id) => sum + selectedCount(effectiveEntry, id), 0);
   }
 
-  let points = Number(unitDefinition?.pricing?.base || 0);
+  const mfmRow = matchingMfmRow(unitDefinition, effectiveEntry);
+  let points = mfmRow ? Number(mfmRow.points) : Number(unitDefinition?.pricing?.base || 0);
   const applied = [{
-    source: unitDefinition?.pricing?.baseSource || "bsdata",
-    operation: "base",
+    source: mfmRow?.source || unitDefinition?.pricing?.baseSource || "bsdata",
+    operation: mfmRow ? "set" : "base",
     value: points
   }];
 
-  for (const selection of unitDefinition.composition || []) {
+  for (const selection of mfmRow ? [] : (unitDefinition.composition || [])) {
     const selectionPoints = selectedCount(effectiveEntry, selection.id) * Number(selection.points || 0);
     if (!selectionPoints) continue;
     points += selectionPoints;
@@ -203,20 +233,7 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
     });
   }
 
-  for (const adjustment of selectedTreePointAdjustments(unitDefinition, effectiveEntry)) {
-    points += adjustment.value;
-    applied.push({
-      source: "bsdata-selection-tree",
-      operation: "increment",
-      value: adjustment.value,
-      selectionId: adjustment.selectionId,
-      name: adjustment.name,
-      count: adjustment.count,
-      points: adjustment.points
-    });
-  }
-
-  for (const modifier of unitDefinition?.pricing?.modifiers || []) {
+  for (const modifier of mfmRow ? [] : (unitDefinition?.pricing?.modifiers || [])) {
     if (modifier.supported === false) continue;
     if (!evaluateConditionTree(modifier.when, effectiveEntry)) continue;
 
@@ -231,6 +248,19 @@ function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
       operation: modifier.operation,
       value: Number(modifier.value),
       raw: modifier.raw
+    });
+  }
+
+  for (const adjustment of selectedTreePointAdjustments(unitDefinition, effectiveEntry)) {
+    points += adjustment.value;
+    applied.push({
+      source: "bsdata-selection-tree",
+      operation: "increment",
+      value: adjustment.value,
+      selectionId: adjustment.selectionId,
+      name: adjustment.name,
+      count: adjustment.count,
+      points: adjustment.points
     });
   }
 

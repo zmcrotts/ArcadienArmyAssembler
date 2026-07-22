@@ -425,6 +425,13 @@ function categoryNames(...nodes) {
     .filter(Boolean))];
 }
 
+function categoryIds(...nodes) {
+  return [...new Set(nodes.flatMap(node => asArray(node?.categoryLinks?.categoryLink))
+    .filter(link => !bsdataFlagIsTrue(link.hidden))
+    .map(link => link.targetId)
+    .filter(Boolean))];
+}
+
 function hasEntryLinkNamed(name, ...nodes) {
   const wanted = String(name).trim().toLowerCase();
   return nodes.some(node => asArray(node?.entryLinks?.entryLink).some(link =>
@@ -672,6 +679,7 @@ function extractUnitDefinitions(dataDirectory) {
         .map(item => indexes.entries.get(item.id))
         .filter(Boolean);
       const categories = categoryNames(unit, link);
+      const categorySelectionIds = categoryIds(unit, link);
       if (categoryNames(...defaultModelEntries).some(item => item.toLowerCase() === "character")
         && !categories.some(item => item.toLowerCase() === "character")) {
         categories.push("Character");
@@ -706,6 +714,7 @@ function extractUnitDefinitions(dataDirectory) {
           targetId: link.targetId || null
         },
         categories,
+        categoryIds: categorySelectionIds,
         keywords: categories,
         conditionalKeywords: conditionalKeywordsFor(selectionTree),
         roles: {

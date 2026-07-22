@@ -595,10 +595,26 @@ button:hover {
   white-space: nowrap;
 }
 
+.startRosterFilters {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
+  margin-top: 14px;
+}
+
+.startRosterFilters label { margin: 0; }
+.startRosterFilters label span { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.startRosterFilters input, .startRosterFilters select { box-sizing: border-box; width: 100%; }
+.startRosterFilters > small { padding-bottom: 8px; white-space: nowrap; }
+
 .savedRosterCards {
   display: grid;
   gap: 8px;
+  max-height: min(60vh, 720px);
   margin-top: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .savedRosterCard {
@@ -606,9 +622,51 @@ button:hover {
   background: #f8f8f8;
   border: 1px solid #999;
   display: grid;
-  gap: 10px;
+  gap: 18px;
   grid-template-columns: minmax(0, 1fr) auto;
-  padding: 10px;
+  min-height: 58px;
+  padding: 11px 14px;
+}
+
+.savedRosterIdentity {
+  align-items: center;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  min-width: 0;
+}
+
+.savedRosterFactionMark {
+  align-items: center;
+  background: #e7edf0;
+  border: 1px solid #aab7bc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  height: 58px;
+  justify-content: center;
+  padding: 7px;
+  width: 58px;
+}
+
+.savedRosterFactionMark[data-allegiance="Imperium"] { background: #eee4ca; border-color: #c8ae74; }
+.savedRosterFactionMark[data-allegiance="Chaos"] { background: #ecd8d4; border-color: #c48c82; }
+.savedRosterFactionMark[data-allegiance="Xenos"] { background: #d4e8e3; border-color: #83afa5; }
+
+.savedRosterFactionMark img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
+.savedRosterText {
+  min-width: 0;
+}
+
+.savedRosterText b {
+  display: block;
+  line-height: 1.2;
 }
 
 .savedRosterCard small {
@@ -617,8 +675,23 @@ button:hover {
   margin-top: 4px;
 }
 
+.savedRosterCard .savedRosterEdited { color: #356352; font-weight: 700; }
+
 .savedRosterActions {
+  align-self: center;
   white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .startRosterFilters { grid-template-columns: 1fr; }
+  .startRosterFilters > small { padding-bottom: 0; }
+}
+
+@media (max-width: 520px) {
+  .savedRosterCard { gap: 10px; grid-template-columns: 1fr; padding: 10px; }
+  .savedRosterIdentity { gap: 10px; grid-template-columns: 50px minmax(0, 1fr); }
+  .savedRosterFactionMark { height: 50px; padding: 6px; width: 50px; }
+  .savedRosterActions { padding-left: 60px; }
 }
 
 .modalBackdrop {
@@ -1991,7 +2064,7 @@ button:hover {
 .loadoutStepper .loadoutStep { font-size: 24px; font-weight: 800; line-height: 1; margin: 0; min-height: 44px; padding: 0; width: 44px; }
 .loadoutStepper .loadoutStep:disabled { cursor: default; opacity: 0.38; }
 .optionName { min-width: 0; }
-.optionPoints { color: #4f6b70; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.optionPoints { color: #315f68; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .optionLimits { color: #617074; font-size: 11px; white-space: nowrap; }
 .lockedOption { color: #596164; }
 
@@ -2601,6 +2674,10 @@ html[data-theme="dark"] .rulePopover small {
   color: #89969b;
 }
 
+html[data-theme="dark"] .optionPoints {
+  color: #f6c873;
+}
+
 html[data-theme="dark"] .readonlyField,
 html[data-theme="dark"] .rosterConfiguration,
 html[data-theme="dark"] .unitSizeControl,
@@ -2892,6 +2969,10 @@ html[data-theme="dark"] strong,
 html[data-theme="dark"] .unit,
 html[data-theme="dark"] .savedRosterCard {
   color: #cbd5d9;
+}
+
+html[data-theme="dark"] .savedRosterCard .savedRosterEdited {
+  color: #a9cfbd;
 }
 
 html[data-theme="dark"] .unitActions button,

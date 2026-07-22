@@ -83,6 +83,14 @@ async function main() {
     console.log(`${faction.name}: ${attachments.length} attachment records`);
   }
 
+  const attachmentCount = factions.reduce((total, faction) => total + faction.attachments.length, 0);
+  if (attachmentCount < 100) {
+    throw new Error(
+      `Parsed only ${attachmentCount} MFM attachment records. ` +
+      "GW's streamed page markup is not compatible with the raw HTML parser; refusing to overwrite the current data."
+    );
+  }
+
   const payload = {
     schemaVersion: 1,
     source: INDEX_URL,

@@ -169,6 +169,33 @@ test("unit assignments show selected-detachment upgrades without offering charac
   assert.deepEqual(getUnitAssignmentState(army, state, roster, character).enhancements.map(item => item.name), ["Frenzied Focus"]);
 });
 
+test("chapter enhancements recognize the same unit entry from the core catalogue", () => {
+  const army = {
+    id: "raven-guard",
+    detachments: [{ id: "shadowmark", name: "Shadowmark Talon", points: 0 }],
+    enhancements: [{
+      id: "blackwing-shroud",
+      name: "Blackwing Shroud",
+      kind: "enhancement",
+      detachmentIds: ["shadowmark"],
+      eligibleSelectionKeys: ["raven-guard-catalogue:captain-entry"]
+    }]
+  };
+  const captain = {
+    instanceId: "captain-1",
+    selectionKey: "space-marines-catalogue:captain-entry",
+    name: "Captain",
+    roles: { character: true },
+    rosterRules: {}
+  };
+  const state = selectDetachment(army, createArmyState(army), "shadowmark");
+
+  assert.deepEqual(
+    getUnitAssignmentState(army, state, [captain], captain).enhancements.map(item => item.name),
+    ["Blackwing Shroud"]
+  );
+});
+
 test("roster legality is authoritative but advisory across core army rules", () => {
   const army = {
     id: "army", rulesetId: "wh40k-10e-bsdata", allowedSelectionKeys: ["battleline", "regular", "leader", "bodyguard", "epic", "transport"],

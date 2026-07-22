@@ -108,6 +108,7 @@ function evaluateRawCondition(condition, entry, index, unitDefinition) {
       unitDefinition?.source?.catalogueId,
       unitDefinition?.source?.selectionCatalogueId,
       String(unitDefinition?.selectionKey || "").split(":")[0] || null,
+      ...(unitDefinition?.categoryIds || []),
       ...(entry.context?.instanceOf || [])
     ].filter(Boolean));
     const present = instances.has(condition.childId);

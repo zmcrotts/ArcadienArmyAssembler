@@ -149,9 +149,21 @@ function getEnhancementStates(armyDefinition, armyState, rosterEntries) {
 }
 
 function canBearEnhancement(enhancement, entry) {
-  if (!entry || !(enhancement?.eligibleSelectionKeys || []).includes(entry.selectionKey)) return false;
+  if (!entry || !selectionKeyMatchesAny(entry.selectionKey, enhancement?.eligibleSelectionKeys)) return false;
   if (enhancement.kind === "upgrade") return true;
   return Boolean(entry.roles?.character && !entry.roles?.epicHero);
+}
+
+function selectionKeyMatchesAny(selectionKey, eligibleSelectionKeys = []) {
+  if (!selectionKey) return false;
+  if (eligibleSelectionKeys.includes(selectionKey)) return true;
+  const separator = selectionKey.indexOf(":");
+  if (separator < 0) return false;
+  const entryId = selectionKey.slice(separator + 1);
+  return eligibleSelectionKeys.some(key => {
+    const eligibleSeparator = String(key).indexOf(":");
+    return eligibleSeparator >= 0 && String(key).slice(eligibleSeparator + 1) === entryId;
+  });
 }
 
 function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, rosterEntry) {

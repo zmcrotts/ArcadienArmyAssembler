@@ -209,7 +209,7 @@ test("11e ruleset skips unpriced model shells but keeps priced Legends units", (
   assert.equal(byName("Shas'o R'alai").length, 0);
   assert.equal(byName("Shas'o R'alai [Legends]").length, 1);
   assert.equal(calculateEntryPoints(byName("Shas'o R'alai [Legends]")[0], createDefaultRosterEntry(byName("Shas'o R'alai [Legends]")[0])).points, 80);
-  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 205);
+  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 220);
 });
 
 test("11e Astartes chapter catalogues include shared Space Marine units and support leader targets", () => {
@@ -505,7 +505,7 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   };
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 100],
+    ["Big Mek Dakkarig", 115],
     ["Breaka Boyz", 125],
     ["Gorkanaut", 255]
   ]) {
@@ -515,7 +515,7 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 110],
+    ["Big Mek Dakkarig", 115],
     ["Breaka Boyz", 135],
     ["Gorkanaut", 275]
   ]) {
@@ -547,19 +547,19 @@ test("11e selected wargear direct points are included in entry totals", () => {
   assert.ok(riptide, "Missing Riptide Battlesuit");
 
   const entry = createDefaultRosterEntry(riptide);
-  assert.equal(calculateEntryPoints(riptide, entry).points, 180);
+  assert.equal(calculateEntryPoints(riptide, entry).points, 190);
 
   const ionAccelerator = getOptionStates(riptide, entry).find(option => option.name === "Ion accelerator");
   assert.ok(ionAccelerator, "Missing Ion accelerator option");
-  assert.equal(ionAccelerator.points, 20);
+  assert.equal(ionAccelerator.points, 25);
 
   const upgraded = setSelection(riptide, entry, ionAccelerator.id, 1);
   const pricing = calculateEntryPoints(riptide, upgraded);
-  assert.equal(pricing.points, 200);
+  assert.equal(pricing.points, 215);
   assert.ok(pricing.applied.some(item =>
     item.source === "bsdata-selection-tree"
     && item.name === "Ion accelerator"
-    && item.value === 20
+    && item.value === 25
   ));
 });
 

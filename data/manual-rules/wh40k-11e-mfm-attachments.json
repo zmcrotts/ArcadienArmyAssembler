@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "https://mfm.warhammer-community.com/en",
-  "generatedAt": "2026-07-04T13:03:04.808Z",
+  "generatedAt": "2026-07-22T14:04:08.835Z",
   "factions": [
     {
       "name": "Adepta Sororitas",
@@ -3713,7 +3713,7 @@
           ]
         },
         {
-          "unitName": "SUBODEN KHAN",
+          "unitName": "MARNEUS CALGAR IN ARMOUR OF ANTILOCHUS",
           "role": "LEADER",
           "targets": [
             "AGGRESSOR SQUAD",
@@ -3721,10 +3721,10 @@
             "BLADEGUARD VETERAN SQUAD",
             "COMPANY HEROES",
             "ERADICATOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
             "HEAVY INTERCESSOR SQUAD",
             "INFERNUS SQUAD",
             "INTERCESSOR SQUAD",
-            "STERNGUARD VETERAN SQUAD",
             "TACTICAL SQUAD",
             "TERMINATOR ASSAULT SQUAD",
             "TERMINATOR SQUAD",
@@ -3740,7 +3740,8 @@
             "COMPANY HEROES",
             "INTERCESSOR SQUAD",
             "STERNGUARD VETERAN SQUAD",
-            "TACTICAL SQUAD"
+            "TACTICAL SQUAD",
+            "VICTRIX HONOUR GUARD"
           ]
         },
         {

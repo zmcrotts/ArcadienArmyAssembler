@@ -106,6 +106,7 @@
         unitDefinition?.source?.catalogueId,
         unitDefinition?.source?.selectionCatalogueId,
         String(unitDefinition?.selectionKey || "").split(":")[0] || null,
+        ...(unitDefinition?.categoryIds || []),
         ...(entry.context?.instanceOf || [])
       ].filter(Boolean));
       const present = instances.has(condition.childId);
@@ -1047,6 +1048,31 @@
     return adjustments;
   }
 
+  function normalizedMfmName(value) {
+    return String(value || "").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  }
+
+  function matchesMfmComposition(row, unitDefinition, rosterEntry) {
+    const selections = unitDefinition?.composition || [];
+    if (row.modelCount !== null && row.modelCount !== undefined) {
+      return selections.reduce((sum, selection) => sum + selectedCount(rosterEntry, selection.id), 0) === Number(row.modelCount);
+    }
+    if (!Array.isArray(row.composition) || !row.composition.length) return true;
+    const wanted = new Map(row.composition.map(item => [normalizedMfmName(item.name).replace(/s$/, ""), Number(item.count)]));
+    return selections.every(selection => selectedCount(rosterEntry, selection.id) === Number(wanted.get(normalizedMfmName(selection.name).replace(/s$/, "")) || 0));
+  }
+
+  function matchingMfmRow(unitDefinition, rosterEntry) {
+    const previousCopies = Number(rosterEntry?.context?.previousCopies || 0);
+    const context = rosterEntry?.context?.mfmContext || null;
+    return (unitDefinition?.pricing?.mfmRows || []).find(row => {
+      if (row.context && row.context !== context) return false;
+      if (previousCopies < Number(row.copies?.min || 0)) return false;
+      if (row.copies?.max !== null && row.copies?.max !== undefined && previousCopies > Number(row.copies.max)) return false;
+      return matchesMfmComposition(row, unitDefinition, rosterEntry);
+    }) || null;
+  }
+
   function calculateEntryPoints(unitDefinition, rosterEntry) {
     const effectiveEntry = {
       ...rosterEntry,
@@ -1056,6 +1082,7 @@
           unitDefinition?.source?.catalogueId,
           unitDefinition?.source?.selectionCatalogueId,
           String(unitDefinition?.selectionKey || "").split(":")[0] || null,
+          ...(unitDefinition?.categoryIds || []),
           ...(rosterEntry?.context?.instanceOf || [])
         ].filter(Boolean),
         modelSelectionIds: (unitDefinition.composition || []).map(item => item.id)
@@ -1068,14 +1095,25 @@
       effectiveEntry.selections[group.id] = (group.selectionIds || []).reduce((sum, id) => sum + selectedCount(effectiveEntry, id), 0);
     }
 
-    let points = Number(unitDefinition?.pricing?.base || 0);
-    const applied = [{ source: unitDefinition?.pricing?.baseSource || "bsdata", operation: "base", value: points }];
+    const mfmRow = matchingMfmRow(unitDefinition, effectiveEntry);
+    let points = mfmRow ? Number(mfmRow.points) : Number(unitDefinition?.pricing?.base || 0);
+    const applied = [{ source: mfmRow?.source || unitDefinition?.pricing?.baseSource || "bsdata", operation: mfmRow ? "set" : "base", value: points }];
 
-    for (const selection of unitDefinition.composition || []) {
+    for (const selection of mfmRow ? [] : (unitDefinition.composition || [])) {
       const value = selectedCount(effectiveEntry, selection.id) * Number(selection.points || 0);
       if (!value) continue;
       points += value;
       applied.push({ source: "bsdata-selection", operation: "increment", value, selectionId: selection.id });
+    }
+    for (const modifier of mfmRow ? [] : (unitDefinition?.pricing?.modifiers || [])) {
+      if (modifier.supported === false || !evaluatePricingTree(modifier.when, effectiveEntry)) continue;
+      const value = Number(modifier.value);
+      if (modifier.operation === "set") points = value;
+      else if (modifier.operation === "increment") points += value;
+      else if (modifier.operation === "decrement") points -= value;
+      else if (modifier.operation === "multiply") points *= value;
+      else continue;
+      applied.push({ source: modifier.source, operation: modifier.operation, value, raw: modifier.raw });
     }
     for (const adjustment of selectedTreePointAdjustments(unitDefinition, effectiveEntry)) {
       points += adjustment.value;
@@ -1088,16 +1126,6 @@
         count: adjustment.count,
         points: adjustment.points
       });
-    }
-    for (const modifier of unitDefinition?.pricing?.modifiers || []) {
-      if (modifier.supported === false || !evaluatePricingTree(modifier.when, effectiveEntry)) continue;
-      const value = Number(modifier.value);
-      if (modifier.operation === "set") points = value;
-      else if (modifier.operation === "increment") points += value;
-      else if (modifier.operation === "decrement") points -= value;
-      else if (modifier.operation === "multiply") points *= value;
-      else continue;
-      applied.push({ source: modifier.source, operation: modifier.operation, value, raw: modifier.raw });
     }
 
     return {

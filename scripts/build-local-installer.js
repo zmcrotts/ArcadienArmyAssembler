@@ -72,6 +72,9 @@ function writeDotnetProject() {
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>${APP_VERSION}</Version>
+    <AssemblyVersion>${APP_VERSION}.0</AssemblyVersion>
+    <FileVersion>${APP_VERSION}.0</FileVersion>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
@@ -395,6 +398,7 @@ internal static class Program
     private static void InstallTo(string installRoot, bool createDesktopShortcut)
     {
         installRoot = Path.GetFullPath(installRoot);
+        EnsureInstalledAppIsClosed(installRoot);
         var installRootExisted = Directory.Exists(installRoot);
         var marker = Path.Combine(installRoot, ".roster-builder-install");
         var parent = Directory.GetParent(installRoot)?.FullName
@@ -506,6 +510,27 @@ internal static class Program
         {
             TryDeletePath(stagingRoot);
             if (completed) TryDeletePath(backupRoot);
+        }
+    }
+
+    private static void EnsureInstalledAppIsClosed(string installRoot)
+    {
+        var installedExe = Path.GetFullPath(Path.Combine(installRoot, AppExeName));
+        foreach (var process in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(AppExeName)))
+        {
+            try
+            {
+                var runningExe = process.MainModule?.FileName;
+                if (!string.IsNullOrWhiteSpace(runningExe)
+                    && string.Equals(Path.GetFullPath(runningExe), installedExe, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException(
+                        "Arcadien Army Assembler is currently running from this install folder. Close it, then run the installer again to update in place.");
+                }
+            }
+            catch (InvalidOperationException) { throw; }
+            catch { }
+            finally { process.Dispose(); }
         }
     }
 

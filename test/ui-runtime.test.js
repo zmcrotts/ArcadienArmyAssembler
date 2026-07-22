@@ -149,6 +149,46 @@ test("browser loadout runtime accepts boolean round-up repeat flags", () => {
   assert.equal(state.maximum, 2);
 });
 
+test("browser loadout runtime uses unit category IDs for faction-specific options", () => {
+  const definition = {
+    id: "breachers",
+    selectionKey: "tau:breachers",
+    categoryIds: ["breacher-team-category"],
+    composition: [],
+    compositionConstraints: [],
+    pricing: { base: 10, modifiers: [] },
+    selectionTree: {
+      id: "breachers",
+      kind: "unit",
+      constraints: [],
+      modifiers: [],
+      children: [{
+        id: "guardian-drone",
+        kind: "upgrade",
+        name: "Guardian Drone",
+        constraints: [{ id: "guardian-max", field: "selections", type: "max", scope: "parent", value: 1 }],
+        modifiers: [{
+          field: "hidden",
+          type: "set",
+          value: "true",
+          conditions: [{ type: "notInstanceOf", childId: "breacher-team-category" }],
+          conditionGroups: [],
+          repeats: []
+        }],
+        children: []
+      }]
+    }
+  };
+
+  const state = window.RosterEngine.getOptionStates(definition, {
+    unitId: definition.id,
+    selections: {}
+  }).find(option => option.id === "guardian-drone");
+
+  assert.equal(state.active, true);
+  assert.equal(state.editable, true);
+});
+
 test("browser configured profiles count selected descendants of profile groups", () => {
   const definition = {
     id: "profile-unit",
@@ -251,6 +291,32 @@ test("browser army runtime offers selected-detachment upgrades without character
   assert.deepEqual(
     window.ArmyEngine.getUnitAssignmentState(army, state, [character, vehicle], vehicle).enhancements.map(item => item.name),
     ["Talons of Butchery"]
+  );
+});
+
+test("browser army runtime recognizes equivalent unit entries across catalogues", () => {
+  const army = {
+    id: "raven-guard",
+    detachments: [{ id: "shadowmark", name: "Shadowmark Talon", points: 0 }],
+    enhancements: [{
+      id: "blackwing-shroud",
+      name: "Blackwing Shroud",
+      kind: "enhancement",
+      detachmentIds: ["shadowmark"],
+      eligibleSelectionKeys: ["raven-guard-catalogue:captain-entry"]
+    }]
+  };
+  const captain = {
+    instanceId: "captain-1",
+    selectionKey: "space-marines-catalogue:captain-entry",
+    roles: { character: true },
+    rosterRules: {}
+  };
+  const state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "shadowmark");
+
+  assert.deepEqual(
+    window.ArmyEngine.getUnitAssignmentState(army, state, [captain], captain).enhancements.map(item => item.name),
+    ["Blackwing Shroud"]
   );
 });
 

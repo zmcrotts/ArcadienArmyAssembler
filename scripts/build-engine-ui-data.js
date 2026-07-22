@@ -73,6 +73,7 @@ function compactDefinition(definition) {
     faction: definition.faction,
     source: definition.source,
     categories: definition.categories,
+    categoryIds: definition.categoryIds || [],
     keywords: definition.keywords || definition.categories || [],
     conditionalKeywords: definition.conditionalKeywords || [],
     roles: definition.roles,

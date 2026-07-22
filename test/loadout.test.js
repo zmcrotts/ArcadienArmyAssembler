@@ -304,6 +304,23 @@ test("multi-model epic heroes expose physical model loadouts", () => {
   assert.ok(models[1].equipment.includes("Ion scattercannon"));
 });
 
+test("Breacher Teams expose their faction-specific Guardian Drone option", () => {
+  const definition = unit11e("Xenos - T'au Empire", "Breacher Team");
+  const entry = createDefaultRosterEntry(definition);
+  const states = getOptionStates(definition, entry);
+  const guardianDrone = states.find(item => item.name === "Guardian Drone");
+  const missileDrone = states.find(item => item.name === "Missile Drone");
+
+  assert.ok(guardianDrone, "Missing Guardian Drone option");
+  assert.equal(guardianDrone.active, true);
+  assert.equal(guardianDrone.editable, true);
+  assert.equal(guardianDrone.maximum, 1);
+  assert.equal(missileDrone.active, false);
+
+  const configured = setSelection(definition, entry, guardianDrone.id, 1);
+  assert.deepEqual(validateLoadout(definition, configured), []);
+});
+
 test("force-scoped War Dog limits do not become impossible per-unit defaults", () => {
   for (const faction of ["Chaos - Chaos Knights", "Chaos - Chaos Knights Library"]) {
     for (const name of [

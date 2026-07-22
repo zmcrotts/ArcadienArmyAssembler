@@ -18,6 +18,8 @@ const {
   applyMfmAttachments,
   readMfmAttachments
 } = require("./mfm-attachments");
+const { applyMfmPoints, readMfmPoints } = require("./mfm-points");
+const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 
@@ -43,7 +45,9 @@ const RULESET_SOURCES = {
         path.join(ROOT, "data", "manual-rules", "wh40k-11e-wahapedia-detachment-stratagems.json")
       ],
       armyRules: path.join(ROOT, "data", "manual-rules", "wh40k-11e-army-rules.json"),
+      manualDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-detachments.json"),
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
+      mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
     primary: true,
@@ -101,7 +105,11 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
     ...unit,
     rulesetId: source.id
   }))), armiesWithRules);
-  const normalized = reconcileSelectableUnits(correctedUnitDefinitions, armiesWithRules);
+  const manualDetachments = readManualDetachments(source.auxiliarySources?.manualDetachments);
+  const manualDetachmentResult = applyManualDetachments(correctedUnitDefinitions, armiesWithRules, manualDetachments);
+  const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
+  const mfmPointResult = applyMfmPoints(correctedUnitDefinitions, manualDetachmentResult.definitions, mfmPoints);
+  const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
   const reconciledArmies = normalized.armies;
 
@@ -117,7 +125,17 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       generatedAt: mfmAttachments.generatedAt,
       ...mfmAttachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || [])],
+    mfmPointSource: {
+      source: mfmPoints.source,
+      version: mfmPoints.version,
+      generatedAt: mfmPoints.generatedAt,
+      ...mfmPointResult.summary
+    },
+    manualDetachmentSource: {
+      source: manualDetachments.source,
+      ...manualDetachmentResult.summary
+    },
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmPointResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };
