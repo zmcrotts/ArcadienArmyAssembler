@@ -19,6 +19,7 @@ const {
   readMfmAttachments
 } = require("./mfm-attachments");
 const { applyMfmPoints, readMfmPoints } = require("./mfm-points");
+const { applyMfmDetachments, readMfmDetachments } = require("./mfm-detachments");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -47,6 +48,7 @@ const RULESET_SOURCES = {
       armyRules: path.join(ROOT, "data", "manual-rules", "wh40k-11e-army-rules.json"),
       manualDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-detachments.json"),
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
+      mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
       mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
@@ -107,8 +109,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   }))), armiesWithRules);
   const manualDetachments = readManualDetachments(source.auxiliarySources?.manualDetachments);
   const manualDetachmentResult = applyManualDetachments(correctedUnitDefinitions, armiesWithRules, manualDetachments);
+  const mfmDetachments = readMfmDetachments(source.auxiliarySources?.mfmDetachments);
+  const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
-  const mfmPointResult = applyMfmPoints(correctedUnitDefinitions, manualDetachmentResult.definitions, mfmPoints);
+  const mfmPointResult = applyMfmPoints(correctedUnitDefinitions, mfmDetachmentResult.definitions, mfmPoints);
   const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
   const reconciledArmies = normalized.armies;
@@ -131,11 +135,17 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       generatedAt: mfmPoints.generatedAt,
       ...mfmPointResult.summary
     },
+    mfmDetachmentSource: {
+      source: mfmDetachments.source,
+      version: mfmDetachments.version,
+      generatedAt: mfmDetachments.generatedAt,
+      ...mfmDetachmentResult.summary
+    },
     manualDetachmentSource: {
       source: manualDetachments.source,
       ...manualDetachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmPointResult.issues || [])],
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(mfmPointResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };
