@@ -17,12 +17,6 @@
             "name": "Faction: Unaligned Forces"
           },
           {
-            "targetId": "887b-ab87-92a2-20f5",
-            "id": "4fb7-9a37-3b26-6013",
-            "primary": true,
-            "name": "Allied Units"
-          },
-          {
             "targetId": "9693-cf84-fe69-37a9",
             "id": "61ae-6a82-acc9-8b6f",
             "primary": false,
@@ -39,6 +33,13 @@
             "id": "bb02-a4b1-fa11-4bac",
             "primary": false,
             "name": "Ambull"
+          },
+          {
+            "name": "Allies: Unaligned Forces",
+            "hidden": false,
+            "id": "4910-9e82-1d51-b00b",
+            "targetId": "07d9-ab1c-cf28-0939",
+            "primary": true
           }
         ],
         "modifiers": [
@@ -52,16 +53,6 @@
                     "field": "selections",
                     "scope": "roster",
                     "childId": "9ed-cbf4-bfe5-90bf",
-                    "shared": true,
-                    "includeChildForces": true,
-                    "includeChildSelections": true
-                  },
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "2973-ea51-7f8d-5403",
                     "shared": true,
                     "includeChildForces": true,
                     "includeChildSelections": true
@@ -1907,12 +1898,6 @@
             "name": "Faction: Unaligned Forces"
           },
           {
-            "targetId": "887b-ab87-92a2-20f5",
-            "id": "626e-a5f3-46e8-3f23",
-            "primary": true,
-            "name": "Allied Units"
-          },
-          {
             "targetId": "9693-cf84-fe69-37a9",
             "id": "956e-7d12-7fb0-12a8",
             "primary": false,
@@ -1923,6 +1908,13 @@
             "id": "4cf0-207-d593-cc17",
             "primary": false,
             "name": "Guardian Drone"
+          },
+          {
+            "name": "Allies: Unaligned Forces",
+            "hidden": false,
+            "id": "b3c5-96f9-5c02-cb1c",
+            "targetId": "07d9-ab1c-cf28-0939",
+            "primary": true
           }
         ],
         "modifiers": [
@@ -1936,16 +1928,6 @@
                     "field": "selections",
                     "scope": "roster",
                     "childId": "9ed-cbf4-bfe5-90bf",
-                    "shared": true,
-                    "includeChildForces": true,
-                    "includeChildSelections": true
-                  },
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "2973-ea51-7f8d-5403",
                     "shared": true,
                     "includeChildForces": true,
                     "includeChildSelections": true
@@ -4278,12 +4260,6 @@
             "name": "Faction: Unaligned Forces"
           },
           {
-            "targetId": "887b-ab87-92a2-20f5",
-            "id": "3bea-1908-e216-3a6",
-            "primary": true,
-            "name": "Allied Units"
-          },
-          {
             "targetId": "cf47-a0d7-7207-29dc",
             "id": "bf1c-22b1-6ac4-1852",
             "primary": false,
@@ -4294,6 +4270,13 @@
             "id": "abb0-27c3-595a-2290",
             "primary": false,
             "name": "Spindle Drones"
+          },
+          {
+            "name": "Allies: Unaligned Forces",
+            "hidden": false,
+            "id": "1882-bb54-71b2-79c4",
+            "targetId": "07d9-ab1c-cf28-0939",
+            "primary": true
           }
         ],
         "modifiers": [
@@ -4307,16 +4290,6 @@
                     "field": "selections",
                     "scope": "roster",
                     "childId": "9ed-cbf4-bfe5-90bf",
-                    "shared": true,
-                    "includeChildForces": true,
-                    "includeChildSelections": true
-                  },
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "2973-ea51-7f8d-5403",
                     "shared": true,
                     "includeChildForces": true,
                     "includeChildSelections": true
@@ -4898,12 +4871,6 @@
             "name": "Faction: Unaligned Forces"
           },
           {
-            "targetId": "887b-ab87-92a2-20f5",
-            "id": "7aa5-803c-aaf8-7b22",
-            "primary": true,
-            "name": "Allied Units"
-          },
-          {
             "targetId": "9693-cf84-fe69-37a9",
             "id": "bf9e-c4ad-47d7-addc",
             "primary": false,
@@ -4926,6 +4893,13 @@
             "id": "e9ed-1efc-b769-6480",
             "primary": false,
             "name": "The Archivist"
+          },
+          {
+            "name": "Allies: Unaligned Forces",
+            "hidden": false,
+            "id": "9670-0ea2-a76e-fdf7",
+            "targetId": "07d9-ab1c-cf28-0939",
+            "primary": true
           }
         ],
         "constraints": [
@@ -4951,16 +4925,6 @@
                     "field": "selections",
                     "scope": "roster",
                     "childId": "9ed-cbf4-bfe5-90bf",
-                    "shared": true,
-                    "includeChildForces": true,
-                    "includeChildSelections": true
-                  },
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "2973-ea51-7f8d-5403",
                     "shared": true,
                     "includeChildForces": true,
                     "includeChildSelections": true
@@ -8930,10 +8894,10 @@
             "primary": false
           },
           {
-            "name": "Allied Units",
+            "name": "Allies: Unaligned Forces",
             "hidden": false,
-            "id": "65ca-78da-ffb1-2a6b",
-            "targetId": "887b-ab87-92a2-20f5",
+            "id": "b86c-ad94-f450-fd29",
+            "targetId": "07d9-ab1c-cf28-0939",
             "primary": true
           }
         ],
@@ -9139,10 +9103,10 @@
         ],
         "categoryLinks": [
           {
-            "name": "Allied Units",
+            "name": "Allies: Unaligned Forces",
             "hidden": false,
-            "id": "7941-6aa3-56f9-4a99",
-            "targetId": "887b-ab87-92a2-20f5",
+            "id": "3d80-376f-2245-5f17",
+            "targetId": "07d9-ab1c-cf28-0939",
             "primary": true
           }
         ],
@@ -9294,18 +9258,18 @@
             "primary": false
           },
           {
-            "name": "Allied Units",
-            "hidden": false,
-            "id": "d4b7-eb4b-4c12-8683",
-            "targetId": "887b-ab87-92a2-20f5",
-            "primary": true
-          },
-          {
             "name": "Breaching Robot",
             "hidden": false,
             "id": "19fb-4dc3-b181-328a",
             "targetId": "2997-c698-96cd-e3f8",
             "primary": false
+          },
+          {
+            "name": "Allies: Unaligned Forces",
+            "hidden": false,
+            "id": "e009-b01e-330d-b545",
+            "targetId": "07d9-ab1c-cf28-0939",
+            "primary": true
           }
         ],
         "modifiers": [
@@ -10144,7 +10108,7 @@
     "xmlns": "http://www.battlescribe.net/schema/catalogueSchema",
     "id": "581a-46b9-5b86-44b7",
     "name": "Unaligned Forces",
-    "revision": 22,
+    "revision": 1,
     "battleScribeVersion": 2.03,
     "authorName": "WindstormSCR",
     "library": true,

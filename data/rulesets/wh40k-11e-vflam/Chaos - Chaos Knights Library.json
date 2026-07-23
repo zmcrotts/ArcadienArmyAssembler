@@ -1014,13 +1014,6 @@
             "type": "rule"
           },
           {
-            "name": "Dark Sacrifice",
-            "id": "0e6c-a477-04b9-4505",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "7686-5fc0-fc07-1f3e",
             "hidden": false,
@@ -1466,15 +1459,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa68-869d-986f-767e",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -1506,36 +1490,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -1547,7 +1501,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -2613,13 +2567,6 @@
             "type": "rule"
           },
           {
-            "name": "Dark Sacrifice",
-            "id": "d944-6822-153a-b8d3",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "modifiers": [
               {
                 "type": "append",
@@ -2949,15 +2896,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa86-8be1-d6cb-2dbc",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -2989,36 +2927,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -3030,7 +2938,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -3417,13 +3325,6 @@
             "type": "rule"
           },
           {
-            "name": "Dark Sacrifice",
-            "id": "83e8-587a-10c3-13d7",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "fbd6-48b3-54d3-bc65",
             "hidden": false,
@@ -3787,15 +3688,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pae8-91bf-3ab6-7d1a",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -3823,39 +3715,24 @@
             "name": "Crusade: Weapon Modifications",
             "typeId": "716d-91b7-d55a-1022",
             "value": 0
+          },
+          {
+            "name": "Blackstone Fragments",
+            "typeId": "ac6b-ced3-9b5e-9a6e",
+            "value": 0
+          },
+          {
+            "name": "Detachment Points",
+            "typeId": "82ae-1066-5107-6ae0",
+            "value": 0
+          },
+          {
+            "name": "Enhancements",
+            "typeId": "f759-1bc4-cb3a-f0d2",
+            "value": 0
           }
         ],
         "modifiers": [
-          {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
           {
             "conditions": [
               {
@@ -3868,7 +3745,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -4255,13 +4132,6 @@
             "type": "rule"
           },
           {
-            "name": "Dark Sacrifice",
-            "id": "93f4-51cc-5bc7-c2b5",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "1a80-0a6f-6441-c484",
             "hidden": false,
@@ -4538,15 +4408,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa6e-3e52-2689-edd3",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -4578,36 +4439,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -4619,7 +4450,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -5004,13 +4835,6 @@
             "hidden": false,
             "targetId": "d71a-a59f-aafd-3723",
             "type": "rule"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "730d-9858-949d-0646",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           },
           {
             "name": "*Invulnerable Save",
@@ -5427,15 +5251,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa8f-3fdd-6b76-876c",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -5467,36 +5282,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -5508,7 +5293,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -5914,20 +5699,6 @@
             "hidden": false,
             "targetId": "12ce-2a62-9fea-74bd",
             "type": "profile"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "8877-f2e3-c782-2931",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "e196-2064-6d8c-f8ec",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           },
           {
             "name": "*Invulnerable Save",
@@ -6346,14 +6117,7 @@
                         "id": "64f7-3eb8-ba6b-130a",
                         "collective": false,
                         "targetId": "89c4-132e-6ad6-2a08",
-                        "type": "selectionEntry",
-                        "costs": [
-                          {
-                            "name": "pts",
-                            "typeId": "51b2-306e-1021-d207",
-                            "value": 25
-                          }
-                        ]
+                        "type": "selectionEntry"
                       },
                       {
                         "constraints": [
@@ -6488,14 +6252,7 @@
                         "id": "b9eb-6a03-61da-eeba",
                         "collective": false,
                         "targetId": "a0e9-d24d-0927-8670",
-                        "type": "selectionEntry",
-                        "costs": [
-                          {
-                            "name": "pts",
-                            "typeId": "51b2-306e-1021-d207",
-                            "value": 15
-                          }
-                        ]
+                        "type": "selectionEntry"
                       },
                       {
                         "constraints": [
@@ -6736,14 +6493,7 @@
                         "id": "b03e-af01-dbb1-a130",
                         "collective": false,
                         "targetId": "89c4-132e-6ad6-2a08",
-                        "type": "selectionEntry",
-                        "costs": [
-                          {
-                            "name": "pts",
-                            "typeId": "51b2-306e-1021-d207",
-                            "value": 25
-                          }
-                        ]
+                        "type": "selectionEntry"
                       },
                       {
                         "constraints": [
@@ -6878,14 +6628,7 @@
                         "id": "1788-725c-32ef-ac38",
                         "collective": false,
                         "targetId": "a0e9-d24d-0927-8670",
-                        "type": "selectionEntry",
-                        "costs": [
-                          {
-                            "name": "pts",
-                            "typeId": "51b2-306e-1021-d207",
-                            "value": 15
-                          }
-                        ]
+                        "type": "selectionEntry"
                       },
                       {
                         "constraints": [
@@ -7181,15 +6924,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa44-bc34-ef71-bfbc",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -7236,36 +6970,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -7277,7 +6981,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -7298,8 +7002,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 400,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -7319,9 +7023,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -7920,6 +7623,41 @@
           {
             "name": "pts",
             "typeId": "51b2-306e-1021-d207",
+            "value": 15
+          },
+          {
+            "name": "Crusade Points",
+            "typeId": "b03b-c239-15a5-da55",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Battle Honours",
+            "typeId": "75bb-ded1-c86d-bdf0",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Experience",
+            "typeId": "a623-fe74-1d33-cddf",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Weapon Modifications",
+            "typeId": "716d-91b7-d55a-1022",
+            "value": 0
+          },
+          {
+            "name": "Blackstone Fragments",
+            "typeId": "ac6b-ced3-9b5e-9a6e",
+            "value": 0
+          },
+          {
+            "name": "Detachment Points",
+            "typeId": "82ae-1066-5107-6ae0",
+            "value": 0
+          },
+          {
+            "name": "Enhancements",
+            "typeId": "f759-1bc4-cb3a-f0d2",
             "value": 0
           }
         ],
@@ -7990,6 +7728,41 @@
           {
             "name": "pts",
             "typeId": "51b2-306e-1021-d207",
+            "value": 25
+          },
+          {
+            "name": "Crusade Points",
+            "typeId": "b03b-c239-15a5-da55",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Battle Honours",
+            "typeId": "75bb-ded1-c86d-bdf0",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Experience",
+            "typeId": "a623-fe74-1d33-cddf",
+            "value": 0
+          },
+          {
+            "name": "Crusade: Weapon Modifications",
+            "typeId": "716d-91b7-d55a-1022",
+            "value": 0
+          },
+          {
+            "name": "Blackstone Fragments",
+            "typeId": "ac6b-ced3-9b5e-9a6e",
+            "value": 0
+          },
+          {
+            "name": "Detachment Points",
+            "typeId": "82ae-1066-5107-6ae0",
+            "value": 0
+          },
+          {
+            "name": "Enhancements",
+            "typeId": "f759-1bc4-cb3a-f0d2",
             "value": 0
           }
         ],
@@ -8503,20 +8276,6 @@
             "type": "profile"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "136b-7ec0-5f4d-1c51",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "319b-0b63-4482-69b5",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "d0be-44df-8f46-ae6a",
             "hidden": false,
@@ -8990,15 +8749,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa51-98be-44ec-f3f7",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -9035,36 +8785,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -9076,7 +8796,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -9097,8 +8817,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 370,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -9118,9 +8838,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -9483,20 +9202,6 @@
             "type": "profile"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "58eb-7813-4d3d-e88c",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "998a-a3fa-e9fb-3f7d",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "316f-d8c8-ab3c-8135",
             "hidden": false,
@@ -9605,15 +9310,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa77-f361-b00c-aa92",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -9645,36 +9341,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -9686,7 +9352,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -9707,8 +9373,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 380,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -9728,9 +9394,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -10508,20 +10173,6 @@
             "hidden": false,
             "targetId": "12ce-2a62-9fea-74bd",
             "type": "profile"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "aeb4-4421-093c-7712",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "8fd7-518a-3d01-e222",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           }
         ],
         "categoryLinks": [
@@ -10632,15 +10283,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "paf4-ff38-cd2b-464e",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -10672,36 +10314,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -10713,7 +10325,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -10734,8 +10346,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 370,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -10755,9 +10367,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -11576,20 +11187,6 @@
             "hidden": false,
             "targetId": "7400-7387-dae-781f",
             "type": "profile"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "03d9-ce5e-a916-20f8",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "e1e3-5cc3-4bcb-71e6",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           },
           {
             "name": "*Invulnerable Save",
@@ -12894,15 +12491,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa13-fec5-8255-7ce6",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -12949,36 +12537,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -12990,7 +12548,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -13011,8 +12569,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 420,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -13032,9 +12590,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -13503,7 +13060,7 @@
           },
           {
             "type": "max",
-            "value": 20,
+            "value": 1,
             "field": "selections",
             "scope": "roster",
             "shared": true,
@@ -13832,13 +13389,20 @@
                     "id": "76ff-2763-47d3-40b5",
                     "targetId": "b4a7-5083-fe94-4d24",
                     "primary": false
+                  },
+                  {
+                    "name": "War Dogs",
+                    "hidden": false,
+                    "id": "497e-debd-b46f-b0ef",
+                    "targetId": "47ec-1263-620e-25f8",
+                    "primary": false
                   }
                 ]
               },
               {
                 "rules": [
                   {
-                    "description": "When this unit is selected as the target of an attack, select one of the following to apply until the end of the phase: - Models in this unit have a 5+ invulnerable save. - Models in this unit have the Feel No Pain 6+ ability.",
+                    "description": "In your Command phase, one or more ^^**Chaos Knights^^** units from your army can make a Malefic Surge. Each one that does must first take a Leadership test; if that test is failed, that unit suffers D3 mortal wounds. Then, until the start of your next Command phase, that unit is Empowered. While a unit is Empowered, it can use one of the Malefic Surge abilities below. Once that unit has used a Malefic Surge ability, it is no longer Empowered.\n\n**Unholy Hunger:** When a model in this unit makes a Normal, Advance or Fall Back move, until the end of the phase, add 3\" to its Move characteristic.\n\n**Diabolic Power:** When this unit is selected to shoot or fight, select either the [Lethal Hits] or [Sustained Hits 1] ability. Until the end of the phase, weapons equipped by models in this unit have the selected ability.\n\n**Unnatural Fortitude:** When this unit is selected as the target of an attack, until the end of the phase, select one of the following:\n- Models in this unit have a 5+ invulnerable save\n- Models in this unit have the Feel No Pain 6+ ability.",
                     "name": "Malefic Surge",
                     "id": "b671-ba7f-7668-9c08",
                     "hidden": false
@@ -14310,20 +13874,6 @@
             "type": "profile"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "ec0f-44c7-8de4-e59f",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "9227-adfc-fabf-7e56",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "9374-8790-4eec-aeac",
             "hidden": false,
@@ -14405,15 +13955,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f36c-30a9-61a9-b258",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 1
           }
         ],
         "costs": [
@@ -14460,36 +14001,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -14501,7 +14012,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -14522,8 +14033,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 860,
+            "type": "increment",
+            "value": 75,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -14543,9 +14054,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -15367,20 +14877,6 @@
             "type": "rule"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "c043-fbbf-f8a8-452a",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "648b-8249-d443-d732",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "0a1f-d9c6-a40c-4564",
             "hidden": false,
@@ -16025,15 +15521,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "1b02-dfc6-1748-61cd",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 1
           }
         ],
         "costs": [
@@ -16080,36 +15567,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -16121,7 +15578,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -16142,8 +15599,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 800,
+            "type": "increment",
+            "value": 75,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -16163,9 +15620,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -16535,20 +15991,6 @@
             "hidden": false,
             "targetId": "5e13-1624-d280-418d",
             "type": "rule"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "81f1-260e-4f71-2745",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "7be9-02b4-dae4-43e2",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           }
         ],
         "categoryLinks": [
@@ -16652,15 +16094,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "padd-ae4a-dab8-14bb",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -16707,36 +16140,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -16748,7 +16151,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -16769,8 +16172,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 415,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -16790,9 +16193,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -17396,20 +16798,6 @@
             "type": "profile"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "63e1-9fdc-9a64-b465",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "13ae-ca2b-f84f-91d7",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "cbd2-ab4a-9416-1ffb",
             "hidden": false,
@@ -17529,15 +16917,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa82-8c60-a763-fbc9",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -17584,36 +16963,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -17625,7 +16974,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -17646,8 +16995,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 385,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -17667,9 +17016,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -18328,20 +17676,6 @@
             "type": "rule"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "5d85-9181-9fa0-d40c",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "9c31-c96f-3def-b742",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "174a-6809-5222-9f1b",
             "hidden": false,
@@ -18443,15 +17777,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa23-1481-58fe-73c0",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -18498,36 +17823,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -18539,7 +17834,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -18560,8 +17855,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 385,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -18581,9 +17876,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -19390,20 +18684,6 @@
             "hidden": false,
             "targetId": "5e13-1624-d280-418d",
             "type": "rule"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "13f7-2148-a7ec-0698",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "03fc-6328-b969-72e9",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           }
         ],
         "categoryLinks": [
@@ -19518,15 +18798,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "paf9-c94c-1678-6a06",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -19558,36 +18829,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -19599,7 +18840,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -19620,8 +18861,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 415,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -19641,9 +18882,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -20493,20 +19733,6 @@
             "hidden": false,
             "targetId": "73ac-6b3a-8480-d08a",
             "type": "profile"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "898e-c7bf-57e5-d281",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "6c05-3383-49e2-b70f",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           }
         ],
         "categoryLinks": [
@@ -21265,15 +20491,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "paa7-18fb-dc0b-b5a3",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -21305,36 +20522,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -21346,7 +20533,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -21367,8 +20554,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 390,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -21388,9 +20575,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -21744,20 +20930,6 @@
             "hidden": false,
             "targetId": "5e13-1624-d280-418d",
             "type": "rule"
-          },
-          {
-            "name": "Dread Tyrants (Aura)",
-            "id": "937f-050d-a69e-3af7",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "2bd1-d543-0f02-2172",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           }
         ],
         "categoryLinks": [
@@ -22530,15 +21702,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa77-7d42-c367-92fb",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -22585,36 +21748,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -22626,7 +21759,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -22647,8 +21780,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 380,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -22668,9 +21801,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -23003,13 +22135,6 @@
             "hidden": false,
             "targetId": "d71a-a59f-aafd-3723",
             "type": "rule"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "debe-b67a-f758-d399",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
           },
           {
             "name": "*Invulnerable Save",
@@ -23780,15 +22905,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa72-bb87-8a59-add4",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -23820,36 +22936,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -23861,7 +22947,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -23911,47 +22997,6 @@
                 "shared": true,
                 "includeChildSelections": true,
                 "childName": "1. Incursion (1000 Point limit)"
-              }
-            ]
-          },
-          {
-            "type": "set",
-            "value": 160,
-            "field": "51b2-306e-1021-d207",
-            "conditionGroups": [
-              {
-                "type": "and",
-                "localConditionGroups": [
-                  {
-                    "type": "atLeast",
-                    "value": 2,
-                    "scope": "parent",
-                    "field": "selections",
-                    "includeChildSelections": true,
-                    "includeChildForces": true,
-                    "repeats": 1,
-                    "conditions": [
-                      {
-                        "type": "before",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
-                      },
-                      {
-                        "type": "instanceOf",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "self",
-                        "childId": "ae7c-3679-a88-6895",
-                        "shared": true,
-                        "childName": "War Dog Moirax"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -24157,43 +23202,6 @@
         "collective": false,
         "import": true,
         "type": "model"
-      },
-      {
-        "constraints": [
-          {
-            "type": "min",
-            "value": 1,
-            "field": "selections",
-            "scope": "parent",
-            "shared": true,
-            "id": "d78d-32a7-5796-202e"
-          },
-          {
-            "type": "max",
-            "value": 1,
-            "field": "selections",
-            "scope": "parent",
-            "shared": true,
-            "id": "59c9-4073-7db2-dff6"
-          }
-        ],
-        "modifiers": [
-          {
-            "type": "set",
-            "value": 0,
-            "field": "d78d-32a7-5796-202e"
-          },
-          {
-            "type": "set",
-            "value": "Chaos Knights are visible",
-            "field": "name"
-          }
-        ],
-        "type": "upgrade",
-        "import": true,
-        "name": "Show Chaos Knights",
-        "hidden": false,
-        "id": "aeb4-96de-7401-eaa3"
       },
       {
         "constraints": [
@@ -24410,20 +23418,6 @@
             "type": "profile"
           },
           {
-            "name": "Dread Tyrants (Aura)",
-            "id": "f9be-6a86-d90e-e2ae",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "1114-b788-97de-7a2d"
-          },
-          {
-            "name": "Dark Sacrifice",
-            "id": "8200-fc0d-b373-57c2",
-            "hidden": false,
-            "type": "profile",
-            "targetId": "0b98-37c4-6be9-f608"
-          },
-          {
             "name": "*Invulnerable Save",
             "id": "ee52-ddc0-e0f5-2b88",
             "hidden": false,
@@ -24532,15 +23526,6 @@
             "type": "selectionEntryGroup",
             "targetId": "e91b-3100-3431-e2f8",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "padd-2ec4-a4c1-fc88",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -24587,36 +23572,6 @@
         ],
         "modifiers": [
           {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "lessThan",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "aeb4-96de-7401-eaa3",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  },
-                  {
-                    "type": "notInstanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "46d8-abc8-ef3a-9f85",
-                    "shared": true
-                  }
-                ],
-                "type": "and"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
             "conditions": [
               {
                 "type": "notInstanceOf",
@@ -24628,7 +23583,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "8dd6-af11-abd3-55f1",
             "field": "category"
           },
           {
@@ -24649,8 +23604,8 @@
             ]
           },
           {
-            "type": "set",
-            "value": 355,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -24670,9 +23625,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -26367,7 +25321,7 @@
                   {
                     "name": "Description",
                     "typeId": "9b8f-694b-e5e-b573",
-                    "$text": "CHAOS KNIGHTS model only. Once per turn, when your opponent targets a unit from their army within 12\" of this model with a stratagem, you can use this ability. If you do, increase the CP cost of that use of that stratagem by 1CP."
+                    "$text": "Once per turn, when your opponent targets a unit from their army within 12” of this model with a **stratagem**, you can use this ability. If you do, increase the CP cost of that use of that **stratagem** by 1CP."
                   }
                 ],
                 "name": "Mirror of Fates",
@@ -27829,6 +26783,1033 @@
             "hidden": false,
             "id": "4676-0c32-b62c-debd",
             "sortIndex": 14
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "422a-b524-4baa-e200",
+                "percentValue": false,
+                "includeChildSelections": true,
+                "includeChildForces": false
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573",
+                    "$text": "While a friendly DAMNED unit is within 6\" of this model, when that unit is selected to make a normal/advance/fall-back move that unit has +2\" M until the end of the phase."
+                  }
+                ],
+                "name": "Cruel Lashmaster (Aura)",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "2e5f-1c75-2b49-85f3"
+              }
+            ],
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 25
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "conditionGroups": [
+                  {
+                    "type": "or",
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "9cfd-1c32-585f-7d5c",
+                        "shared": true,
+                        "childName": "Character"
+                      }
+                    ],
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "forces",
+                            "scope": "roster",
+                            "childId": "cac3-71d1-ea4b-795d",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          },
+                          {
+                            "type": "equalTo",
+                            "value": 0,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "7fe8-de91-8976-e705",
+                            "shared": true,
+                            "includeChildSelections": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              }
+            ],
+            "comment": "Iconoclast Fiefdom",
+            "type": "upgrade",
+            "import": true,
+            "name": "Cruel Lashmaster",
+            "hidden": false,
+            "id": "06cd-7848-7124-ca3c",
+            "collective": false,
+            "sortIndex": 15
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "7def-ccdf-8872-0c85",
+                "percentValue": false,
+                "includeChildSelections": true,
+                "includeChildForces": false
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573",
+                    "$text": " While a friendly DAMNED unit is within 6\" of this model, when you target that unit with the Heroic Intervention stratagem, that use is -1 CP."
+                  }
+                ],
+                "name": "Iconoclast Idol (Aura)",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "0001-e913-205a-f146"
+              }
+            ],
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 20
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "type": "set",
+                "value": true,
+                "field": "hidden",
+                "conditionGroups": [
+                  {
+                    "type": "or",
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "forces",
+                            "scope": "roster",
+                            "childId": "cac3-71d1-ea4b-795d",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          },
+                          {
+                            "type": "equalTo",
+                            "value": 0,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "7fe8-de91-8976-e705",
+                            "shared": true,
+                            "includeChildSelections": true
+                          }
+                        ]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "9cfd-1c32-585f-7d5c",
+                        "shared": true,
+                        "includeChildSelections": false,
+                        "childName": "Character"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "comment": "Iconoclast Fiefdom",
+            "type": "upgrade",
+            "import": true,
+            "name": "Iconoclast Idol",
+            "hidden": false,
+            "id": "80fb-b674-d736-1ca7",
+            "collective": false,
+            "sortIndex": 16
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "c05e-e43d-8756-9bbd",
+                "includeChildSelections": true
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "$text": "You can re‑roll Advance and Charge rolls made for the bearer’s unit.",
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573"
+                  }
+                ],
+                "name": "Hunter's Helm",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "8d92-f5d1-74fb-3a81"
+              }
+            ],
+            "modifiers": [
+              {
+                "conditionGroups": [
+                  {
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "equalTo",
+                        "value": 0,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "915c-3949-0da6-83c5",
+                        "shared": true,
+                        "includeChildSelections": true
+                      }
+                    ],
+                    "type": "and"
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              },
+              {
+                "conditions": [
+                  {
+                    "type": "instanceOf",
+                    "value": 0,
+                    "field": "selections",
+                    "scope": "ancestor",
+                    "childId": "99dc-0f47-85e2-75da",
+                    "shared": true,
+                    "includeChildSelections": true
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              }
+            ],
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 15
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "comment": "Helhunt Lance",
+            "type": "upgrade",
+            "import": true,
+            "name": "Hunter's Helm",
+            "hidden": false,
+            "id": "235a-a20a-c65f-9f8e",
+            "sortIndex": 4
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "ca04-938b-cd72-3499",
+                "includeChildSelections": true
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "$text": "While a friendly ^^**War Dog**^^ model is within 9” of this model, after that ^^**War Dog**^^ model has shot, you can select one enemy unit hit by one or more of those attacks. That enemy unit must take a Battle‑shock test.",
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573"
+                  }
+                ],
+                "name": "Octagram of Conjuration (Aura)",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "722d-1bb7-0cd7-7602"
+              }
+            ],
+            "modifiers": [
+              {
+                "conditionGroups": [
+                  {
+                    "conditionGroups": [
+                      {
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "forces",
+                            "scope": "roster",
+                            "childId": "cac3-71d1-ea4b-795d",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          },
+                          {
+                            "type": "equalTo",
+                            "value": 0,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "915c-3949-0da6-83c5",
+                            "shared": true,
+                            "includeChildSelections": true
+                          }
+                        ],
+                        "type": "and"
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "9d18-ceff-963a-cc29",
+                        "shared": true
+                      }
+                    ],
+                    "type": "or"
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              }
+            ],
+            "comment": "Helhunt Lance",
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 40
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "type": "upgrade",
+            "import": true,
+            "name": "Octagram of Conjuration",
+            "hidden": false,
+            "id": "36be-0c43-6c75-17b9",
+            "sortIndex": 5
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "20ff-d068-21df-1a9d",
+                "includeChildSelections": true
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "$text": "In your Command phase, select one other ^^**Chaos Knights Character**^^ model within 9” of the bearer. If the bearer has one or more Aura abilities that affect friendly **^^War Dog**^^ units, until the start of your next Command phase, the selected **^^Chaos Knights Character**^^ model is affected by those Aura abilities as well.",
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573"
+                  }
+                ],
+                "name": "Throne Tyrannicus",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "709f-4ad1-ed0c-25a1"
+              }
+            ],
+            "modifiers": [
+              {
+                "conditionGroups": [
+                  {
+                    "conditionGroups": [
+                      {
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "forces",
+                            "scope": "roster",
+                            "childId": "cac3-71d1-ea4b-795d",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          },
+                          {
+                            "type": "equalTo",
+                            "value": 0,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "915c-3949-0da6-83c5",
+                            "shared": true,
+                            "includeChildSelections": true
+                          }
+                        ],
+                        "type": "and"
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "5929-ad51-d006-e008",
+                        "shared": true
+                      }
+                    ],
+                    "type": "or"
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              }
+            ],
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 25
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "comment": "Helhunt Lance",
+            "type": "upgrade",
+            "import": true,
+            "name": "Throne Tyrannicus",
+            "hidden": false,
+            "id": "ad66-f295-a2d9-e49a",
+            "sortIndex": 6
+          },
+          {
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "force",
+                "shared": true,
+                "id": "8c99-0ea0-3349-1159",
+                "includeChildSelections": true
+              }
+            ],
+            "profiles": [
+              {
+                "characteristics": [
+                  {
+                    "$text": "At the start of your Command phase, select one Dread ability to be active for the bearer until the start of your next Command phase, in addition to the Dread abilities active for your army.",
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573"
+                  }
+                ],
+                "name": "Aspect of the Beast",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "9042-4baf-cea4-baaf"
+              }
+            ],
+            "modifiers": [
+              {
+                "conditionGroups": [
+                  {
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "equalTo",
+                        "value": 0,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "915c-3949-0da6-83c5",
+                        "shared": true,
+                        "includeChildSelections": true
+                      }
+                    ],
+                    "type": "and"
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              },
+              {
+                "conditions": [
+                  {
+                    "type": "instanceOf",
+                    "value": 0,
+                    "field": "selections",
+                    "scope": "ancestor",
+                    "childId": "99dc-0f47-85e2-75da",
+                    "shared": true,
+                    "includeChildSelections": true
+                  }
+                ],
+                "type": "set",
+                "value": true,
+                "field": "hidden"
+              }
+            ],
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 30
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ],
+            "comment": "Helhunt Lance",
+            "type": "upgrade",
+            "import": true,
+            "name": "Aspect of the Beast",
+            "hidden": false,
+            "id": "650c-14dc-b1b7-df8b",
+            "sortIndex": 3
+          },
+          {
+            "type": "upgrade",
+            "import": true,
+            "name": "Pterrorshade Rookery",
+            "hidden": false,
+            "id": "27cf-7fc3-7c18-681e",
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "shared": true,
+                "id": "c9c5-f986-bb1a-071d",
+                "includeChildSelections": true,
+                "includeChildForces": true
+              }
+            ],
+            "comment": "Bastions",
+            "modifiers": [
+              {
+                "type": "set",
+                "value": true,
+                "field": "hidden",
+                "conditionGroups": [
+                  {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "equalTo",
+                        "value": 0,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "8a80-e529-a86f-84b5",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "childName": "Bastions of Tyranny"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": true,
+                "field": "hidden",
+                "conditions": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": 0,
+                    "field": "selections",
+                    "scope": "ancestor",
+                    "childId": "552f-2667-65a7-f914",
+                    "shared": true,
+                    "includeChildSelections": true,
+                    "childName": "Knight Tyrant"
+                  }
+                ]
+              }
+            ],
+            "profiles": [
+              {
+                "name": "Pterrorshade Rookery",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "d118-5407-f706-1d31",
+                "characteristics": [
+                  {
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573",
+                    "$text": "When this unit is **selected to shoot**, select one enemy unit within 24\" of this unit. That enemy unit has +6\" **detection range** until this unit has shot."
+                  }
+                ]
+              }
+            ],
+            "sortIndex": 2,
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 20
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "type": "upgrade",
+            "import": true,
+            "name": "Hate-filled Dominion",
+            "hidden": false,
+            "id": "b200-0024-3e31-8f39",
+            "constraints": [
+              {
+                "type": "max",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "shared": true,
+                "id": "d1ee-ac0f-cada-ef2a",
+                "includeChildSelections": true,
+                "includeChildForces": true
+              }
+            ],
+            "comment": "Bastions",
+            "modifiers": [
+              {
+                "type": "set",
+                "value": true,
+                "field": "hidden",
+                "conditionGroups": [
+                  {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "equalTo",
+                        "value": 0,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "8a80-e529-a86f-84b5",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "childName": "Bastions of Tyranny"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": true,
+                "field": "hidden",
+                "conditions": [
+                  {
+                    "type": "notInstanceOf",
+                    "value": 0,
+                    "field": "selections",
+                    "scope": "ancestor",
+                    "childId": "552f-2667-65a7-f914",
+                    "shared": true,
+                    "includeChildSelections": true,
+                    "childName": "Knight Tyrant"
+                  }
+                ]
+              }
+            ],
+            "profiles": [
+              {
+                "name": "Hate-filled Dominion",
+                "typeId": "9cc3-6d83-4dd3-9b64",
+                "typeName": "Abilities",
+                "hidden": false,
+                "id": "09e5-f7bd-6eaf-d694",
+                "characteristics": [
+                  {
+                    "name": "Description",
+                    "typeId": "9b8f-694b-e5e-b573",
+                    "$text": " This unit can re-roll rolls to determine the **A** of a weapon.  "
+                  }
+                ]
+              }
+            ],
+            "sortIndex": 1,
+            "costs": [
+              {
+                "name": "pts",
+                "typeId": "51b2-306e-1021-d207",
+                "value": 20
+              },
+              {
+                "name": "Crusade Points",
+                "typeId": "b03b-c239-15a5-da55",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Battle Honours",
+                "typeId": "75bb-ded1-c86d-bdf0",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Experience",
+                "typeId": "a623-fe74-1d33-cddf",
+                "value": 0
+              },
+              {
+                "name": "Crusade: Weapon Modifications",
+                "typeId": "716d-91b7-d55a-1022",
+                "value": 0
+              },
+              {
+                "name": "Blackstone Fragments",
+                "typeId": "ac6b-ced3-9b5e-9a6e",
+                "value": 0
+              },
+              {
+                "name": "Detachment Points",
+                "typeId": "82ae-1066-5107-6ae0",
+                "value": 0
+              },
+              {
+                "name": "Enhancements",
+                "typeId": "f759-1bc4-cb3a-f0d2",
+                "value": 1
+              }
+            ]
           }
         ],
         "id": "18da-1609-c0fb-cf69",
@@ -27836,1004 +27817,7 @@
         "hidden": false,
         "collective": false,
         "import": true,
-        "collapsible": true,
-        "selectionEntryGroups": [
-          {
-            "name": "Bastions of Tyranny Enhancements",
-            "id": "pad5-e2a2-edb6-ffe0",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Pterrorshade Rookery",
-                "hidden": false,
-                "id": "27cf-7fc3-7c18-681e",
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "c9c5-f986-bb1a-071d",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "comment": "Bastions",
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa8f-b4ab-e80b-a948",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "552f-2667-65a7-f914",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "profiles": [
-                  {
-                    "name": "Pterrorshade Rookery",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "d118-5407-f706-1d31",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "The gothic and mutated extrusions of this Knight Tyrant are the roost of a parasitic flock of pterrorshades. From their Throne, the Fallen Noble within has brokered a fragmented understanding of the maddening chorus they emit, enough to know when their unnatural senses have spotted fresh prey to be annihilated.\n\nKNIGHT TYRANT model only. When this unit is selected to shoot, select one enemy unit within 24\" of this unit. That enemy unit has +6\" detection range until this unit has shot."
-                      }
-                    ]
-                  }
-                ],
-                "sortIndex": 2,
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Hate-filled Dominion",
-                "hidden": false,
-                "id": "b200-0024-3e31-8f39",
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "d1ee-ac0f-cada-ef2a",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "comment": "Bastions",
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paa2-6a85-9b53-bb54",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "552f-2667-65a7-f914",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "profiles": [
-                  {
-                    "name": "Hate-filled Dominion",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "09e5-f7bd-6eaf-d694",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "This arrogant despot has yoked their weapon spirits to their will with a dominion forged of pure hate. Every maximised salvo is an expression of their malice and tyranny.\n\nKNIGHT TYRANT model only. This unit can re-roll rolls to determine the A of a weapon."
-                      }
-                    ]
-                  }
-                ],
-                "sortIndex": 1,
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "8a80-e529-a86f-84b5",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pae1-3da6-6ddb-c17f"
-              }
-            ]
-          },
-          {
-            "name": "Iconoclast Fiefdom Enhancements",
-            "id": "pa21-1d7c-87bb-e007",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "422a-b524-4baa-e200",
-                    "percentValue": false,
-                    "includeChildSelections": true,
-                    "includeChildForces": false
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "This callous Fallen Noble drives teeming hordes of their twisted serfs at a desperate pace to overwhelm their prey with lesser targets.\n\nCHAOS KNIGHTS model only. While a friendly DAMNED unit is within 6\" of this model, when that unit is selected to make a normal/advance/fall-back move that unit has +2\" M until the end of the phase."
-                      }
-                    ],
-                    "name": "Cruel Lashmaster (Aura)",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "2e5f-1c75-2b49-85f3"
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 25
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paf0-a41b-a6a0-3d49",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "bb67-f191-6562-acc7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "comment": "Iconoclast Fiefdom",
-                "type": "upgrade",
-                "import": true,
-                "name": "Cruel Lashmaster",
-                "hidden": false,
-                "id": "06cd-7848-7124-ca3c",
-                "collective": false,
-                "sortIndex": 15
-              },
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "7def-ccdf-8872-0c85",
-                    "percentValue": false,
-                    "includeChildSelections": true,
-                    "includeChildForces": false
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Chanting mortal thralls have pledged their lives and souls to this Chaos Knight's defence, and throw themselves at any who dare threaten the object of their idolatry.\n\nCHAOS KNIGHTS model only. While a friendly DAMNED unit is within 6\" of this model, when you target that unit with the Heroic Intervention stratagem, that use is -1 CP."
-                      }
-                    ],
-                    "name": "Iconoclast Idol (Aura)",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "0001-e913-205a-f146"
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa63-5577-a90a-826d",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "bb67-f191-6562-acc7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "comment": "Iconoclast Fiefdom",
-                "type": "upgrade",
-                "import": true,
-                "name": "Iconoclast Idol",
-                "hidden": false,
-                "id": "80fb-b674-d736-1ca7",
-                "collective": false,
-                "sortIndex": 16
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "7fe8-de91-8976-e705",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pa93-45dd-c36d-f96d"
-              }
-            ]
-          },
-          {
-            "name": "Helhunt Lance Enhancements",
-            "id": "pa1a-eada-c578-3a2a",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "c05e-e43d-8756-9bbd",
-                    "includeChildSelections": true
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "$text": "This infernal faceplate was forged by the cannibalistic Dark Magi of Ghanarkh. Affixed to a Chaos Knight, it infuses the steed with a carnivore's ferocious hunger.\n\nChaos Knights model only. You can re-roll Advance and Charge rolls made for the bearer's unit.",
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573"
-                      }
-                    ],
-                    "name": "Hunter's Helm",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "8d92-f5d1-74fb-3a81"
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa26-44b7-de6f-5604",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "bb67-f191-6562-acc7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "comment": "Helhunt Lance",
-                "type": "upgrade",
-                "import": true,
-                "name": "Hunter's Helm",
-                "hidden": false,
-                "id": "235a-a20a-c65f-9f8e",
-                "sortIndex": 4
-              },
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "ca04-938b-cd72-3499",
-                    "includeChildSelections": true
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "$text": "This Knight suit's cockpit incorporates a summoning octagram that drags warp gheists into reality and sends them screaming out to bedevil rune-marked prey.\n\nKnight Abominant model only. The bearer has the following ability:\nOctagram of Conjuration (Aura): While a friendly War Dog model is within 9\" of this model, after that War Dog model has shot, you can select one enemy unit hit by one or more of those attacks. That enemy unit must take a Battle-shock test.",
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573"
-                      }
-                    ],
-                    "name": "Octagram of Conjuration (Aura)",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "722d-1bb7-0cd7-7602"
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paed-bddb-d8ce-1f21",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "9d18-ceff-963a-cc29",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "comment": "Helhunt Lance",
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 40
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "type": "upgrade",
-                "import": true,
-                "name": "Octagram of Conjuration",
-                "hidden": false,
-                "id": "36be-0c43-6c75-17b9",
-                "sortIndex": 5
-              },
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "20ff-d068-21df-1a9d",
-                    "includeChildSelections": true
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "$text": "So dominant is the psychoneural signature of this Throne Mechanicum that it dominates even other scions and their steeds as they rule over War Dogs.\n\nTitanic Chaos Knights model only. In your Command phase, select one other Chaos Knights Character model within 9\" of the bearer. If the bearer has one or more Aura abilities that affect friendly War Dog units, until the start of your next Command phase, the selected Chaos Knights Character model is affected by those Aura abilities as well.",
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573"
-                      }
-                    ],
-                    "name": "Throne Tyrannicus",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "709f-4ad1-ed0c-25a1"
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paf3-d53e-995e-42a8",
-                    "conditionGroups": [
-                      {
-                        "type": "or",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "5929-ad51-d006-e008",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          },
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "bb67-f191-6562-acc7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 25
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "comment": "Helhunt Lance",
-                "type": "upgrade",
-                "import": true,
-                "name": "Throne Tyrannicus",
-                "hidden": false,
-                "id": "ad66-f295-a2d9-e49a",
-                "sortIndex": 6
-              },
-              {
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "shared": true,
-                    "id": "8c99-0ea0-3349-1159",
-                    "includeChildSelections": true
-                  }
-                ],
-                "profiles": [
-                  {
-                    "characteristics": [
-                      {
-                        "$text": "Something predatory and monstrous from the depths of the Warp has possessed this Knight suit. Its terrifying presence spreads like a pall.\n\nChaos Knights model only. At the start of your Command phase, select one Dread ability to be active for the bearer until the start of your next Command phase, in addition to the Dread abilities active for your army.",
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573"
-                      }
-                    ],
-                    "name": "Aspect of the Beast",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "9042-4baf-cea4-baaf"
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "padb-2e84-57c9-f55d",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "bb67-f191-6562-acc7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 30
-                  },
-                  {
-                    "name": "Crusade Points",
-                    "typeId": "b03b-c239-15a5-da55",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Battle Honours",
-                    "typeId": "75bb-ded1-c86d-bdf0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Experience",
-                    "typeId": "a623-fe74-1d33-cddf",
-                    "value": 0
-                  },
-                  {
-                    "name": "Crusade: Weapon Modifications",
-                    "typeId": "716d-91b7-d55a-1022",
-                    "value": 0
-                  },
-                  {
-                    "name": "Blackstone Fragments",
-                    "typeId": "ac6b-ced3-9b5e-9a6e",
-                    "value": 0
-                  },
-                  {
-                    "name": "Detachment Points",
-                    "typeId": "82ae-1066-5107-6ae0",
-                    "value": 0
-                  },
-                  {
-                    "name": "Enhancements",
-                    "typeId": "f759-1bc4-cb3a-f0d2",
-                    "value": 1
-                  }
-                ],
-                "comment": "Helhunt Lance",
-                "type": "upgrade",
-                "import": true,
-                "name": "Aspect of the Beast",
-                "hidden": false,
-                "id": "650c-14dc-b1b7-df8b",
-                "sortIndex": 3
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "915c-3949-0da6-83c5",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pac3-4b4a-5243-dee6"
-              }
-            ]
-          }
-        ]
+        "collapsible": true
       },
       {
         "comment": "Crusade content",
@@ -33207,240 +32191,11 @@
         "id": "1b39-2ce8-644e-8693",
         "hidden": false,
         "collapsible": true
-      },
-      {
-        "name": "Upgrades",
-        "id": "paaa-8856-a358-91fb",
-        "hidden": false,
-        "collapsible": true,
-        "selectionEntryGroups": [
-          {
-            "name": "Hunting Warpack Upgrades",
-            "id": "paa2-4540-ba87-d94a",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Soul-Spoor Auspicator",
-                "hidden": false,
-                "id": "paf9-a15b-e3ee-e901",
-                "profiles": [
-                  {
-                    "name": "Soul-Spoor Auspicator",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa14-24ae-171b-b3e7",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Those Huntsmen darkly blessed with a daemonic device sensitive to a worthy prey's spirits are capable of killing shots at greater effective ranges.\n\nHUNTSMAN unit only. This unit's ranged attacks have +6\" R."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa9f-76c6-9869-bdbe"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "paf3-ca7f-bb5f-6139",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pab0-669d-35d0-c266",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "f8a3-f5fa-4e85-cc47",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Snarling Rivalry",
-                "hidden": false,
-                "id": "pae2-ecb7-63bf-46f6",
-                "profiles": [
-                  {
-                    "name": "Snarling Rivalry",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa85-5aff-d8d0-d825",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "The greatest Executioners are expert long-range killers. They viciously compete for tallies of slaughter and eagerly eviscerate dug-in foes to prove their skill.\n\nEXECUTIONER unit only. This unit's ranged attacks have [IGNORES COVER]."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa20-2283-7930-1f55"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pad3-f5af-dd78-c508",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 10
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa27-1e55-7abe-a113",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "370b-1eb7-eac6-491c",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "5d30-981f-43b8-81be",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pa33-9cc0-24d1-2efe"
-              }
-            ]
-          }
-        ],
-        "constraints": [
-          {
-            "type": "max",
-            "value": 1,
-            "field": "selections",
-            "scope": "self",
-            "shared": true,
-            "id": "pa55-8500-e25e-f8e0",
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
-            "value": 4,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "pab6-e5cf-1245-6da3",
-            "includeChildSelections": true
-          }
-        ]
       }
     ],
     "sharedRules": [
       {
-        "description": "This model has Stealth.",
+        "description": "If your Army Faction is ^^**Chaos Knights^^**, each model from your army with this ability gains Dread abilities, depending which are active for your army. The Deathly Terror ability is active for your army from the start of the battle. In addition, at the start of the first, third and fifth battle rounds, you can either select one of the other Dread abilities or randomly select two Dread abilities to apply by rolling two D6 and applying the results rolled, from those numbered 1-6 below.\n\nAny Dread abilities that have been selected are active until the end of the battle. You cannot select the same Dread ability more than once, and any duplicated Dread abilities (as a result of randomly selecting them) have no additional effect.\n\n\n**N/A - Deathly Terror (Aura)**\nWhile an enemy unit is within 9\" of this model, worsen the Leadership characteristic of models in that unit by 1.\n\n**1 - Despair (Aura)**\nWhile an enemy unit is within 9\" of this model, worsen the Leadership characteristic of models in that unit by 1. This is cumulative with the Deathly Terror ability (see above).\n\n**2 - Doom**\nEach time this model makes an attack, if the target is Battle-shocked, add 1 to the Wound roll.\n\n**3 - Darkness**\nThis model has **Stealth**.\n\n**4 - Dismay (Aura)**\nIn the Battle-shock step of your opponent's Command phase, for each enemy unit that is below its Starting Strength and within 9\" of this model, that enemy unit must take a Battle-shock test.\n\n**5 - Delirium (Aura)**\nWhile an enemy unit that is Below Half-strength is within 9\" of this model, each time that model fails a Battle-shock test, it suffers D3 mortal wounds.\n\n**6 - Dominion**\nAdd 3\" to the range of this model's Aura abilities.",
         "modifiers": [
           {
             "conditions": [
@@ -33519,70 +32274,6 @@
         "hidden": false,
         "typeId": "9cc3-6d83-4dd3-9b64",
         "typeName": "Abilities"
-      },
-      {
-        "characteristics": [
-          {
-            "$text": "While a friendly ^^**Damned^^** unit is within 9\" of this unit, each time a model in that unit makes an attack, re‑roll a Hit roll of 1 and re‑roll a Wound roll of 1.",
-            "name": "Description",
-            "typeId": "9b8f-694b-e5e-b573"
-          }
-        ],
-        "modifiers": [
-          {
-            "conditions": [
-              {
-                "type": "lessThan",
-                "value": 1,
-                "field": "selections",
-                "scope": "force",
-                "childId": "7fe8-de91-8976-e705",
-                "shared": true,
-                "includeChildSelections": true
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          }
-        ],
-        "name": "Dread Tyrants (Aura)",
-        "typeId": "9cc3-6d83-4dd3-9b64",
-        "typeName": "Abilities",
-        "hidden": false,
-        "id": "1114-b788-97de-7a2d"
-      },
-      {
-        "characteristics": [
-          {
-            "$text": "Each time a ^^**Chaos Knights^^** unit with this ability is selected to shoot or fight, it can make a Dark Sacrifice. If it does, select one friendly ^^**Damned^^** unit within 6\". That ^^**Damned^^** unit must take a Leadership test: if passed, destroy D3 models in that ^^**Damned^^** unit; if failed, destroy D3+3 models in that ^^**Damned^^** unit. In either case, then select one of the following abilities for your Chaos Knights unit’s weapons to have until the end of the phase: [LETHAL HITS]; [SUSTAINED HITS 1].",
-            "name": "Description",
-            "typeId": "9b8f-694b-e5e-b573"
-          }
-        ],
-        "modifiers": [
-          {
-            "conditions": [
-              {
-                "type": "lessThan",
-                "value": 1,
-                "field": "selections",
-                "scope": "force",
-                "childId": "7fe8-de91-8976-e705",
-                "shared": true,
-                "includeChildSelections": true
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          }
-        ],
-        "name": "Dark Sacrifice",
-        "typeId": "9cc3-6d83-4dd3-9b64",
-        "typeName": "Abilities",
-        "hidden": false,
-        "id": "0b98-37c4-6be9-f608"
       },
       {
         "characteristics": [
@@ -33764,7 +32455,7 @@
     "xmlns": "http://www.battlescribe.net/schema/catalogueSchema",
     "id": "8106-aad2-918a-9ac",
     "name": "Chaos - Chaos Knights Library",
-    "revision": 67,
+    "revision": 5,
     "battleScribeVersion": 2.03,
     "library": true,
     "gameSystemId": "sys-352e-adc2-7639-d610",

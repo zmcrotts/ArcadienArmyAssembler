@@ -2,7 +2,7 @@
   "catalogue": {
     "rules": [
       {
-        "description": "This deed is completed at the end of the battle round if the number of enemy units destroyed this battle round is greater than the battle round number even if those units are subsequently returned to the battlefield (for example, two destroyed enemy units in the first battle round).",
+        "description": "If your Army Faction is **^^Imperial Knights^^**, at the end of the Read Mission Objectives step, you must determine your army's Oath for the coming battle. An Oath consists of two parts - one Deed and one Quality. There are three options for each part.\n\nTo determine your army's Deed, you can either select one Deed or you can randomly select one Deed by rolling a D6 and consulting the relevant table. The selected Deed will describe what needs to be achieved in order to complete that Deed.\n\nTo determine your army's Quality, you can either select one Quality or you can randomly select one Quality by rolling a D6 and consulting the relevant table. Until the end of the battle, the ability described in the Quality selected applies to all models in your army with this ability.\n\nThe first time your selected Deed is completed your Oath is fulfilled and, until the end of the battle, your army becomes Honoured and you gain 2CP, or 3CP if you randomly selected your Deed and/or Quality (CP gained in this way are an exemption to the Core Rules that limit the maximum number of CP you can gain per battle round to 1).",
         "modifiers": [
           {
             "conditions": [
@@ -480,9 +480,9 @@
               {
                 "characteristics": [
                   {
-                    "$text": "Once per turn, one unit from your army with this ability can use it when its unit is targeted with a Stratagem. If it does, reduce the CP cost of that use of that Stratagem by 1CP.",
                     "name": "Description",
-                    "typeId": "9b8f-694b-e5e-b573"
+                    "typeId": "9b8f-694b-e5e-b573",
+                    "$text": "Once per turn, you can target this model with a Stratagem for 0CP, and can do so even if you have already targeted a different unit with that Stratagem in the same phase."
                   }
                 ],
                 "name": "Legendary Freeblade",
@@ -1137,33 +1137,6 @@
             "id": "eef5-cc98-f65f-7a01",
             "targetId": "ad65-d3cb-c677-7cb3",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "1bb4-dbf1-4a81-8414",
-            "targetId": "f77c-b744-c82a-a3cd",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "95c2-74dc-df5f-2f6c",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "e584-dcb3-5ffe-dc94",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 3
           }
         ],
         "costs": [
@@ -1236,7 +1209,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           }
         ],
@@ -1399,16 +1372,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 6,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "9a4f-64e1-6ace-8796",
-            "includeChildForces": true,
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
             "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -1436,12 +1399,23 @@
           },
           {
             "type": "max",
+            "value": 6,
+            "field": "selections",
+            "scope": "roster",
+            "shared": true,
+            "id": "77d5-daf2-c670-6a4d",
+            "includeChildSelections": true,
+            "includeChildForces": true
+          },
+          {
+            "type": "max",
             "value": 3,
             "field": "selections",
             "scope": "force",
             "shared": true,
-            "id": "afc3-6c64-3810-2ce7",
-            "includeChildSelections": true
+            "id": "c063-d9a3-57a3-01f9",
+            "includeChildSelections": true,
+            "includeChildForces": false
           }
         ],
         "entryLinks": [
@@ -1462,15 +1436,6 @@
             "type": "selectionEntryGroup",
             "targetId": "185a-a9e3-9df5-c62f",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa2d-decd-b482-97a7",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -1543,7 +1508,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           }
         ],
@@ -1742,11 +1707,16 @@
             "type": "and"
           },
           {
+            "type": "and",
             "comment": "Spearhead-at-Arms Battleline",
             "modifiers": [
               {
+                "type": "set",
+                "value": 6,
+                "field": "c063-d9a3-57a3-01f9",
                 "conditionGroups": [
                   {
+                    "type": "or",
                     "conditions": [
                       {
                         "type": "instanceOf",
@@ -1757,28 +1727,46 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
-                      },
-                      {
-                        "type": "atLeast",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "d469-239c-7e4c-4210",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
                       }
                     ],
-                    "type": "or"
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
                   }
-                ],
-                "type": "set",
-                "value": 6,
-                "field": "afc3-6c64-3810-2ce7"
+                ]
               },
               {
+                "type": "set",
+                "value": 3,
+                "field": "77d5-daf2-c670-6a4d",
                 "conditionGroups": [
                   {
+                    "type": "and",
                     "conditions": [
                       {
                         "type": "lessThan",
@@ -1799,33 +1787,26 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
                       }
-                    ],
-                    "type": "and"
+                    ]
                   }
-                ],
-                "type": "set",
-                "value": 3,
-                "field": "9a4f-64e1-6ace-8796"
+                ]
               },
               {
-                "conditions": [
-                  {
-                    "type": "atLeast",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "d469-239c-7e4c-4210",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
                 "type": "unset-primary",
                 "value": "dbd4-63-af05-998",
-                "field": "category"
-              },
-              {
+                "field": "category",
                 "conditions": [
                   {
                     "type": "atLeast",
@@ -1837,13 +1818,119 @@
                     "includeChildSelections": true,
                     "includeChildForces": true
                   }
-                ],
+                ]
+              },
+              {
                 "type": "set-primary",
                 "value": "e338-111e-d0c6-b687",
-                "field": "category"
+                "field": "category",
+                "conditions": [
+                  {
+                    "type": "atLeast",
+                    "value": 1,
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "d469-239c-7e4c-4210",
+                    "shared": true,
+                    "includeChildSelections": true,
+                    "includeChildForces": true
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": 2,
+                "field": "77d5-daf2-c670-6a4d",
+                "conditionGroups": [
+                  {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d469-239c-7e4c-4210",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "atLeast",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": 4,
+                "field": "c063-d9a3-57a3-01f9",
+                "conditionGroups": [
+                  {
+                    "type": "or",
+                    "conditions": [
+                      {
+                        "type": "instanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "force",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
-            ],
-            "type": "and"
+            ]
           }
         ],
         "selectionEntryGroups": [
@@ -2295,15 +2382,6 @@
             "type": "selectionEntryGroup",
             "targetId": "185a-a9e3-9df5-c62f",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pad6-8396-7f1f-3a78",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -2391,7 +2469,7 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           }
         ],
@@ -2605,19 +2683,37 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
-                      },
-                      {
-                        "type": "atLeast",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "d469-239c-7e4c-4210",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
                       }
                     ],
-                    "type": "or"
+                    "type": "or",
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ],
                 "type": "set",
@@ -2647,6 +2743,17 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
                       }
                     ],
                     "type": "and"
@@ -2689,6 +2796,99 @@
                 "type": "set-primary",
                 "value": "e338-111e-d0c6-b687",
                 "field": "category"
+              },
+              {
+                "conditionGroups": [
+                  {
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d469-239c-7e4c-4210",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "atLeast",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
+                      }
+                    ],
+                    "type": "and"
+                  }
+                ],
+                "type": "set",
+                "value": 2,
+                "field": "9a4f-64e1-6ace-8796"
+              },
+              {
+                "conditionGroups": [
+                  {
+                    "conditions": [
+                      {
+                        "type": "instanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "force",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
+                    "type": "or",
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "set",
+                "value": 4,
+                "field": "343f-6550-4c70-e1f8"
               }
             ],
             "type": "and"
@@ -2956,14 +3156,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -2987,6 +3179,15 @@
             "scope": "self",
             "shared": true,
             "id": "2869-e097-2f21-2d5e",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "0b7d-dd5c-394b-d265",
             "includeChildSelections": true
           }
         ],
@@ -3055,24 +3256,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pad7-3f15-8c1f-79b1",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "9235-b79b-12a0-5f43",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -3187,12 +3370,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 390,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -3212,9 +3395,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -3228,6 +3410,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "0b7d-dd5c-394b-d265",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -3783,14 +3982,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -3814,6 +4005,15 @@
             "scope": "self",
             "shared": true,
             "id": "4c4f-ef07-99e6-bdeb",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "4416-7a30-99ea-2584",
             "includeChildSelections": true
           }
         ],
@@ -3882,24 +4082,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa58-5e9a-508c-7dfc",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "cb7b-7317-a9cc-170a",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -4013,12 +4195,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 370,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -4038,9 +4220,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -4054,6 +4235,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "4416-7a30-99ea-2584",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -4448,14 +4646,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -4479,6 +4669,15 @@
             "scope": "self",
             "shared": true,
             "id": "7a2c-ab34-f471-5276",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "271a-aefd-88d6-9acb",
             "includeChildSelections": true
           }
         ],
@@ -4547,24 +4746,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa71-6c7c-ad2a-3027",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "b903-df18-4170-fec2",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -4672,12 +4853,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 370,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -4697,9 +4878,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -4713,6 +4893,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "271a-aefd-88d6-9acb",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -5383,14 +5580,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -5414,6 +5603,15 @@
             "scope": "self",
             "shared": true,
             "id": "97e9-826b-3baa-df58",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "5ef6-ab39-76e3-8e5b",
             "includeChildSelections": true
           }
         ],
@@ -5489,24 +5687,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pae6-ce63-f451-aa99",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "ef24-e379-b845-9881",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -5628,12 +5808,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 390,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -5653,9 +5833,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -5669,6 +5848,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "5ef6-ab39-76e3-8e5b",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -6115,14 +6311,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -6146,6 +6334,15 @@
             "scope": "self",
             "shared": true,
             "id": "6d36-1b17-6010-3a90",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "eb57-725d-4569-76c2",
             "includeChildSelections": true
           }
         ],
@@ -6221,24 +6418,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa43-faf9-8e5a-8ad3",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "3155-279c-42a5-cff6",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -6554,14 +6733,7 @@
                         "hidden": false,
                         "id": "13ea-1f02-677-7538",
                         "type": "selectionEntry",
-                        "targetId": "d6c0-4d42-c3c4-db8a",
-                        "costs": [
-                          {
-                            "name": "pts",
-                            "typeId": "51b2-306e-1021-d207",
-                            "value": 15
-                          }
-                        ]
+                        "targetId": "d6c0-4d42-c3c4-db8a"
                       }
                     ],
                     "type": "upgrade",
@@ -6573,7 +6745,7 @@
                       {
                         "name": "pts",
                         "typeId": "51b2-306e-1021-d207",
-                        "value": 0
+                        "value": 15
                       },
                       {
                         "name": "Crusade Points",
@@ -6764,12 +6936,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 415,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -6789,9 +6961,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -6805,6 +6976,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "eb57-725d-4569-76c2",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -7113,14 +7301,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -7144,6 +7324,15 @@
             "scope": "self",
             "shared": true,
             "id": "e7d7-aa19-e0c6-256f",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "d61f-f21c-4e50-1248",
             "includeChildSelections": true
           }
         ],
@@ -7212,24 +7401,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa82-55e3-5000-447d",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "1bec-24b0-894b-bf70",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "selectionEntryGroups": [
@@ -7754,12 +7925,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 380,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -7779,9 +7950,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -7795,6 +7965,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "d61f-f21c-4e50-1248",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -8103,14 +8290,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -8134,6 +8313,15 @@
             "scope": "self",
             "shared": true,
             "id": "a400-41a3-12dd-dc7f",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "b83f-e759-abd7-7b41",
             "includeChildSelections": true
           }
         ],
@@ -8209,24 +8397,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa61-156e-39d7-b1a7",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "224d-5235-f1f9-2688",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -8314,12 +8484,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 420,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -8339,9 +8509,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -8355,6 +8524,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "b83f-e759-abd7-7b41",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -9093,14 +9279,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "1964-e513-f73-b38b"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -9124,6 +9302,15 @@
             "scope": "self",
             "shared": true,
             "id": "dbab-e5b0-4bc3-6256",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "fd9a-73b5-1bba-d62f",
             "includeChildSelections": true
           }
         ],
@@ -9199,24 +9386,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pad4-ccfa-8048-a456",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "2100-b95d-edc8-e7fa",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -9304,12 +9473,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 415,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -9329,9 +9498,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -9345,6 +9513,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "fd9a-73b5-1bba-d62f",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -10762,18 +10947,7 @@
             "hidden": false,
             "type": "selectionEntryGroup",
             "id": "ca55-cdf6-e3e8-e262",
-            "targetId": "d793-8964-e815-3bb8",
-            "constraints": [
-              {
-                "type": "max",
-                "value": 20,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "includeChildSelections": true,
-                "id": "62db-1b98-77d6-a17a"
-              }
-            ]
+            "targetId": "d793-8964-e815-3bb8"
           }
         ],
         "constraints": [
@@ -10789,7 +10963,7 @@
           },
           {
             "type": "max",
-            "value": 20,
+            "value": 1,
             "field": "selections",
             "scope": "roster",
             "shared": true,
@@ -10836,14 +11010,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "5e65-5db0-dbbb-73ac"
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -10866,6 +11032,15 @@
             "scope": "self",
             "shared": true,
             "id": "88cc-cb2a-805e-0678",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "f1af-5808-ad34-88a2",
             "includeChildSelections": true
           }
         ],
@@ -11115,12 +11290,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 860,
+            "type": "increment",
+            "value": 75,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -11140,9 +11315,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -11158,6 +11332,23 @@
                 ]
               }
             ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "f1af-5808-ad34-88a2",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
           }
         ],
         "entryLinks": [
@@ -11169,24 +11360,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "de8b-aace-bb9a-3530",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "810d-1264-52e4-7385",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 2
           }
         ],
         "modifierGroups": [
@@ -11750,14 +11923,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "8c14-ffe1-d6bf-e209"
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -11780,6 +11945,15 @@
             "scope": "self",
             "shared": true,
             "id": "c320-1a30-9f55-b8d3",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "b55d-cd93-49e8-e603",
             "includeChildSelections": true
           }
         ],
@@ -12764,12 +12938,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 800,
+            "type": "increment",
+            "value": 75,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -12789,9 +12963,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -12807,6 +12980,23 @@
                 ]
               }
             ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "b55d-cd93-49e8-e603",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
           }
         ],
         "entryLinks": [
@@ -12818,24 +13008,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "1b77-a9aa-9dc7-8751",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "6a69-74df-3a74-9591",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 2
           }
         ],
         "modifierGroups": [
@@ -13043,14 +13215,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "5ceb-841e-891c-8add"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -13074,6 +13238,15 @@
             "scope": "self",
             "shared": true,
             "id": "e5de-cf7a-a418-309b",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "856e-4def-c100-a9db",
             "includeChildSelections": true
           }
         ],
@@ -13289,24 +13462,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa27-41d6-9192-b010",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "b02d-dc9c-a0f6-955f",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -13394,12 +13549,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 435,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -13419,9 +13574,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -13435,6 +13589,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "856e-4def-c100-a9db",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -13862,14 +14033,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "7f6a-8587-b1b4-f3e2"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -13893,6 +14056,15 @@
             "scope": "self",
             "shared": true,
             "id": "3a62-a20c-9974-6c50",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "0c2d-45d3-9682-858d",
             "includeChildSelections": true
           }
         ],
@@ -14122,24 +14294,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pacf-df51-3d43-28b0",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "6aa5-1f9b-2490-5084",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -14227,12 +14381,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 395,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -14252,9 +14406,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -14268,6 +14421,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "0c2d-45d3-9682-858d",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -14736,14 +14906,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "6798-aa98-bf7e-b9a6"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -14767,6 +14929,15 @@
             "scope": "self",
             "shared": true,
             "id": "4526-70d5-75ae-bcc8",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "7137-a18f-fde4-7670",
             "includeChildSelections": true
           }
         ],
@@ -14933,24 +15104,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa26-33e4-77af-decb",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "9239-9749-745a-f739",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "categoryLinks": [
@@ -15094,12 +15247,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 395,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -15119,9 +15272,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -15135,6 +15287,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "7137-a18f-fde4-7670",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -15949,14 +16118,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "d679-43ae-5992-24da"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -15980,6 +16141,15 @@
             "scope": "self",
             "shared": true,
             "id": "1c7b-84a0-4795-457b",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "564d-a989-de18-8505",
             "includeChildSelections": true
           }
         ],
@@ -16163,24 +16333,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa2f-d85b-749b-1637",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "1eb8-101d-f757-24ce",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -16285,12 +16437,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 425,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -16310,9 +16462,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -16326,6 +16477,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "564d-a989-de18-8505",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -17001,14 +17169,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "484c-caea-7c1b-c9c2"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -17032,6 +17192,15 @@
             "scope": "self",
             "shared": true,
             "id": "1615-9061-436a-5967",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "aa1a-ad3a-b419-8acd",
             "includeChildSelections": true
           }
         ],
@@ -17212,24 +17381,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa62-2f56-c0bf-d446",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "993f-bc42-29fe-3456",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -17756,12 +17907,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 400,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -17781,9 +17932,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -17797,6 +17947,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "aa1a-ad3a-b419-8acd",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -17990,14 +18157,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "d499-5ba8-9b40-3c13"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -18021,6 +18180,15 @@
             "scope": "self",
             "shared": true,
             "id": "bd09-e7d1-9b29-d9a4",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "86df-9075-7260-1f99",
             "includeChildSelections": true
           }
         ],
@@ -18165,24 +18333,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa64-610f-2bf4-de42",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "774d-636c-4299-f96c",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoLinks": [
@@ -18767,12 +18917,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 390,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -18792,9 +18942,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -18808,6 +18957,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "86df-9075-7260-1f99",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -19206,16 +19372,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 6,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "542e-97b1-e173-f5b4",
-            "includeChildForces": true,
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
             "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -19243,13 +19399,23 @@
           },
           {
             "type": "max",
+            "value": 6,
+            "field": "selections",
+            "scope": "roster",
+            "shared": true,
+            "id": "19af-f4ad-9cc5-7412",
+            "includeChildSelections": true,
+            "includeChildForces": true
+          },
+          {
+            "type": "max",
             "value": 3,
             "field": "selections",
             "scope": "force",
             "shared": true,
-            "id": "035a-c610-aacd-5a7f",
-            "includeChildForces": false,
-            "includeChildSelections": true
+            "id": "b709-d5c0-252e-e42a",
+            "includeChildSelections": true,
+            "includeChildForces": false
           }
         ],
         "categoryLinks": [
@@ -20130,12 +20296,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 160,
+            "type": "increment",
+            "value": 10,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -20155,9 +20321,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -20193,15 +20358,6 @@
             "type": "selectionEntryGroup",
             "targetId": "185a-a9e3-9df5-c62f",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa58-7331-a5db-a395",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "modifierGroups": [
@@ -20399,11 +20555,16 @@
             "type": "and"
           },
           {
+            "type": "and",
             "comment": "Spearhead-at-Arms Battleline",
             "modifiers": [
               {
+                "type": "set",
+                "value": 6,
+                "field": "b709-d5c0-252e-e42a",
                 "conditionGroups": [
                   {
+                    "type": "or",
                     "conditions": [
                       {
                         "type": "instanceOf",
@@ -20414,28 +20575,46 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
-                      },
-                      {
-                        "type": "atLeast",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "d469-239c-7e4c-4210",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
                       }
                     ],
-                    "type": "or"
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "lessThan",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
                   }
-                ],
-                "type": "set",
-                "value": 6,
-                "field": "035a-c610-aacd-5a7f"
+                ]
               },
               {
+                "type": "set",
+                "value": 3,
+                "field": "19af-f4ad-9cc5-7412",
                 "conditionGroups": [
                   {
+                    "type": "and",
                     "conditions": [
                       {
                         "type": "lessThan",
@@ -20456,33 +20635,26 @@
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
                       }
-                    ],
-                    "type": "and"
+                    ]
                   }
-                ],
-                "type": "set",
-                "value": 3,
-                "field": "542e-97b1-e173-f5b4"
+                ]
               },
               {
-                "conditions": [
-                  {
-                    "type": "atLeast",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "childId": "d469-239c-7e4c-4210",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
                 "type": "unset-primary",
                 "value": "dbd4-63-af05-998",
-                "field": "category"
-              },
-              {
+                "field": "category",
                 "conditions": [
                   {
                     "type": "atLeast",
@@ -20494,13 +20666,119 @@
                     "includeChildSelections": true,
                     "includeChildForces": true
                   }
-                ],
+                ]
+              },
+              {
                 "type": "set-primary",
                 "value": "e338-111e-d0c6-b687",
-                "field": "category"
+                "field": "category",
+                "conditions": [
+                  {
+                    "type": "atLeast",
+                    "value": 1,
+                    "field": "selections",
+                    "scope": "roster",
+                    "childId": "d469-239c-7e4c-4210",
+                    "shared": true,
+                    "includeChildSelections": true,
+                    "includeChildForces": true
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": 2,
+                "field": "19af-f4ad-9cc5-7412",
+                "conditionGroups": [
+                  {
+                    "type": "and",
+                    "conditions": [
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "forces",
+                        "scope": "roster",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "lessThan",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d469-239c-7e4c-4210",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      },
+                      {
+                        "type": "atLeast",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "roster",
+                        "childId": "d62d-db22-4893-4bc0",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "1. Incursion (1000 Point limit)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "set",
+                "value": 4,
+                "field": "b709-d5c0-252e-e42a",
+                "conditionGroups": [
+                  {
+                    "type": "or",
+                    "conditions": [
+                      {
+                        "type": "instanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "force",
+                        "childId": "cac3-71d1-ea4b-795d",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
+                    "conditionGroups": [
+                      {
+                        "type": "and",
+                        "conditions": [
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d62d-db22-4893-4bc0",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "1. Incursion (1000 Point limit)"
+                          },
+                          {
+                            "type": "atLeast",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "roster",
+                            "childId": "d469-239c-7e4c-4210",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
-            ],
-            "type": "and"
+            ]
           }
         ],
         "type": "model",
@@ -20508,94 +20786,6 @@
         "name": "Armiger Moirax",
         "hidden": false,
         "id": "e3dd-7e90-140a-b3ab"
-      },
-      {
-        "categoryLinks": [
-          {
-            "targetId": "4ac9-fd30-1e3d-b249",
-            "id": "2a97-c85d-c015-e6a8",
-            "primary": true,
-            "name": "Configuration"
-          }
-        ],
-        "constraints": [
-          {
-            "type": "max",
-            "value": 1,
-            "field": "selections",
-            "scope": "parent",
-            "shared": true,
-            "id": "6ee3-7624-450a-fbf5"
-          }
-        ],
-        "modifiers": [
-          {
-            "conditionGroups": [
-              {
-                "conditions": [
-                  {
-                    "type": "instanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "force",
-                    "childId": "1d6e-2579-8e7f-1ed4",
-                    "shared": true,
-                    "includeChildSelections": true
-                  },
-                  {
-                    "type": "instanceOf",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "primary-catalogue",
-                    "childId": "25dd-7aa0-6bf4-f2d5",
-                    "shared": true
-                  }
-                ],
-                "type": "or"
-              }
-            ],
-            "type": "set",
-            "value": true,
-            "field": "hidden"
-          },
-          {
-            "conditions": [
-              {
-                "type": "instanceOf",
-                "value": 1,
-                "field": "selections",
-                "scope": "force",
-                "childId": "1d6e-2579-8e7f-1ed4",
-                "shared": true,
-                "includeChildSelections": true
-              }
-            ],
-            "type": "set",
-            "value": 0,
-            "field": "defaultAmount"
-          },
-          {
-            "conditions": [
-              {
-                "type": "atLeast",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "childId": "e82c-6f8c-2b97-a287",
-                "shared": true
-              }
-            ],
-            "type": "set",
-            "value": "Imperial Knights are visible",
-            "field": "name"
-          }
-        ],
-        "type": "upgrade",
-        "import": true,
-        "name": "Show Imperial Knights",
-        "hidden": false,
-        "id": "e82c-6f8c-2b97-a287",
-        "defaultAmount": 1
       },
       {
         "profiles": [
@@ -21068,14 +21258,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "2e4a-a8c6-e1b0-b15d"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -21099,6 +21281,15 @@
             "scope": "self",
             "shared": true,
             "id": "5c37-3931-b971-b2af",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "1462-a692-2849-bb09",
             "includeChildSelections": true
           }
         ],
@@ -21168,24 +21359,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa57-9311-202a-3d70",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "57e4-8b89-425d-b0da",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "infoGroups": [
@@ -21303,12 +21476,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 420,
+            "type": "increment",
+            "value": 20,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -21328,9 +21501,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -21344,6 +21516,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "1462-a692-2849-bb09",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -22554,14 +22743,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "ebac-a942-ffd8-2235"
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -22585,6 +22766,15 @@
             "scope": "self",
             "shared": true,
             "id": "8a1f-fb97-4dd9-e351",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "4632-a555-f127-f48c",
             "includeChildSelections": true
           }
         ],
@@ -22647,24 +22837,6 @@
             "type": "selectionEntryGroup",
             "targetId": "4c8f-eb91-e2f2-42e5",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "id": "pa1a-f466-4991-c102",
-            "type": "selectionEntryGroup",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "d085-e1ae-6ba4-6d4e",
-            "targetId": "185a-a9e3-9df5-c62f",
-            "sortIndex": 4
           }
         ],
         "costs": [
@@ -22752,12 +22924,12 @@
               }
             ],
             "type": "set-primary",
-            "value": "887b-ab87-92a2-20f5",
+            "value": "5e03-9044-273d-e818",
             "field": "category"
           },
           {
-            "type": "set",
-            "value": 280,
+            "type": "increment",
+            "value": 15,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -22777,9 +22949,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -22793,6 +22964,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "4632-a555-f127-f48c",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -26302,7 +26490,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Through the projection of rapidly modulating ion fields, this unique generator's effects wreathe the suit in an all encompassing fog of protective energies that defend it from close-quarters attacks.\n\nImperial Knights model only. The bearer has a 5+ invulnerable save.",
+                        "$text": "**^^Imperial Knights^^** model only. The bearer has a 5+ invulnerable save.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -26358,27 +26546,19 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "b5e4-3253-c157-54fd",
+                        "shared": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pae6-322f-d5d5-1ae7",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "constraints": [
@@ -26404,7 +26584,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Manifesting as though from nowhere, this Knight is an elemental force of vengeance against the Emperor of Mankind's foes. At battle's end, it disappears as mysteriously as it arrived.\n\nImperial Knights model only. The bearer has the Deep Strike ability. Once per battle, at the end of your opponent's turn, if the bearer is not within Engagement Range of one or more enemy units, it can use this Enhancement. If it does, remove the bearer from the battlefield. In the Reinforcements step of your subsequent Movement phase, set the bearer up anywhere on the battlefield that is more than 9\" horizontally away from all enemy units. If the battle ends and the bearer is not on the battlefield, it is destroyed.",
+                        "$text": "**^^Imperial Knights^^** model only. The bearer has the Deep Strike ability. Once per battle, at the end of your opponent’s turn, if the bearer is not within Engagement Range of one or more enemy units, it can use this Enhancement. If it does, remove the bearer from the battlefield. In the Reinforcements step of your subsequent Movement phase, set the bearer up anywhere on the battlefield that is more than 9” horizontally away from all enemy units. If the battle ends and the bearer is not on the battlefield, it is destroyed.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -26460,27 +26640,19 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "b5e4-3253-c157-54fd",
+                        "shared": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa11-8d5b-f714-35fc",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "infoLinks": [
@@ -26515,7 +26687,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "It is said that whenever this famed weapon is brought to life, it shall not fall silent until it has slaked its thirst for justice.\n\nImperial Knights model only. Improve the Attacks characteristic of melee weapons equipped by the bearer by 2, and each time the bearer makes a melee attack, add 1 to the Hit roll.",
+                        "$text": "**^^Imperial Knights^^** model only. Improve the Attacks characteristic of melee weapons equipped by the bearer by 2, and each time the bearer makes a melee attack, add 1 to the Hit roll.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -26529,27 +26701,19 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "b5e4-3253-c157-54fd",
+                        "shared": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pabb-779a-56ad-2abc",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -26641,7 +26805,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "This remarkable data-manifold surrounds a scion with holo-projected bioscans and engine-signature readouts, whose gaze penetrates the densest terrain as though it was not there.\n\nImperial Knights model only. Ranged weapons equipped by the bearer have the [IGNORES COVER] ability.",
+                        "$text": "**^^Imperial Knights^^** model only. Ranged weapons equipped by the bearer have the **[IGNORES COVER]** ability.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -26697,27 +26861,19 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "b5e4-3253-c157-54fd",
+                        "shared": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa28-8ee8-605d-dcde",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "constraints": [
@@ -26830,7 +26986,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Some of this Knight's hull plates are revered antiques, dating back millennia; their durability is a testament to the secrets of construction now lost to the mists of time.\n\nIMPERIAL KNIGHTS DOMINUS model only. This model has +1 T."
+                        "$text": "**IMPERIAL KNIGHTS DOMINUS** model only. This model has +1 **T**."
                       }
                     ],
                     "name": "Blessed Plate",
@@ -26842,37 +26998,20 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "af4c-b971-a31c-669c",
+                        "shared": true,
+                        "childName": "Dominus"
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "padf-64a0-2323-6f4d",
-                    "conditionGroups": [
-                      {
-                        "type": "or",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          },
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "af4c-b971-a31c-669c",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -26966,7 +27105,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "These ancient and precious components are installed with great reverence; their function is to keep the Dominus-class Knight's guns firing with ferocious efficiency.\n\nIMPERIAL KNIGHTS DOMINUS model only. This unit can re-roll rolls to determine the A of a weapon."
+                        "$text": "**IMPERIAL KNIGHTS DOMINUS** model only. This unit can re‑roll rolls to determine the **A** of a weapon."
                       }
                     ],
                     "name": "Archeotech Autoloaders",
@@ -27020,37 +27159,20 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "af4c-b971-a31c-669c",
+                        "shared": true,
+                        "childName": "Dominus"
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa34-87e4-58fd-ef63",
-                    "conditionGroups": [
-                      {
-                        "type": "or",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          },
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "af4c-b971-a31c-669c",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "constraints": [
@@ -27122,207 +27244,6 @@
             "name": "Dominus Foebreakers Enhancements",
             "id": "ed3d-abcb-64ec-9f52",
             "hidden": false
-          },
-          {
-            "name": "Questor Forgepact Enhancements",
-            "id": "pa64-dc03-b60c-8649",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Magos Questoris",
-                "hidden": false,
-                "id": "pad2-6667-eb15-d1ee",
-                "profiles": [
-                  {
-                    "name": "Magos Questoris",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa3e-aacc-38f5-127e",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "An expert in the intricate mechanisms and weapons systems of Imperial Knights, this Tech-Priest taught Sacristans their craft. They now walk in the shadow of these war machines and make field repairs in the midst of battle.\n\nTECH-PRIEST model only. When using this model's Sacristan Pledge ability, the selected IMPERIAL KNIGHTS model heals 2 additional wounds."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pac1-bca4-db38-db47"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa1b-6302-72d0-a544",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "padb-e51b-3c7d-7ee1",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "59a9-b5cc-7c11-aaad",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Knight of the Opus Machina (Aura)",
-                "hidden": false,
-                "id": "pad9-439a-ea51-6e3d",
-                "profiles": [
-                  {
-                    "name": "Knight of the Opus Machina (Aura)",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa32-7721-fcce-8273",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "A devotee of the Omnissian creed, this Noble is inspired by the presence of the Adeptus Mechanicus, fighting with greater zeal and vigour in their holy presence.\n\nIMPERIAL KNIGHTS model only. While a friendly ADEPTUS MECHANICUS unit is within 6\" of this model, that ADEPTUS MECHANICUS unit's melee attacks have +1 WS and AP."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pad0-8856-762e-eb6c"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa48-a99a-c6a1-850c",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paa5-dbcf-8f8c-3e18",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "b5e4-3253-c157-54fd",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "9a4a-a4c8-a16a-c969",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pa8c-5069-c639-eca1"
-              }
-            ]
           }
         ],
         "modifiers": [
@@ -27388,7 +27309,7 @@
           {
             "rules": [
               {
-                "description": "Each time an IMPERIAL KNIGHTS unit from your army Advances, until the end of the turn, ranged weapons equipped by IMPERIAL KNIGHTS models from your army have the [ASSAULT] ability.",
+                "description": "Each time an **IMPERIAL KNIGHTS** unit from your army Advances, until the end of the turn, ranged weapons equipped by **IMPERIAL KNIGHTS** models from your army have the **[ASSAULT]** ability.",
                 "name": "Bold Gallantry",
                 "id": "92f9-bfbb-ce23-f12a",
                 "hidden": false
@@ -32955,235 +32876,6 @@
             "includeChildSelections": true
           }
         ]
-      },
-      {
-        "name": "Upgrades",
-        "id": "paaa-8856-a358-91fb",
-        "hidden": false,
-        "collapsible": true,
-        "selectionEntryGroups": [
-          {
-            "name": "Throne-bonded Outriders Upgrades",
-            "id": "paa2-fa4b-fbc8-52d4",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Gyro-optimised Actuators",
-                "hidden": false,
-                "id": "pa75-c27a-477e-bafd",
-                "profiles": [
-                  {
-                    "name": "Gyro-optimised Actuators",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pab9-b524-4a14-c05a",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Flowing down the neural tether between Thrones and Helms Mechanicum, the faint whispering of ancestral gheists drives bondsmen on to greater urgency.\n\nARMIGER unit only. This unit has MOBILE."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa81-aafa-3a28-9cd9"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa50-5ec9-b86f-33fd",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa7a-3cf8-88c4-48a5",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "4c40-ab9-54af-d290",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Ancestral Overbleed",
-                "hidden": false,
-                "id": "pacb-56f5-1347-f25d",
-                "profiles": [
-                  {
-                    "name": "Ancestral Overbleed",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa6e-fe56-c700-c458",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Though it requires additional work by the Sacristans, when Armigers are to be used like hunting hounds amidst dense terrain, it is considered worthwhile to enhance their steeds' agility.\n\nARMIGER unit only. When you target this unit with the Fire Overwatch/Heroic Intervention stratagem, that use is -1 CP."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa41-398a-bacd-abb3"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa70-59b1-2528-ffcd",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 10
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa6d-bf97-f797-c80c",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "4c40-ab9-54af-d290",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "9671-eaea-ccf2-c122",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "paff-c4c3-1d54-f3e8"
-              }
-            ]
-          }
-        ],
-        "constraints": [
-          {
-            "type": "max",
-            "value": 1,
-            "field": "selections",
-            "scope": "self",
-            "shared": true,
-            "id": "pa55-8500-e25e-f8e0",
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
-            "value": 4,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "pab6-e5cf-1245-6da3",
-            "includeChildSelections": true
-          }
-        ]
       }
     ],
     "sharedProfiles": [
@@ -33258,7 +32950,8 @@
         ],
         "name": "Deed",
         "id": "83f0-0039-f52e-a3b4",
-        "hidden": false
+        "hidden": false,
+        "sortIndex": 19
       },
       {
         "characteristicTypes": [
@@ -33273,7 +32966,8 @@
         ],
         "name": "Quality",
         "id": "3dbd-8296-99ea-d555",
-        "hidden": false
+        "hidden": false,
+        "sortIndex": 20
       }
     ],
     "xmlns": "http://www.battlescribe.net/schema/catalogueSchema",
@@ -33282,7 +32976,7 @@
     "name": "Imperium - Imperial Knights - Library",
     "gameSystemId": "sys-352e-adc2-7639-d610",
     "gameSystemRevision": 1,
-    "revision": 86,
+    "revision": 2,
     "battleScribeVersion": 2.03,
     "authorName": "BSData Developers",
     "type": "catalogue",

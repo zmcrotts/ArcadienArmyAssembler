@@ -1,0 +1,866 @@
+{
+  "schemaVersion": 1,
+  "source": "Warhammer 40,000 Faction Packs v1.1 - Rules Updates",
+  "version": "1.1",
+  "lastUpdated": "2026-07-22",
+  "updates": [
+    {
+      "id": "custodes-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Adeptus Custodes" },
+      "unitNames": ["Anathema Psykana Rhino", "Venerable Land Raider"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "admech-doctrina-imperatives",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl", "Corpuscarii Electro-Priests", "Cybernetica Datasmith", "Fulgurite Electro-Priests", "Kastelan Robots", "Tech-Priest Dominus", "Tech-Priest Enginseer", "Tech-Priest Manipulus", "Technoarcheologist"],
+      "ruleName": "Doctrina Imperatives",
+      "description": "This unit has the Doctrina Imperatives faction ability.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 17"
+    },
+    {
+      "id": "admech-mobile",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl", "Onager Dunecrawler"],
+      "keywords": ["Mobile"],
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Skorpius Disintegrator", "Skorpius Dunerider"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-data-severed",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Cybernetica Datasmith"],
+      "ruleName": "Data-severed",
+      "description": "If there are no KASTELAN ROBOT models in this unit: this unit loses VEHICLE and has INFANTRY.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-repulsor-grid",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Kastelan Robots"],
+      "ruleName": "Repulsor Grid",
+      "description": "When an enemy unit targets this unit with ranged attacks, until that enemy unit has shot, when this unit makes a save roll: on an unmodified 6, that enemy unit suffers 1 mortal wound after that enemy unit has shot.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-cawl-canticles",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl"],
+      "ruleName": "Canticles of the Omnissiah",
+      "description": "At the start of your Command phase, select one of the abilities in the Canticles of the Omnissiah section. Until the start of your next Command phase, this model has that ability.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-cawl-machine-vengeance",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl"],
+      "ruleName": "Invocation of Machine Vengeance",
+      "description": "At the start of your Command phase, select one unit from your opponent's army. Until the start of your next Command phase, that enemy unit is your Machine Vengeance target. Each time a model in a friendly ADEPTUS MECHANICUS unit makes an attack that targets your Machine Vengeance target, you can re-roll the Hit roll.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-cawl-mantra",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl"],
+      "ruleName": "Mantra of Discipline",
+      "description": "This model has the BATTLELINE keyword and has the following ability: Binharic Courage (Aura): While a friendly ADEPTUS MECHANICUS unit is within 6\" of this model, add 1 to the Objective Control characteristic of models in that unit and each time you take a Battle-shock or Leadership test for that unit, add 1 to that test.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-cawl-shroudpsalm",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Belisarius Cawl"],
+      "ruleName": "Shroudpsalm",
+      "description": "While a friendly ADEPTUS MECHANICUS unit is within 6\" of this model, that unit has the Stealth ability.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-scuttling-walker",
+      "kind": "rule-add",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Onager Dunecrawler"],
+      "ruleName": "Scuttling Walker",
+      "description": "Each time this model makes a Normal, Advance or Fall Back move, it can move through friendly MONSTER and VEHICLE models and sections of terrain features that are 4\" or less in height.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-tactica-obliqua",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Serberys Raiders"],
+      "ruleName": "Tactica Obliqua",
+      "description": "In your opponent's Movement phase, if an enemy unit ends a move within 8\" of this unit, if this unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to D6\", or make a Normal move of up to 6\" provided every model in this unit ends that move wholly within 6\" of one or more friendly ADEPTUS MECHANICUS BATTLELINE units.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-servo-skull-uplink",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" },
+      "unitNames": ["Skitarii Marshal"],
+      "ruleName": "Servo-skull Uplink",
+      "description": "Once per battle, at the start of any phase, you can select one friendly SKITARII unit that is Battle-shocked and within 6\" of this model. That unit is no longer Battle-shocked.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "aeldari-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - Aeldari" },
+      "unitNames": ["D-cannon Platform", "Falcon", "Fire Prism", "Night Spinner", "Shadow Weaver Platform", "Starweaver", "Vibro Cannon Platform", "Voidweaver", "Wave Serpent", "Ynnari Raider", "Ynnari Venom"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Aeldari v1.1, page 27"
+    },
+    {
+      "id": "aeldari-skyweavers-acrobatic-grace",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Aeldari" },
+      "unitNames": ["Skyweavers"],
+      "ruleName": "Acrobatic Grace",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Aeldari v1.1, page 27"
+    },
+    {
+      "id": "astra-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Astra Militarum" },
+      "unitNames": ["Aegis Defence Line", "Baneblade", "Banehammer", "Banesword", "Basilisk", "Chimera", "Deathstrike", "Doomhammer", "Hellhammer", "Hellhound", "Hydra", "Leman Russ Battle Tank", "Leman Russ Commander", "Leman Russ Demolisher", "Leman Russ Eradicator", "Leman Russ Executioner", "Leman Russ Exterminator", "Leman Russ Punisher", "Leman Russ Vanquisher", "Manticore", "Rogal Dorn Battle Tank", "Rogal Dorn Commander", "Shadowsword", "Stormlord", "Stormsword", "Taurox", "Taurox Prime", "Wyvern"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Astra Militarum v1.1, page 23"
+    },
+    {
+      "id": "astra-gaunts-ghosts-covert-stealth-team",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Astra Militarum" },
+      "unitNames": ["Gaunt's Ghosts"],
+      "ruleName": "Covert Stealth Team",
+      "description": "At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit has Deep Strike until the start of your next Shooting phase; this unit must make an ingress move in your next Movement phase (including in your first turn).",
+      "source": "Faction Pack - Astra Militarum v1.1, page 24"
+    },
+    {
+      "id": "astra-valkyrie-aircraft-remove",
+      "kind": "keywords-remove",
+      "target": { "faction": "Imperium - Astra Militarum" },
+      "unitNames": ["Valkyrie"],
+      "keywords": ["Aircraft"],
+      "source": "Faction Pack - Astra Militarum v1.1, page 24"
+    },
+    {
+      "id": "astra-valkyrie-profile",
+      "kind": "profile-patch",
+      "target": { "faction": "Imperium - Astra Militarum" },
+      "unitNames": ["Valkyrie"],
+      "profileName": "Valkyrie",
+      "typeName": "Unit",
+      "characteristics": { "M": "14\"", "OC": "-" },
+      "source": "Faction Pack - Astra Militarum v1.1, page 24"
+    },
+    {
+      "id": "chaos-knights-storm-of-darkness",
+      "kind": "stratagem-replace",
+      "replaceSection": "EFFECT:",
+      "target": { "faction": "Chaos - Chaos Knights" },
+      "stratagemName": "Storm of Darkness",
+      "description": "EFFECT: Your unit has Stealth. Melee attacks that target your unit have -1 to hit rolls.",
+      "source": "Faction Pack - Chaos Knights v1.1, page 25"
+    },
+    {
+      "id": "chaos-knights-obsessive-ruthlessness",
+      "kind": "rule-replace",
+      "target": { "faction": "Chaos - Chaos Knights" },
+      "unitNames": ["Knight Desecrator"],
+      "ruleName": "Obsessive Ruthlessness",
+      "description": "This unit's ranged attacks that target a MONSTER/VEHICLE unit can ignore modifiers to this unit's BS, hit rolls and wound rolls.",
+      "source": "Faction Pack - Chaos Knights v1.1, page 25"
+    },
+    {
+      "id": "dark-angels-mobile",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Lion El'Jonson", "Sammael"],
+      "keywords": ["Mobile"],
+      "source": "Faction Pack - Dark Angels v1.1, pages 10-11"
+    },
+    {
+      "id": "dark-angels-inner-circle-braziers",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Inner Circle Companions"],
+      "ruleName": "Braziers of Judgement",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-nephilim-manoeuvres",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Nephilim Jetfighter"],
+      "ruleName": "Lightning-fast Manoeuvres",
+      "description": "Ranged attacks that target this unit have -1 to wound rolls.",
+      "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-icon-old-caliban",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Ravenwing Darkshroud"],
+      "ruleName": "Icon of Old Caliban",
+      "description": "Friendly ADEPTUS ASTARTES units within 6\" of this unit have Stealth.",
+      "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-sammael-grand-master",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Sammael"],
+      "ruleName": "Grand Master of the Ravenwing",
+      "description": "This unit's ranged attacks have [ASSAULT]. When this unit is selected to make an advance move, that advance move does not prevent this unit from being eligible to declare a charge. This unit has MOBILE.",
+      "source": "Faction Pack - Dark Angels v1.1, page 11"
+    },
+    {
+      "id": "drukhari-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - Drukhari" },
+      "unitNames": ["Raider", "Ravager", "Venom"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Drukhari v1.1, page 7"
+    },
+    {
+      "id": "drukhari-archon-shadowfield",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Drukhari" },
+      "unitNames": ["Archon"],
+      "ruleName": "Shadowfield",
+      "description": "While this model has an InSv, this unit cannot re-roll save rolls. When this model loses a wound (excluding from mortal wounds), this model has no InSv until the end of the battle.",
+      "source": "Faction Pack - Drukhari v1.1, page 7"
+    },
+    {
+      "id": "emperors-children-fulgrim-mobile",
+      "kind": "keywords-add",
+      "target": { "faction": "Chaos - Emperor's Children" },
+      "unitNames": ["Fulgrim"],
+      "keywords": ["Mobile"],
+      "source": "Faction Pack - Emperor's Children v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Grey Knights" },
+      "unitNames": ["Land Raider", "Land Raider Crusader", "Land Raider Redeemer", "Razorback", "Rhino"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-voldus-sanctuary",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Grey Knights" },
+      "unitNames": ["Grand Master Voldus"],
+      "ruleName": "Sanctuary",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "imperial-agents-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Imperium - Agents of the Imperium" },
+      "unitNames": ["Imperial Rhino", "Inquisitorial Chimera", "Sisters of Battle Immolator"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Imperial Agents v1.1, page 10"
+    },
+    {
+      "id": "imperial-agents-callidus-acrobatic-escape",
+      "kind": "rule-replace",
+      "target": { "faction": "Imperium - Agents of the Imperium" },
+      "unitNames": ["Callidus Assassin"],
+      "ruleName": "Acrobatic Escape",
+      "description": "At the end of the Fight phase, if this unit is engaged, this unit can make a fall-back move of up to D6\". At the end of your opponent's turn, if this unit is more than 3\" from all enemy units, you can use this ability. If you do: place this unit in strategic reserves; this unit must make an ingress move in your next Movement phase (including in your first turn).",
+      "source": "Faction Pack - Imperial Agents v1.1, page 10"
+    },
+    {
+      "id": "necrons-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Annihilation Barge", "Catacomb Command Barge", "Convergence of Dominion", "Doomsday Ark", "Ghost Ark", "Monolith", "Obelisk", "Seraptek Heavy Construct", "Tesseract Vault", "Triarch Stalker"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-catacomb-noble",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Catacomb Command Barge"],
+      "keywords": ["Noble"],
+      "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "necrons-chronomancer-timesplinter",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Chronomancer"],
+      "ruleName": "Timesplinter Mantle",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "necrons-night-scythe-deep-strike",
+      "kind": "rule-add",
+      "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Night Scythe"],
+      "ruleName": "Deep Strike",
+      "description": "This unit has Deep Strike.",
+      "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "necrons-ophydian-tunnelling-horrors",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Ophydian Destroyers"],
+      "ruleName": "Tunnelling Horrors",
+      "description": "At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit must make an ingress move in your next Movement phase (including in your first turn).",
+      "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "orks-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - Orks" },
+      "unitNames": ["Battlewagon", "Stompa", "Trukk"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Orks v1.1, page 25"
+    },
+    {
+      "id": "orks-boyz-bodyguard-remove",
+      "kind": "roster-rules-patch",
+      "target": { "faction": "Xenos - Orks" },
+      "unitNames": ["Boyz"],
+      "patch": { "allowsMultipleLeadersAsBodyguard": false },
+      "source": "Faction Pack - Orks v1.1, page 25"
+    },
+    {
+      "id": "orks-boomdakka-billowing-fumes",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Orks" },
+      "unitNames": ["Boomdakka Snazzwagon"],
+      "ruleName": "Billowing Fumes",
+      "description": "While an enemy unit (excluding MONSTER/VEHICLE units) is within 6\" of this unit, when that enemy unit is selected to shoot, that unit's targets have the benefit of cover until that unit has shot.",
+      "source": "Faction Pack - Orks v1.1, page 25"
+    },
+    {
+      "id": "orks-shokkjump-shokk-tunnel",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Orks" },
+      "unitNames": ["Shokkjump Dragsta"],
+      "ruleName": "Shokk Tunnel",
+      "description": "In your Movement phase, when this unit is selected to make an advance move, you can use this ability. If you do: that move has no maximum distance; this unit can move through all types of model (including enemy models and MONSTER/VEHICLE models); after moving, your unit must be more than 8\" horizontally from all enemy units.",
+      "source": "Faction Pack - Orks v1.1, page 26"
+    },
+    {
+      "id": "space-marines-frame",
+      "kind": "keywords-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Drop Pod", "Gladiator Lancer", "Gladiator Reaper", "Gladiator Valiant", "Hammerfall Bunker", "Impulsor", "Invader ATV", "Land Raider", "Land Raider Crusader", "Land Raider Redeemer", "Predator Annihilator", "Predator Destructor", "Razorback", "Repulsor", "Repulsor Executioner", "Rhino", "Storm Speeder Hailstrike", "Storm Speeder Hammerstrike", "Storm Speeder Thunderstrike", "Vindicator", "Whirlwind"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-land-raider-keyword",
+      "kind": "keywords-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Land Raider Crusader", "Land Raider Redeemer"],
+      "keywords": ["Land Raider"],
+      "source": "Faction Pack - Space Marines v1.1, page 62"
+    },
+    {
+      "id": "space-marines-guilliman-mobile",
+      "kind": "keywords-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Roboute Guilliman"],
+      "keywords": ["Mobile"],
+      "source": "Faction Pack - Space Marines v1.1, page 63"
+    },
+    {
+      "id": "space-marines-bladeguard-ability",
+      "kind": "rule-replace",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Bladeguard Veteran Squad"],
+      "ruleName": "Bladeguard",
+      "description": "Once per turn, per unit: In the Fight phase, when this unit is selected to fight or when an enemy unit targets this unit, you can select one of the following: this unit's melee attacks have +1 to hit rolls; or attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-intercessor-hail-of-bolts",
+      "kind": "rule-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Intercessor Squad"],
+      "ruleName": "Hail of Bolts",
+      "description": "In your Shooting phase, when this unit is selected to shoot, select up to one visible enemy unit. While making those attacks, this unit's Bolt Rifle attacks that targeted that enemy unit have +2 A.",
+      "source": "Faction Pack - Space Marines v1.1, page 62"
+    },
+    {
+      "id": "space-marines-target-elimination-remove",
+      "kind": "rule-remove",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Intercessor Squad"],
+      "ruleName": "Target Elimination",
+      "source": "Faction Pack - Space Marines v1.1, page 62"
+    },
+    {
+      "id": "space-marines-tigurius-prescience",
+      "kind": "rule-replace",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Chief Librarian Tigurius", "Tigurius"],
+      "ruleName": "Master of Prescience",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls. Once per battle round, per army, when you target this unit with the Counteroffensive, Fire Overwatch or Heroic Intervention stratagem, that use is -1 CP.",
+      "source": "Faction Pack - Space Marines v1.1, page 63"
+    },
+    {
+      "id": "tau-frame",
+      "kind": "keywords-add",
+      "target": { "faction": "Xenos - T'au Empire" },
+      "unitNames": ["Devilfish", "Hammerhead Gunship", "Piranhas", "Sky Ray Gunship", "Tidewall Droneport", "Tidewall Gunrig", "Tidewall Shieldline"],
+      "keywords": ["Frame"],
+      "source": "Faction Pack - T'au Empire v1.1, page 19"
+    },
+    {
+      "id": "tyranids-warriors-adaptive-instincts",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Tyranids" },
+      "unitNames": ["Tyranid Warriors with Melee Bio-weapons"],
+      "ruleName": "Adaptive Instincts",
+      "description": "Once per turn, per unit: In the Fight phase, when this unit is selected to fight or when an enemy unit targets this unit, select one of the following: this unit's melee attacks have +1 S; or this unit has +1 T.",
+      "source": "Faction Pack - Tyranids v1.1, page 20"
+    },
+    {
+      "id": "tyranids-venomthropes-foul-spores",
+      "kind": "rule-replace",
+      "target": { "faction": "Xenos - Tyranids" },
+      "unitNames": ["Venomthropes"],
+      "ruleName": "Foul Spores",
+      "description": "Friendly TYRANIDS units within 6\" of this unit have Stealth.",
+      "source": "Faction Pack - Tyranids v1.1, page 20"
+    },
+    {
+      "id": "sororitas-light-of-the-emperor-cp",
+      "kind": "stratagem-patch", "target": { "faction": "Imperium - Adepta Sororitas" },
+      "detachmentName": "Army of Faith", "stratagemName": "Light of the Emperor", "cpCost": 2,
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
+    },
+    {
+      "id": "sororitas-divine-intervention", "kind": "stratagem-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Hallowed Martyrs", "stratagemName": "Divine Intervention",
+      "description": "WHEN: Any phase. TARGET: One ADEPTA SORORITAS CHARACTER unit from your army that was just destroyed. You can use this stratagem on that unit even though it was just destroyed. EFFECT: You can discard 1-3 Miracle dice. At the end of the phase, set up one destroyed CHARACTER model from your unit on the battlefield, unengaged and as close as possible to where it was destroyed. That model is not part of an attached unit and its unit has a starting strength of 1. Roll one D3, adding 1 to the result for each Miracle dice you discarded. That model has that number of wounds remaining (up to its starting number of wounds). RESTRICTION: You cannot select SAINT CELESTINE as the target of this stratagem. You cannot select the same CHARACTER as the target of this stratagem more than once per battle.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
+    },
+    {
+      "id": "sororitas-blinding-radiance", "kind": "stratagem-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Army of Faith", "stratagemName": "Blinding Radiance",
+      "description": "WHEN: Your opponent's Shooting phase or the Fight phase, just after an enemy unit has selected its targets. TARGET: One ADEPTA SORORITAS INFANTRY unit from your army that was selected as the target of one or more of the attacking unit's attacks, or one friendly ADEPTA SORORITAS JUMP PACK unit within 3\" of such a unit. EFFECT: Until the end of the phase, each time an attack targets your unit, subtract 1 from the Hit roll. If you targeted an ADEPTA SORORITAS JUMP PACK unit from your army with this Stratagem, then until the end of the phase, while a friendly ADEPTA SORORITAS INFANTRY unit is within 3\" of your unit, each time an attack targets that unit, subtract 1 from the Hit roll.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
+    },
+    {
+      "id": "sororitas-catechism", "kind": "enhancement-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Penitent Host", "enhancementName": "Catechism of Divine Penitence",
+      "description": "CANONESS, PALATINE or MINISTORUM PRIEST model only. The bearer gains the PENITENT keyword.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
+    },
+    {
+      "id": "sororitas-junith-pulpit", "kind": "rule-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "unitNames": ["Junith Eruita"], "ruleName": "The Pulpit of Saint Holline's Basilica",
+      "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 14"
+    },
+    {
+      "id": "custodes-salvo-launcher", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Custodes" }, "unitNames": ["Shield-Captain on Dawneagle Jetbike", "Vertus Praetors"], "profileName": "Salvo launcher", "typeName": "Ranged Weapons",
+      "characteristics": { "Range": "24\"", "A": "1", "BS": "2+", "S": "10", "AP": "-3", "D": "D6+1", "Keywords": "Twin-linked" },
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "custodes-hurricane-bolter", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Custodes" }, "unitNames": ["Shield-Captain on Dawneagle Jetbike", "Vertus Praetors"], "profileName": "Vertus hurricane bolter", "typeName": "Ranged Weapons",
+      "characteristics": { "Range": "18\"", "A": "3", "BS": "2+", "S": "4", "AP": "-1", "D": "2", "Keywords": "Rapid Fire 3, Twin-linked" },
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "admech-rad-bombardment", "kind": "detachment-rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "detachmentName": "Rad-Zone Corps", "ruleName": "Rad-bombardment",
+      "description": "BATTLE ROUND 1 — BOMBARDMENT: At the start of the first battle round, for each enemy unit within your opponent's deployment zone, your opponent must decide whether that unit will take cover. If it does, that unit is battle-shocked. If it does not, roll one D6: on a 5+, that unit suffers D3 mortal wounds.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 17"
+    },
+    {
+      "id": "admech-stealth-optimisation", "kind": "detachment-rule-replace",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "detachmentName": "Skitarii Hunter Cohort", "ruleName": "Stealth",
+      "description": "Friendly SKITARII INFANTRY, SKITARII MOUNTED and IRONSTRIDER BALLISTARII units have Stealth.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 17"
+    },
+    {
+      "id": "admech-datasmith-support", "kind": "role-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Cybernetica Datasmith"], "patch": { "leader": false, "support": true },
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-ironstrider-autocannon", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Ironstrider Ballistarii"], "profileName": "Twin cognis autocannon", "typeName": "Ranged Weapons",
+      "characteristics": { "Range": "48\"", "A": "4", "BS": "4+", "S": "9", "AP": "-1", "D": "3", "Keywords": "Sustained Hits 1, Twin-linked" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-ironstrider-lascannon", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Ironstrider Ballistarii"], "profileName": "Twin cognis lascannon", "typeName": "Ranged Weapons",
+      "characteristics": { "Range": "48\"", "A": "2", "BS": "4+", "S": "12", "AP": "-3", "D": "D6+1", "Keywords": "Sustained Hits 1, Twin-linked" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-infiltrator-power", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Sicarian Infiltrators"], "profileName": "Power weapon", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "4", "WS": "4+", "S": "4", "AP": "-2", "D": "1" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-infiltrator-taser", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Sicarian Infiltrators"], "profileName": "Taser goad", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "3", "WS": "4+", "S": "6", "AP": "-1", "D": "1", "Keywords": "Sustained Hits 2" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 18"
+    },
+    {
+      "id": "admech-ruststalker-blades", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Sicarian Ruststalkers"], "profileName": "Transonic blades", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "5", "WS": "4+", "S": "5", "AP": "-1", "D": "1", "Keywords": "Devastating Wounds, Precision" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-ruststalker-blades-chordclaw", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Sicarian Ruststalkers"], "profileName": "Transonic blades & chordclaw", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "5", "WS": "4+", "S": "5", "AP": "-2", "D": "1", "Keywords": "Anti-infantry 3+, Devastating Wounds, Precision" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-ruststalker-razor-chordclaw", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Sicarian Ruststalkers"], "profileName": "Transonic razor & chordclaw", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "3", "WS": "4+", "S": "5", "AP": "-2", "D": "2", "Keywords": "Anti-infantry 3+, Precision" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-ferrumite", "kind": "profile-patch",
+      "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Skorpius Disintegrator"], "profileName": "Ferrumite cannon", "typeName": "Ranged Weapons",
+      "characteristics": { "Range": "48\"", "A": "3", "BS": "4+", "S": "12", "AP": "-3", "D": "D6+1" }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-marshal-support", "kind": "role-patch", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Skitarii Marshal"], "patch": { "leader": false, "support": true }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "admech-technoarch-support", "kind": "role-patch", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Technoarcheologist"], "patch": { "leader": false, "support": true }, "source": "Faction Pack - Adeptus Mechanicus v1.1, page 19"
+    },
+    {
+      "id": "aeldari-unshrouded-truth", "kind": "stratagem-replace", "target": { "faction": "Xenos - Aeldari" }, "detachmentName": "Seer Council", "stratagemName": "Unshrouded Truth",
+      "description": "WHEN: Your Movement phase. TARGET: One ASURYANI INFANTRY unit from your army (excluding WRAITH CONSTRUCT units) that has not been selected to move this phase, was not set up on the battlefield this phase, and is within 9\" of one or more friendly ASURYANI PSYKER models. EFFECT: Place your unit in strategic reserves. Your unit has Deep Strike. Your unit must make an ingress move this phase.", "source": "Faction Pack - Aeldari v1.1, page 26"
+    },
+    {
+      "id": "aeldari-yncarne-inevitable-death", "kind": "rule-replace", "target": { "faction": "Xenos - Aeldari" }, "unitNames": ["The Yncarne"], "ruleName": "Inevitable Death",
+      "description": "Once in each of your opponent's turns, if this model is on the battlefield when another friendly AELDARI unit is destroyed, just after removing the last model in that unit, you can remove this model from the battlefield and set it up as close as possible to where that destroyed model was destroyed and not within Engagement Range of one or more enemy units. Doing so does not prevent this model from being eligible to move.", "source": "Faction Pack - Aeldari v1.1, page 27"
+    },
+    {
+      "id": "aeldari-aircraft-profiles", "kind": "profile-patch", "target": { "faction": "Xenos - Aeldari" }, "unitNames": ["Crimson Hunter", "Hemlock Wraithfighter"], "profileName": "Crimson Hunter", "typeName": "Unit", "characteristics": { "M": "-", "OC": "-" }, "source": "Faction Pack - Aeldari v1.1, page 27"
+    },
+    {
+      "id": "aeldari-hemlock-profile", "kind": "profile-patch", "target": { "faction": "Xenos - Aeldari" }, "unitNames": ["Hemlock Wraithfighter"], "profileName": "Hemlock Wraithfighter", "typeName": "Unit", "characteristics": { "M": "-", "OC": "-" }, "source": "Faction Pack - Aeldari v1.1, page 27"
+    },
+    {
+      "id": "astra-reactive-command", "kind": "enhancement-replace", "target": { "faction": "Imperium - Astra Militarum" }, "detachmentName": "Combined Arms", "enhancementName": "Reactive Command", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Astra Militarum v1.1, page 23"
+    },
+    {
+      "id": "astra-tripwires", "kind": "enhancement-replace", "target": { "faction": "Imperium - Astra Militarum" }, "detachmentName": "Recon Element", "enhancementName": "Tripwires", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Astra Militarum v1.1, page 23"
+    },
+    {
+      "id": "astra-leman-russ-officer", "kind": "rule-replace", "target": { "faction": "Imperium - Astra Militarum" }, "unitNames": ["Leman Russ Commander"], "ruleName": "Death Befitting an Officer", "description": "In your opponent's Shooting phase, when this unit is destroyed, before this unit's deadly demise roll, roll one D6: on a 2+, do not remove this unit from the battlefield. After the attacking unit has shot, this unit can shoot using normal shooting, but while doing so this unit can only target that enemy unit. When this unit has shot, or at the end of the phase (whichever comes first), resolve this unit's deadly demise roll, then this unit is removed from the battlefield.", "source": "Faction Pack - Astra Militarum v1.1, page 24"
+    },
+    {
+      "id": "black-templars-heresy-retribution", "kind": "stratagem-replace", "target": { "faction": "Imperium - Adeptus Astartes - Black Templars" }, "stratagemName": "Heresy Begets Retribution", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Black Templars v1.1, page 5"
+    },
+    {
+      "id": "blood-angels-upon-wings", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Adeptus Astartes - Blood Angels" }, "ruleName": "Upon Wings of Fire", "description": "At the end of your opponent's turn, select the units specified by this rule. Place those units in strategic reserves. Those units must make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Blood Angels v1.1, page 9"
+    },
+    {
+      "id": "blood-angels-sanguinor-miraculous", "kind": "rule-replace", "target": { "faction": "Imperium - Adeptus Astartes - Blood Angels" }, "unitNames": ["The Sanguinor"], "ruleName": "Miraculous Savior", "description": "(Once per battle, per army) At the end of your opponent's Charge phase (excluding the first battle round), you can select one enemy unit that made a charge move this phase. This unit can make an ingress move and must be set up engaged with that enemy unit. That move does not prevent this unit from being eligible to move.", "source": "Faction Pack - Blood Angels v1.1, page 10"
+    },
+    {
+      "id": "chaos-knights-volkite", "kind": "profile-patch", "target": { "faction": "Chaos - Chaos Knights" }, "unitNames": ["Knight Abominant"], "profileName": "Volkite combustor", "typeName": "Ranged Weapons", "characteristics": { "Range": "30\"", "A": "12", "BS": "3+", "S": "12", "AP": "0", "D": "3", "Keywords": "Ignores Cover, Devastating Wounds" }, "source": "Faction Pack - Chaos Knights v1.1, page 25"
+    },
+    {
+      "id": "chaos-knights-desecrator-laser", "kind": "profile-patch", "target": { "faction": "Chaos - Chaos Knights" }, "unitNames": ["Knight Desecrator"], "profileName": "Desecrator laser destructor", "typeName": "Ranged Weapons", "characteristics": { "Range": "72\"", "A": "3", "BS": "2+", "S": "18", "AP": "-4", "D": "D6+3", "Keywords": "Devastating Wounds: Monster/Vehicle" }, "source": "Faction Pack - Chaos Knights v1.1, page 25"
+    },
+    {
+      "id": "chaos-knights-darkflame", "kind": "profile-patch", "target": { "faction": "Chaos - Chaos Knights" }, "unitNames": ["Knight Ruinator"], "profileName": "Darkflame lance", "typeName": "Ranged Weapons", "characteristics": { "Range": "18\"", "A": "D6+6", "BS": "N/A", "S": "8", "AP": "-1", "D": "2", "Keywords": "Ignores Cover, Torrent" }, "source": "Faction Pack - Chaos Knights v1.1, page 26"
+    },
+    {
+      "id": "chaos-knights-terrorpulse", "kind": "profile-patch", "target": { "faction": "Chaos - Chaos Knights" }, "unitNames": ["Knight Ruinator"], "profileName": "Terrorpulse missiles", "typeName": "Ranged Weapons", "characteristics": { "Range": "36\"", "A": "D6+6", "BS": "3+", "S": "8", "AP": "-2", "D": "2", "Keywords": "Blast" }, "source": "Faction Pack - Chaos Knights v1.1, page 26"
+    },
+    {
+      "id": "dark-angels-masters-manoeuvre", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Company of Hunters", "ruleName": "Masters of Manoeuvre",
+      "description": "Friendly ADEPTUS ASTARTES have: this unit's ranged attacks have [ASSAULT]; when this unit is selected to make a fall-back move, that fall-back move does not prevent this unit from being eligible to shoot. Friendly ADEPTUS ASTARTES MOUNTED have: this unit's ranged attacks have [ASSAULT]; when this unit is selected to make an advance move, that advance move does not prevent this unit from being eligible to declare a charge; when this unit is selected to make a fall-back move, that fall-back move does not prevent this unit from being eligible to shoot and eligible to declare a charge.", "source": "Faction Pack - Dark Angels v1.1, page 9"
+    },
+    {
+      "id": "dark-angels-shroud-heroes", "kind": "enhancement-replace", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Unforgiven Task Force", "enhancementName": "Shroud of Heroes",
+      "description": "ADEPTUS ASTARTES model only. (Once per battle, per army) When this model is destroyed, at the end of the phase, roll one D6: on a 2+, set up this model on the battlefield, unengaged and as close as possible to where it was destroyed. This model is not part of an attached unit and its unit has a starting strength of 1. This model has 3 wounds remaining, or its full wounds remaining if this model was battle-shocked when it was destroyed.", "source": "Faction Pack - Dark Angels v1.1, page 9"
+    },
+    {
+      "id": "dark-angels-death-wind", "kind": "stratagem-replace", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Company of Hunters", "stratagemName": "Death on the Wind",
+      "description": "WHEN: Your Movement phase, when a friendly ADEPTUS ASTARTES unit ends an advance move. TARGET: That ADEPTUS ASTARTES unit. EFFECT: That advance move does not prevent your unit from being eligible to declare a charge.", "source": "Faction Pack - Dark Angels v1.1, page 9"
+    },
+    {
+      "id": "dark-angels-talon-strike", "kind": "stratagem-replace", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Company of Hunters", "stratagemName": "Talon Strike",
+      "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight. TARGET: That ADEPTUS ASTARTES unit. EFFECT: Your unit's melee attacks have [LANCE].", "source": "Faction Pack - Dark Angels v1.1, page 9"
+    },
+    {
+      "id": "dark-angels-lion-secrets", "kind": "rule-add", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Lion El'Jonson"], "ruleName": "Mist-wreathed Shadow Realms",
+      "description": "Mist-wreathed Shadow Realms: At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit can make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-black-knight-weapon", "kind": "profile-patch", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Ravenwing Black Knights", "Ravenwing Command Squad"], "profileName": "Black Knight combat weapon", "typeName": "Melee Weapons",
+      "characteristics": { "Range": "Melee", "A": "3", "WS": "3+", "S": "5", "AP": "-2", "D": "1", "Keywords": "Devastating Wounds" }, "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-command-support", "kind": "role-patch", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Ravenwing Command Squad"], "patch": { "leader": false, "support": true }, "source": "Faction Pack - Dark Angels v1.1, page 10"
+    },
+    {
+      "id": "dark-angels-stasis-bomb", "kind": "rule-replace", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Ravenwing Dark Talon"], "ruleName": "Stasis Bomb",
+      "description": "At the end of your opponent's Fight phase, select one visible enemy unit (excluding AIRCRAFT/Lone Operative units) within 24\" of this unit. That enemy unit is slowed until the end of your opponent's next Movement phase. While a unit is slowed, in your opponent's Movement phase, when that unit is selected to move, unless that unit remains stationary, roll one D6: on a 1-4, that unit suffers D3 mortal wounds and that unit has -2\" M; on a 5-6, that unit suffers 2D3 mortal wounds and that unit has -3\" M.", "source": "Faction Pack - Dark Angels v1.1, page 11"
+    },
+    {
+      "id": "death-guard-worldblight", "kind": "detachment-rule-replace", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Virulent Vectorium", "ruleName": "Worldblight",
+      "description": "At the end of your Command phase, if a friendly DEATH GUARD unit is controlling an objective, that objective is secured. Until you lose control of that objective, while an enemy unit is within range of that objective, that enemy unit is Afflicted.", "source": "Faction Pack - Death Guard v1.1, page 7"
+    },
+    {
+      "id": "drukhari-postmortality", "kind": "stratagem-replace", "replaceSection": "EFFECT:", "target": { "faction": "Xenos - Drukhari" }, "stratagemName": "Postmortality",
+      "description": "EFFECT: Spend 1-3 Pain tokens. At the end of the phase, set up the destroyed model on the battlefield, unengaged and as close as possible to where it was destroyed. That model is not part of an attached unit and its unit has a starting strength of 1. That model has a number of wounds remaining equal to the number of Pain tokens you just spent.", "source": "Faction Pack - Drukhari v1.1, page 7"
+    },
+    {
+      "id": "drukhari-swooping-descent", "kind": "rule-replace", "target": { "faction": "Xenos - Drukhari" }, "unitNames": ["Scourges with Shardcarbines"], "ruleName": "Swooping Descent", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Drukhari v1.1, page 7"
+    },
+    {
+      "id": "emperors-children-dark-apparitions", "kind": "stratagem-replace", "target": { "faction": "Chaos - Emperor's Children" }, "stratagemName": "Dark Apparitions", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Emperor's Children v1.1, page 9"
+    },
+    {
+      "id": "gsc-evasive-vanguard", "kind": "stratagem-replace", "target": { "faction": "Xenos - Genestealer Cults" }, "stratagemName": "Evasive Vanguard", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Genestealer Cults v1.1, page 7"
+    },
+    {
+      "id": "gsc-shadow-iron", "kind": "stratagem-replace", "target": { "faction": "Xenos - Genestealer Cults" }, "stratagemName": "In the Shadow of Iron", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Genestealer Cults v1.1, page 7"
+    },
+    {
+      "id": "gsc-shadowed-trails", "kind": "stratagem-replace", "target": { "faction": "Xenos - Genestealer Cults" }, "stratagemName": "Along Shadowed Trails", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Genestealer Cults v1.1, page 8"
+    },
+    {
+      "id": "gsc-rapid-feint", "kind": "stratagem-replace", "target": { "faction": "Xenos - Genestealer Cults" }, "stratagemName": "Rapid Feint", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Genestealer Cults v1.1, page 8"
+    },
+    {
+      "id": "grey-knights-gate-infinity", "kind": "army-rule-add", "target": { "faction": "Imperium - Grey Knights" }, "ruleName": "Gate of Infinity",
+      "description": "At the end of your opponent's turn, select the units specified by this rule. Place those units in strategic reserves. Those units can make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-one-foot", "kind": "enhancement-replace", "target": { "faction": "Imperium - Grey Knights" }, "detachmentName": "Augurium Task Force", "enhancementName": "One Foot in the Future",
+      "description": "GREY KNIGHTS model only. When this unit ends an ingress move, you can use this ability. If you do: this unit can make a normal move of up to D6\"; until the end of the turn, this unit is not eligible to declare a charge.", "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-aggressive-anticipation", "kind": "stratagem-replace", "replaceSection": "EFFECT:", "target": { "faction": "Imperium - Grey Knights" }, "detachmentName": "Augurium Task Force", "stratagemName": "Aggressive Anticipation", "description": "EFFECT: Your unit's attacks can re-roll hit rolls.", "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-shadow-anarch", "kind": "stratagem-replace", "target": { "faction": "Imperium - Grey Knights" }, "detachmentName": "Banishers", "stratagemName": "Shadow of Anarch", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-precognitive", "kind": "stratagem-replace", "target": { "faction": "Imperium - Grey Knights" }, "detachmentName": "Hallowed Conclave", "stratagemName": "Precognitive Strategies", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "grey-knights-sigil", "kind": "enhancement-replace", "target": { "faction": "Imperium - Grey Knights" }, "detachmentName": "Sanctic Spearhead", "enhancementName": "Sigil of Exigence", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Grey Knights v1.1, page 9"
+    },
+    {
+      "id": "imperial-knights-dauntless", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Imperial Knights" }, "detachmentName": "Gate Warden Lance", "ruleName": "Dauntless Defenders",
+      "description": "At the start of the first battle round, select two objectives to be your foundations. Place a circular foundation marker in each one. When you draw a line from the closest part of one foundation marker to the closest part of the other, if any part of a model's base (or any part of a model's hull, for a model without a base) crosses that line, that model's unit is said to be on your defensive line.", "source": "Faction Pack - Imperial Knights v1.1, page 27"
+    },
+    {
+      "id": "votann-secure-positions", "kind": "stratagem-replace", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Brandfast Oathband", "stratagemName": "Secure Positions", "textReplacements": [{ "from": "End of your turn", "to": "End of any of your phases" }], "source": "Faction Pack - Leagues of Votann v1.1, page 11"
+    },
+    {
+      "id": "necrons-reanimation", "kind": "army-rule-add", "target": { "faction": "Xenos - Necrons" }, "ruleName": "Reanimation Protocols", "description": "If your Army Faction is NECRONS, at the end of your Command phase, each friendly unit with this ability that is on the battlefield activates its Reanimation Protocols: when a unit's Reanimation Protocols activate, that unit heals D3 wounds.", "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-insanity-ire", "kind": "stratagem-replace", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Annihilation Legion", "stratagemName": "Insanity's Ire", "description": "WHEN: Your opponent's Shooting phase, when an enemy unit that targeted a friendly unengaged DESTROYER CULT/FLAYED ONES unit this phase has shot. TARGET: That DESTROYER CULT/FLAYED ONES unit. EFFECT: Your unit can make a surge move of up to D6\".", "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-veil-darkness", "kind": "enhancement-replace", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Awakened Dynasty", "enhancementName": "Veil of Darkness", "description": "(Once per battle, per army) At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit has Deep Strike until the start of your next Shooting phase; this unit must make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-eternal-revenant", "kind": "stratagem-replace", "replaceSection": "EFFECT:", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Awakened Dynasty", "stratagemName": "Protocol of the Eternal Revenant", "description": "EFFECT: At the end of the phase, set up the destroyed model on the battlefield, unengaged and as close as possible to where it was destroyed. That model is not part of an attached unit and its unit has a starting strength of 1. That model has half of its starting number of wounds remaining.", "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-cryptek-support", "kind": "role-patch", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Chronomancer", "Geomancer", "Orikan the Diviner", "Plasmancer", "Psychomancer", "Technomancer"], "patch": { "leader": false, "support": true }, "source": "Faction Pack - Necrons v1.1, page 29"
+    },
+    {
+      "id": "necrons-resurrection-orb", "kind": "rule-replace", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Lokhust Lord", "Overlord", "Overlord with Translocation Shroud"], "ruleName": "Resurrection Orb", "description": "(Once per battle, per unit) At the end of any phase, you can use this ability. If you do, this unit resurrects: when a unit resurrects, that unit's Reanimation Protocols activate, but that unit heals D6 wounds (instead of D3 wounds). You cannot resurrect more than one unit per turn.", "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "necrons-command-barge-orb", "kind": "rule-replace", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Catacomb Command Barge"], "ruleName": "Resurrection Orb", "description": "(Once per battle, per unit) At the end of any phase, you can use this ability. If you do, select up to one friendly NECRONS INFANTRY/NECRONS MOUNTED unit within 6\" of this unit. That unit resurrects: when a unit resurrects, that unit's Reanimation Protocols activate, but that unit heals D6 wounds (instead of D3 wounds). You cannot resurrect more than one unit per turn.", "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "necrons-transdimensional", "kind": "rule-replace", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Transcendent C'tan"], "ruleName": "Transdimensional Displacement", "description": "In your Movement phase, when this unit is selected to make an advance move, you can use this ability. If you do: that advance move has no maximum distance; this unit can move through all types of model (including enemy models and MONSTER/VEHICLE models); after moving, this unit must be more than 8\" horizontally from all enemy units.", "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "orks-conniving-runts", "kind": "stratagem-replace", "target": { "faction": "Xenos - Orks" }, "stratagemName": "Conniving Runts", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "orks-go-get-em", "kind": "stratagem-replace", "target": { "faction": "Xenos - Orks" }, "stratagemName": "Go Get 'Em!", "description": "WHEN: Your opponent's Shooting phase, when an enemy unit that targeted a friendly unengaged BOYZ unit this phase has shot. TARGET: That BOYZ unit. EFFECT: Your unit can make a surge move of up to D6\".", "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "orks-krushin-impact", "kind": "stratagem-patch", "target": { "faction": "Xenos - Orks" }, "stratagemName": "Crushing Impact", "newName": "Krushin' Impact", "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "orks-snikrot-infiltrator", "kind": "rule-replace", "target": { "faction": "Xenos - Orks" }, "unitNames": ["Boss Snikrot"], "ruleName": "Kunnin' Infiltrator", "description": "At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit has Deep Strike; this unit must make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Orks v1.1, page 25"
+    },
+    {
+      "id": "space-marines-oath-moment", "kind": "army-rule-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "ruleName": "Oath of Moment", "description": "If your Army Faction is ADEPTUS ASTARTES, at the start of your Command phase, select one unit from your opponent's army. Until the start of your next Command phase, that enemy unit is your Oath of Moment target. Each time a model with this ability makes an attack that targets your Oath of Moment target: you can re-roll the Hit roll; if you are using a Codex: Space Marines Detachment and your army does not include one or more units with the BLOOD ANGELS, DARK ANGELS, DEATHWATCH or SPACE WOLVES keywords, or one or more units from those factions' Munitorum Field Manual sections, add 1 to the Wound roll.", "source": "Faction Pack - Space Marines v1.1, page 60"
+    },
+    {
+      "id": "space-marines-shock-assault", "kind": "stratagem-replace", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Stormlance Task Force", "stratagemName": "Shock Assault", "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight. TARGET: That ADEPTUS ASTARTES unit. EFFECT: Your unit's melee attacks have [LANCE].", "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-ride-hard", "kind": "stratagem-replace", "replaceSection": "EFFECT:", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Stormlance Task Force", "stratagemName": "Ride Hard, Ride Fast", "description": "EFFECT: Until the end of the phase, each time an attack targets your unit, subtract 1 from the Wound roll.", "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-captain-leader", "kind": "roster-rules-patch", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Captain"], "patch": { "rulesUpdateLeaderRestrictionsRemoved": true }, "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-absolvor", "kind": "profile-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Chaplain with Jump Pack"], "profileName": "Absolvor bolt pistol", "typeName": "Ranged Weapons", "characteristics": { "Range": "18\"", "A": "1", "BS": "3+", "S": "5", "AP": "-1", "D": "2", "Keywords": "Close-quarters" }, "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-company-heroes-remove", "kind": "rule-remove", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Company Heroes"], "ruleName": "Company Heroes", "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "space-marines-vanguard-heavy-bolt", "kind": "profile-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Vanguard Veteran Squad with Jump Packs"], "profileName": "Heavy bolt pistol", "typeName": "Ranged Weapons", "characteristics": { "Range": "18\"", "A": "1", "BS": "3+", "S": "4", "AP": "-1", "D": "1", "Keywords": "Close-quarters" }, "source": "Faction Pack - Space Marines v1.1, page 63"
+    },
+    {
+      "id": "space-marines-vanguard-power", "kind": "profile-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Vanguard Veteran Squad with Jump Packs"], "profileName": "Master-crafted power weapon", "typeName": "Melee Weapons", "characteristics": { "Range": "Melee", "A": "3", "WS": "3+", "S": "5", "AP": "-2", "D": "2" }, "source": "Faction Pack - Space Marines v1.1, page 63"
+    },
+    {
+      "id": "space-wolves-thunderwolf-fortitude", "kind": "enhancement-replace", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Saga of the Bold", "enhancementName": "Thunderwolf's Fortitude", "description": "ADEPTUS ASTARTES model only. (Once per battle, per army) When this model is destroyed, at the end of the phase, roll one D6: on a 2+, set up this model on the battlefield, unengaged and as close as possible to where it was destroyed. This model is not part of an attached unit and its unit has a starting strength of 1. This model has 3 wounds remaining.", "source": "Faction Pack - Space Wolves v1.1, page 9"
+    },
+    {
+      "id": "space-wolves-wolf-touched", "kind": "enhancement-replace", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Saga of the Beastslayer", "enhancementName": "Wolf-touched", "description": "SPACE WOLVES model only. Add 2\" to the Move characteristic of the bearer.", "source": "Faction Pack - Space Wolves v1.1, page 9"
+    },
+    {
+      "id": "space-wolves-impetuosity", "kind": "stratagem-replace", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Saga of the Beastslayer", "stratagemName": "Impetuosity", "description": "WHEN: Your opponent's Shooting phase, when an enemy unit that targeted a friendly unengaged WULFEN INFANTRY/BLOOD CLAWS unit this phase has shot. TARGET: That WULFEN INFANTRY/BLOOD CLAWS unit. EFFECT: Your unit can make a surge move of up to D6\".", "source": "Faction Pack - Space Wolves v1.1, page 9"
+    },
+    {
+      "id": "tau-strike-swiftly", "kind": "enhancement-replace", "target": { "faction": "Xenos - T'au Empire" }, "enhancementName": "Strike Swiftly", "description": "T'AU EMPIRE model only. In the Resolve Pre-battle Abilities step, you can select up to two friendly T'AU EMPIRE units within 6\" of this model that do not have the Scouts ability. Until the end of the battle, all models in the selected units have the Scouts 6\" ability.", "source": "Faction Pack - T'au Empire v1.1, page 19"
+    },
+    {
+      "id": "thousand-sons-umbralefic", "kind": "enhancement-replace", "target": { "faction": "Chaos - Thousand Sons" }, "enhancementName": "Umbralefic Crystal", "description": "THOUSAND SONS model only. (Once per battle, per army) In your Command phase, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit has Deep Strike until the start of your next Shooting phase; this unit must make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Thousand Sons v1.1, page 9"
+    },
+    {
+      "id": "thousand-sons-bray-lord", "kind": "enhancement-replace", "target": { "faction": "Chaos - Thousand Sons" }, "detachmentName": "Warpmeld Pact", "enhancementName": "Bray Lord", "description": "SORCERER or INFERNAL MASTER model only. The bearer has the Scouts 6\" ability.", "source": "Faction Pack - Thousand Sons v1.1, page 10"
+    },
+    {
+      "id": "thousand-sons-twisted-mirage", "kind": "stratagem-replace", "target": { "faction": "Chaos - Thousand Sons" }, "detachmentName": "Warpmeld Pact", "stratagemName": "Twisted Mirage", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Thousand Sons v1.1, page 10"
+    },
+    {
+      "id": "thousand-sons-infernal-focused", "kind": "profile-patch", "target": { "faction": "Chaos - Thousand Sons" }, "unitNames": ["Kairos Fateweaver"], "profileName": "Infernal Gateway - Focused Witchfire", "typeName": "Ranged Weapons", "characteristics": { "Range": "24\"", "A": "D3+6", "BS": "2+", "S": "9", "AP": "-2", "D": "3", "Keywords": "Blast, Indirect Fire, Hazardous, Psychic" }, "source": "Faction Pack - Thousand Sons v1.1, page 10"
+    },
+    {
+      "id": "thousand-sons-kairos-head", "kind": "rule-replace", "target": { "faction": "Chaos - Thousand Sons" }, "unitNames": ["Kairos Fateweaver"], "ruleName": "One Head Looks Back", "description": "Once per turn, when your opponent targets a unit from their army within 12\" of this model with a stratagem, you can use this ability. If you do, increase the CP cost of that use of that stratagem by 1CP.", "source": "Faction Pack - Thousand Sons v1.1, page 10"
+    },
+    {
+      "id": "tyranids-chameleonic", "kind": "enhancement-replace", "target": { "faction": "Xenos - Tyranids" }, "enhancementName": "Chameleonic", "description": "VANGUARD INVADER model only. This unit has Stealth.", "source": "Faction Pack - Tyranids v1.1, page 19"
+    },
+    {
+      "id": "tyranids-aerial-seeding", "kind": "rule-replace", "target": { "faction": "Xenos - Tyranids" }, "unitNames": ["Tyrannocyte"], "ruleName": "Aerial Seeding", "textReplacements": [{ "from": "9\"", "to": "8\"" }], "source": "Faction Pack - Tyranids v1.1, page 20"
+    },
+    {
+      "id": "world-eaters-butcher-lord", "kind": "enhancement-replace", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Cult of Blood", "enhancementName": "Butcher Lord", "description": "WORLD EATERS INFANTRY model only. The bearer has the Infiltrators ability.", "source": "Faction Pack - World Eaters v1.1, page 7"
+    },
+    {
+      "id": "world-eaters-disciple-khorne", "kind": "enhancement-replace", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Khorne Daemonkin", "enhancementName": "Disciple of Khorne", "description": "LORD ON JUGGERNAUT model only. The bearer has the Deep Strike ability, and it has the BLOOD LEGIONS Faction keyword instead of the WORLD EATERS Faction keyword.", "source": "Faction Pack - World Eaters v1.1, page 7"
+    },
+    {
+      "id": "astra-masters-camouflage", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Astra Militarum" }, "detachmentName": "Recon Element", "ruleName": "Masters of Camouflage", "description": "ASTRA MILITARUM WALKER and REGIMENT units from your army have the Benefit of Cover. While such a unit has the Benefit of Cover for any other reason, improve the Save characteristic of that unit by 1 (to a maximum of 3+).", "source": "Faction Pack - Astra Militarum v1.1, page 23"
+    },
+    {
+      "id": "death-guard-inflamed-reprisal", "kind": "rule-add", "target": { "faction": "Chaos - Death Guard" }, "unitNames": ["Mortarion"], "ruleName": "Inflamed Reprisal", "description": "In your opponent's Shooting phase, when a friendly DEATH GUARD unit within 6\" of this model is selected as the target of an attack, this model can use this ability. If it does, after the attacking unit has finished making its attacks, that DEATH GUARD unit can shoot as if it were your Shooting phase, but when resolving those attacks, worsen the BS characteristic of that attack by 1 and it can only target that enemy unit (and only if it is an eligible target).", "source": "Faction Pack - Death Guard v1.1, page 7"
+    },
+    {
+      "id": "death-guard-death-approaches", "kind": "rule-replace", "target": { "faction": "Chaos - Death Guard" }, "unitNames": ["Deathshroud Terminators"], "ruleName": "Death Approaches", "description": "In your Movement phase, each time this unit is set up on the battlefield using the Deep Strike ability, it can be set up anywhere on the battlefield that is more than 6\" horizontally away from all Afflicted enemy units, and more than 8\" horizontally away from all other enemy units.", "source": "Faction Pack - Death Guard v1.1, page 7"
+    },
+    {
+      "id": "death-guard-diseased-influence", "kind": "rule-add", "target": { "faction": "Chaos - Death Guard" }, "unitNames": ["Mortarion"], "ruleName": "Diseased Influence", "description": "Just after an enemy unit ends a Normal, Advance or Fall Back move within 8\" of a friendly DEATH GUARD unit that is within 6\" of this model, if that DEATH GUARD unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to 5\".", "source": "Faction Pack - Death Guard v1.1, page 7"
+    },
+    {
+      "id": "gsc-cult-ambush", "kind": "army-rule-add", "target": { "faction": "Xenos - Genestealer Cults" }, "ruleName": "Cult Ambush", "description": "Each time a unit from your army is destroyed, if every model (excluding CHARACTER models) in that unit has this ability, you can spend the relevant number of Resurgence points based on that unit's Starting Strength (not including attached CHARACTER models). If you do, add a new unit to your army identical to that destroyed unit (excluding CHARACTER models), in Cult Ambush, at its Starting Strength, with all of its wounds remaining and any [ONE SHOT] weapons those models are equipped with considered as not having been shot, then place one Cult Ambush marker more than 8\" horizontally away from all enemy units.", "source": "Faction Pack - Genestealer Cults v1.1, page 7"
+    },
+    {
+      "id": "votann-delvewerke", "kind": "enhancement-replace", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Dêlve Assault Shift", "enhancementName": "Dêlvwerke Navigator", "description": "Return one destroyed model (excluding CHARACTER models) to that unit and then, for every 2YP you just spent, return up to one additional destroyed model (excluding CHARACTER models) to that unit.", "source": "Faction Pack - Leagues of Votann v1.1, page 11"
+    },
+    {
+      "id": "necrons-reanimator-beam", "kind": "rule-replace", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Canoptek Reanimator"], "ruleName": "Nanoscarab Reanimation Beam", "description": "While a friendly NECRONS unit is within 3\" of this model, each time that unit's Reanimation Protocols activate, that unit heals an additional D3 wounds.", "source": "Faction Pack - Necrons v1.1, page 30"
+    },
+    {
+      "id": "orks-makari-save", "kind": "rule-add", "target": { "faction": "Xenos - Orks" }, "unitNames": ["Ghazghkull Thraka"], "ruleName": "Makari's Invulnerable Save", "description": "While a friendly Makari model is on the battlefield, you cannot re-roll save rolls for this unit.", "source": "Faction Pack - Orks v1.1, page 26"
+    },
+    {
+      "id": "agents-decoy-targets", "kind": "enhancement-add", "target": { "faction": "Imperium - Agents of the Imperium" }, "detachmentName": "Veiled Blade Elimination Force", "unitNames": ["Callidus Assassin"], "enhancementName": "Decoy Targets", "points": 15, "description": "Callidus Assassin models only. Twice per battle, in your Movement phase, you can select one other friendly INFANTRY model that is on the battlefield and not within Engagement Range of one or more enemy units. The selected model is destroyed (ignoring any rules that are triggered when a model is destroyed) and this model is removed from the battlefield and set up again as close as possible to where that destroyed model was and not within Engagement Range of one or more enemy units. This ability cannot be used more than once in the same battle round.", "source": "Faction Pack - Imperial Agents v1.1, page 2"
+    },
+    {
+      "id": "agents-esoteric-explosives", "kind": "enhancement-add", "target": { "faction": "Imperium - Agents of the Imperium" }, "detachmentName": "Veiled Blade Elimination Force", "unitNames": ["Culexus Assassin"], "enhancementName": "Esoteric Explosives", "points": 10, "description": "Culexus Assassin models only. Each time this model is targeted with the Grenades Stratagem, 1 mortal wound is inflicted for each D6 roll of 3+ instead of for each 4+.", "source": "Faction Pack - Imperial Agents v1.1, page 2"
+    },
+    {
+      "id": "agents-introneural-biotech", "kind": "enhancement-add", "target": { "faction": "Imperium - Agents of the Imperium" }, "detachmentName": "Veiled Blade Elimination Force", "unitNames": ["Eversor Assassin"], "enhancementName": "Introneural Biotech", "points": 15, "description": "Eversor Assassin models only. You can target this unit with the Heroic Intervention stratagem, regardless of any other uses of that stratagem this phase. If you do: that use is -1 CP; that use does not prevent any uses of that stratagem on other units this phase.", "source": "Faction Pack - Imperial Agents v1.1, page 2"
+    },
+    {
+      "id": "agents-micromelta-rounds", "kind": "enhancement-add", "target": { "faction": "Imperium - Agents of the Imperium" }, "detachmentName": "Veiled Blade Elimination Force", "unitNames": ["Vindicare Assassin"], "enhancementName": "Micromelta Rounds", "points": 20, "description": "Vindicare Assassin models only. This model's exitus rifle has the [ANTI-MONSTER 4+] and [ANTI-VEHICLE 4+] abilities.", "source": "Faction Pack - Imperial Agents v1.1, page 2"
+    },
+    {
+      "id": "death-guard-parasitic-woe-reaper", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Foetid Bloat-drone", "Foetid Bloat-drone with Heavy Blight Launcher", "Helbrute", "Myphitic Blight-haulers"], "enhancementName": "Parasitic Woe-reaper", "points": 15, "description": "CONTAGION ENGINE unit only. When this unit has fought, one model in this unit heals D3 wounds.", "source": "Faction Pack - Death Guard v1.1, page 2"
+    },
+    {
+      "id": "death-guard-lancet-worldsore", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Helbrute", "Myphitic Blight-haulers"], "enhancementName": "Lancet of the Worldsore", "points": 15, "description": "Friendly HELBRUTE/MYPHITIC BLIGHT-HAULER unit only. This unit has MOBILE.", "source": "Faction Pack - Death Guard v1.1, page 2"
+    }
+  ],
+  "audit": {
+    "redCharacterCount": 28626,
+    "changedPageCount": 57,
+    "method": "Every red-text page extracted by character colour, then checked against the rendered page and assigned to an applied override, a verified current source item, a manual loadout correction, or a non-roster-facing item.",
+    "manualCorrections": [
+      { "id": "orks-boyz-loadout", "source": "Faction Pack - Orks v1.1, page 25" },
+      { "id": "orks-gretchin-composition", "source": "Faction Pack - Orks v1.1, page 26" },
+      { "id": "orks-warboss-loadout", "source": "Faction Pack - Orks v1.1, page 26" },
+      { "id": "space-marines-chaplain-absolvor-option", "source": "Faction Pack - Space Marines v1.1, page 61" },
+      { "id": "space-marines-vanguard-veteran-options", "source": "Faction Pack - Space Marines v1.1, page 63" }
+    ],
+    "verifiedCurrentSource": [
+      { "id": "admech-legends-datasheet-20", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 20" },
+      { "id": "admech-legends-datasheet-22", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 22" },
+      { "id": "admech-legends-datasheet-24", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 24" },
+      { "id": "admech-legends-datasheet-26", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 26" },
+      { "id": "aeldari-eldrad-leader", "source": "Faction Pack - Aeldari v1.1, page 27" },
+      { "id": "blood-angels-sanguinary-guard", "source": "Faction Pack - Blood Angels v1.1, page 9" },
+      { "id": "blood-angels-sanguinary-priest-support", "source": "Faction Pack - Blood Angels v1.1, page 9" },
+      { "id": "admech-legends-new-pages", "source": "Faction Pack - Adeptus Mechanicus v1.1, pages 20, 22, 24 and 26" },
+      { "id": "titanicus-force-disposition", "source": "Faction Pack - Adeptus Titanicus v1.1, page 1" }
+    ],
+    "nonRosterFacing": [
+      { "id": "dominatus-event-cp", "source": "Warhammer Dominatus - Event Companion, page 1" },
+      { "id": "event-companion-cp", "source": "Warhammer Event Companion, page 1" },
+      { "id": "event-companion-faq", "source": "Warhammer Event Companion, page 4" },
+      { "id": "event-companion-layout-mark", "source": "Warhammer Event Companion, page 54" },
+      { "id": "teams-event-cp", "source": "Warhammer Teams - Event Companion, page 1" },
+      { "id": "teams-event-sequence", "source": "Warhammer Teams - Event Companion, page 2" },
+      { "id": "sororitas-faq", "source": "Faction Pack - Adepta Sororitas v1.1, page 14" },
+      { "id": "aeldari-faq", "source": "Faction Pack - Aeldari v1.1, page 28" },
+      { "id": "drukhari-faq", "source": "Faction Pack - Drukhari v1.1, page 8" },
+      { "id": "orks-faq", "source": "Faction Pack - Orks v1.1, page 27" }
+    ]
+  }
+}

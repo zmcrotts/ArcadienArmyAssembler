@@ -4,17 +4,6 @@
       {
         "constraints": [
           {
-            "field": "selections",
-            "scope": "roster",
-            "value": 3,
-            "percentValue": false,
-            "shared": true,
-            "includeChildSelections": true,
-            "includeChildForces": true,
-            "id": "3e50-e28-471-cfe8",
-            "type": "max"
-          },
-          {
             "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
@@ -39,6 +28,15 @@
             "scope": "self",
             "shared": true,
             "id": "c0cc-5261-5fdd-36c4",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "9cbb-07c7-d7b3-f45f",
             "includeChildSelections": true
           }
         ],
@@ -499,33 +497,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "8655-2b58-1bfc-cd5c",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "5453-7b38-73b9-fcc9",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "688b-12d1-bf10-1fe3",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 5
           }
         ],
         "costs": [
@@ -776,21 +747,29 @@
         "hidden": false,
         "collective": false,
         "import": true,
-        "type": "model"
+        "type": "model",
+        "modifiers": [
+          {
+            "type": "set",
+            "value": 2,
+            "field": "9cbb-07c7-d7b3-f45f",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
+          }
+        ]
       },
       {
         "constraints": [
-          {
-            "field": "selections",
-            "scope": "roster",
-            "value": 3,
-            "percentValue": false,
-            "shared": true,
-            "includeChildSelections": true,
-            "includeChildForces": true,
-            "id": "e86d-792-10b7-df58",
-            "type": "max"
-          },
           {
             "type": "max",
             "value": 6,
@@ -816,6 +795,15 @@
             "scope": "self",
             "shared": true,
             "id": "164e-cdf4-3aab-4197",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "9ec7-8dca-7452-d925",
             "includeChildSelections": true
           }
         ],
@@ -1053,33 +1041,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "cde9-70c8-c24e-9e30",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "941c-794a-9a5b-244a",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "ae7c-9822-2012-3fdf",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 5
           }
         ],
         "modifierGroups": [
@@ -1307,7 +1268,7 @@
                 ],
                 "type": "set",
                 "value": 2,
-                "field": "e86d-792-10b7-df58"
+                "field": "9ec7-8dca-7452-d925"
               },
               {
                 "conditionGroups": [
@@ -1520,7 +1481,26 @@
         "hidden": false,
         "collective": false,
         "import": true,
-        "type": "model"
+        "type": "model",
+        "modifiers": [
+          {
+            "type": "set",
+            "value": 2,
+            "field": "9ec7-8dca-7452-d925",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
+          }
+        ]
       },
       {
         "categoryLinks": [
@@ -1632,42 +1612,6 @@
             "id": "82b2-c335-94dc-3d4c",
             "targetId": "ceab-62d9-31bf-7c61",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "29f6-22d1-9c3c-3a6b",
-            "targetId": "fa5b-f646-b960-a8d3",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f8b8-f885-3774-48da",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "c6aa-3f90-3dc7-cc0c",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f46b-29c0-a180-85ce",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 5
           }
         ],
         "infoLinks": [
@@ -1962,17 +1906,6 @@
       {
         "constraints": [
           {
-            "field": "selections",
-            "scope": "roster",
-            "value": 6,
-            "percentValue": false,
-            "shared": true,
-            "includeChildSelections": true,
-            "includeChildForces": true,
-            "id": "0394-f7bf-9494-7b4a",
-            "type": "max"
-          },
-          {
             "type": "max",
             "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
@@ -1997,6 +1930,15 @@
             "scope": "self",
             "shared": true,
             "id": "aa9c-c37e-e994-2567",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 6,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "904c-690d-ad87-7674",
             "includeChildSelections": true
           }
         ],
@@ -2386,19 +2328,35 @@
         ],
         "modifiers": [
           {
+            "conditions": [
+              {
+                "type": "greaterThan",
+                "value": 10,
+                "field": "selections",
+                "scope": "self",
+                "childId": "model",
+                "shared": true,
+                "includeChildSelections": true
+              }
+            ],
             "type": "set",
             "value": 155,
-            "field": "51b2-306e-1021-d207",
+            "field": "51b2-306e-1021-d207"
+          },
+          {
+            "type": "set",
+            "value": 4,
+            "field": "904c-690d-ad87-7674",
             "conditions": [
               {
                 "type": "atLeast",
-                "value": 11,
+                "value": 1,
                 "field": "selections",
-                "scope": "9ce8-7a63-15c3-0347",
-                "childId": "model",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
                 "shared": true,
                 "includeChildSelections": true,
-                "includeChildForces": true
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -2428,33 +2386,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "cd4d-fe15-946d-fb0f",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "6133-4df5-946e-c348",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "a214-d3ea-7420-c803",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 3
           }
         ],
         "modifierGroups": [
@@ -3084,17 +3015,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "681c-7833-7ccb-b0b2",
-            "percentValue": false,
-            "includeChildSelections": true,
-            "includeChildForces": false
-          },
-          {
-            "type": "max",
             "value": 6,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -3119,6 +3039,15 @@
             "shared": true,
             "id": "c052-ce73-719a-ea16",
             "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "8ec2-e7d1-8984-2147",
+            "includeChildSelections": true
           }
         ],
         "entryLinks": [
@@ -3130,42 +3059,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "e714-4ce6-26d8-4af4",
-            "targetId": "fa5b-f646-b960-a8d3",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "888c-7e60-5016-fa02",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "dcdd-7e61-8374-51db",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "febc-5a13-7ddc-3206",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "modifierGroups": [
@@ -3700,24 +3593,12 @@
         "id": "c10d-772e-a54f-a2b9",
         "modifiers": [
           {
-            "type": "set",
-            "value": 175,
+            "type": "increment",
+            "value": 10,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
                 "type": "and",
-                "conditions": [
-                  {
-                    "type": "atLeast",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "c10d-772e-a54f-a2b9",
-                    "childId": "model",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
                 "localConditionGroups": [
                   {
                     "type": "atLeast",
@@ -3733,9 +3614,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -3749,6 +3629,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "8ec2-e7d1-8984-2147",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -3791,16 +3688,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "ed75-3ce-a894-9253",
-            "includeChildSelections": true,
-            "includeChildForces": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -3823,6 +3710,15 @@
             "scope": "self",
             "shared": true,
             "id": "e584-2c9d-e56e-b398",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "9001-4321-b488-9a17",
             "includeChildSelections": true
           }
         ],
@@ -4084,24 +3980,6 @@
             "type": "selectionEntryGroup",
             "targetId": "9208-f62b-e38e-721e",
             "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "5a8c-2754-62ab-f5ba",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "bc51-9d1e-4216-7b04",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "modifierGroups": [
@@ -4359,7 +4237,7 @@
                 ],
                 "type": "set",
                 "value": 1,
-                "field": "ed75-3ce-a894-9253"
+                "field": "9001-4321-b488-9a17"
               },
               {
                 "conditionGroups": [
@@ -4472,7 +4350,26 @@
         "import": true,
         "name": "Lictor",
         "hidden": false,
-        "id": "da44-72c9-7a27-48aa"
+        "id": "da44-72c9-7a27-48aa",
+        "modifiers": [
+          {
+            "type": "set",
+            "value": 2,
+            "field": "9001-4321-b488-9a17",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
+          }
+        ]
       },
       {
         "categoryLinks": [
@@ -4626,16 +4523,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "40be-d448-295c-f3f3",
-            "includeChildSelections": true,
-            "includeChildForces": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -4659,6 +4546,15 @@
             "shared": true,
             "id": "c93d-0c78-2de7-324f",
             "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "d06a-ca47-2c11-ff1d",
+            "includeChildSelections": true
           }
         ],
         "entryLinks": [
@@ -4670,33 +4566,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "b62f-d3ee-ad0e-3e78",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "2059-e085-d6ea-14d1",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f593-b34e-7180-609a",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 3
           }
         ],
         "modifierGroups": [
@@ -5141,6 +5010,23 @@
             "type": "add",
             "value": "7dcd-38cd-5892-32b5",
             "field": "category"
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "d06a-ca47-2c11-ff1d",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
           }
         ],
         "type": "model",
@@ -5192,16 +5078,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "6a75-a5f5-1da7-a85c",
-            "includeChildSelections": false,
-            "includeChildForces": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -5224,6 +5100,15 @@
             "scope": "self",
             "shared": true,
             "id": "40f8-1577-5c4d-1c99",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "4ed2-5df4-e2a0-40a9",
             "includeChildSelections": true
           }
         ],
@@ -5523,24 +5408,6 @@
             "type": "selectionEntryGroup",
             "targetId": "9208-f62b-e38e-721e",
             "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "ace9-9608-3928-83c2",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "5298-414d-df24-632e",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "modifierGroups": [
@@ -5798,7 +5665,7 @@
                 ],
                 "type": "set",
                 "value": 1,
-                "field": "6a75-a5f5-1da7-a85c"
+                "field": "4ed2-5df4-e2a0-40a9"
               },
               {
                 "conditionGroups": [
@@ -5968,8 +5835,8 @@
         "id": "642f-9302-4fdc-ab68",
         "modifiers": [
           {
-            "type": "set",
-            "value": 90,
+            "type": "increment",
+            "value": 10,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
@@ -5989,9 +5856,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -6005,6 +5871,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "4ed2-5df4-e2a0-40a9",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -6241,46 +6124,9 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "c2fc-e485-a337-a433",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f810-aab9-871d-d159",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "7a8b-c519-a007-a299",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 5
           }
         ],
         "constraints": [
-          {
-            "type": "max",
-            "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "40be-d448-295c-f3f3",
-            "includeChildSelections": true,
-            "includeChildForces": true
-          },
           {
             "type": "max",
             "value": 6,
@@ -6306,6 +6152,15 @@
             "scope": "self",
             "shared": true,
             "id": "b15e-c34e-e6c9-f9a9",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "6d1a-19ea-f5b6-0937",
             "includeChildSelections": true
           }
         ],
@@ -6731,7 +6586,26 @@
         "import": true,
         "name": "Parasite of Mortrex",
         "hidden": false,
-        "id": "d213-efd8-a2b4-42d2"
+        "id": "d213-efd8-a2b4-42d2",
+        "modifiers": [
+          {
+            "type": "set",
+            "value": 2,
+            "field": "6d1a-19ea-f5b6-0937",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
+          }
+        ]
       },
       {
         "profiles": [
@@ -6854,15 +6728,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "force",
-            "shared": true,
-            "id": "6da2-caf8-12c9-798c",
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -6885,6 +6750,15 @@
             "scope": "self",
             "shared": true,
             "id": "59f0-cf33-21e1-393b",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "a831-2f1c-c166-f711",
             "includeChildSelections": true
           }
         ],
@@ -7143,7 +7017,7 @@
                 ],
                 "type": "set",
                 "value": 2,
-                "field": "6da2-caf8-12c9-798c"
+                "field": "a831-2f1c-c166-f711"
               }
             ],
             "type": "and"
@@ -7243,33 +7117,6 @@
             "type": "selectionEntry",
             "targetId": "ceab-62d9-31bf-7c61",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "ba90-fe54-4d2f-fe42",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "d331-b437-31fe-6843",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "51a3-c6de-6e1c-5447",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "selectionEntryGroups": [
@@ -7596,24 +7443,12 @@
         "id": "3f5-f7d6-1ce8-e6b9",
         "modifiers": [
           {
-            "type": "set",
-            "value": 135,
+            "type": "increment",
+            "value": 10,
             "field": "51b2-306e-1021-d207",
             "conditionGroups": [
               {
                 "type": "and",
-                "conditions": [
-                  {
-                    "type": "atLeast",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "3f5-f7d6-1ce8-e6b9",
-                    "childId": "model",
-                    "shared": true,
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
                 "localConditionGroups": [
                   {
                     "type": "atLeast",
@@ -7629,9 +7464,8 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "self",
-                        "childId": "self",
-                        "shared": true,
-                        "childName": "self"
+                        "childId": "any",
+                        "shared": true
                       },
                       {
                         "type": "instanceOf",
@@ -7645,6 +7479,23 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "a831-2f1c-c166-f711",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -7689,7 +7540,7 @@
               {
                 "name": "Description",
                 "typeId": "9b8f-694b-e5e-b573",
-                "$text": "In your Movement phase, when this model is set up on the battlefield using the Deep Strike ability, it can use a subterranean tunnel. If it does, this model can be set up anywhere on the battlefield that is more than 6\" horizontally away from all enemy units, but until the end of the turn, it is not eligible to declare a charge."
+                "$text": "In your Movement phase, when this model is set up on the battlefield using the Deep Strike ability, it can use a subterranean tunnel. If it does, this model can be set up anywhere on the battlefield that is more than 6\" horizontally away from all enemy units, but until the end of the turn, it is not eligible to declare a charge."
               }
             ],
             "name": "Subterranean Tunnels",
@@ -7770,15 +7621,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "751-62e1-d0f2-3423",
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -7801,6 +7643,15 @@
             "scope": "self",
             "shared": true,
             "id": "76e8-4d20-b1a4-845b",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "798d-2ab1-3dfe-5c67",
             "includeChildSelections": true
           }
         ],
@@ -7911,33 +7762,6 @@
             "targetId": "fa5b-f646-b960-a8d3",
             "type": "selectionEntryGroup",
             "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "54f1-c819-c303-68ad",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "cb82-d4a3-c64e-3036",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 4
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "e5e2-8b16-4596-b2a8",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 5
           }
         ],
         "modifierGroups": [
@@ -8321,6 +8145,23 @@
             "type": "add",
             "value": "7dcd-38cd-5892-32b5",
             "field": "category"
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "798d-2ab1-3dfe-5c67",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
           }
         ],
         "selectionEntries": [
@@ -8620,16 +8461,6 @@
         "constraints": [
           {
             "type": "max",
-            "value": 6,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "40be-d448-295c-f3f3",
-            "includeChildSelections": true,
-            "includeChildForces": true
-          },
-          {
-            "type": "max",
             "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
@@ -8654,6 +8485,15 @@
             "shared": true,
             "id": "a029-6957-dbe7-5d0e",
             "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 6,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "9163-bbe1-ce91-681b",
+            "includeChildSelections": true
           }
         ],
         "entryLinks": [
@@ -8665,33 +8505,6 @@
             "type": "selectionEntryGroup",
             "targetId": "2fa5-0a8d-013e-fc12",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "8d5b-d550-cd6c-2220",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "d467-3f50-2529-76cb",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "be96-2755-7080-ab0d",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 3
           }
         ],
         "modifierGroups": [
@@ -9091,7 +8904,26 @@
         "import": true,
         "name": "Tyrannocyte",
         "hidden": false,
-        "id": "fada-677a-f6a4-cd12"
+        "id": "fada-677a-f6a4-cd12",
+        "modifiers": [
+          {
+            "type": "set",
+            "value": 4,
+            "field": "9163-bbe1-ce91-681b",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
+                "includeChildSelections": true,
+                "childName": "1. Incursion (1000 Point limit)"
+              }
+            ]
+          }
+        ]
       },
       {
         "costs": [
@@ -9138,19 +8970,35 @@
         ],
         "modifiers": [
           {
-            "type": "set",
-            "value": 120,
-            "field": "51b2-306e-1021-d207",
             "conditions": [
               {
-                "type": "atLeast",
-                "value": 4,
+                "type": "greaterThan",
+                "value": 3,
                 "field": "selections",
                 "scope": "9bd8-ac8c-2d3b-79f6",
                 "childId": "model",
                 "shared": true,
+                "includeChildSelections": true
+              }
+            ],
+            "type": "set",
+            "value": 120,
+            "field": "51b2-306e-1021-d207"
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "16b4-633a-f031-4100",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
                 "includeChildSelections": true,
-                "includeChildForces": true
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -9191,7 +9039,7 @@
               {
                 "name": "Description",
                 "typeId": "9b8f-694b-e5e-b573",
-                "$text": "You can target this unit with the Heroic Intervention stratagem, regardless of any other uses of that stratagem this phase. If you do: - That use is -1 CP. - That use does not prevent any uses of that stratagem on other units this phase."
+                "$text": "You can target this unit with the **Heroic Intervention stratagem**, regardless of any other uses of that **stratagem** this phase. If you do:\n▪ That use is ‑1 CP.\n▪ That use does not prevent any uses of that **stratagem** on other units this phase."
               }
             ],
             "modifiers": [
@@ -9255,16 +9103,6 @@
           {
             "type": "max",
             "value": 3,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "40be-d448-295c-f3f3",
-            "includeChildSelections": true,
-            "includeChildForces": true
-          },
-          {
-            "type": "max",
-            "value": 3,
             "field": "75bb-ded1-c86d-bdf0",
             "scope": "self",
             "shared": true,
@@ -9287,6 +9125,15 @@
             "scope": "self",
             "shared": true,
             "id": "90a8-99a0-1b9a-aa60",
+            "includeChildSelections": true
+          },
+          {
+            "type": "max",
+            "value": 3,
+            "field": "selections",
+            "scope": "force",
+            "shared": true,
+            "id": "16b4-633a-f031-4100",
             "includeChildSelections": true
           }
         ],
@@ -9545,7 +9392,7 @@
                 ],
                 "type": "set",
                 "value": 2,
-                "field": "40be-d448-295c-f3f3"
+                "field": "16b4-633a-f031-4100"
               }
             ],
             "type": "and"
@@ -9654,24 +9501,6 @@
             "type": "selectionEntryGroup",
             "targetId": "9208-f62b-e38e-721e",
             "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "5cbe-6cfe-643c-6c2e",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "6df8-4490-3309-ac38",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "selectionEntryGroups": [
@@ -10270,11 +10099,10 @@
             "type": "max",
             "value": 3,
             "field": "selections",
-            "scope": "roster",
+            "scope": "force",
             "shared": true,
-            "id": "aaa4-ecd6-4d33-9def",
-            "includeChildSelections": true,
-            "includeChildForces": true
+            "id": "97cf-8b07-e800-2e35",
+            "includeChildSelections": true
           }
         ],
         "infoLinks": [
@@ -10321,26 +10149,22 @@
         ],
         "modifiers": [
           {
-            "type": "set",
-            "value": 40,
-            "field": "51b2-306e-1021-d207",
             "conditions": [
               {
-                "type": "atLeast",
+                "type": "equalTo",
                 "value": 2,
                 "field": "selections",
                 "scope": "1de2-b57b-aa0a-1f0d",
                 "childId": "model",
                 "shared": true,
-                "includeChildSelections": true,
-                "includeChildForces": true
+                "includeChildSelections": true
               }
-            ]
+            ],
+            "type": "set",
+            "value": 40,
+            "field": "51b2-306e-1021-d207"
           },
           {
-            "type": "set",
-            "value": 50,
-            "field": "51b2-306e-1021-d207",
             "conditions": [
               {
                 "type": "atLeast",
@@ -10349,8 +10173,27 @@
                 "scope": "1de2-b57b-aa0a-1f0d",
                 "childId": "model",
                 "shared": true,
+                "includeChildSelections": true
+              }
+            ],
+            "type": "set",
+            "value": 50,
+            "field": "51b2-306e-1021-d207"
+          },
+          {
+            "type": "set",
+            "value": 2,
+            "field": "97cf-8b07-e800-2e35",
+            "conditions": [
+              {
+                "type": "atLeast",
+                "value": 1,
+                "field": "selections",
+                "scope": "roster",
+                "childId": "d62d-db22-4893-4bc0",
+                "shared": true,
                 "includeChildSelections": true,
-                "includeChildForces": true
+                "childName": "1. Incursion (1000 Point limit)"
               }
             ]
           }
@@ -10426,7 +10269,7 @@
                 ],
                 "type": "set",
                 "value": 1,
-                "field": "aaa4-ecd6-4d33-9def"
+                "field": "97cf-8b07-e800-2e35"
               },
               {
                 "conditionGroups": [
@@ -10456,7 +10299,7 @@
                 ],
                 "type": "set",
                 "value": 3,
-                "field": "aaa4-ecd6-4d33-9def"
+                "field": "97cf-8b07-e800-2e35"
               }
             ],
             "type": "and"
@@ -10547,33 +10390,6 @@
             "type": "selectionEntry",
             "targetId": "ceab-62d9-31bf-7c61",
             "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "f5e4-d47f-6832-ea05",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "9b29-9cb7-cef6-a01f",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "aec5-9d72-7241-3875",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 3
           }
         ],
         "type": "unit",
@@ -13932,36 +13748,7 @@
         "import": true,
         "name": "Ripper Swarms (Parasite of Mortrex)",
         "hidden": false,
-        "id": "4390-b3c7-64d2-c1b8",
-        "entryLinks": [
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "9802-5307-9d11-3342",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 0
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "d50f-987f-f56f-9468",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "13ed-1d22-f1c2-6ffb",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 2
-          }
-        ]
+        "id": "4390-b3c7-64d2-c1b8"
       },
       {
         "comment": "Boarding Actions - Great Devourer",
@@ -14341,42 +14128,6 @@
             "id": "f866-abf5-a5a5-1bfb",
             "targetId": "ceab-62d9-31bf-7c61",
             "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "d68d-b6af-ee52-382d",
-            "targetId": "fa5b-f646-b960-a8d3",
-            "sortIndex": 1
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "49d7-3046-df46-83ba",
-            "targetId": "4516-88d2-6b61-6a3d",
-            "sortIndex": 2
-          },
-          {
-            "import": true,
-            "name": "Enhancements - Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "7aa8-84a5-eb26-2f49",
-            "targetId": "9208-f62b-e38e-721e",
-            "sortIndex": 3
-          },
-          {
-            "import": true,
-            "name": "Upgrades",
-            "hidden": false,
-            "type": "selectionEntryGroup",
-            "id": "6685-c586-31cc-4f2d",
-            "targetId": "paaa-8856-a358-91fb",
-            "sortIndex": 4
           }
         ],
         "constraints": [
@@ -14619,7 +14370,7 @@
     ],
     "sharedRules": [
       {
-        "description": "If your Army Faction is TYRANIDS, while a TYRANIDS unit from your army is within 6\" of one or more friendly SYNAPSE models, that TYRANIDS unit is said to be within Synapse Range of that model and of your army. While a TYRANIDS unit from your army is within Synapse Range of your army: - Each time that unit takes a Battle-shock test, take that test on 3D6 instead of 2D6. - Each time a model in that unit makes a melee attack, add 1 to the Strength characteristic of that attack.",
+        "description": "If your Army Faction is **TYRANIDS**, while a **TYRANIDS** unit from your army is within 6\" of one or more friendly **SYNAPSE** models, that **TYRANIDS** unit is said to be within Synapse Range of that model and of your army. While a **TYRANIDS** unit from your army is within Synapse Range of your army:\n▪ Each time that unit takes a Battle‑shock test, take that test on 3D6 instead of 2D6.\n▪ Each time a model in that unit makes a melee attack, add 1 to the Strength characteristic of that attack.",
         "modifiers": [
           {
             "conditions": [
@@ -14658,7 +14409,7 @@
         "hidden": false
       },
       {
-        "description": "If your Army Faction is TYRANIDS, once per battle, in either player's Command phase, if one or more units from your army with this ability are on the battlefield, you can unleash the Shadow in the Warp. When you do, each enemy unit on the battlefield must take a Battle-shock test. Each time an enemy unit takes such a Battle-shock test, if it is within 6\" of one or more SYNAPSE units from your army, subtract 1 from that test.",
+        "description": "If your Army Faction is **TYRANIDS**, once per battle, in either player’s Command phase, if one or more units from your army with this ability are on the battlefield, you can unleash the Shadow in the Warp. When you do, each enemy unit on the battlefield must take a Battle‑shock test. Each time an enemy unit takes such a Battle‑shock test, if it is within 6\" of one or more **SYNAPSE** units from your army, subtract 1 from that test.",
         "modifiers": [
           {
             "conditions": [
@@ -15698,32 +15449,6 @@
                 "collective": false,
                 "import": true,
                 "type": "upgrade"
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Instinctive Defence",
-                "hidden": false,
-                "collective": false,
-                "id": "83d8-dc5c-8e80-1d9a",
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "7bac-2455-8447-888a",
-                    "includeChildSelections": true
-                  }
-                ]
               }
             ],
             "comment": "Tyranids",
@@ -17358,32 +17083,6 @@
                 "collective": false,
                 "import": true,
                 "type": "upgrade"
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Naturalised Camouflage",
-                "hidden": false,
-                "collective": false,
-                "id": "4ff1-a909-7322-c137",
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 30
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "c069-65cb-1c81-152d",
-                    "includeChildSelections": true
-                  }
-                ]
               }
             ],
             "comment": "Tyranids",
@@ -17620,7 +17319,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "TYRANIDS model only. After both players have deployed their armies, you can select up to three VANGUARD INVADER units from your army and redeploy all of those units. When doing so, any of those units can be placed into Strategic Reserves, regardless of how many units are already in Strategic Reserves."
+                        "$text": "**TYRANIDS** model only. After both players have deployed their armies, you can select up to three **VANGUARD INVADER** units from your army and redeploy all of those units. When doing so, any of those units can be placed into Strategic Reserves, regardless of how many units are already in Strategic Reserves."
                       }
                     ],
                     "id": "a260-81c2-7cda-a6ae",
@@ -18020,40 +17719,31 @@
                     "type": "set",
                     "value": true,
                     "field": "hidden",
-                    "id": "pab5-83dd-3a5f-9657",
                     "conditionGroups": [
                       {
                         "type": "and",
-                        "conditionGroups": [
+                        "conditions": [
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "d5b9-2986-70fe-f755",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "root-entry",
+                            "childId": "6ed1-0e06-b0d6-0cc2",
+                            "shared": true,
+                            "percentValue": false,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
                           },
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "6ed1-0e06-b0d6-0cc2",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "root-entry",
+                            "childId": "d5b9-2986-70fe-f755",
+                            "shared": true,
+                            "percentValue": false,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
                           }
                         ]
                       }
@@ -18090,7 +17780,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "This bioform and its symbiotic weapon-beasts have been adapted for maximum lethality.\n\nWINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only. This model's melee attacks:\n- Can re-roll wound rolls.\n- Have +1 AP."
+                        "$text": "**WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP** model only. This model’s melee attacks:\n- Can re‑roll **wound rolls**.\n- Have +1 **AP**."
                       }
                     ],
                     "id": "b079-93cd-5595-103b",
@@ -18173,47 +17863,38 @@
               {
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paf4-a54f-31f4-b838",
                     "conditionGroups": [
                       {
-                        "type": "and",
-                        "conditionGroups": [
+                        "conditions": [
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "d5b9-2986-70fe-f755",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "field": "selections",
+                            "scope": "root-entry",
+                            "value": 1,
+                            "percentValue": false,
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childId": "6ed1-0e06-b0d6-0cc2",
+                            "type": "notInstanceOf"
                           },
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "6ed1-0e06-b0d6-0cc2",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "field": "selections",
+                            "scope": "root-entry",
+                            "value": 1,
+                            "percentValue": false,
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childId": "d5b9-2986-70fe-f755",
+                            "type": "notInstanceOf"
                           }
-                        ]
+                        ],
+                        "type": "and"
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "field": "hidden",
+                    "value": true
                   }
                 ],
                 "constraints": [
@@ -18246,7 +17927,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "This node-beast's bioadaptations allow it to perceive the minutest electrical impulse or heat signature. Few prey organisms escape its clutches.\n\nWINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only. This unit's melee attacks have +1 to hit rolls."
+                        "$text": "**WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP** model only. This unit’s melee attacks have +1 to **hit rolls**."
                       }
                     ],
                     "id": "f43e-c42a-e09c-73af",
@@ -18367,13 +18048,8 @@
               {
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "paf7-2571-6638-29d3",
                     "conditionGroups": [
                       {
-                        "type": "and",
                         "conditions": [
                           {
                             "type": "notInstanceOf",
@@ -18382,12 +18058,79 @@
                             "scope": "ancestor",
                             "childId": "d1d8-6ae0-1be7-e9e",
                             "shared": true,
+                            "percentValue": false,
                             "includeChildSelections": true,
                             "includeChildForces": true
                           }
-                        ]
+                        ],
+                        "conditionGroups": [
+                          {
+                            "conditions": [
+                              {
+                                "type": "notInstanceOf",
+                                "value": 1,
+                                "field": "selections",
+                                "scope": "ancestor",
+                                "childId": "54a9-c42f-3578-c683",
+                                "shared": true,
+                                "percentValue": false,
+                                "includeChildSelections": true,
+                                "includeChildForces": true
+                              },
+                              {
+                                "type": "notInstanceOf",
+                                "value": 1,
+                                "field": "selections",
+                                "scope": "ancestor",
+                                "childId": "6646-3625-4f52-f47c",
+                                "shared": true,
+                                "percentValue": false,
+                                "includeChildSelections": true,
+                                "includeChildForces": true
+                              },
+                              {
+                                "type": "notInstanceOf",
+                                "value": 1,
+                                "field": "selections",
+                                "scope": "ancestor",
+                                "childId": "c3a7-fdae-a434-6eff",
+                                "shared": true,
+                                "percentValue": false,
+                                "includeChildSelections": true,
+                                "includeChildForces": true
+                              },
+                              {
+                                "type": "notInstanceOf",
+                                "value": 1,
+                                "field": "selections",
+                                "scope": "ancestor",
+                                "childId": "4f10-fe01-4b80-8d6b",
+                                "shared": true,
+                                "percentValue": false,
+                                "includeChildSelections": true,
+                                "includeChildForces": true
+                              },
+                              {
+                                "type": "notInstanceOf",
+                                "value": 1,
+                                "field": "selections",
+                                "scope": "ancestor",
+                                "childId": "d5b9-2986-70fe-f755",
+                                "shared": true,
+                                "percentValue": false,
+                                "includeChildSelections": true,
+                                "includeChildForces": true
+                              }
+                            ],
+                            "type": "and"
+                          }
+                        ],
+                        "type": "or"
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "field": "hidden",
+                    "value": true
                   }
                 ],
                 "constraints": [
@@ -18418,7 +18161,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "This bioform uses its own keen senses and predatory intellect to burrow into position and strike before the enemy can react.\n\nTyranids model with the Deep Strike ability only. The bearer's unit can be set up using the Deep Strike ability in the Reinforcements step of your first, second or third Movement phase, regardless of any mission rules.",
+                        "$text": "**^^Tyranids^^** model with the Deep Strike ability only. The bearer’s unit can be set up using the Deep Strike ability in the Reinforcements step of your first, second or third Movement phase, regardless of any mission rules.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -18482,14 +18225,20 @@
               {
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa47-d8ef-d5d7-218e",
                     "conditionGroups": [
                       {
-                        "type": "and",
                         "conditions": [
+                          {
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "d1d8-6ae0-1be7-e9e",
+                            "shared": true,
+                            "percentValue": false,
+                            "includeChildSelections": true,
+                            "includeChildForces": true
+                          },
                           {
                             "type": "notInstanceOf",
                             "value": 1,
@@ -18497,12 +18246,17 @@
                             "scope": "ancestor",
                             "childId": "c3a7-fdae-a434-6eff",
                             "shared": true,
+                            "percentValue": false,
                             "includeChildSelections": true,
                             "includeChildForces": true
                           }
-                        ]
+                        ],
+                        "type": "or"
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "field": "hidden",
+                    "value": true
                   }
                 ],
                 "constraints": [
@@ -18533,7 +18287,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Only rarely manifested by the hive fleets, the Trygon Prime possesses a greatly enhanced synaptic network within its neural cortex, enabling it to more precisely coordinate the assaults of burrowing Tyranid creatures.\n\nTrygon model only. The bearer gains the Synapse keyword. Improve the Strength and Weapon Skill characteristics of melee weapons equipped by the bearer by 1.",
+                        "$text": "**^^Trygon^^** model only. The bearer gains the **^^Synapse^^** keyword. Improve the Strength and Weapon Skill characteristics of melee weapons equipped by the bearer by 1.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -18778,27 +18532,22 @@
               {
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pafc-3ed3-86a9-b74f",
-                    "conditionGroups": [
+                    "conditions": [
                       {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "d1d8-6ae0-1be7-e9e",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "d1d8-6ae0-1be7-e9e",
+                        "shared": true,
+                        "percentValue": false,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "field": "hidden",
+                    "value": true
                   }
                 ],
                 "constraints": [
@@ -18829,7 +18578,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "From its concealed position beneath the battlefield, this bioform picks up on subtle traces of movement from the enemy force, impelling its fellow organisms to reposition themselves in preparation for a coordinated assault.\n\nTyranids model only. After both players have deployed their armies, select up to three friendly Tyranids units from your army and redeploy them. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves.",
+                        "$text": "**^^Tyranids^^** model only. After both players have deployed their armies, select up to three friendly **^^Tyranids^^** units from your army and redeploy them. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -18889,81 +18638,6 @@
                 "collective": false,
                 "import": true,
                 "type": "upgrade"
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Synaptic Strategy",
-                "hidden": false,
-                "id": "pa69-816d-140c-2275",
-                "profiles": [
-                  {
-                    "name": "Synaptic Strategy",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa84-7b11-ed08-c4a8",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Possessing an exceptionally acute connection to the hive mind, this creature benefits from a constant influx of sensory data, enabling it to traverse the battlefield and emerge at the place and time of maximum impact.\n\nTyranids model only. Once per battle, you can target the bearer's unit with the Rapid Ingress stratagem for 0CP, and can do so even if you have already targeted a different unit with that Stratagem this phase."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pacc-4317-15dc-b78f"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pac9-48ab-bc3b-27bd",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pad1-b628-cf3d-2aed",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "d1d8-6ae0-1be7-e9e",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ],
             "comment": "Tyranids",
@@ -19017,7 +18691,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "ABOMINANT, BIOPHAGUS or PATRIARCH model only. - Models in the bearer's unit have the Infiltrators ability. - You can target this unit with the Heroic Intervention stratagem, regardless of any other uses of that stratagem this phase. If you do: - That use is -1 CP. - That use does not prevent any uses of that stratagem on other units this phase."
+                        "$text": "**ABOMINANT**, **BIOPHAGUS** or **PATRIARCH** model only.\n- Models in the bearer's unit have the Infiltrators ability.\n- You can target this unit with the **Heroic Intervention stratagem**, regardless of any other uses of that **stratagem** this phase. If you do:\n-- That use is ‑1 CP.\n-- That use does not prevent any uses of that **stratagem** on other units this phase."
                       }
                     ],
                     "name": "Predatory Instincts",
@@ -19548,32 +19222,6 @@
                 "name": "Alien Majesty",
                 "hidden": false,
                 "id": "826e-321d-6d5d-a609"
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Biomorph Adaptation",
-                "hidden": false,
-                "collective": false,
-                "id": "1bd3-15f9-bc91-cf34",
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 25
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "2c44-5a0e-d236-672e",
-                    "includeChildSelections": true
-                  }
-                ]
               }
             ],
             "constraints": [
@@ -19779,7 +19427,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "GENESTEALER CULTS INFANTRY model only. When you target this unit with the Heroic Intervention stratagem, that use is -1 CP."
+                        "$text": "**GENESTEALER CULTS INFANTRY** model only. When you target this unit with the **Heroic Intervention stratagem**, that use is ‑1 CP."
                       }
                     ],
                     "name": "Adaptive Reprisal",
@@ -20103,7 +19751,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Invisible psionic tendrils drift around this bioform's cranium, stabbing out to force alien demands into fragmenting hybrid minds and suck the bioenergy from them in merciless draughts.\n\nTyranids model only. Each time the bearer would regain one or more lost wounds from the Psionic Parasitism Detachment rule, it regains up to twice that number of lost wounds instead.",
+                        "$text": "**^^Tyranids^^** model only. Each time the bearer would regain one or more lost wounds from the Psionic Parasitism Detachment rule, it regains up to twice that number of lost wounds instead.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -20117,27 +19765,21 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "d1d8-6ae0-1be7-e9e",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa7f-a2b8-703d-eef1",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "d1d8-6ae0-1be7-e9e",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -20193,7 +19835,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Adapted by the Hive Mind to lead the first invasion swarms, this leader organism's bioweapons emphasise vicious shock assault and maximum bloodshed.\n\nWinged Hive Tyrant model only. Improve the Strength and Armour Penetration characteristics of melee weapons equipped by the bearer by 1.",
+                        "$text": "**^^Winged Hive Tyrant^^** model only. Improve the Strength and Armour Penetration characteristics of melee weapons equipped by the bearer by 1.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -20207,27 +19849,21 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "4f10-fe01-4b80-8d6b",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa88-f3f3-c719-6ab9",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "4f10-fe01-4b80-8d6b",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -20314,7 +19950,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "This cult leader's powerful psyche has withstood Hive Mind integration better than most, at least for now. It even relays a crude approximation of synaptic signals to their underlings. Of course, this only makes them and their followers more selflessly obedient drones.\n\nGenestealer Cults model only. Weapons equipped by models in the bearer's unit have the [SUSTAINED HITS 1] ability while targeting an enemy unit within 6\" of one or more friendly Tyranids units.",
+                        "$text": "**^^Genestealer Cults^^** model only. Weapons equipped by models in the bearer’s unit have the **[SUSTAINED HITS 1]** ability while targeting an enemy unit within 6\" of one or more friendly **^^Tyranids^^**units.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -20328,27 +19964,21 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "226b-cf1e-353a-ae7f",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa47-500f-2c02-b8c3",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "226b-cf1e-353a-ae7f",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -20413,7 +20043,7 @@
                   {
                     "characteristics": [
                       {
-                        "$text": "Though hollowing them out like acid, the insidious power of the Hive Mind blazes from this delirious fanatic and forces their enemies to recoil.\n\nGenestealer Cults model only. Enemy units cannot use the Fire Overwatch Stratagem to shoot at the bearer's unit.",
+                        "$text": "**^^Genestealer Cults^^** model only. Enemy units cannot use the Fire Overwatch Stratagem to shoot at the bearer’s unit.",
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
@@ -20427,27 +20057,21 @@
                 ],
                 "modifiers": [
                   {
+                    "conditions": [
+                      {
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "226b-cf1e-353a-ae7f",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true
+                      }
+                    ],
                     "type": "set",
                     "value": true,
-                    "field": "hidden",
-                    "id": "pa76-c575-1013-7ef8",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "226b-cf1e-353a-ae7f",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
+                    "field": "hidden"
                   }
                 ],
                 "costs": [
@@ -20772,7 +20396,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "GENESTEALER CULTS model only. In your opponent's Movement phase, if an enemy unit ends a move within 8\" of this unit, if this unit is not within Engagement Range of one or more enemy units, this unit can make a Normal move of up to D6\"."
+                        "$text": "**GENESTEALER CULTS** model only. In your opponent's Movement phase, if an enemy unit ends a move within 8” of this unit, if this unit is not within Engagement Range of one or more enemy units, this unit can make a Normal move of up to D6”."
                       }
                     ],
                     "name": "Prowling Agitant",
@@ -21478,7 +21102,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "MAGUS, PRIMUS or ACOLYTE ICONWARD model only. You start the battle with 2 additional Resurgence points."
+                        "$text": "**MAGUS**, **PRIMUS** or **ACOLYTE ICONWARD** model only. You start the battle with 2 additional Resurgence points."
                       }
                     ],
                     "name": "Deeds That Speak to the Masses",
@@ -23371,7 +22995,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Carefully husbanded against the Day of Ascension, these rare and powerful black-market rounds are issued only to the cult's finest marksmen.\n\nKELERMORPH/REDUCTUS SABOTEUR model only. This unit's ranged attacks have +2 S."
+                        "$text": "**KELERMORPH/REDUCTUS SABOTEUR** model only. This unit’s ranged attacks have +2 **S**."
                       }
                     ],
                     "name": "Contraband Munitions",
@@ -23383,47 +23007,38 @@
                 ],
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa75-ef8d-dd32-6841",
                     "conditionGroups": [
                       {
-                        "type": "and",
-                        "conditionGroups": [
+                        "conditions": [
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "33d4-a80e-ecc-e821",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "5455-1687-f81e-b3c5",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Reductus Saboteur"
                           },
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "5455-1687-f81e-b3c5",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "33d4-a80e-ecc-e821",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Kelermorph"
                           }
-                        ]
+                        ],
+                        "type": "and"
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "value": true,
+                    "field": "hidden"
                   }
                 ],
                 "constraints": [
@@ -23516,7 +23131,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Years of experimentation and stolen biodata have gone into the fabrication of these unique and horrible toxins, which are now used to coat the weapons of the cult's favoured champions.\n\nLOCUS/SANCTUS model only. This model's attacks have +1 D."
+                        "$text": "**LOCUS/SANCTUS** model only. This model’s attacks have +1 **D**."
                       }
                     ],
                     "name": "Gene-tailored Toxins",
@@ -23528,47 +23143,38 @@
                 ],
                 "modifiers": [
                   {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa7f-5bbc-b999-b499",
                     "conditionGroups": [
                       {
-                        "type": "and",
-                        "conditionGroups": [
+                        "conditions": [
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "dfde-688d-75b8-77bb",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "dfde-688d-75b8-77bb",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Locus"
                           },
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "7eca-eb86-84bd-c846",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "7eca-eb86-84bd-c846",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Sanctus"
                           }
-                        ]
+                        ],
+                        "type": "and"
                       }
-                    ]
+                    ],
+                    "type": "set",
+                    "value": true,
+                    "field": "hidden"
                   }
                 ],
                 "constraints": [
@@ -23732,7 +23338,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "The broodmind bond between this Patriarch and its Purestrain spawn is so strong that it can virtually wield them like its own vicious talons.\n\nPATRIARCH model only. This unit's attacks can re-roll wound rolls of 1."
+                        "$text": "**PATRIARCH** model only. This unit’s attacks can re‑roll **wound rolls** of 1."
                       }
                     ],
                     "name": "Talons of the Sire",
@@ -23747,22 +23353,17 @@
                     "type": "set",
                     "value": true,
                     "field": "hidden",
-                    "id": "pa20-8454-6bdc-e73e",
-                    "conditionGroups": [
+                    "conditions": [
                       {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "94ba-162-6050-a30e",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
+                        "type": "notInstanceOf",
+                        "value": 1,
+                        "field": "selections",
+                        "scope": "ancestor",
+                        "childId": "94ba-162-6050-a30e",
+                        "shared": true,
+                        "includeChildSelections": true,
+                        "includeChildForces": true,
+                        "childName": "Patriarch"
                       }
                     ]
                   }
@@ -23864,11 +23465,11 @@
                         "value": 0,
                         "field": "selections",
                         "scope": "roster",
-                        "childId": "7acd-d099-e648-0838",
+                        "childId": "deed-cbf8-1ac5-0294",
                         "shared": true,
                         "includeChildSelections": true,
                         "includeChildForces": true,
-                        "childName": "Purestrain Broodswarm"
+                        "childName": "Xenocult Masses"
                       }
                     ],
                     "type": "and"
@@ -23887,7 +23488,7 @@
                       {
                         "name": "Description",
                         "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Fighting under the eyes of the very leaders of their cult, the faithful are gripped by an unwavering determination to excel in battle.\n\nMAGUS/PRIMUS model only. This unit's attacks can re-roll damage rolls."
+                        "$text": "**MAGUS/PRIMUS** model only. This unit’s attacks can re‑roll **damage rolls**."
                       }
                     ],
                     "name": "Inspired to Greatness",
@@ -23902,40 +23503,31 @@
                     "type": "set",
                     "value": true,
                     "field": "hidden",
-                    "id": "pa4a-ac95-43c2-edcc",
                     "conditionGroups": [
                       {
                         "type": "and",
-                        "conditionGroups": [
+                        "conditions": [
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "46a5-442b-8c19-355c",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "46a5-442b-8c19-355c",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Magus"
                           },
                           {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "3253-f6f5-2121-8a2f",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
+                            "type": "notInstanceOf",
+                            "value": 1,
+                            "field": "selections",
+                            "scope": "ancestor",
+                            "childId": "3253-f6f5-2121-8a2f",
+                            "shared": true,
+                            "includeChildSelections": true,
+                            "includeChildForces": true,
+                            "childName": "Primus"
                           }
                         ]
                       }
@@ -24184,7 +23776,7 @@
           {
             "rules": [
               {
-                "description": "In your Command phase, each HARVESTER unit from your army can Regenerate one friendly TYRANIDS unit that is within 6\" of it. A unit can only be regenerated once per phase. Each time a unit regenerates, do one of the following: - One model in that unit regains up to D3+1 lost wounds. - One destroyed INFANTRY model (excluding CHARACTERS) is returned to that unit with its full wounds remaining. If that unit is an ENDLESS MULTITUDE unit, up to 3 destroyed models are returned instead.",
+                "description": "n your Command phase, each **HARVESTER** unit from your army can Regenerate one friendly **TYRANIDS** unit that is within 6\" of it. A unit can only be regenerated once per phase. Each time a unit regenerates, do one of the following:\n▪ One model in that unit regains up to D3+1 lost wounds.\n▪ One destroyed **INFANTRY** model (excluding **CHARACTERS**) is returned to that unit with its full wounds remaining. If that unit is an **ENDLESS MULTITUDE** unit, up to 3 destroyed models are returned instead.",
                 "name": "Feed the Swarm",
                 "id": "0442-1dce-2f22-5bbc",
                 "hidden": false
@@ -24279,7 +23871,7 @@
           {
             "rules": [
               {
-                "description": "Each time a TYRANIDS MONSTER model from your army makes an attack, add 1 to the Hit roll if that model's unit is below its Starting Strength, and add 1 to the Wound roll as well if that model's unit is Below Half-strength. In addition, while a TYRANIDS MONSTER unit from your army (excluding Battle-shocked units) is at its Starting Strength, add 2 to the Objective Control characteristic of models in that unit.",
+                "description": "Each time a **TYRANIDS MONSTER** model from your army makes an attack, add 1 to the Hit roll if that model’s unit is below its Starting Strength, and add 1 to the Wound roll as well if that model’s unit is Below Half‑strength. In addition, while a **TYRANIDS MONSTER** unit from your army (excluding Battle‑shocked units) is at its Starting Strength, add 2 to the Objective Control characteristic of models in that unit.",
                 "name": "Enraged Behemoths",
                 "id": "9e9a-b09f-1a55-1d27",
                 "hidden": false
@@ -24469,7 +24061,7 @@
           {
             "rules": [
               {
-                "description": "In your opponent's Shooting phase, when an enemy unit has shot, if a model from a friendly ENDLESS MULTITUDE unit was destroyed as a result of those attacks, that friendly unit can make a surge move of up to D6\".",
+                "description": "In your opponent’s Shooting phase, when an enemy unit has shot, if a model from a friendly **ENDLESS MULTITUDE** unit was **destroyed** as a result of those attacks, that friendly unit can make a **surge move** of up to D6\".",
                 "name": "Insurmountable Odds",
                 "id": "fe2d-b32d-6e15-8523",
                 "hidden": false
@@ -24760,7 +24352,7 @@
           {
             "rules": [
               {
-                "description": "VANGUARD INVADER",
+                "description": "**^^Mawloc^^** and **^^Trygon^^** units from your army have the Burrower keyword.\n\nIn the Muster Armies step, you can select up to 2 **^^Trygon^^** models from your army. The selected units gain the **^^Character^^** keyword.\n\n**Designer’s Note:** *This means that the selected models can be given Enhancements and one of them can be selected as your **^^Warlord^^**.*",
                 "name": "Keywords",
                 "id": "bdb0-bcca-2c70-32f3",
                 "hidden": false
@@ -25294,174 +24886,6 @@
                 "hidden": false,
                 "id": "819e-c726-8cee-ce14",
                 "targetId": "1cc1-f11a-4e8f-1bcc",
-                "primary": false
-              }
-            ]
-          },
-          {
-            "type": "upgrade",
-            "import": true,
-            "name": "Heroes of the Uprising",
-            "hidden": false,
-            "id": "padf-e7ea-429e-b6d6",
-            "rules": [
-              {
-                "name": "Killer Reputation",
-                "id": "pafa-e710-42d3-330f",
-                "hidden": false,
-                "description": "What passes for folk heroism amongst the deviants of the Genestealer Cults is part broodmind compulsion and unwilling worship, and part these champions' ability to commit deeds of great and terrible violence against any who stand in the way of the cult.\n\n- Friendly KELERMORPH/LOCUS/REDUCTUS SABOTEUR/SANCTUS models have KILLER.\n- Friendly KILLER models' attacks can:\n  - Re-roll hit rolls of 1.\n  - Re-roll wound rolls of 1."
-              }
-            ],
-            "costs": [
-              {
-                "name": "Detachment Points",
-                "typeId": "82ae-1066-5107-6ae0",
-                "value": 1
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "includeChildSelections": true,
-                "id": "7779-42db-2996-609b"
-              }
-            ],
-            "categoryLinks": [
-              {
-                "name": "Purge the Foe",
-                "hidden": false,
-                "id": "641c-eff5-2408-b0c9",
-                "targetId": "6fe0-3dbe-f7e0-10bb",
-                "primary": false
-              }
-            ]
-          },
-          {
-            "type": "upgrade",
-            "import": true,
-            "name": "Purestrain Broodswarm",
-            "hidden": false,
-            "id": "pab6-9864-c5f7-59bd",
-            "rules": [
-              {
-                "name": "Enemy Within",
-                "id": "pa8b-7abc-103b-6994",
-                "hidden": false,
-                "description": "Genestealers on the hunt combine malevolent cunning and inhuman agility to strike and fade again and again, until their prey are reduced to panicked disarray.\n\nAt the end of your opponent's Fight phase, friendly unengaged PURESTRAIN GENESTEALER units can be placed in strategic reserves.\n\nThis detachment has the PURESTRAIN tag and cannot be taken with another PURESTRAIN detachment."
-              }
-            ],
-            "costs": [
-              {
-                "name": "Detachment Points",
-                "typeId": "82ae-1066-5107-6ae0",
-                "value": 1
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "includeChildSelections": true,
-                "id": "98e0-97a3-2858-2374"
-              }
-            ],
-            "categoryLinks": [
-              {
-                "name": "Priority Assets",
-                "hidden": false,
-                "id": "fb29-767e-3215-2417",
-                "targetId": "0936-9767-1cc7-52ae",
-                "primary": false
-              }
-            ]
-          },
-          {
-            "type": "upgrade",
-            "import": true,
-            "name": "Xenocult Masses",
-            "hidden": false,
-            "id": "pa49-5630-df9b-9480",
-            "rules": [
-              {
-                "name": "Hordes of the Faithful",
-                "id": "paa8-b840-43e5-ee18",
-                "hidden": false,
-                "description": "More and yet more Neophytes surge from tunnel mouths, mine entrances and derelict fortifications, drowning the foe in a tide of fanatical killers.\n\nIn your Command phase, if a friendly NEOPHYTE HYBRIDS unit is within a terrain area, that unit heals 3 wounds.\n\nThis detachment has the HOSTS tag and cannot be taken with another HOSTS detachment."
-              }
-            ],
-            "costs": [
-              {
-                "name": "Detachment Points",
-                "typeId": "82ae-1066-5107-6ae0",
-                "value": 1
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "includeChildSelections": true,
-                "id": "97c7-f7a3-d365-9ecf"
-              }
-            ],
-            "categoryLinks": [
-              {
-                "name": "Disruption",
-                "hidden": false,
-                "id": "58e4-c95b-2c60-3f4c",
-                "targetId": "ecf8-cf72-7d5b-1b5b",
-                "primary": false
-              }
-            ]
-          },
-          {
-            "type": "upgrade",
-            "import": true,
-            "name": "Final Day",
-            "hidden": false,
-            "id": "pa69-4140-bdfa-fb4d",
-            "rules": [
-              {
-                "name": "Psionic Parasitism",
-                "id": "paf1-f258-6640-d5fb",
-                "hidden": false,
-                "description": "With each tug on the synaptic leash, the Hive Mind drains more of its hapless worshippers.\n\nAt the end of your Movement phase, for each Tyranids Synapse unit from your army, you can select one friendly Genestealer Cults unit (excluding Purestrain Genestealer and Patriarch units) and one friendly Tyranids unit each within 9\" of and visible to that Synapse unit. If you do, that Genestealer Cults unit from your army suffers D3+1 mortal wounds and one model in the selected Tyranids unit regains up to that many lost wounds and until the start of your next Movement phase, each time a model in the selected Tyranids unit makes an attack, add 1 to the Hit roll.\n\nTyranids units from your army have the following ability:\n\nCatalyst (Aura): While an enemy unit is within 6\" of this unit, each time a friendly Genestealer Cults unit makes an attack that targets that enemy unit, add 1 to the Hit roll.\n\nThe Star Children's Blessings: You can include Tyranids Vanguard Invader units (excluding Aircraft, Broodlord and Genestealers units) in your army. The combined points cost of such units depends on your battle size:\n- Incursion: Up to 500 pts\n- Strike Force: Up to 1000 pts\n- Onslaught: Up to 1500 pts\n\nNo Tyranids models from your army can be your Warlord."
-              }
-            ],
-            "costs": [
-              {
-                "name": "Detachment Points",
-                "typeId": "82ae-1066-5107-6ae0",
-                "value": 2
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "includeChildSelections": true,
-                "id": "2038-a2eb-2c13-e16d"
-              }
-            ],
-            "categoryLinks": [
-              {
-                "name": "Purge the Foe",
-                "hidden": false,
-                "id": "6f7e-a153-1fcd-44d3",
-                "targetId": "6fe0-3dbe-f7e0-10bb",
                 "primary": false
               }
             ]
@@ -29215,7 +28639,7 @@
           {
             "rules": [
               {
-                "description": "While a GENESTEALER CULTS MOUNTED/VEHICLE model from your army is not Battle-shocked, add 1 to its Objective Control characteristic. In addition, at the end of your Command phase, if one or more ATALAN JACKALS units from your army are within range of an objective you control, that objective remains under your control until your opponent's Level of Control over that objective marker is greater than yours at the end of a phase.",
+                "description": "While a **GENESTEALER CULTS MOUNTED/VEHICLE** model from your army is not Battle‑shocked, add 1 to its Objective Control characteristic. In addition, at the end of your Command phase, if one or more **ATALAN JACKALS** units from your army are within range of an **objective** you control, that **objective** remains under your control until your opponent’s Level of Control over that objective marker is greater than yours at the end of a phase.",
                 "name": "Rapid Takeover",
                 "id": "55fe-5524-6833-4196",
                 "hidden": false
@@ -29316,7 +28740,7 @@
                 "hidden": false
               },
               {
-                "description": "A GENESTEALER CULTS model must be your WARLORD, and ASTRA MILITARUM models from your army lose the Voice of Command ability if they have it. You cannot include units with any of the following keywords in your army using this rule: AIRCRAFT; COMMISSAR; EPIC HERO; MILITARUM TEMPESTUS; OGRYN; RATLING; TECH-PRIEST ENGINSEER; MINISTORUM PRIEST.",
+                "description": "Each time an **^^Astra Militarum^^** unit from your army is selected to shoot, you can select one enemy unit within 18\" of and visible to that unit. If you do, until the end of the phase, models in that **^^Astra Militarum^^** unit can only target that enemy unit (and only if it is an eligible target) and that enemy unit is caught in overlapping fire. While an enemy unit is caught in overlapping fire, each time a **^^Genestealer Cult^^** model from your army targets that enemy unit with a ranged attack, add 1 to the Hit roll.",
                 "name": "Integrated Tactics",
                 "id": "2ac6-4080-aea3-847e",
                 "hidden": false
@@ -34566,11 +33990,11 @@
                         "value": 1,
                         "field": "selections",
                         "scope": "force",
-                        "childId": "7acd-d099-e648-0838",
+                        "childId": "deed-cbf8-1ac5-0294",
                         "shared": true,
                         "id": "4960-74d6-2f18-3530",
                         "includeChildSelections": true,
-                        "childName": "Purestrain Broodswarm"
+                        "childName": "Xenocult Masses"
                       }
                     ]
                   }
@@ -35368,723 +34792,6 @@
           }
         ],
         "comment": "Tyranids"
-      },
-      {
-        "name": "Upgrades",
-        "id": "paaa-8856-a358-91fb",
-        "hidden": false,
-        "collapsible": true,
-        "selectionEntryGroups": [
-          {
-            "name": "Purestrain Broodswarm Upgrades",
-            "id": "pa57-c4f5-50e2-cf0c",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Mark of the Star Children",
-                "hidden": false,
-                "id": "paa3-7adf-efb2-61f3",
-                "profiles": [
-                  {
-                    "name": "Mark of the Star Children",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pad1-4164-9d56-b45a",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Spontaneous biomorphs amongst this brood of Purestrains render them bigger, stronger, and mark them out as surely being the chosen of the Star Children themselves.\n\nPURESTRAIN GENESTEALERS unit only. This unit has:\n- +1 T.\n- 4+ Sv.\n- This unit's melee attacks have +1 S."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pad7-eaa7-de72-eca6"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pacb-9105-ed6e-5684",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 30
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa7d-b966-cfce-a9a6",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "6d9c-2e39-be0b-aee9",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "pab6-9864-c5f7-59bd",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "paaf-9367-87c7-b897"
-              }
-            ]
-          },
-          {
-            "name": "Xenocult Masses Upgrades",
-            "id": "pac1-f811-185b-e3f2",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Devious Disguises",
-                "hidden": false,
-                "id": "pa7a-5985-3f9b-be7c",
-                "profiles": [
-                  {
-                    "name": "Devious Disguises",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa6b-1716-2c92-d8e8",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Whether it be stolen uniforms, ad-hoc camouflage or even some chameleonic xenomutation, these Neophytes are able to blend into their surroundings.\n\nNEOPHYTE HYBRIDS unit only. This unit has -3\" detection range."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa55-9244-679d-2722"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pabf-ec03-b9ef-23f8",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa7a-70b5-d29f-d5ac",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "9ffe-1e2a-b828-b7af",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "pa49-5630-df9b-9480",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "paf4-cbb8-72a9-80de"
-              }
-            ]
-          },
-          {
-            "name": "Ambush Predators Upgrades",
-            "id": "pa4e-7abc-6074-8bfb",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Encircling Horrors",
-                "hidden": false,
-                "id": "pa24-8841-e314-97e8",
-                "profiles": [
-                  {
-                    "name": "Encircling Horrors",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pad5-2c2e-35e7-c804",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "By the time the prey realise that they are being hunted, the Hive Mind's vanguard organisms have already enfolded them in a murderous embrace. There is no hiding from what comes next.\n\nNEUROLICTOR/LICTOR/VON RYAN'S LEAPERS unit only. In your opponent's Movement phase, when an enemy unit ends a move within 8\" of this unit, this unit can make a normal move of up to D3+3\"."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa1c-5286-773e-336f"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa3f-6a48-ed6b-247a",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa55-a3fc-9546-127c",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditionGroups": [
-                          {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "de12-e6b6-16c1-47b0",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
-                          },
-                          {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "1ff-bd00-eca8-bff7",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
-                          },
-                          {
-                            "type": "or",
-                            "conditions": [
-                              {
-                                "type": "notInstanceOf",
-                                "value": 1,
-                                "field": "selections",
-                                "scope": "ancestor",
-                                "childId": "cdd2-3183-20ad-6126",
-                                "shared": true,
-                                "includeChildSelections": true,
-                                "includeChildForces": true
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Cryptophotaic Camouflage",
-                "hidden": false,
-                "id": "pa60-dcbc-12b7-146b",
-                "profiles": [
-                  {
-                    "name": "Cryptophotaic Camouflage",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa36-a7b2-da78-6198",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "The dermis of these biohunters has been adapted to subtly alter hue according to what the ocular receptors of the prey expect to see, thus hiding the creatures even in plain sight.\n\nVON RYAN'S LEAPERS unit only. This unit has -3\" detection range."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pabb-c407-ccf4-4965"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa60-5f99-f225-883e",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 15
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa43-c205-3d4f-d105",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "cdd2-3183-20ad-6126",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "cf1b-eb18-c465-27a5",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pa8c-9f81-210a-b99e"
-              }
-            ]
-          },
-          {
-            "name": "Talons of the Norn Queen Upgrades",
-            "id": "paa8-91eb-e3e6-3009",
-            "hidden": false,
-            "selectionEntries": [
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Destabilising Predation",
-                "hidden": false,
-                "id": "pace-6735-a974-83e9",
-                "profiles": [
-                  {
-                    "name": "Destabilising Predation",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa3a-541a-4ce0-8529",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "Reaching out like the will of the Hive Mind made manifest, this organism's pinpoint fire is perfectly tailored to strike down leaders amongst the prey.\n\nNORN EMISSARY unit only. This unit's ranged attacks have [ANTI-CHARACTER 2+]."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pa3d-22bc-e13b-229c"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa6c-732f-a44e-3199",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 20
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa48-5bcd-72ef-10ec",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "50ee-d05c-da9c-eda2",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "upgrade",
-                "import": true,
-                "name": "Synaptoprescience",
-                "hidden": false,
-                "id": "pab5-48da-fee2-1498",
-                "profiles": [
-                  {
-                    "name": "Synaptoprescience",
-                    "typeId": "9cc3-6d83-4dd3-9b64",
-                    "typeName": "Abilities",
-                    "hidden": false,
-                    "id": "pa5d-78db-e5ce-bc2e",
-                    "characteristics": [
-                      {
-                        "name": "Description",
-                        "typeId": "9b8f-694b-e5e-b573",
-                        "$text": "As though privy to glimpses of the Hive Mind's own near-omniscient view of events, this towering beast weaves unerringly aside from incoming threats.\n\nNORN ASSIMILATOR unit only. This unit has 4+ InSv."
-                      }
-                    ]
-                  }
-                ],
-                "constraints": [
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "parent",
-                    "shared": true,
-                    "id": "pae9-69fb-14bb-f99e"
-                  },
-                  {
-                    "type": "max",
-                    "value": 1,
-                    "field": "selections",
-                    "scope": "roster",
-                    "shared": true,
-                    "id": "pa7e-e842-babc-a7f5",
-                    "includeChildSelections": true,
-                    "includeChildForces": true
-                  }
-                ],
-                "costs": [
-                  {
-                    "name": "pts",
-                    "typeId": "51b2-306e-1021-d207",
-                    "value": 25
-                  }
-                ],
-                "modifiers": [
-                  {
-                    "type": "set",
-                    "value": true,
-                    "field": "hidden",
-                    "id": "pa8f-b59d-fcea-7019",
-                    "conditionGroups": [
-                      {
-                        "type": "and",
-                        "conditions": [
-                          {
-                            "type": "notInstanceOf",
-                            "value": 1,
-                            "field": "selections",
-                            "scope": "ancestor",
-                            "childId": "2982-bf74-9aa7-a7a7",
-                            "shared": true,
-                            "includeChildSelections": true,
-                            "includeChildForces": true
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "modifiers": [
-              {
-                "type": "set",
-                "value": true,
-                "field": "hidden",
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "forces",
-                        "scope": "roster",
-                        "childId": "cac3-71d1-ea4b-795d",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      },
-                      {
-                        "type": "lessThan",
-                        "value": 1,
-                        "field": "selections",
-                        "scope": "roster",
-                        "childId": "8d8b-a030-83d5-f4e6",
-                        "shared": true,
-                        "includeChildSelections": true,
-                        "includeChildForces": true
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "constraints": [
-              {
-                "type": "max",
-                "value": 1,
-                "field": "selections",
-                "scope": "parent",
-                "shared": true,
-                "id": "pa27-82ea-24da-4a32"
-              }
-            ]
-          }
-        ],
-        "constraints": [
-          {
-            "type": "max",
-            "value": 1,
-            "field": "selections",
-            "scope": "self",
-            "shared": true,
-            "id": "pa55-8500-e25e-f8e0",
-            "includeChildSelections": true
-          },
-          {
-            "type": "max",
-            "value": 4,
-            "field": "selections",
-            "scope": "roster",
-            "shared": true,
-            "id": "pab6-e5cf-1245-6da3",
-            "includeChildSelections": true
-          }
-        ]
       }
     ],
     "sharedProfiles": [
@@ -36479,7 +35186,7 @@
     "name": "Library - Tyranids",
     "gameSystemId": "sys-352e-adc2-7639-d610",
     "gameSystemRevision": 77,
-    "revision": 22,
+    "revision": 1,
     "authorName": "Dunamis55",
     "battleScribeVersion": 2.03,
     "type": "catalogue",

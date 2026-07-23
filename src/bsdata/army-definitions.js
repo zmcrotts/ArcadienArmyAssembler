@@ -461,7 +461,32 @@ function extractArmyDefinitions(dataDirectory) {
     });
     if (!detachmentGroup) continue;
 
-    const allDetachmentEntries = asArray(detachmentGroup?.selectionEntries?.selectionEntry);
+    const linkedDetachmentEntries = asArray(detachmentGroup?.entryLinks?.entryLink)
+      .filter(link => link.type === "selectionEntry")
+      .map(link => {
+        const target = indexes.entries.get(link.targetId);
+        if (!target) return null;
+        return {
+          ...target,
+          ...link,
+          id: target.id || link.targetId,
+          name: link.name || target.name,
+          costs: link.costs || target.costs,
+          categoryLinks: link.categoryLinks || target.categoryLinks,
+          modifiers: link.modifiers || target.modifiers,
+          selectionEntries: target.selectionEntries,
+          selectionEntryGroups: target.selectionEntryGroups,
+          entryLinks: target.entryLinks,
+          infoLinks: target.infoLinks,
+          profiles: target.profiles,
+          rules: target.rules
+        };
+      })
+      .filter(Boolean);
+    const allDetachmentEntries = [
+      ...asArray(detachmentGroup?.selectionEntries?.selectionEntry),
+      ...linkedDetachmentEntries
+    ];
     const excludedDetachmentNames = DETACHMENT_NAME_EXCLUSIONS_BY_FACTION[faction] || new Set();
     const detachmentEntries = allDetachmentEntries.filter(entry =>
       !hiddenForCatalogue(entry, catalogue.id) && !excludedDetachmentNames.has(entry.name)
@@ -515,7 +540,9 @@ function extractArmyDefinitions(dataDirectory) {
 
     const extractedEnhancements = [...new Map(enhancementGroups.flatMap(group =>
       enhancementEntriesIn(group, indexes, detachmentIds).map(({ entry, detachmentIds: availableIn, sourceGroup }) => {
-        const kind = /upgrade/i.test(sourceGroup?.name || "") ? "upgrade" : "enhancement";
+        const kind = /upgrade/i.test(sourceGroup?.name || "") || maxSelectionsFor(entry) > 1
+          ? "upgrade"
+          : "enhancement";
         const directlyEligibleUnits = [
           ...(eligibleByGroup.get(sourceGroup?.id) || eligibleByGroup.get(group.id) || (kind === "upgrade" ? allEligibleUnits : []))
         ];

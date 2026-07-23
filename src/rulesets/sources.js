@@ -20,6 +20,7 @@ const {
 } = require("./mfm-attachments");
 const { applyMfmPoints, readMfmPoints } = require("./mfm-points");
 const { applyMfmDetachments, readMfmDetachments } = require("./mfm-detachments");
+const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-pack-updates");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -46,6 +47,7 @@ const RULESET_SOURCES = {
         path.join(ROOT, "data", "manual-rules", "wh40k-11e-wahapedia-detachment-stratagems.json")
       ],
       armyRules: path.join(ROOT, "data", "manual-rules", "wh40k-11e-army-rules.json"),
+      factionPackUpdates: path.join(ROOT, "data", "manual-rules", "wh40k-11e-faction-pack-updates.json"),
       manualDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-detachments.json"),
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
@@ -111,8 +113,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const manualDetachmentResult = applyManualDetachments(correctedUnitDefinitions, armiesWithRules, manualDetachments);
   const mfmDetachments = readMfmDetachments(source.auxiliarySources?.mfmDetachments);
   const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
+  const factionPackUpdates = readFactionPackUpdates(source.auxiliarySources?.factionPackUpdates);
+  const factionPackUpdateResult = applyFactionPackUpdates(correctedUnitDefinitions, mfmDetachmentResult.definitions, factionPackUpdates);
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
-  const mfmPointResult = applyMfmPoints(correctedUnitDefinitions, mfmDetachmentResult.definitions, mfmPoints);
+  const mfmPointResult = applyMfmPoints(factionPackUpdateResult.units, factionPackUpdateResult.armies, mfmPoints);
   const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
   const reconciledArmies = normalized.armies;
@@ -141,11 +145,17 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       generatedAt: mfmDetachments.generatedAt,
       ...mfmDetachmentResult.summary
     },
+    factionPackUpdateSource: {
+      source: factionPackUpdates.source,
+      version: factionPackUpdates.version,
+      lastUpdated: factionPackUpdates.lastUpdated,
+      ...factionPackUpdateResult.summary
+    },
     manualDetachmentSource: {
       source: manualDetachments.source,
       ...manualDetachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(mfmPointResult.issues || [])],
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(mfmPointResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };
@@ -326,6 +336,30 @@ function applyManualLoadoutCorrections(definitions) {
   return definitions.map(definition => {
     if (
       definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Xenos - Orks"
+      && definition.name === "Boyz"
+    ) {
+      return fixOrkBoyzRulesUpdate(definition);
+    }
+
+    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Gretchin") {
+      return fixOrkGretchinRulesUpdate(definition);
+    }
+
+    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Warboss") {
+      return fixOrkWarbossRulesUpdate(definition);
+    }
+
+    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction.startsWith("Imperium - Adeptus Astartes") && definition.name === "Chaplain with Jump Pack") {
+      return fixChaplainJumpPackRulesUpdate(definition);
+    }
+
+    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction.startsWith("Imperium - Adeptus Astartes") && definition.name === "Vanguard Veteran Squad with Jump Packs") {
+      return fixVanguardVeteransRulesUpdate(definition);
+    }
+
+    if (
+      definition.rulesetId === "wh40k-11e-vflam"
       && definition.faction === "Xenos - Leagues of Votann"
       && definition.name === "Einhyr Hearthguard"
     ) {
@@ -394,6 +428,112 @@ function applyManualLoadoutCorrections(definitions) {
 
     return unit;
   });
+}
+
+function fixOrkBoyzRulesUpdate(definition) {
+  const unit = clone(definition);
+  const profiles = profilesByOptionName(unit.selectionTree);
+  const bossWargear = findNodeByName(unit.selectionTree, "Big Choppa and Slugga");
+  if (bossWargear) {
+    bossWargear.name = "Boss Nob wargear";
+    const bigChoppa = profilesFor(profiles, "big choppa")[0];
+    const rangedTypeId = profilesFor(profiles, "slugga")[0]?.typeId || "f77d-b953-8fa4-b762";
+    const addedOptions = [
+      manualOption("mfm-boyz-big-choppa-kustom-shoota", "Big choppa and kustom shoota", [
+        bigChoppa,
+        manualWeaponProfile("mfm-boyz-kustom-shoota", "Kustom shoota", rangedTypeId, {
+          Range: '18"', A: "4", BS: "5+", S: "4", AP: "0", D: "1", Keywords: "Rapid Fire 2"
+        })
+      ]),
+      manualOption("mfm-boyz-big-choppa-kombi-weapons", "Big choppa, kombi-rokkit and kombi-shoota", [
+        bigChoppa,
+        manualWeaponProfile("mfm-boyz-kombi-rokkit", "Kombi-rokkit", rangedTypeId, {
+          Range: '24"', A: "1", BS: "5+", S: "10", AP: "-2", D: "3", Keywords: "-"
+        }),
+        manualWeaponProfile("mfm-boyz-kombi-shoota", "Kombi-shoota", rangedTypeId, {
+          Range: '24"', A: "2", BS: "5+", S: "4", AP: "0", D: "1", Keywords: "-"
+        })
+      ])
+    ];
+    for (const option of addedOptions) {
+      if (!(bossWargear.children || []).some(item => item.id === option.id)) bossWargear.children.push(option);
+    }
+  }
+  unit.rosterRules = {
+    ...(unit.rosterRules || {}),
+    allowsMultipleLeadersAsBodyguard: false
+  };
+  return unit;
+}
+
+function fixOrkGretchinRulesUpdate(definition) {
+  const unit = clone(definition);
+  const gretchin = (unit.composition || []).find(item => normalizeName(item.name) === "gretchin");
+  const runtherd = (unit.composition || []).find(item => normalizeName(item.name) === "runtherd");
+  if (gretchin && runtherd) {
+    unit.composition = [
+      { ...gretchin, min: 10, max: 20, defaultCount: 10 },
+      { ...runtherd, min: 0, max: 2, defaultCount: 1 }
+    ];
+    unit.allowedCompositions = [
+      [{ id: gretchin.id, count: 10 }, { id: runtherd.id, min: 0, max: 1 }],
+      [{ id: gretchin.id, count: 20 }, { id: runtherd.id, min: 0, max: 2 }]
+    ];
+  }
+  return unit;
+}
+
+function fixOrkWarbossRulesUpdate(definition) {
+  const unit = clone(definition);
+  const profiles = profilesByOptionName(unit.selectionTree);
+  const wargear = findNodeByName(unit.selectionTree, "Wargear");
+  if (!wargear || (wargear.children || []).some(item => item.id === "rules-update-warboss-kustom-kit")) return unit;
+  const rangedTypeId = profilesFor(profiles, "kombi-weapon")[0]?.typeId || "f77d-b953-8fa4-b762";
+  const meleeTypeId = profilesFor(profiles, "big choppa")[0]?.typeId || "cc42-6422-7180-e5f2";
+  wargear.children.push(manualOption("rules-update-warboss-kustom-kit", "Kustom choppa and kustom shoota", {
+    profiles: [
+      manualWeaponProfile("rules-update-warboss-kustom-shoota-profile", "Kustom shoota", rangedTypeId, { Range: '18"', A: "4", BS: "5+", S: "4", AP: "0", D: "1", Keywords: "Rapid Fire 2" }),
+      manualWeaponProfile("rules-update-warboss-kustom-choppa-profile", "Kustom choppa", meleeTypeId, { Range: "Melee", A: "6", WS: "2+", S: "8", AP: "-2", D: "2", Keywords: "Cleave 1" })
+    ],
+    replaceProfiles: [
+      ...profilesFor(profiles, "kombi-weapon"), ...profilesFor(profiles, "twin slugga"), ...profilesFor(profiles, "big choppa")
+    ],
+    replacesEquipment: ["Kombi-weapon", "Twin slugga", "Big choppa"]
+  }));
+  return unit;
+}
+
+function fixChaplainJumpPackRulesUpdate(definition) {
+  const unit = clone(definition);
+  const weapon = findNodeByName(unit.selectionTree, "Weapon");
+  if (!weapon || (weapon.children || []).some(item => item.id === "rules-update-absolvor-bolt-pistol")) return unit;
+  const profiles = profilesByOptionName(unit.selectionTree);
+  const rangedTypeId = profilesFor(profiles, "bolt pistol")[0]?.typeId || "f77d-b953-8fa4-b762";
+  weapon.children.push(manualOption("rules-update-absolvor-bolt-pistol", "Absolvor bolt pistol", {
+    profiles: [manualWeaponProfile("rules-update-absolvor-profile", "Absolvor bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "5", AP: "-1", D: "2", Keywords: "Close-quarters" })]
+  }));
+  return unit;
+}
+
+function fixVanguardVeteransRulesUpdate(definition) {
+  const unit = clone(definition);
+  const profiles = profilesByOptionName(unit.selectionTree);
+  const rangedTypeId = profilesFor(profiles, "bolt pistol")[0]?.typeId || "f77d-b953-8fa4-b762";
+  const meleeTypeId = profilesFor(profiles, "vanguard veteran weapon")[0]?.typeId || "cc42-6422-7180-e5f2";
+  for (const modelName of ["Vanguard Veterans with Jump Packs", "Vanguard Veteran Sergeant with Jump Pack"]) {
+    const model = findNodeByName(unit.selectionTree, modelName);
+    if (!model || (model.children || []).some(item => item.id === `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`)) continue;
+    const id = `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`;
+    model.children.push(manualOption(id, "Heavy bolt pistol and master-crafted power weapon", {
+      profiles: [
+        manualWeaponProfile(`${id}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
+        manualWeaponProfile(`${id}-weapon`, "Master-crafted power weapon", meleeTypeId, { Range: "Melee", A: "3", WS: "3+", S: "5", AP: "-2", D: "2", Keywords: "-" })
+      ],
+      replaceProfiles: [...profilesFor(profiles, "bolt pistol"), ...profilesFor(profiles, "vanguard veteran weapon")],
+      replacesEquipment: ["Bolt pistol", "Vanguard Veteran Weapon"]
+    }));
+  }
+  return unit;
 }
 
 function fixEinhyrHearthguardLoadout(definition) {
@@ -552,5 +692,17 @@ function manualOption(id, name, options = {}) {
     rules: [],
     children: [],
     replacesEquipment: Array.isArray(options) ? [] : [...(options.replacesEquipment || [])]
+  };
+}
+
+function manualWeaponProfile(id, name, typeId, characteristics) {
+  return {
+    id,
+    name,
+    typeId,
+    typeName: "Ranged Weapons",
+    characteristics: { ...characteristics },
+    linked: false,
+    source: "Faction Pack - Orks v1.1, page 25"
   };
 }
