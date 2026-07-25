@@ -15,11 +15,11 @@ function unit(faction, name) {
   return result;
 }
 
-function points(definition, size, context = {}) {
+function points(definition, size, context = {}, options = {}) {
   let entry = createDefaultRosterEntry(definition);
   if (size !== null) entry = setUnitSize(definition, entry, size);
   entry.context = { ...(entry.context || {}), ...context };
-  return calculateEntryPoints(definition, entry).points;
+  return calculateEntryPoints(definition, entry, options).points;
 }
 
 test("MFM v1.1 preserves separate model-count and copy-count bands", () => {
@@ -40,6 +40,45 @@ test("MFM v1.1 preserves separate model-count and copy-count bands", () => {
 test("MFM v1.1 includes red increases", () => {
   const morvenn = unit("Imperium - Adepta Sororitas", "Morvenn Vahl");
   assert.equal(points(morvenn, 1), 200);
+});
+
+test("MFM v1.1 keeps Chapter-specific Space Marine schedules distinct", () => {
+  const bloodAngelsJumpIntercessors = unit(
+    "Imperium - Adeptus Astartes - Blood Angels",
+    "Assault Intercessors with Jump Packs"
+  );
+  assert.equal(points(bloodAngelsJumpIntercessors, 5, { previousCopies: 0 }), 95);
+  assert.equal(points(bloodAngelsJumpIntercessors, 10, { previousCopies: 0 }, { allowInvalid: true }), 180);
+  assert.equal(points(bloodAngelsJumpIntercessors, 5, { previousCopies: 2 }), 105);
+  assert.equal(points(bloodAngelsJumpIntercessors, 10, { previousCopies: 2 }, { allowInvalid: true }), 190);
+
+  const bloodAngelsBladeguard = unit(
+    "Imperium - Adeptus Astartes - Blood Angels",
+    "Bladeguard Veteran Squad"
+  );
+  assert.equal(points(bloodAngelsBladeguard, 3, { previousCopies: 0 }), 85);
+  assert.equal(points(bloodAngelsBladeguard, 6, { previousCopies: 0 }), 170);
+  assert.equal(points(bloodAngelsBladeguard, 3, { previousCopies: 2 }), 95);
+  assert.equal(points(bloodAngelsBladeguard, 6, { previousCopies: 2 }), 180);
+
+  const genericJumpIntercessors = unit(
+    "Imperium - Adeptus Astartes - Space Marines",
+    "Assault Intercessors with Jump Packs"
+  );
+  assert.equal(points(genericJumpIntercessors, 5, { previousCopies: 0 }), 85);
+  assert.equal(points(genericJumpIntercessors, 10, { previousCopies: 0 }, { allowInvalid: true }), 160);
+
+  const bloodAngelsOutriders = unit(
+    "Imperium - Adeptus Astartes - Blood Angels",
+    "Outrider Squad"
+  );
+  const outriderNodes = [];
+  (function visit(node) {
+    if (!node) return;
+    outriderNodes.push(node);
+    for (const child of node.children || []) visit(child);
+  })(bloodAngelsOutriders.selectionTree);
+  assert.equal(outriderNodes.find(node => node.name === "Invader ATV")?.points, 60);
 });
 
 test("Imperial Agents conditional schedules remain distinct", () => {
@@ -90,6 +129,6 @@ test("Faction Pack v1.1 adds the two flagged detachments", () => {
 });
 
 test("every MFM v1.1 row attaches to normalized roster data", () => {
-  assert.equal(ruleset.mfmPointSource.total, 710);
+  assert.equal(ruleset.mfmPointSource.total, 1527);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
 });

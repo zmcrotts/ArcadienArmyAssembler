@@ -351,6 +351,22 @@ function forceDispositionForDetachment(entry, dispositionsByName) {
   return null;
 }
 
+function uniqueTagsForDetachment(entry, dispositionsByName, rules = []) {
+  const tags = new Map();
+  for (const link of asArray(entry?.categoryLinks?.categoryLink)) {
+    const name = String(link?.name || "").trim();
+    if (name && !dispositionsByName.has(name)) tags.set(normalizeName(name), name.toUpperCase());
+  }
+  for (const rule of rules) {
+    const description = String(rule?.description || "");
+    for (const match of description.matchAll(/\bhas\s+the\s+(?:\*{1,2}|\^{1,2})?([A-Z][A-Z ]+?)(?:\*{1,2}|\^{1,2})?\s+tag\b/gi)) {
+      const name = String(match[1] || "").trim();
+      if (name) tags.set(normalizeName(name), name.toUpperCase());
+    }
+  }
+  return [...tags.values()];
+}
+
 function isRootInstanceCondition(condition) {
   return ["instanceOf", "notInstanceOf"].includes(condition?.type)
     && ["root-entry", "ancestor"].includes(condition?.scope)
@@ -496,6 +512,7 @@ function extractArmyDefinitions(dataDirectory) {
     const detachments = detachmentEntries.map(entry => {
       const stratagems = [];
       const forceDisposition = forceDispositionForDetachment(entry, forceDispositionsByName);
+      const rules = rulesFor(entry, indexes);
       visitResolved(entry, indexes, node => {
         for (const profile of asArray(node?.profiles?.profile)) {
           if (/stratagem/i.test(profile.typeName || "")) stratagems.push(normalizeProfile(profile));
@@ -510,7 +527,8 @@ function extractArmyDefinitions(dataDirectory) {
           id: forceDisposition.id,
           name: forceDisposition.name
         } : null,
-        rules: rulesFor(entry, indexes),
+        uniqueTags: uniqueTagsForDetachment(entry, forceDispositionsByName, rules),
+        rules,
         stratagems
       };
     });

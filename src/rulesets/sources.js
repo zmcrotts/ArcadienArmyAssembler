@@ -48,6 +48,7 @@ const RULESET_SOURCES = {
       ],
       armyRules: path.join(ROOT, "data", "manual-rules", "wh40k-11e-army-rules.json"),
       factionPackUpdates: path.join(ROOT, "data", "manual-rules", "wh40k-11e-faction-pack-updates.json"),
+      enhancementRestrictions: path.join(ROOT, "data", "manual-rules", "wh40k-11e-enhancement-restrictions.json"),
       manualDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-detachments.json"),
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
@@ -115,8 +116,14 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
   const factionPackUpdates = readFactionPackUpdates(source.auxiliarySources?.factionPackUpdates);
   const factionPackUpdateResult = applyFactionPackUpdates(correctedUnitDefinitions, mfmDetachmentResult.definitions, factionPackUpdates);
+  const enhancementRestrictions = readFactionPackUpdates(source.auxiliarySources?.enhancementRestrictions);
+  const enhancementRestrictionResult = applyFactionPackUpdates(
+    factionPackUpdateResult.units,
+    factionPackUpdateResult.armies,
+    enhancementRestrictions
+  );
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
-  const mfmPointResult = applyMfmPoints(factionPackUpdateResult.units, factionPackUpdateResult.armies, mfmPoints);
+  const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
   const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
   const reconciledArmies = normalized.armies;
@@ -151,11 +158,17 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       lastUpdated: factionPackUpdates.lastUpdated,
       ...factionPackUpdateResult.summary
     },
+    enhancementRestrictionSource: {
+      source: enhancementRestrictions.source,
+      version: enhancementRestrictions.version,
+      lastUpdated: enhancementRestrictions.lastUpdated,
+      ...enhancementRestrictionResult.summary
+    },
     manualDetachmentSource: {
       source: manualDetachments.source,
       ...manualDetachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(mfmPointResult.issues || [])],
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(enhancementRestrictionResult.issues || []), ...(mfmPointResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };

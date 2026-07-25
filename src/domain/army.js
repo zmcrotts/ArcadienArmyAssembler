@@ -380,6 +380,25 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
   const daemonGate = selectedDaemonGate(armyDefinition, armyState);
 
   if (!detachments.length) warnings.push(warning("DETACHMENT_REQUIRED", "Select at least one valid detachment."));
+  const detachmentsByUniqueTag = new Map();
+  for (const detachment of detachments) {
+    for (const tag of detachment.uniqueTags || []) {
+      const key = normalizeTargetName(tag);
+      if (!key) continue;
+      if (!detachmentsByUniqueTag.has(key)) detachmentsByUniqueTag.set(key, []);
+      detachmentsByUniqueTag.get(key).push(detachment);
+    }
+  }
+  for (const [tag, taggedDetachments] of detachmentsByUniqueTag) {
+    if (taggedDetachments.length < 2) continue;
+    const label = (taggedDetachments[0].uniqueTags || []).find(item => normalizeTargetName(item) === tag) || tag.toUpperCase();
+    warnings.push(warning(
+      "DETACHMENT_UNIQUE_TAG_CONFLICT",
+      `${taggedDetachments.map(item => item.name).join(" and ")} both have the UNIQUE: ${label} tag and cannot be taken together.`,
+      [],
+      { tag: label, selectedDetachmentIds: taggedDetachments.map(item => item.id) }
+    ));
+  }
   const detachmentPoints = detachments.reduce((sum, item) => sum + Number(item.detachmentPoints || 0), 0);
   const pointsLimit = Number(options.pointsLimit || 0);
   const detachmentPointLimit = detachmentPointLimitFor(pointsLimit);

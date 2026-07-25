@@ -41,6 +41,18 @@ function matchesName(name, names) {
   return (names || []).some(item => normalize(item) === normalize(name));
 }
 
+function matchesUnitTarget(unit, update) {
+  if (update.unitNames && !matchesName(unit.name, update.unitNames)) return false;
+  const keywords = new Set((unit.keywords || []).map(normalize));
+  const all = (update.unitKeywordsAll || []).map(normalize);
+  const any = (update.unitKeywordsAny || []).map(normalize);
+  const none = (update.unitKeywordsNone || []).map(normalize);
+  if (all.some(keyword => !keywords.has(keyword))) return false;
+  if (any.length && !any.some(keyword => keywords.has(keyword))) return false;
+  if (none.some(keyword => keywords.has(keyword))) return false;
+  return true;
+}
+
 function matchesRuleName(left, right) {
   const clean = value => normalize(String(value || "").replace(/\([^)]*\)\s*$/g, "")).replace(/\b(?:aura|psychic)\b$/g, "").trim();
   return clean(left) === clean(right);
@@ -62,6 +74,18 @@ function patchedText(value, update) {
     next = next.split(replacement.from).join(replacement.to);
   }
   return next;
+}
+
+function patchedRestrictionText(value, restriction) {
+  const current = String(value || "").trim();
+  const nextRestriction = String(restriction || "").trim();
+  if (!nextRestriction) return current;
+  if (normalize(current).startsWith(normalize(nextRestriction))) return current;
+  const existing = current.match(/\b(?:model|unit)s?\s+only(?:\s*\([^)]*\))?\./i);
+  if (existing && existing.index < 180) {
+    return `${nextRestriction} ${current.slice(existing.index + existing[0].length).trim()}`.trim();
+  }
+  return `${nextRestriction} ${current}`.trim();
 }
 
 function walkTree(node, visitor) {
@@ -225,7 +249,7 @@ function updateArmy(army, update) {
       matches += 1;
     }
   }
-  if (update.kind === "enhancement-replace") {
+  if (["enhancement-replace", "enhancement-restriction"].includes(update.kind)) {
     next.enhancements = (next.enhancements || []).map(enhancement => {
       if (normalize(enhancement.name) !== normalize(update.enhancementName)) return enhancement;
       if (update.detachmentName) {
@@ -233,10 +257,38 @@ function updateArmy(army, update) {
         if (!(enhancement.detachmentIds || []).some(id => ids.has(id))) return enhancement;
       }
       matches += 1;
-      const profiles = (enhancement.profiles || []).map(profile => profile.typeName === "Abilities"
-        ? { ...profile, characteristics: { ...(profile.characteristics || {}), Description: patchedText(profile.characteristics?.Description, update) }, source: update.source }
+      const hasAbilityProfile = (enhancement.profiles || []).some(profile => profile.typeName === "Abilities");
+      let profiles = (enhancement.profiles || []).map(profile => profile.typeName === "Abilities"
+        ? {
+          ...profile,
+          characteristics: {
+            ...(profile.characteristics || {}),
+            Description: update.kind === "enhancement-restriction"
+              ? patchedRestrictionText(profile.characteristics?.Description, update.restriction)
+              : patchedText(profile.characteristics?.Description, update)
+          },
+          source: update.source
+        }
         : profile);
-      return { ...enhancement, profiles, source: update.source };
+      if (update.kind === "enhancement-restriction" && !hasAbilityProfile) {
+        profiles = [...profiles, {
+          id: `${enhancement.id}-restriction`,
+          name: enhancement.name,
+          typeName: "Abilities",
+          characteristics: { Description: update.restriction || "" },
+          source: update.source
+        }];
+      }
+      return {
+        ...enhancement,
+        profiles,
+        ...(update.eligibleSelectionKeys ? {
+          eligibleSelectionKeys: update.restrictEligibility
+            ? (enhancement.eligibleSelectionKeys || []).filter(key => update.eligibleSelectionKeys.includes(key))
+            : update.eligibleSelectionKeys
+        } : {}),
+        source: update.source
+      };
     });
   }
   return { value: next, matches };
@@ -251,10 +303,11 @@ function applyFactionPackUpdates(units, armies, document) {
     const update = { ...raw, source: raw.source || document.source };
     summary.configured += 1;
     let matches = 0;
-    if (["army-rule-add", "army-rule-replace", "detachment-rule-replace", "stratagem-replace", "stratagem-patch", "enhancement-add", "enhancement-replace"].includes(update.kind)) {
-      if (update.kind === "enhancement-add") {
+    if (["army-rule-add", "army-rule-replace", "detachment-rule-replace", "stratagem-replace", "stratagem-patch", "enhancement-add", "enhancement-replace", "enhancement-restriction"].includes(update.kind)) {
+      const hasUnitTarget = update.unitNames || update.unitKeywordsAll || update.unitKeywordsAny || update.unitKeywordsNone;
+      if (update.kind === "enhancement-add" || (["enhancement-replace", "enhancement-restriction"].includes(update.kind) && hasUnitTarget)) {
         update.eligibleSelectionKeys = unitDefinitions
-          .filter(unit => matchesFaction(unit.faction, update.target || {}) && (!update.unitNames || matchesName(unit.name, update.unitNames)))
+          .filter(unit => matchesFaction(unit.faction, update.target || {}) && matchesUnitTarget(unit, update))
           .map(unit => unit.selectionKey);
       }
       armyDefinitions = armyDefinitions.map(army => {

@@ -86,6 +86,7 @@ function summarizeDetachment(armyDefinition, armyState, services) {
     name: detachment.name,
     points: asNumber(detachment.points),
     detachmentPoints: asNumber(detachment.detachmentPoints),
+    uniqueTags: clone(detachment.uniqueTags || []),
     forceDisposition: clone(detachment.forceDisposition || null),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
@@ -102,6 +103,7 @@ function summarizeDetachments(armyDefinition, armyState, services) {
     name: detachment.name,
     points: asNumber(detachment.points),
     detachmentPoints: asNumber(detachment.detachmentPoints),
+    uniqueTags: clone(detachment.uniqueTags || []),
     forceDisposition: clone(detachment.forceDisposition || null),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
@@ -615,6 +617,21 @@ function discordGroupRecords(document, group, options) {
   return orderedIds.map(id => byId.get(id)).filter(Boolean).map(record => discordExportRecordFor(document, record, options));
 }
 
+function discordAttachedGroupRecord(document, group, options) {
+  const records = discordGroupRecords(document, group, options);
+  return {
+    instanceId: group.id,
+    name: group.title || records.map(record => record.name).join(" + ") || "Attached unit",
+    count: 1,
+    points: Number(group.totalPoints || records.reduce((sum, record) => sum + record.points, 0)),
+    specials: [...new Set(records.flatMap(record => record.specials))],
+    flatItems: records.flatMap(record =>
+      record.flatItems.length ? [`${record.name}: ${record.flatItems.join(", ")}`] : []
+    ),
+    modelItems: []
+  };
+}
+
 function discordExportGroups(document, options) {
   const groups = Array.isArray(document.groupedPresentation) && document.groupedPresentation.length
     ? document.groupedPresentation
@@ -626,7 +643,9 @@ function discordExportGroups(document, options) {
     index,
     title: group.title || "Unit",
     points: Number(group.totalPoints || 0),
-    records: discordGroupRecords(document, group, options),
+    records: group.kind === "attached"
+      ? [discordAttachedGroupRecord(document, group, options)]
+      : discordGroupRecords(document, group, options),
     order: Math.min(...(group.memberInstanceIds || []).map(id => order.get(id)).filter(value => value !== undefined))
   })).filter(group => group.records.length).sort((a, b) => (a.order - b.order) || (a.index - b.index));
 }
@@ -671,13 +690,8 @@ function exportDiscordText(document, options = {}) {
     lines.push(...discordHeaderLines(document).map(line => ansi(line, pointsColor, true, useAnsi)), "");
   }
   if (groups.length) {
-    let attachedIndex = 0;
     for (const group of groups) {
       const isAttached = group.kind === "attached";
-      if (isAttached) {
-        attachedIndex += 1;
-        lines.push(`${ansi(`Attached unit ${attachedIndex}:`, pointsColor, true, useAnsi)}${hidePoints ? "" : ` ${ansi(`[${group.points}]`, pointsColor, true, useAnsi)}`}`);
-      }
       const groupRecords = combine
         ? combineDiscordRecords(group.records, hideSubunits)
         : group.records.map(record => ({ ...record, copies: 1 }));

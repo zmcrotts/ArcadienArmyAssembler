@@ -470,6 +470,16 @@ button:hover {
   border-color: #57858c;
 }
 
+.attachedLeaderReference {
+  background: #f8f2df;
+  border-color: #aa8840;
+}
+
+.attachmentReference {
+  color: #8a681f !important;
+  font-weight: 700;
+}
+
 .rosterConfiguration {
   border: 1px solid #777;
   background: #e8f2f3;
@@ -1806,6 +1816,15 @@ html[data-theme="dark"] .unit.selected,
 html[data-theme="dark"] .rosterConfiguration.selected {
   border-color: #26b8c5;
   box-shadow: inset 4px 0 #0f8290;
+}
+
+html[data-theme="dark"] .attachedLeaderReference {
+  background: #2d2718;
+  border-color: #aa8840;
+}
+
+html[data-theme="dark"] .attachmentReference {
+  color: #f6c873 !important;
 }
 
 html[data-theme="dark"] .displayControls .segmentedControl,

@@ -339,7 +339,7 @@ test("exports Discord compact list chunks with hide-subunit and combine options"
   assert.doesNotMatch(optionsText, /\[\d+\]/);
 });
 
-test("Discord export groups attached leaders, supports, and bodyguards together", () => {
+test("Discord export emits one combined record for an attached unit", () => {
   const document = {
     faction: "Xenos - Orks",
     totalPoints: 550,
@@ -393,7 +393,10 @@ test("Discord export groups attached leaders, supports, and bodyguards together"
   };
 
   const text = exportRosterText(document, { format: "DISCORD", compact: true, ansi: false, hideSubunits: true });
-  assert.match(text, /^Attached unit 1: \[550\]\n\* 2 Ghazghkull Thraka \(Warlord\) \[235\]\n\* Painboy \(E: FML \(\+25 pts\), 'US\) \[105\]\n\* 10 Nobz \(9x PK, 9x SL, S&PK\) \[210\]/);
+  assert.match(text, /^\* Nobz \+ Ghazghkull Thraka \+ Painboy \(Warlord, E: FML \(\+25 pts\), Painboy: 'US, Nobz: 9x PK, 9x SL, S&PK\) \[550\]$/);
+  assert.doesNotMatch(text, /^\* Ghazghkull Thraka/m);
+  assert.doesNotMatch(text, /^\* Painboy/m);
+  assert.doesNotMatch(text, /^\* Nobz \[/m);
 });
 
 test("old saves hydrate while stale references are pruned with warnings", () => {

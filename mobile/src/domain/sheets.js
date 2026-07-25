@@ -54,7 +54,12 @@ function weaponsFor(record, typeName) {
 }
 
 function effectiveWeaponsFor(record, typeName, effects = [], context = {}) {
-  const configured = applyWeaponEffectsToConfigured(configuredFor(record), effects, context);
+  const recordContext = {
+    ...context,
+    unitName: record?.name || "",
+    keywords: [...asArray(context.keywords), ...asArray(record?.keywords)]
+  };
+  const configured = applyWeaponEffectsToConfigured(configuredFor(record), effects, recordContext);
   return asArray(configured.weapons)
     .filter(item => !typeName || item.typeName === typeName)
     .map(normalizeWeapon);
@@ -136,6 +141,7 @@ function uniqueWeaponEffects(effects) {
       effect.keyword || "",
       effect.characteristic || "",
       effect.weaponName || "",
+      (effect.targets || []).join("/"),
       effect.bodyguardOnly ? "bodyguard" : "",
       effect.delta ?? ""
     ].join(":");
@@ -169,8 +175,17 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
       bodyguardOnly: bodyguardModelsOnly(normalized)
     });
   }
+  effects.push(...attackSkillEffects(normalized));
 
   return effects;
+}
+
+function attackSkillEffects(text) {
+  const match = normalizeText(text).match(/\bFriendly\s+(.+?)\s+units?[’']?\s+attacks\s+have\s+\+1\s+(BS|WS)(?:\s+and\s+(BS|WS))?\b/i);
+  if (!match) return [];
+  const targets = match[1].split(/\s*\/\s*/).map(normalizeMatchText).filter(Boolean);
+  return [...new Set([match[2], match[3]].filter(Boolean).map(item => item.toUpperCase()))]
+    .map(characteristic => ({ kind: "characteristic", characteristic, delta: -1, targets }));
 }
 
 function bracketedWeaponKeywordEffects(text) {
@@ -233,7 +248,8 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\badd\s+\d+\s+to\s+the\s+bearer['’]s\s+\w+\s+characteristic\b/i.test(text)
     || /\bmodels?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
     || /\bweapons?\s+equipped\s+by\s+models?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
-    || /\bthis\s+unit'?s\s+.*weapons?\b/i.test(text);
+    || /\bthis\s+unit'?s\s+.*weapons?\b/i.test(text)
+    || /\bthis\s+unit\s+has\s+\+\d+\s+(?:M|T|SV|W|LD|OC)\b/i.test(text);
 }
 
 function effectRequiresBattleState(text) {
@@ -291,14 +307,27 @@ function applyWeaponEffectsToWeapon(weapon, effects, context = {}) {
   const characteristics = clone(next.characteristics || {});
   for (const effect of effects) {
     if (effect.bodyguardOnly && !context.isBodyguard) continue;
+    if (!effectTargetsUnit(effect, context)) continue;
     if (effect.weaponType && effect.weaponType !== next.typeName) continue;
     if (effect.weaponName && normalizeWeaponName(effect.weaponName) !== normalizeWeaponName(next.name)) continue;
     if (effect.kind === "keyword") characteristics.Keywords = addWeaponKeyword(characteristics.Keywords ?? characteristics.keywords, effect.keyword);
     if (effect.kind === "ap") characteristics.AP = improveAp(characteristics.AP, effect.delta);
-    if (effect.kind === "characteristic") characteristics[effect.characteristic] = addNumericCharacteristic(characteristics[effect.characteristic], effect.delta);
+    if (effect.kind === "characteristic") characteristics[effect.characteristic] = applyCharacteristicDelta(characteristics[effect.characteristic], effect.delta, effect.characteristic);
   }
   next.characteristics = characteristics;
   return next;
+}
+
+function effectTargetsUnit(effect, context = {}) {
+  if (!(effect.targets || []).length) return true;
+  const candidates = [
+    context.unitName,
+    ...asArray(context.unitNames),
+    ...asArray(context.keywords)
+  ].map(normalizeMatchText).filter(Boolean);
+  return effect.targets.some(target => candidates.some(candidate =>
+    candidate === target || candidate.includes(target) || target.includes(candidate)
+  ));
 }
 
 function normalizeWeaponName(value) {
@@ -378,6 +407,22 @@ function modelCharacteristicEffects(text) {
       effects.push({ kind: "unit-characteristic", characteristic, delta: characteristicImprovementDelta(characteristic, amount), bodyguardOnly: bodyguardModelsOnly(text) });
     }
   }
+  for (const [abbreviation, characteristic] of [
+    ["M", "M"],
+    ["T", "T"],
+    ["W", "W"],
+    ["LD", "LD"],
+    ["OC", "OC"]
+  ]) {
+    const shorthandMatch = text.match(new RegExp(`\\bthis\\s+unit\\s+has\\s+\\+(\\d+)\\s+${abbreviation}\\b`, "i"));
+    if (!shorthandMatch) continue;
+    effects.push({
+      kind: "unit-characteristic",
+      characteristic,
+      delta: characteristicImprovementDelta(characteristic, Number(shorthandMatch[1])),
+      bodyguardOnly: false
+    });
+  }
   return effects;
 }
 
@@ -393,7 +438,7 @@ function addNumericCharacteristic(value, delta) {
 }
 
 function applyCharacteristicDelta(value, delta, characteristic = "") {
-  if (characteristic === "LD" || characteristic === "SV") return improvePlusCharacteristic(value, delta);
+  if (["BS", "WS", "LD", "SV"].includes(characteristic)) return improvePlusCharacteristic(value, delta);
   if (characteristic === "M") return addMoveCharacteristic(value, delta);
   return addNumericCharacteristic(value, delta);
 }
@@ -778,8 +823,16 @@ function buildCombinedUnitSheet(document, group) {
       keywords: clone(item.keywords || [])
     })),
     statlines: records.flatMap(record => statlinesForRecord(record, enhancementsByBearer.get(record.instanceId), weaponEffects, { isBodyguard: record.instanceId === bodyguardInstanceId })),
-    rangedWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Ranged Weapons", weaponEffects, { isBodyguard: item.instanceId === bodyguardInstanceId })).map(clone),
-    meleeWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Melee Weapons", weaponEffects, { isBodyguard: item.instanceId === bodyguardInstanceId })).map(clone),
+    rangedWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Ranged Weapons", weaponEffects, {
+      isBodyguard: item.instanceId === bodyguardInstanceId,
+      unitNames: records.map(record => record.name),
+      keywords
+    })).map(clone),
+    meleeWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Melee Weapons", weaponEffects, {
+      isBodyguard: item.instanceId === bodyguardInstanceId,
+      unitNames: records.map(record => record.name),
+      keywords
+    })).map(clone),
     abilities: uniqueAbilities(records.flatMap(abilitiesFor)),
     rulesTags: uniqueByName(records.flatMap(rulesTagsFor)).map(String),
     keywords,

@@ -38,6 +38,18 @@ test("MFM v1.1 overrides changed force dispositions", () => {
   }
 });
 
+test("MFM unique detachment tags are preserved for legality checks", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  assert.deepEqual(
+    detachment(ruleset, "Imperium - Adepta Sororitas", "Champions of Faith").uniqueTags,
+    ["REVEREND"]
+  );
+  assert.deepEqual(
+    detachment(ruleset, "Imperium - Adepta Sororitas", "Sacred Champions").uniqueTags,
+    ["REVEREND"]
+  );
+});
+
 test("MFM v1.1 applies all ten flagged detachment point changes", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
