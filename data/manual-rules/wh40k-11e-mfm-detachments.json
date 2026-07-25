@@ -28,6 +28,7 @@
       "detachmentName": "CHAMPIONS OF FAITH",
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
+      "uniqueTags": ["REVEREND"],
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -64,6 +65,7 @@
       "detachmentName": "SACRED CHAMPIONS",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
+      "uniqueTags": ["REVEREND"],
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },

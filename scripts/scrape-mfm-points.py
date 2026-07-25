@@ -16,6 +16,14 @@ from lxml import html
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "data" / "manual-rules" / "wh40k-11e-mfm-points.json"
 POINTS_RE = re.compile(r"(\d+)\s*pts\b", re.I)
+FULL_UNIT_FACTIONS = {
+    "Black Templars",
+    "Blood Angels",
+    "Dark Angels",
+    "Deathwatch",
+    "Space Marines",
+    "Space Wolves",
+}
 
 
 def clean_text(value: str) -> str:
@@ -137,10 +145,13 @@ def extract_page(faction: str, url: str):
                 if not points_match:
                     continue
                 changed_price = resolved_class_contains(price_node, replacements, ("text-red", "text-emerald", "text-green"))
-                if not changed_price and not changed_header:
+                if faction not in FULL_UNIT_FACTIONS and not changed_price and not changed_header:
                     continue
                 changes.append({
-                    "kind": "wargear" if heading == "WARGEAR OPTIONS" else "unit",
+                    # Some MFM unit schedules price an optional attached model as
+                    # a "+ 1 Model" line. It is an additive selection cost, not a
+                    # replacement total for the whole unit.
+                    "kind": "wargear" if heading == "WARGEAR OPTIONS" or label.startswith("+") else "unit",
                     "faction": faction,
                     "sourceUrl": url,
                     "unitName": title,

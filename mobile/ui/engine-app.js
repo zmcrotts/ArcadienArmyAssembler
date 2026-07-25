@@ -563,7 +563,8 @@ function renderCatalogueOptions() {
 
 function factionUnits() {
   const byName = new Map();
-  for (const faction of selectedSourceFactions()) {
+  const unitSourceFactions = [...new Set([currentSubfaction, currentFaction, ...nativeLibraryFactions()].filter(Boolean))];
+  for (const faction of unitSourceFactions) {
     for (const unit of engineData.factions[faction] || []) {
       if (!byName.has(unit.name)) byName.set(unit.name, unit);
     }
@@ -957,26 +958,35 @@ function renderMobileRosterSection(section) {
 function renderMobileRosterGroup(group) {
   const groupEntries = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).filter(Boolean);
   const bodyguard = groupEntries.find(item => item.instanceId === group.bodyguard?.instanceId) || groupEntries[0];
-  const primary = group.kind === "attached" ? bodyguard : groupEntries[0];
+  const attachedLeaderReference = group.displayKind === "attached-leader";
+  const primary = attachedLeaderReference
+    ? groupEntries.find(entry => entry.instanceId === group.displayInstanceId)
+    : group.kind === "attached" ? bodyguard : groupEntries[0];
   if (!primary) return "";
   const selected = group.memberInstanceIds.includes(selectedInstanceId) ? " selected" : "";
-  const title = group.kind === "attached" ? renderMobileAttachedTitle(group, groupEntries) : renderMobileEntryTitle(primary);
-  const points = group.kind === "attached" ? formatGroupPoints(group) : formatEntryPoints(primary);
-  const loadout = group.kind === "attached"
-    ? groupEntries.map(entry => renderMobileMemberSummary(entry, entry === bodyguard ? "Bodyguard" : "Leader")).join("")
+  const title = attachedLeaderReference
+    ? renderMobileEntryTitle(primary)
+    : group.kind === "attached" ? renderMobileAttachedTitle(group, groupEntries) : renderMobileEntryTitle(primary);
+  const points = attachedLeaderReference ? "" : group.kind === "attached" ? formatAttachedGroupPoints(group, groupEntries) : formatEntryPoints(primary);
+  const loadout = attachedLeaderReference
+    ? `<p class="mobileLoadout attachmentReference">Leading: ${escapeHtml(bodyguard?.unitPackage?.name || "attached unit")}</p>`
+    : group.kind === "attached"
+    ? renderMobileAttachedRelationship(group, groupEntries)
     : renderMobileLoadoutSummary(primary);
-  const actionLabel = group.kind === "attached"
+  const actionLabel = attachedLeaderReference
+    ? primary.unitPackage.name
+    : group.kind === "attached"
     ? `${bodyguard.unitPackage.name} attached unit`
     : primary.unitPackage.name;
-  const secondaryAction = group.kind === "attached" ? "split" : "remove";
-  const secondaryLabel = group.kind === "attached" ? "Split attached unit" : `Remove ${actionLabel}`;
-  const secondaryIcon = group.kind === "attached" ? "Split" : "×";
+  const secondaryAction = attachedLeaderReference ? "detach" : group.kind === "attached" ? "split" : "remove";
+  const secondaryLabel = attachedLeaderReference ? "Detach Leader" : group.kind === "attached" ? "Split attached unit" : `Remove ${actionLabel}`;
+  const secondaryIcon = attachedLeaderReference ? "Detach" : group.kind === "attached" ? "Split" : "×";
   return `
-    <article class="mobileRosterUnit${selected}${group.kind === "attached" ? " attached" : ""}"
+    <article class="mobileRosterUnit${selected}${group.kind === "attached" ? " attached" : ""}${attachedLeaderReference ? " attachedLeaderReference" : ""}"
       data-group-kind="${escapeHtml(group.kind)}"
       data-primary-instance-id="${escapeHtml(primary.instanceId)}">
       <div class="mobileUnitTopline">
-        <span class="mobileUnitKind">${group.kind === "attached" ? "Attached unit" : mobileUnitRoleLabel(primary)}</span>
+        <span class="mobileUnitKind">${attachedLeaderReference ? "Attached Leader" : group.kind === "attached" ? "Attached unit" : mobileUnitRoleLabel(primary)}</span>
         <span>${escapeHtml(points)}</span>
       </div>
       <h3>${title}</h3>
@@ -985,7 +995,7 @@ function renderMobileRosterGroup(group) {
       <div class="mobileUnitActions">
         <button class="mobileUnitPrimaryAction" type="button" data-mobile-action="configure" data-instance-id="${escapeHtml(primary.instanceId)}">Configure</button>
         <button class="mobileUnitIconAction" type="button" data-mobile-action="duplicate" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="Duplicate ${escapeHtml(actionLabel)}" title="Duplicate"><span aria-hidden="true">⧉</span></button>
-        <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : "Split"}"><span aria-hidden="true">${secondaryIcon}</span></button>
+        <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : secondaryAction === "detach" ? "Detach" : "Split"}"><span aria-hidden="true">${secondaryIcon}</span></button>
       </div>
     </article>
   `;
@@ -1001,10 +1011,14 @@ function renderMobileEntryTitle(rosterEntry) {
 
 function renderMobileAttachedTitle(group, groupEntries) {
   const bodyguard = groupEntries.find(item => item.instanceId === group.bodyguard?.instanceId) || groupEntries[0];
+  return renderMobileEntryTitle(bodyguard);
+}
+
+function renderMobileAttachedRelationship(group, groupEntries) {
   const leaders = group.leaders
     .map(leader => groupEntries.find(item => item.instanceId === leader.instanceId))
     .filter(Boolean);
-  return `${renderMobileEntryTitle(bodyguard)} <small>with ${leaders.map(item => escapeHtml(item.unitPackage.name)).join(", ")}</small>`;
+  return `<p class="mobileLoadout attachmentReference">Led by: ${leaders.map(item => `${escapeHtml(item.unitPackage.name)} (${formatAttachedMemberPoints(item)})`).join(", ")}</p>`;
 }
 
 function renderMobileMemberSummary(rosterEntry, label) {
@@ -1049,6 +1063,13 @@ function handleMobileRosterAction(button) {
   }
   if (button.dataset.mobileAction === "split") {
     armyState = armyEngine.detachBodyguard(armyState, instanceId);
+    selectedInstanceId = instanceId;
+    selectedPanel = "unit";
+    render();
+    return;
+  }
+  if (button.dataset.mobileAction === "detach") {
+    armyState = armyEngine.setLeaderAttachment(armyState, instanceId, null);
     selectedInstanceId = instanceId;
     selectedPanel = "unit";
     render();
@@ -1915,19 +1936,25 @@ function renderRoster() {
 
     for (const group of section.groups) {
     const groupEntries = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).filter(Boolean);
-    const primary = groupEntries[0];
+    const attachedLeaderReference = group.displayKind === "attached-leader";
+    const primary = attachedLeaderReference
+      ? groupEntries.find(entry => entry.instanceId === group.displayInstanceId)
+      : groupEntries[0];
     if (!primary) continue;
 
     const div = document.createElement("div");
     div.className = "unit";
     div.dataset.groupId = group.id;
-    if (rosterDisplay.mode === "custom") bindRosterDragHandle(div, group.id);
+    if (rosterDisplay.mode === "custom" && !attachedLeaderReference) bindRosterDragHandle(div, group.id);
     if (group.memberInstanceIds.includes(selectedInstanceId)) div.classList.add("selected");
     if (group.kind === "attached") div.classList.add("attachedUnit");
+    if (attachedLeaderReference) div.classList.add("attachedLeaderReference");
 
     const label = document.createElement("span");
     label.className = "rosterUnitLabel";
-    label.innerHTML = group.kind === "attached"
+    label.innerHTML = attachedLeaderReference
+      ? renderAttachedLeaderReferenceLabel(group, primary, groupEntries)
+      : group.kind === "attached"
       ? renderRosterGroupLabel(group, groupEntries)
       : renderRosterUnitLabel(primary);
 
@@ -1943,10 +1970,14 @@ function renderRoster() {
     };
 
     const action = document.createElement("button");
-    action.textContent = group.kind === "attached" ? "Split" : "Remove";
+    action.textContent = attachedLeaderReference ? "Detach" : group.kind === "attached" ? "Split" : "Remove";
     action.onclick = event => {
       event.stopPropagation();
-      if (group.kind === "attached") {
+      if (attachedLeaderReference) {
+        armyState = armyEngine.setLeaderAttachment(armyState, primary.instanceId, null);
+        selectedInstanceId = primary.instanceId;
+        selectedPanel = "unit";
+      } else if (group.kind === "attached") {
         armyState = armyEngine.detachBodyguard(armyState, group.bodyguard.instanceId);
         selectedInstanceId = group.bodyguard.instanceId;
         selectedPanel = "unit";
@@ -1994,8 +2025,10 @@ function groupRosterPresentation(presentation) {
   const customSectionKeys = new Set(rosterDisplay.customSections);
   const groupsBySection = new Map(sectionKeys.map(section => [section, []]));
   const defaultSections = {};
-  for (const group of presentation) {
-    const primary = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
+  for (const group of rosterDisplayGroups(presentation)) {
+    const primary = group.displayInstanceId
+      ? roster.find(entry => entry.instanceId === group.displayInstanceId)
+      : group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
     const defaultSection = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
     defaultSections[group.id] = defaultSection;
     const section = rosterDisplay.mode === "custom" ? rosterDisplay.groupSections[group.id] || defaultSection : defaultSection;
@@ -2016,7 +2049,26 @@ function groupRosterPresentation(presentation) {
   }));
 }
 
+function rosterDisplayGroups(presentation) {
+  return presentation.flatMap(group => {
+    if (group.kind !== "attached") return [group];
+    return [
+      { ...group, displayKind: "attached-bodyguard" },
+      ...(group.leaders || []).map(leader => ({
+        ...group,
+        id: `${group.id}:leader:${leader.instanceId}`,
+        displayKind: "attached-leader",
+        displayInstanceId: leader.instanceId,
+        sourceGroupId: group.id
+      }))
+    ];
+  });
+}
+
 function rosterPresentationTitle(group) {
+  if (group.displayKind === "attached-leader") {
+    return group.entries?.find(entry => entry.instanceId === group.displayInstanceId)?.name || group.title || "";
+  }
   if (group.kind === "attached") return group.bodyguard?.name || group.title || "";
   return group.entries?.[0]?.name || group.title || "";
 }
@@ -2159,9 +2211,21 @@ function renderRosterGroupLabel(group, groupEntries) {
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const warning = group.warnings.length ? ` <span class="warningBadge">⚠</span>` : "";
   const nickname = rosterNicknameFor(bodyguard.instanceId);
+  const points = formatAttachedGroupPoints(group, groupEntries);
   return `
-    <b>${sizePrefix}${escapeHtml(bodyguard.unitPackage.name)}</b>${renderRosterNickname(nickname, bodyguard.instanceId)}${warning} — ${group.totalPoints} pts
-    <small>Led by ${leaders.map(item => escapeHtml(item.unitPackage.name)).join(", ")}</small>
+    <b>${sizePrefix}${escapeHtml(bodyguard.unitPackage.name)}</b>${renderRosterNickname(nickname, bodyguard.instanceId)}${warning} — ${escapeHtml(points)}
+    <small class="attachmentReference">Led by: ${leaders.map(item => `${escapeHtml(item.unitPackage.name)} (${formatAttachedMemberPoints(item)})`).join(", ")}</small>
+  `;
+}
+
+function renderAttachedLeaderReferenceLabel(group, leader, groupEntries) {
+  const bodyguard = groupEntries.find(item => item.instanceId === group.bodyguard?.instanceId) || groupEntries[0];
+  const unitSize = engine.getUnitSizeState(leader.unitPackage.definition, leader.entry);
+  const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
+  const nickname = rosterNicknameFor(leader.instanceId);
+  return `
+    <b>${sizePrefix}${escapeHtml(leader.unitPackage.name)}</b>${renderRosterNickname(nickname, leader.instanceId)}
+    <small class="attachmentReference">Leading: ${escapeHtml(bodyguard?.unitPackage?.name || group.bodyguard?.name || "attached unit")}</small>
   `;
 }
 
@@ -3005,19 +3069,21 @@ function constraintNumber(node, type, scope = null) {
 function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
   const option = stateById.get(node.id);
   const current = option?.current || 0;
-  const childGroups = current > 0
+  const nestedChildren = current > 0
     ? (node.children || [])
-      .filter(child => child.kind === "group")
-      .map(child => renderNestedOptionGroup(child, rosterEntry, stateById, depth + 1))
+      .filter(child => child.kind === "group" || child.kind === "model")
+      .map(child => child.kind === "group"
+        ? renderNestedOptionGroup(child, rosterEntry, stateById, depth + 1)
+        : renderNestedOptionRow(child, rosterEntry, stateById, depth + 1))
       .filter(Boolean)
       .join("")
     : "";
   if (!shouldRenderOption(option)) {
-    if (option?.active && option.kind === "model" && childGroups) {
+    if (option?.active && option.kind === "model" && nestedChildren) {
       return `
         <details class="optionGroup optionGroupDepth${Math.min(depth, 2)}" open>
           <summary><span>${escapeHtml(option.name)}</span><small>${current} model${current === 1 ? "" : "s"}</small></summary>
-          <div class="nestedOptionGroups">${childGroups}</div>
+          <div class="nestedOptionGroups">${nestedChildren}</div>
         </details>
       `;
     }
@@ -3055,7 +3121,7 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
         <span class="optionLimits">${current} · ${option.minimum}–${formatOptionMaximum(max)}</span>
         ${control}
       </${rowTag}>
-      ${childGroups ? `<div class="nestedOptionGroups">${childGroups}</div>` : ""}
+      ${nestedChildren ? `<div class="nestedOptionGroups">${nestedChildren}</div>` : ""}
     </div>
   `;
 }
@@ -3829,6 +3895,17 @@ function formatEntryPoints(rosterEntry) {
 
 function formatGroupPoints(group) {
   return formatPointsBreakdown(group?.totalPoints, group?.basePoints ?? group?.totalPoints, group?.enhancementPoints);
+}
+
+function formatAttachedGroupPoints(group, groupEntries) {
+  const bodyguard = groupEntries.find(item => item.instanceId === group?.bodyguard?.instanceId) || groupEntries[0];
+  return `${Number(group?.totalPoints || 0)} pts (${formatAttachedMemberPoints(bodyguard)})`;
+}
+
+function formatAttachedMemberPoints(rosterEntry) {
+  const base = entryPoints(rosterEntry);
+  const enhancement = entryEnhancementPoints(rosterEntry);
+  return enhancement ? `${base}+${enhancement}` : `${base}`;
 }
 
 function formatSheetMemberPoints(member) {
@@ -5178,6 +5255,7 @@ function escapeHtml(value) {
 
 function formatDescription(value) {
   const cleaned = String(value || "")
+    .replace(/&quot;/gi, '"')
     .replace(/\*\*\^\^(.+?)\^\^\*\*/g, "$1")
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/\^\^(.+?)\^\^/g, "$1");

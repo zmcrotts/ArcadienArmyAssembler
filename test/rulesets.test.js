@@ -416,6 +416,106 @@ test("11e Rollin' Deff exposes each detachment upgrade once", () => {
   }
 });
 
+test("11e Adepta Sororitas upgrades keep their bearer limits and unit eligibility", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const sisters = ruleset.armies.find(army => army.faction === "Imperium - Adepta Sororitas");
+  const unitName = selectionKey => ruleset.units.find(unit => unit.selectionKey === selectionKey)?.name;
+  const upgrade = name => {
+    const found = sisters.enhancements.find(item => item.name === name);
+    assert.ok(found, `Missing Adepta Sororitas upgrade ${name}`);
+    return found;
+  };
+  const eligibleNames = item => item.eligibleSelectionKeys.map(unitName).filter(Boolean).sort();
+  const description = item => item.profiles
+    .map(profile => profile.characteristics?.Description || "")
+    .join(" ");
+
+  const writ = upgrade("Writ of Compunction");
+  assert.deepEqual(eligibleNames(writ), ["Celestian Sacresants"]);
+  assert.match(description(writ), /CELESTIAN SACRESANTS unit only/i);
+
+  const payload = upgrade("Symphonic Payload");
+  assert.deepEqual(eligibleNames(payload), ["Exorcist"]);
+  assert.match(description(payload), /EXORCIST unit only/i);
+
+  const hagiomnifex = upgrade("Hagiomnifex");
+  assert.equal(eligibleNames(hagiomnifex).includes("Celestian Insidiants"), false);
+  assert.deepEqual(eligibleNames(hagiomnifex), [
+    "Canoness",
+    "Canoness with Jump Pack",
+    "Dialogus",
+    "Dogmata",
+    "Hospitaller",
+    "Imagifier",
+    "Ministorum Priest",
+    "Palatine"
+  ]);
+  assert.match(description(hagiomnifex), /ADEPTA SORORITAS CHARACTER model only \(excluding PENITENT units\)/i);
+});
+
+test("11e detachment upgrades retain bearer limits and representative eligibility scopes", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const unitName = selectionKey => ruleset.units.find(unit => unit.selectionKey === selectionKey)?.name;
+  const allUpgrades = ruleset.armies.flatMap(army =>
+    (army.enhancements || []).filter(item => item.kind === "upgrade").map(item => ({ army, item }))
+  );
+  const description = item => [
+    ...(item.profiles || []).map(profile => profile.characteristics?.Description),
+    ...(item.rules || []).map(rule => rule.description)
+  ].filter(Boolean).join(" ");
+  const eligibleNames = (faction, name) => {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    const upgrade = army.enhancements.find(item => item.name === name);
+    assert.ok(upgrade, `Missing ${faction} upgrade ${name}`);
+    return upgrade.eligibleSelectionKeys.map(unitName).filter(Boolean).sort();
+  };
+
+  assert.equal(allUpgrades.every(({ item }) => /\b(?:model|unit)s? only\b/i.test(description(item))), true);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Mechanicus", "Stealth-screened Cybercanids"), ["Serberys Raiders"]);
+  assert.deepEqual(eligibleNames("Xenos - Leagues of Votann", "Shroudwërke Talismans"), ["Hernkyn Yaegirs"]);
+  assert.deepEqual(eligibleNames("Xenos - Necrons", "Mortality Shroud (Aura)"), ["Obelisk"]);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Fervent Exemplars"), ["Sword Brethren Squad"]);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Inheritors of Sigismund"), ["Sword Brethren Squad"]);
+  assert.equal(
+    eligibleNames("Chaos - World Eaters", "Murder-forged Entity").every(name =>
+      ruleset.units.find(unit => unit.faction === "Chaos - World Eaters" && unit.name === name)?.keywords.includes("Vehicle")
+    ),
+    true
+  );
+});
+
+test("11e ordinary enhancement restrictions exclude unrelated bearer units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const unitName = selectionKey => ruleset.units.find(unit => unit.selectionKey === selectionKey)?.name;
+  const description = item => [
+    ...(item.profiles || []).map(profile => profile.characteristics?.Description),
+    ...(item.rules || []).map(rule => rule.description)
+  ].filter(Boolean).join(" ");
+  const eligibleNames = (faction, name) => {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    const enhancement = army.enhancements.find(item => item.name === name);
+    assert.ok(enhancement, `Missing ${faction} enhancement ${name}`);
+    return enhancement.eligibleSelectionKeys.map(unitName).filter(Boolean).sort();
+  };
+
+  assert.deepEqual(eligibleNames("Imperium - Adepta Sororitas", "Clarion of Urgency"), ["Canoness with Jump Pack"]);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Mechanicus", "Explorator Dispensation"), ["Skitarii Marshal"]);
+  assert.deepEqual(eligibleNames("Xenos - Aeldari", "Mistweave"), ["Shadowseer"]);
+  assert.deepEqual(eligibleNames("Chaos - Chaos Space Marines", "Pact of Cursed Pinions"), ["Chaos Lord with Jump Pack"]);
+  assert.deepEqual(eligibleNames("Xenos - Leagues of Votann", "Ironskein"), ["Kâhl"]);
+  assert.deepEqual(eligibleNames("Xenos - T'au Empire", "Student of Kauyon"), [
+    "Kroot Flesh Shaper",
+    "Kroot Trail Shaper",
+    "Kroot War Shaper"
+  ]);
+
+  const spaceMarines = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Astartes - Space Marines");
+  const orksbane = spaceMarines.enhancements.find(item => item.name === "Orksbane");
+  assert.match(description(orksbane), /ADEPTUS ASTARTES FLY INFANTRY model only/i);
+  assert.equal(ruleset.enhancementRestrictionSource.unmatched, 0);
+  assert.equal(ruleset.enhancementRestrictionSource.applied, ruleset.enhancementRestrictionSource.configured);
+});
+
 test("11e Warrior Bioform Onslaught grants Warrior and Battleline keywords to both Warrior units", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const tyranids = ruleset.armies.find(army => army.faction === "Xenos - Tyranids");

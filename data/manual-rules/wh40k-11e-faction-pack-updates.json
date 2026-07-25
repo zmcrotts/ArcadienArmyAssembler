@@ -478,6 +478,27 @@
       "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
     },
     {
+      "id": "sororitas-symphonic-payload", "kind": "enhancement-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Chorus of Condemnation", "enhancementName": "Symphonic Payload",
+      "unitNames": ["Exorcist"],
+      "description": "EXORCIST unit only. This unit can re-roll rolls to determine the A of a weapon.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 2"
+    },
+    {
+      "id": "sororitas-writ-of-compunction", "kind": "enhancement-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Sacred Champions", "enhancementName": "Writ of Compunction",
+      "unitNames": ["Celestian Sacresants"],
+      "description": "CELESTIAN SACRESANTS unit only. This unit has +1 OC.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 3"
+    },
+    {
+      "id": "sororitas-hagiomnifex", "kind": "enhancement-replace",
+      "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Sanctified Orators", "enhancementName": "Hagiomnifex",
+      "unitNames": ["Canoness", "Canoness with Jump Pack", "Dialogus", "Dogmata", "Hospitaller", "Imagifier", "Ministorum Priest", "Palatine"],
+      "description": "ADEPTA SORORITAS CHARACTER model only (excluding PENITENT units). (Once per turn, per unit) At the start of a phase, you can use this ability. If you do, select one of the abilities below:\n- Rite of Revelation: While this unit is shooting, enemy units have +6\" detection range.\n- Sermon of Intolerance: This unit's battle-shock rolls automatically succeed.\n- Catechism of Raging Fervour: This unit has +1\" M.\n- Psalm of Righteous Smiting: This unit's attacks have +1 S.\n- Chorus of Repudiation: Attacks that target this unit with a S greater than this unit's T have -1 to wound rolls.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 4"
+    },
+    {
       "id": "sororitas-junith-pulpit", "kind": "rule-replace",
       "target": { "faction": "Imperium - Adepta Sororitas" }, "unitNames": ["Junith Eruita"], "ruleName": "The Pulpit of Saint Holline's Basilica",
       "description": "This unit has Stealth. Melee attacks that target this unit have -1 to hit rolls.",
@@ -822,10 +843,154 @@
       "id": "agents-micromelta-rounds", "kind": "enhancement-add", "target": { "faction": "Imperium - Agents of the Imperium" }, "detachmentName": "Veiled Blade Elimination Force", "unitNames": ["Vindicare Assassin"], "enhancementName": "Micromelta Rounds", "points": 20, "description": "Vindicare Assassin models only. This model's exitus rifle has the [ANTI-MONSTER 4+] and [ANTI-VEHICLE 4+] abilities.", "source": "Faction Pack - Imperial Agents v1.1, page 2"
     },
     {
-      "id": "death-guard-parasitic-woe-reaper", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Foetid Bloat-drone", "Foetid Bloat-drone with Heavy Blight Launcher", "Helbrute", "Myphitic Blight-haulers"], "enhancementName": "Parasitic Woe-reaper", "points": 15, "description": "CONTAGION ENGINE unit only. When this unit has fought, one model in this unit heals D3 wounds.", "source": "Faction Pack - Death Guard v1.1, page 2"
+      "id": "death-guard-parasitic-woe-reaper", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Foetid Bloat-drone", "Foetid Bloat-drone with Heavy Blight Launcher", "Helbrute", "Myphitic Blight-hauler"], "enhancementName": "Parasitic Woe-reaper", "points": 15, "description": "CONTAGION ENGINE unit only. When this unit has fought, one model in this unit heals D3 wounds.", "source": "Faction Pack - Death Guard v1.1, page 2"
     },
     {
-      "id": "death-guard-lancet-worldsore", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Helbrute", "Myphitic Blight-haulers"], "enhancementName": "Lancet of the Worldsore", "points": 15, "description": "Friendly HELBRUTE/MYPHITIC BLIGHT-HAULER unit only. This unit has MOBILE.", "source": "Faction Pack - Death Guard v1.1, page 2"
+      "id": "death-guard-lancet-worldsore", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3, "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Contagion Engines", "unitNames": ["Helbrute", "Myphitic Blight-hauler"], "enhancementName": "Lancet of the Worldsore", "points": 15, "description": "Friendly HELBRUTE/MYPHITIC BLIGHT-HAULER unit only. This unit has MOBILE.", "source": "Faction Pack - Death Guard v1.1, page 2"
+    },
+    {
+      "id": "audit-custodes-interred-expertise", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Custodes" }, "detachmentName": "Might of the Moritoi", "enhancementName": "Interred Expertise", "restriction": "ADEPTUS CUSTODES WALKER unit only.", "source": "Faction Pack - Adeptus Custodes v1.1"
+    },
+    {
+      "id": "audit-custodes-auramite-sarcophagus", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Custodes" }, "detachmentName": "Might of the Moritoi", "enhancementName": "Auramite Sarcophagus", "restriction": "ADEPTUS CUSTODES WALKER unit only.", "source": "Faction Pack - Adeptus Custodes v1.1"
+    },
+    {
+      "id": "audit-admech-stealth-screened-cybercanids", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "detachmentName": "Cohort Acquisitus", "enhancementName": "Stealth-screened Cybercanids", "unitNames": ["Serberys Raiders"], "restriction": "SERBERYS RAIDERS unit only.", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 2"
+    },
+    {
+      "id": "audit-daemons-soul-shattering-charge", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Daemons" }, "detachmentName": "Cavalcade of Chaos", "enhancementName": "Soul-shattering Charge", "restriction": "LEGIONES DAEMONICA MOUNTED unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-apocalyptic-steeds", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Daemons" }, "detachmentName": "Cavalcade of Chaos", "enhancementName": "Apocalyptic Steeds", "restriction": "LEGIONES DAEMONICA MOUNTED unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-bane-forged-weapons", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Daemons" }, "detachmentName": "Warptide", "enhancementName": "Bane-forged weapons", "restriction": "LEGIONES DAEMONICA BATTLELINE unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-soul-hungry-slaughterers", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Daemons" }, "detachmentName": "Warptide", "enhancementName": "Soul-hungry Slaughterers", "restriction": "LEGIONES DAEMONICA BATTLELINE unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-death-guard-insectile-murmuration", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Flyblown Host", "enhancementName": "Insectile Murmuration", "unitNames": ["Plague Marines"], "restriction": "PLAGUE MARINES unit only.", "source": "Faction Pack - Death Guard v1.1"
+    },
+    {
+      "id": "audit-death-guard-plagueveil", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Flyblown Host", "enhancementName": "Plagueveil", "unitNames": ["Plague Marines"], "restriction": "PLAGUE MARINES unit only.", "source": "Faction Pack - Death Guard v1.1"
+    },
+    {
+      "id": "audit-emperors-children-eager-patrons", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Emperor's Children" }, "detachmentName": "Spectacle of Slaughter", "enhancementName": "Eager Patrons", "unitNames": ["Flawless Blades"], "restriction": "FLAWLESS BLADES unit only.", "source": "Faction Pack - Emperor's Children v1.1"
+    },
+    {
+      "id": "audit-emperors-children-beguiling-grotesquerie", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Emperor's Children" }, "detachmentName": "Spectacle of Slaughter", "enhancementName": "Beguiling Grotesquerie", "unitNames": ["Flawless Blades"], "restriction": "FLAWLESS BLADES unit only.", "source": "Faction Pack - Emperor's Children v1.1"
+    },
+    {
+      "id": "audit-emperors-children-frenzied-ferocity", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Emperor's Children" }, "detachmentName": "Elegant Brutes", "enhancementName": "Frenzied Ferocity", "unitNames": ["Chaos Terminators"], "restriction": "EMPEROR'S CHILDREN TERMINATOR SQUAD unit only.", "source": "Faction Pack - Emperor's Children v1.1"
+    },
+    {
+      "id": "audit-votann-pan-spectral-lockons", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Farseekers", "enhancementName": "Pan-spectral Lockons", "unitNames": ["Hernkyn Pioneers"], "restriction": "PIONEERS unit only.", "source": "Faction Pack - Leagues of Votann v1.1"
+    },
+    {
+      "id": "audit-votann-saturation-rounds", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Armoured Trailblazers", "enhancementName": "Saturation Rounds", "unitNames": ["Sagitaur"], "restriction": "SAGITAUR unit only.", "source": "Faction Pack - Leagues of Votann v1.1"
+    },
+    {
+      "id": "audit-votann-optimised-attack-lines", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Armoured Trailblazers", "enhancementName": "Optimised Attack Lines", "unitNames": ["Sagitaur"], "restriction": "SAGITAUR unit only.", "source": "Faction Pack - Leagues of Votann v1.1"
+    },
+    {
+      "id": "audit-votann-shroudwerke-talismans", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Farseekers", "enhancementName": "Shroudwërke Talismans", "unitNames": ["Hernkyn Yaegirs"], "restriction": "YAEGIRS unit only.", "source": "Faction Pack - Leagues of Votann v1.1"
+    },
+    {
+      "id": "audit-necrons-deepening-madness", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Skyshroud Spearhead", "enhancementName": "Deepening Madness", "restriction": "DESTROYER CULT MOUNTED unit only.", "source": "Faction Pack - Necrons v1.1"
+    },
+    {
+      "id": "audit-necrons-enlivened-sentinels", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Hand of the Dynasty", "enhancementName": "Enlivened Sentinels", "unitNames": ["Necron Warriors"], "restriction": "NECRON WARRIORS unit only.", "source": "Faction Pack - Necrons v1.1"
+    },
+    {
+      "id": "audit-necrons-tools-of-dominion", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Hand of the Dynasty", "enhancementName": "Tools of Dominion", "unitNames": ["Immortals"], "restriction": "IMMORTALS unit only.", "source": "Faction Pack - Necrons v1.1"
+    },
+    {
+      "id": "audit-necrons-recursive-reanimation", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Skyshroud Spearhead", "enhancementName": "Recursive Reanimation", "unitNames": ["Tomb Blades"], "restriction": "TOMB BLADES unit only.", "source": "Faction Pack - Necrons v1.1"
+    },
+    {
+      "id": "audit-necrons-mortality-shroud", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "The Phaeron's Armoury", "enhancementName": "Mortality Shroud (Aura)", "unitNames": ["Obelisk"], "restriction": "OBELISK unit only.", "source": "Faction Pack - Necrons v1.1"
+    },
+    {
+      "id": "audit-thousand-sons-thicket-of-bladed-bone", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Thousand Sons" }, "detachmentName": "Servants of Change", "enhancementName": "Thicket of Bladed Bone", "restriction": "SPAWN unit only.", "source": "Faction Pack - Thousand Sons v1.1"
+    },
+    {
+      "id": "audit-world-eaters-talons-of-butchery", "kind": "enhancement-restriction", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Brazen Engines", "enhancementName": "Talons of Butchery", "restriction": "MAULERFIEND unit only.", "source": "Faction Pack - World Eaters v1.1"
+    },
+    {
+      "id": "audit-world-eaters-murder-forged-entity", "kind": "enhancement-restriction", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Brazen Engines", "enhancementName": "Murder-forged Entity", "unitKeywordsAll": ["Faction: World Eaters", "Vehicle"], "restriction": "WORLD EATERS VEHICLE unit only.", "source": "Faction Pack - World Eaters v1.1"
+    },
+    {
+      "id": "audit-world-eaters-sanctified-in-slaughter", "kind": "enhancement-restriction", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Butchers of Khorne", "enhancementName": "Sanctified in Slaughter", "unitNames": ["Chaos Terminators"], "restriction": "TERMINATOR SQUAD unit only.", "source": "Faction Pack - World Eaters v1.1"
+    },
+    {
+      "id": "audit-world-eaters-gore-stained-veterans", "kind": "enhancement-restriction", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Butchers of Khorne", "enhancementName": "Gore-stained Veterans", "unitNames": ["Chaos Terminators"], "restriction": "TERMINATOR SQUAD unit only.", "source": "Faction Pack - World Eaters v1.1"
+    },
+    {
+      "id": "audit-black-templars-fervent-exemplars", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Astartes - Black Templars" }, "detachmentName": "Marshal's Household", "enhancementName": "Fervent Exemplars", "unitNames": ["Sword Brethren Squad"], "restriction": "SWORD BRETHREN SQUAD unit only.", "source": "Faction Pack - Black Templars v1.1"
+    },
+    {
+      "id": "audit-black-templars-inheritors-of-sigismund", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Astartes - Black Templars" }, "detachmentName": "Marshal's Household", "enhancementName": "Inheritors of Sigismund", "unitNames": ["Sword Brethren Squad"], "restriction": "SWORD BRETHREN SQUAD unit only.", "source": "Faction Pack - Black Templars v1.1"
+    },
+    {
+      "id": "audit-space-wolves-thirst-for-glory", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Legends of Saga and Song", "enhancementName": "Thirst for Glory", "unitNames": ["Wolf Guard Battle Leader in Terminator Armour [Legends]", "Ancient in Terminator Armor", "Captain in Terminator Armour", "Chaplain in Terminator Armour", "Librarian in Terminator Armour"], "restriction": "ADEPTUS ASTARTES TERMINATOR model only.", "source": "Faction Pack - Space Wolves v1.1"
+    },
+    {
+      "id": "audit-sororitas-clarion-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Chorus of Condemnation", "enhancementName": "Clarion of Urgency", "unitNames": ["Canoness with Jump Pack"], "restriction": "CANONESS WITH JUMP PACK model only.", "source": "Faction Pack - Adepta Sororitas v1.1, page 2"
+    },
+    {
+      "id": "audit-admech-explorator-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "detachmentName": "Cohort Acquisitus", "enhancementName": "Explorator Dispensation", "unitNames": ["Skitarii Marshal"], "restriction": "SKITARII MARSHAL model only.", "source": "Faction Pack - Adeptus Mechanicus v1.1, page 2"
+    },
+    {
+      "id": "audit-aeldari-mistweave-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Aeldari" }, "detachmentName": "Ghosts of the Webway", "enhancementName": "Mistweave", "unitNames": ["Shadowseer"], "restriction": "SHADOWSEER model only.", "source": "Faction Pack - Aeldari v1.1"
+    },
+    {
+      "id": "audit-chaos-knights-cruel-lashmaster-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Knights" }, "detachmentName": "Iconoclast Fiefdom", "enhancementName": "Cruel Lashmaster", "unitNames": ["Chaos Cerastus Knight Acheron", "Chaos Cerastus Knight Atrapos", "Chaos Cerastus Knight Castigator", "Chaos Cerastus Knight Lancer", "Chaos Questoris Knight Magaera", "Chaos Questoris Knight Styrix", "Knight Abominant", "Knight Desecrator", "Knight Despoiler", "Knight Rampager", "Knight Tyrant", "War Dog Brigand", "War Dog Executioner", "War Dog Huntsman", "War Dog Karnivore", "War Dog Moirax", "War Dog Stalker", "Knight Ruinator"], "restriction": "CHAOS KNIGHTS model only.", "source": "Faction Pack - Chaos Knights v1.1"
+    },
+    {
+      "id": "audit-chaos-knights-iconoclast-idol-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Knights" }, "detachmentName": "Iconoclast Fiefdom", "enhancementName": "Iconoclast Idol", "unitNames": ["Chaos Cerastus Knight Acheron", "Chaos Cerastus Knight Atrapos", "Chaos Cerastus Knight Castigator", "Chaos Cerastus Knight Lancer", "Chaos Questoris Knight Magaera", "Chaos Questoris Knight Styrix", "Knight Abominant", "Knight Desecrator", "Knight Despoiler", "Knight Rampager", "Knight Tyrant", "War Dog Brigand", "War Dog Executioner", "War Dog Huntsman", "War Dog Karnivore", "War Dog Moirax", "War Dog Stalker", "Knight Ruinator"], "restriction": "CHAOS KNIGHTS model only.", "source": "Faction Pack - Chaos Knights v1.1"
+    },
+    {
+      "id": "audit-csm-touched-by-warp-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Cabal of Chaos", "enhancementName": "Touched by the Warp", "unitKeywordsAll": ["Faction: Heretic Astartes"], "unitKeywordsNone": ["Khorne"], "restrictEligibility": true, "restriction": "HERETIC ASTARTES model only (excluding KHORNE models).", "source": "Faction Pack - Chaos Space Marines v1.1"
+    },
+    {
+      "id": "audit-csm-pact-pinions-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Murdertalon Raiders", "enhancementName": "Pact of Cursed Pinions", "unitNames": ["Chaos Lord with Jump Pack"], "restriction": "CHAOS LORD WITH JUMP PACK model only.", "source": "Faction Pack - Chaos Space Marines v1.1"
+    },
+    {
+      "id": "audit-csm-shadowcowl-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Murdertalon Raiders", "enhancementName": "Shadowcowl Talisman", "unitNames": ["Chaos Lord with Jump Pack"], "restriction": "CHAOS LORD WITH JUMP PACK model only.", "source": "Faction Pack - Chaos Space Marines v1.1"
+    },
+    {
+      "id": "audit-death-guard-hybridised-pox-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Paragons of Putrescence", "enhancementName": "Host of the Hybridised Pox", "unitKeywordsAll": ["Faction: Death Guard", "Infantry"], "restrictEligibility": true, "restriction": "DEATH GUARD INFANTRY model only.", "source": "Faction Pack - Death Guard v1.1"
+    },
+    {
+      "id": "audit-death-guard-rejuvenating-swarm-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Paragons of Putrescence", "enhancementName": "Rejuvenating Swarm", "unitKeywordsAll": ["Faction: Death Guard", "Infantry"], "unitKeywordsNone": ["Terminator"], "restrictEligibility": true, "restriction": "DEATH GUARD INFANTRY model only (excluding TERMINATOR models).", "source": "Faction Pack - Death Guard v1.1"
+    },
+    {
+      "id": "audit-votann-ironskein-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Hearthband", "enhancementName": "Ironskein", "unitNames": ["Kâhl"], "restriction": "KÂHL model only.", "source": "Faction Pack - Leagues of Votann v1.1"
+    },
+    {
+      "id": "audit-tau-student-kauyon-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Xenos - T'au Empire" }, "detachmentName": "Auxiliary Cadre", "enhancementName": "Student of Kauyon", "unitNames": ["Kroot Trail Shaper", "Kroot War Shaper", "Kroot Flesh Shaper"], "restriction": "KROOT SHAPER model only.", "source": "Faction Pack - T'au Empire v1.1"
+    },
+    {
+      "id": "audit-tau-admired-leader-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Xenos - T'au Empire" }, "detachmentName": "Auxiliary Cadre", "enhancementName": "Admired Leader", "unitKeywordsAll": ["Faction: T'au Empire"], "unitKeywordsNone": ["Kroot"], "restrictEligibility": true, "restriction": "T’AU EMPIRE model only (excluding KROOT models).", "source": "Faction Pack - T'au Empire v1.1"
+    },
+    {
+      "id": "audit-daemons-swollen-with-power", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Daemons" }, "enhancementName": "Swollen with Power", "unitKeywordsAll": ["Faction: Legiones Daemonica", "Character"], "unitKeywordsNone": ["Monster"], "restriction": "LEGIONES DAEMONICA CHARACTER model only (excluding MONSTER units).", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-library-soul-shattering-charge", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Soul-shattering Charge", "restriction": "LEGIONES DAEMONICA MOUNTED unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-library-swollen-with-power", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Swollen with Power", "restriction": "LEGIONES DAEMONICA CHARACTER model only (excluding MONSTER units).", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-library-apocalyptic-steeds", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Apocalyptic Steeds", "restriction": "LEGIONES DAEMONICA MOUNTED unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-library-bane-forged-weapons", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Bane-forged weapons", "restriction": "LEGIONES DAEMONICA BATTLELINE unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "audit-daemons-library-soul-hungry-slaughterers", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Soul-hungry Slaughterers", "restriction": "LEGIONES DAEMONICA BATTLELINE unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
     }
   ],
   "audit": {

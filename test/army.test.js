@@ -266,6 +266,22 @@ test("multiple 11th detachments spend detachment points by battle size", () => {
   assert.equal(validateRosterLegality(army, state, [], { pointsLimit: 2000 }).warnings.some(item => item.code === "DETACHMENT_POINTS_EXCEEDED"), true);
 });
 
+test("detachments with the same unique tag warn when selected together", () => {
+  const army = {
+    detachments: [
+      { id: "faith", name: "Champions of Faith", detachmentPoints: 2, uniqueTags: ["REVEREND"] },
+      { id: "sacred", name: "Sacred Champions", detachmentPoints: 1, uniqueTags: ["REVEREND"] }
+    ],
+    enhancements: []
+  };
+  const state = { ...createArmyState(), detachmentId: "faith", detachmentIds: ["faith", "sacred"] };
+  const warning = validateRosterLegality(army, state, [], { pointsLimit: 2000 }).warnings
+    .find(item => item.code === "DETACHMENT_UNIQUE_TAG_CONFLICT");
+
+  assert.ok(warning);
+  assert.match(warning.message, /Champions of Faith and Sacred Champions.*UNIQUE: REVEREND/i);
+});
+
 legacyTest("assigning and removing unit relationships never mutates unit identity or configuration", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");

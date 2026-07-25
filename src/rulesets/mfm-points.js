@@ -37,6 +37,7 @@ function normalize(value) {
     .normalize("NFKD")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\barmour\b/g, "armor")
     .trim();
 }
 
@@ -164,7 +165,12 @@ function applyMfmPoints(units, armies, document) {
         ...unit,
         pricing: {
           ...(unit.pricing || {}),
-          mfmRows: [...(unit.pricing?.mfmRows || []), scheduleRow(change, context)]
+          // A Chapter's own MFM table overrides the generic Space Marines table.
+          // Prepending exact-faction rows keeps that true regardless of the
+          // alphabetical order in which faction pages were scraped.
+          mfmRows: unit.faction === canonicalFaction(change.faction)
+            ? [scheduleRow(change, context), ...(unit.pricing?.mfmRows || [])]
+            : [...(unit.pricing?.mfmRows || []), scheduleRow(change, context)]
         }
       } : unit);
       summary.unitRows += 1;
@@ -173,7 +179,7 @@ function applyMfmPoints(units, armies, document) {
 
     if (change.kind === "wargear") {
       const matches = matchingUnits(definitions, change);
-      const wantedName = normalize(change.label).replace(/^per\s+/, "");
+      const wantedName = normalize(change.label).replace(/^(?:per\s+|\d+\s+)/, "");
       let changed = 0;
       const matchKeys = new Set(matches.map(unit => unit.selectionKey));
       definitions = definitions.map(unit => {

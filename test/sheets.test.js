@@ -48,6 +48,93 @@ test("sheets apply bearer Toughness additions from selected wargear", () => {
   assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.T, "12");
 });
 
+test("Writ of Compunction shorthand increases the upgraded unit's OC", () => {
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "sacresants",
+      name: "Celestian Sacresants",
+      configured: {
+        units: [{ name: "Celestian Sacresant", characteristics: { OC: "1" } }],
+        weapons: [],
+        abilities: [],
+        rules: []
+      }
+    }],
+    enhancements: [{
+      bearerInstanceId: "sacresants",
+      profiles: [{ characteristics: { Description: "This unit has +1 OC." } }]
+    }]
+  });
+
+  assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.OC, "2");
+});
+
+test("Sacred Champions improves only Celestian Sacresants attack BS and WS", () => {
+  const holyQuest = {
+    sourceKind: "detachment",
+    description: "Friendly CELESTIAN SACRESANTS units’ attacks have +1 BS and WS."
+  };
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "sacresants",
+      name: "Celestian Sacresants",
+      keywords: ["Celestian Sacresants"],
+      configured: {
+        units: [{ name: "Celestian Sacresant", characteristics: { OC: "1" } }],
+        weapons: [
+          { name: "Bolt pistol", typeName: "Ranged Weapons", characteristics: { BS: "3+" } },
+          { name: "Hallowed mace", typeName: "Melee Weapons", characteristics: { WS: "3+" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "palatine",
+      name: "Palatine",
+      keywords: ["Character"],
+      configured: {
+        units: [{ name: "Palatine", characteristics: { OC: "1" } }],
+        weapons: [{ name: "Palatine blade", typeName: "Melee Weapons", characteristics: { WS: "3+" } }],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "canoness",
+      name: "Canoness",
+      keywords: ["Character"],
+      configured: {
+        units: [{ name: "Canoness", characteristics: { OC: "1" } }],
+        weapons: [{ name: "Blessed blade", typeName: "Melee Weapons", characteristics: { WS: "3+" } }],
+        abilities: [],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:sacresants",
+      kind: "attached",
+      title: "Celestian Sacresants + Palatine",
+      memberInstanceIds: ["sacresants", "palatine"],
+      bodyguard: { instanceId: "sacresants" },
+      leaders: [{ instanceId: "palatine" }],
+      warnings: []
+    }, {
+      id: "canoness",
+      kind: "unit",
+      title: "Canoness",
+      memberInstanceIds: ["canoness"],
+      warnings: []
+    }],
+    detachments: [{ id: "sacred", name: "Sacred Champions", rules: [holyQuest] }]
+  });
+  const sacresants = sheets.combinedUnitSheets.find(sheet => sheet.title === "Celestian Sacresants + Palatine");
+  const canoness = sheets.combinedUnitSheets.find(sheet => sheet.title === "Canoness");
+
+  assert.equal(sacresants.rangedWeapons[0].characteristics.BS, "2+");
+  assert.equal(sacresants.meleeWeapons[0].characteristics.WS, "2+");
+  assert.equal(sacresants.meleeWeapons[1].characteristics.WS, "2+");
+  assert.equal(canoness.meleeWeapons[0].characteristics.WS, "3+");
+});
+
 test("detachment invulnerable saves only apply to the named units", () => {
   const rule = {
     sourceKind: "detachment",

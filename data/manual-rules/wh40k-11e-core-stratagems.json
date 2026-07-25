@@ -46,7 +46,7 @@
       "turn": "Your turn",
       "phase": "Shooting phase",
       "legend": "Priming grenades or other explosives, these warriors draw back and hurl death into the enemy's midst.",
-      "description": "<b>WHEN:</b> Your Shooting phase.<br><br><b>TARGET:</b> One friendly unengaged EXPLOSIVES/GRENADES unit that is eligible to shoot and did not make an advance move this turn.<br><br><b>EFFECT:</b> Resolve the following sequence:<br>1. Select one EXPLOSIVES/GRENADES model in your unit.<br>2. Select one unengaged enemy unit within 8&quot; of and visible to that model.<br>3. Roll six D6: for each 4+, that enemy unit suffers 1 mortal wound (06.02)."
+      "description": "<b>WHEN:</b> Your Shooting phase.<br><br><b>TARGET:</b> One friendly unengaged EXPLOSIVES/GRENADES unit that is eligible to shoot and did not make an advance move this turn.<br><br><b>EFFECT:</b> Resolve the following sequence:<br>1. Select one EXPLOSIVES/GRENADES model in your unit.<br>2. Select one unengaged enemy unit within 8\" of and visible to that model.<br>3. Roll six D6: for each 4+, that enemy unit suffers 1 mortal wound (06.02)."
     },
     {
       "id": "core-crushing-impact",

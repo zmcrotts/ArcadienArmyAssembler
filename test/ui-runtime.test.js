@@ -149,6 +149,59 @@ test("browser loadout runtime accepts boolean round-up repeat flags", () => {
   assert.equal(state.maximum, 2);
 });
 
+test("browser loadout runtime preserves mixed per-model weapon allocations", () => {
+  const choice = (id, name) => ({
+    id,
+    kind: "upgrade",
+    name,
+    constraints: [{ id: `${id}-max`, field: "selections", type: "max", scope: "parent", value: 1 }],
+    modifiers: [],
+    children: []
+  });
+  const definition = {
+    id: "retributors",
+    selectionKey: "retributors",
+    composition: [],
+    compositionConstraints: [],
+    pricing: { base: 0, modifiers: [] },
+    selectionTree: {
+      id: "retributors",
+      kind: "unit",
+      constraints: [],
+      modifiers: [],
+      children: [{
+        id: "models",
+        kind: "model",
+        name: "Retributors",
+        constraints: [],
+        modifiers: [],
+        children: [{
+          id: "weapons",
+          kind: "group",
+          name: "Weapons",
+          defaultSelectionId: "bolter",
+          constraints: [
+            { id: "weapons-min", field: "selections", type: "min", scope: "parent", value: 1 },
+            { id: "weapons-max", field: "selections", type: "max", scope: "parent", value: 1 }
+          ],
+          modifiers: [],
+          children: [choice("flamer", "Heavy flamer"), choice("melta", "Multi-melta"), choice("bolter", "Heavy bolter")]
+        }]
+      }]
+    }
+  };
+  let entry = { unitId: definition.id, selections: { models: 4, flamer: 2, melta: 0, bolter: 2 } };
+
+  entry = window.RosterEngine.setSelection(definition, entry, "melta", 1);
+  entry = window.RosterEngine.setSelection(definition, entry, "melta", 2);
+
+  assert.deepEqual(
+    { flamer: entry.selections.flamer, melta: entry.selections.melta, bolter: entry.selections.bolter },
+    { flamer: 2, melta: 2, bolter: 0 }
+  );
+  assert.deepEqual(window.RosterEngine.validateLoadout(definition, entry), []);
+});
+
 test("browser loadout runtime uses unit category IDs for faction-specific options", () => {
   const definition = {
     id: "breachers",

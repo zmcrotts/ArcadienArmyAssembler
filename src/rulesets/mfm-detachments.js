@@ -126,6 +126,9 @@ function applyMfmDetachments(armies, document) {
         ...detachment,
         detachmentPoints: points,
         detachmentPointsSource: `mfm-${document.version || "current"}`,
+        uniqueTags: Array.isArray(match.record.uniqueTags)
+          ? [...new Set(match.record.uniqueTags.map(String).filter(Boolean))]
+          : detachment.uniqueTags || [],
         forceDisposition: disposition ? { id: disposition.id, name: disposition.name } : detachment.forceDisposition,
         forceDispositionSource: `mfm-${document.version || "current"}`
       };

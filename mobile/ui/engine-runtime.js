@@ -249,13 +249,31 @@
     return normalizedConstraintValue(matches[0].value, type);
   }
 
+  function nodeReferencesId(node, id) {
+    return Boolean(id) && [
+      node?.id,
+      node?.sourceId,
+      node?.definitionId,
+      node?.targetId
+    ].includes(id);
+  }
+
+  function nodeContainsReference(node, id) {
+    return nodeReferencesId(node, id)
+      || (node?.children || []).some(child => nodeContainsReference(child, id));
+  }
+
   function defaultChild(group) {
-    return (group.children || []).find(child =>
-      child.id === group.defaultSelectionId
-      || child.sourceId === group.defaultSelectionId
-      || child.definitionId === group.defaultSelectionId
-      || child.targetId === group.defaultSelectionId
-    ) || (group.children || []).find(child => !child.hidden && child.kind !== "group") || null;
+    return (group.children || []).find(child => nodeReferencesId(child, group.defaultSelectionId))
+      || (group.children || []).find(child => !child.hidden && child.kind !== "group")
+      || null;
+  }
+
+  function defaultOrderedChildGroups(group, childGroups, preferredFirst = true) {
+    const preferred = (childGroups || []).find(child => nodeContainsReference(child, group.defaultSelectionId));
+    if (!preferred) return childGroups || [];
+    const others = childGroups.filter(child => child.id !== preferred.id);
+    return preferredFirst ? [preferred, ...others] : [...others, preferred];
   }
 
   function clearSubtree(node, selections) {
@@ -308,6 +326,16 @@
       remaining -= add;
     }
 
+    const childGroups = (group.children || []).filter(child => child.kind === "group");
+    for (const childGroup of defaultOrderedChildGroups(group, childGroups)) {
+      if (remaining <= 0) break;
+      const current = groupCount(childGroup, { selections });
+      const capacity = dynamicMaximum(childGroup, parentCount, selections, unitDefinition, index) - current;
+      const requested = Math.min(remaining, capacity);
+      if (requested <= 0) continue;
+      remaining -= allocateAdditional(childGroup, requested, parentCount, selections, unitDefinition, index);
+    }
+
     return amount - remaining;
   }
 
@@ -319,7 +347,8 @@
       ? [...entries.filter(child => child.id !== preferred.id), preferred]
       : [...entries].reverse();
 
-    for (const childGroup of (group.children || []).filter(child => child.kind === "group")) {
+    const childGroups = (group.children || []).filter(child => child.kind === "group");
+    for (const childGroup of defaultOrderedChildGroups(group, childGroups, false)) {
       if (remaining <= 0) break;
       remaining -= reduceGroup(childGroup, remaining, selections, unitDefinition, index);
     }
@@ -351,11 +380,6 @@
       ? [preferred, ...entries.filter(child => child.id !== preferred.id)]
       : [...entries].reverse();
 
-    for (const childGroup of (group.children || []).filter(child => child.kind === "group" && !nodeContains(child, excludedNodeId))) {
-      if (remaining <= 0) break;
-      remaining -= reduceGroup(childGroup, remaining, selections, unitDefinition, index);
-    }
-
     for (const candidate of ordered) {
       if (remaining <= 0) break;
       const current = Number(selections[candidate.id] || 0);
@@ -364,6 +388,12 @@
       selections[candidate.id] = current - remove;
       refreshDescendants(candidate, selections[candidate.id], selections, unitDefinition, index);
       remaining -= remove;
+    }
+
+    const childGroups = (group.children || []).filter(child => child.kind === "group" && !nodeContains(child, excludedNodeId));
+    for (const childGroup of defaultOrderedChildGroups(group, childGroups)) {
+      if (remaining <= 0) break;
+      remaining -= reduceGroup(childGroup, remaining, selections, unitDefinition, index);
     }
     return amount - remaining;
   }
@@ -441,7 +471,9 @@
       const childGroups = visible.filter(child => child.kind === "group");
       const desired = dynamicMinimum(node, parentCount, selections, unitDefinition, index);
 
-      for (const group of childGroups) applyDefaults(group, parentCount, selections, unitDefinition, index);
+      for (const group of defaultOrderedChildGroups(node, childGroups)) {
+        applyDefaults(group, parentCount, selections, unitDefinition, index);
+      }
 
       for (const child of entryChildren) {
         const childMinimum = constraintValue(child, "min", "parent") ?? constraintValue(child, "min") ?? 0;
@@ -626,7 +658,8 @@
         }
       }
 
-      if (max === 1 && newCount > 0) {
+      const effectiveParentMaximum = evaluatedLimits(parent, next, index, unitDefinition).maximum;
+      if (effectiveParentMaximum === 1 && newCount > 0) {
         for (const sibling of siblings) clearSubtree(sibling, next.selections);
       }
     }
@@ -707,8 +740,28 @@
       minimum += record.minimum;
       maximum += record.maximum;
     }
+    const compositionBounds = enclosingCompositionBounds(index, records, entry, unitDefinition);
+    minimum = Math.max(minimum, compositionBounds.minimum);
+    maximum = Math.min(maximum, compositionBounds.maximum);
     const current = records.reduce((sum, record) => sum + record.current, 0);
     return { current, minimum, maximum, editable: records.length > 0 && Number.isFinite(maximum) && maximum > minimum };
+  }
+
+  function enclosingCompositionBounds(index, records, entry, unitDefinition) {
+    const activeNodes = records.filter(record => record.active).map(record => record.node);
+    if (!activeNodes.length) return { minimum: 0, maximum: Infinity };
+    const bundleGroupIds = new Set(modelBundleGroups(index).map(group => group.id));
+    const bounds = index.all
+      .filter(node =>
+        node.kind === "group"
+        && !bundleGroupIds.has(node.id)
+        && activeNodes.every(recordNode => nodeContains(node, recordNode.id))
+      )
+      .map(group => evaluatedLimits(group, entry, index, unitDefinition));
+    return {
+      minimum: bounds.length ? Math.max(...bounds.map(item => item.minimum).filter(Number.isFinite), 0) : 0,
+      maximum: bounds.length ? Math.min(...bounds.map(item => item.maximum).filter(Number.isFinite), Infinity) : Infinity
+    };
   }
 
   function modelBundleRanges(index, records) {

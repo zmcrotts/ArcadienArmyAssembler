@@ -189,6 +189,118 @@ test("linked rule name modifiers preserve values for compact unit rules", () => 
   assert.ok(ruleNames.includes("Scouts 8\""));
 });
 
+test("Zephyrim Sacred Banner can be added and contributes its ability", () => {
+  const definition = unit11e("Imperium - Adepta Sororitas", "Zephyrim Squad");
+  const banner = option(definition, "Sacred Banner");
+  const entry = setSelection(definition, createDefaultRosterEntry(definition), banner.id, 1);
+  const configured = getConfiguredProfiles(definition, entry);
+  const ability = configured.abilities.find(item => item.name === "Sacred Banner");
+
+  assert.ok(ability);
+  assert.match(ability.characteristics.Description, /re-roll Advance and Charge rolls/i);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Retributor fixed weapon allocations preserve existing choices when adding meltas", () => {
+  const definition = unit11e("Imperium - Adepta Sororitas", "Retributor Squad");
+  const flamer = option(definition, "Ministorum heavy flamer");
+  const melta = option(definition, "Multi-melta");
+  const bolter = option(definition, "Heavy bolter");
+  let entry = createDefaultRosterEntry(definition);
+
+  entry = setSelection(definition, entry, flamer.id, 4);
+  entry = setSelection(definition, entry, flamer.id, 2);
+  entry = setSelection(definition, entry, melta.id, 2);
+  const states = new Map(getOptionStates(definition, entry).map(item => [item.id, item.current]));
+
+  assert.equal(states.get(flamer.id), 2);
+  assert.equal(states.get(melta.id), 2);
+  assert.equal(states.get(bolter.id), 0);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Battle Sisters specialist selector arrows retain a maximum of one", () => {
+  const definition = unit11e("Imperium - Adepta Sororitas", "Battle Sisters Squad");
+  let entry = createDefaultRosterEntry(definition);
+  const simulacrum = option(definition, "Battle Sister w/ Simulacrum Imperialis");
+  const special = option(definition, "Battle Sister w/ Special Weapon");
+  const specialOrHeavy = option(definition, "Battle Sister w/ Special or Heavy Weapon");
+
+  entry = setSelection(definition, entry, simulacrum.id, 1);
+  entry = setSelection(definition, entry, special.id, 1);
+  const before = getOptionStates(definition, entry).find(item => item.id === specialOrHeavy.id);
+  assert.equal(before.maximum, 1);
+  assert.equal(before.editable, true);
+
+  entry = setSelection(definition, entry, specialOrHeavy.id, 1);
+  const after = getOptionStates(definition, entry).find(item => item.id === specialOrHeavy.id);
+  assert.equal(after.current, 1);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Spectrus Kill Team quantity groups do not steal selections from each other", () => {
+  const definition = unit11e("Imperium - Adeptus Astartes - Deathwatch", "Spectrus Kill Team");
+  const carbine = option(definition, "Kill Team Infiltrator w/ bolt carbine");
+  const sniper = option(definition, "Kill Team Infiltrator w/ bolt sniper rifle");
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+
+  entry = setSelection(definition, entry, carbine.id, 3);
+  entry = setSelection(definition, entry, sniper.id, 1);
+  entry = setSelection(definition, entry, carbine.id, 4);
+  entry = setSelection(definition, entry, sniper.id, 3);
+  const states = new Map(getOptionStates(definition, entry).map(item => [item.id, item.current]));
+
+  assert.equal(states.get(carbine.id), 4);
+  assert.equal(states.get(sniper.id), 3);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Indomitor defaults to ordinary models and keeps specialist groups independent", () => {
+  const definition = unit11e("Imperium - Adeptus Astartes - Deathwatch", "Indomitor Kill Team");
+  const heavyIntercessor = option(definition, "Kill Team Heavy Intercessor");
+  const melta = option(definition, "Kill Team Heavy Intercessor w/ melta rifle");
+  const flamestorm = option(definition, "Kill Team Heavy Intercessor w/ power fists & flamestorm gauntlets");
+  let entry = createDefaultRosterEntry(definition);
+  let states = new Map(getOptionStates(definition, entry).map(item => [item.id, item.current]));
+
+  assert.deepEqual(getUnitSizeState(definition, entry), {
+    current: 10,
+    minimum: 10,
+    maximum: 10,
+    editable: false
+  });
+  assert.equal(states.get(heavyIntercessor.id), 10);
+  assert.equal(states.get(melta.id), 0);
+  assert.equal(states.get(flamestorm.id), 0);
+
+  entry = setSelection(definition, entry, melta.id, 3);
+  entry = setSelection(definition, entry, flamestorm.id, 3);
+  entry = setSelection(definition, entry, melta.id, 2);
+  states = new Map(getOptionStates(definition, entry).map(item => [item.id, item.current]));
+
+  assert.equal(states.get(heavyIntercessor.id), 5);
+  assert.equal(states.get(melta.id), 2);
+  assert.equal(states.get(flamestorm.id), 3);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Fortis multi-count member controls increment without resetting", () => {
+  const definition = unit11e("Imperium - Adeptus Astartes - Deathwatch", "Fortis Kill Team");
+  const grenadeLauncher = option(definition, "Kill Team Intercessor w/ grenade launcher");
+  const pyreblaster = option(definition, "Kill Team Intercessor w/ pyreblaster");
+  let entry = createDefaultRosterEntry(definition);
+
+  entry = setSelection(definition, entry, grenadeLauncher.id, 1);
+  entry = setSelection(definition, entry, grenadeLauncher.id, 2);
+  entry = setSelection(definition, entry, pyreblaster.id, 1);
+  entry = setSelection(definition, entry, pyreblaster.id, 2);
+  const states = new Map(getOptionStates(definition, entry).map(item => [item.id, item.current]));
+
+  assert.equal(states.get(grenadeLauncher.id), 2);
+  assert.equal(states.get(pyreblaster.id), 2);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
 legacyTest("fixed-size units default their required models without a minimum warning", () => {
   const definition = unit("Xenos - Tyranids", "Barbgaunts");
   const entry = createDefaultRosterEntry(definition);

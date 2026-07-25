@@ -1,0 +1,943 @@
+{
+  "schemaVersion": 1,
+  "source": "Warhammer 40,000 Faction Packs v1.1 - Enhancement Restrictions",
+  "version": "1.1",
+  "lastUpdated": "2026-07-23",
+  "updates": [
+    {
+      "id": "restriction-imperium-adepta-sororitas-clarion-of-urgency",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adepta Sororitas"
+      },
+      "detachmentName": "Chorus of Condemnation",
+      "enhancementName": "Clarion of Urgency",
+      "restriction": "CANONESS WITH JUMP PACK model only.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adepta-sororitas-perfervid-haste",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adepta Sororitas"
+      },
+      "detachmentName": "Sacred Champions",
+      "enhancementName": "Perfervid Haste",
+      "restriction": "ADEPTA SORORITAS model only.",
+      "source": "Faction Pack - Adepta Sororitas v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-custodes-encircling-hunter",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Silent Hunters",
+      "enhancementName": "Encircling Hunter",
+      "restriction": "ANATHEMA PSYKANA model only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-custodes-efficient-aggression",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Tharanatoi Hammerblow",
+      "enhancementName": "Efficient Aggression",
+      "restriction": "ADEPTUS CUSTODES TERMINATOR model only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-custodes-mnemo-locked-shrine-cipher",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Tharanatoi Hammerblow",
+      "enhancementName": "Mnemo-locked Shrine Cipher",
+      "restriction": "ADEPTUS CUSTODES TERMINATOR model only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-mechanicus-explorator-dispensation",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Mechanicus"
+      },
+      "detachmentName": "Cohort Acquisitus",
+      "enhancementName": "Explorator Dispensation",
+      "restriction": "SKITARII MARSHAL model only.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-mechanicus-vingh-s-wafers-of-dynamism",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Mechanicus"
+      },
+      "detachmentName": "Lords of the Forge",
+      "enhancementName": "Vingh's Wafers of Dynamism",
+      "restriction": "CYBERNETICA DATASMITH model only.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-mechanicus-electromiasmic-brazier",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Mechanicus"
+      },
+      "detachmentName": "Luminen Autochoir",
+      "enhancementName": "Electromiasmic Brazier",
+      "restriction": "TECH-PRIEST model only.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-mechanicus-voltagheist-reliquary",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Mechanicus"
+      },
+      "detachmentName": "Luminen Autochoir",
+      "enhancementName": "Voltagheist Reliquary",
+      "restriction": "TECH-PRIEST model only.",
+      "source": "Faction Pack - Adeptus Mechanicus v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-aeldari-guiding-presence",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Armoured Warhost",
+      "enhancementName": "Guiding Presence",
+      "restriction": "AELDARI PSYKER model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-aeldari-spirit-stone-of-raelyth",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Armoured Warhost",
+      "enhancementName": "Spirit Stone of Raelyth",
+      "restriction": "AELDARI PSYKER model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-aeldari-mistweave",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Ghosts of the Webway",
+      "enhancementName": "Mistweave",
+      "restriction": "SHADOWSEER model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-aeldari-a-foot-in-the-future",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Fateful Performance",
+      "enhancementName": "A Foot in the Future",
+      "restriction": "TROUPE MASTER model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-aeldari-mistweave",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Fateful Performance",
+      "enhancementName": "Mistweave",
+      "restriction": "SHADOWSEER model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-aeldari-prelude-performer",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Aeldari"
+      },
+      "detachmentName": "Twilight Flickers",
+      "enhancementName": "Prelude Performer",
+      "restriction": "HARLEQUINS model only.",
+      "source": "Faction Pack - Aeldari v1.1, page 5"
+    },
+    {
+      "id": "restriction-imperium-astra-militarum-bombast-class-vox-array",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "detachmentName": "Bridgehead Strike",
+      "enhancementName": "Bombast-class Vox-array",
+      "restriction": "MILITARUM TEMPESTUS OFFICER model only.",
+      "source": "Faction Pack - Astra Militarum v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-astra-militarum-priority-drop-beacon",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "detachmentName": "Bridgehead Strike",
+      "enhancementName": "Priority-drop Beacon",
+      "restriction": "MILITARUM TEMPESTUS OFFICER model only.",
+      "source": "Faction Pack - Astra Militarum v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-black-templars-benediction-of-fury",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Black Templars"
+      },
+      "detachmentName": "Wrathful Procession",
+      "enhancementName": "Benediction of Fury",
+      "restriction": "CHAPLAIN model only.",
+      "source": "Faction Pack - Black Templars v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-black-templars-adaptable-executioner",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Black Templars"
+      },
+      "detachmentName": "Wrathful Procession",
+      "enhancementName": "Adaptable Executioner",
+      "restriction": "EXECRATOR model only.",
+      "source": "Faction Pack - Black Templars v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-blood-boil",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Legacy of Grace",
+      "enhancementName": "Blood Boil",
+      "restriction": "ADEPTUS ASTARTES PSYKER model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-aureole-of-the-angel",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Legacy of Grace",
+      "enhancementName": "Aureole of the Angel",
+      "restriction": "ADEPTUS ASTARTES model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-angelic-executioner",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Encarmine Speartip",
+      "enhancementName": "Angelic Executioner",
+      "restriction": "ADEPTUS ASTARTES JUMP PACK model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-shadow-of-abomination",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Encarmine Speartip",
+      "enhancementName": "Shadow of Abomination",
+      "restriction": "ADEPTUS ASTARTES JUMP PACK model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-instinctive-interception",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Wrath of the Doomed",
+      "enhancementName": "Instinctive Interception",
+      "restriction": "DEATH COMPANY model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-blood-angels-on-the-archtraitor-s-bridge",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Blood Angels"
+      },
+      "detachmentName": "Wrath of the Doomed",
+      "enhancementName": "On the Archtraitor's Bridge",
+      "restriction": "DEATH COMPANY model only.",
+      "source": "Faction Pack - Blood Angels v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-chaos-knights-pterrorshade-rookery",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Knights"
+      },
+      "detachmentName": "Bastions of Tyranny",
+      "enhancementName": "Pterrorshade Rookery",
+      "restriction": "KNIGHT TYRANT model only.",
+      "source": "Faction Pack - Chaos Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-chaos-knights-hate-filled-dominion",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Knights"
+      },
+      "detachmentName": "Bastions of Tyranny",
+      "enhancementName": "Hate-filled Dominion",
+      "restriction": "KNIGHT TYRANT model only.",
+      "source": "Faction Pack - Chaos Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-touched-by-the-warp",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Cabal of Chaos",
+      "enhancementName": "Touched by the Warp",
+      "restriction": "HERETIC ASTARTES model only (excluding KHORNE models).",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-conduit-of-chaos",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Cabal of Chaos",
+      "enhancementName": "Conduit of Chaos",
+      "restriction": "HERETIC ASTARTES DAEMON model only (excluding KHORNE models).",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-pact-of-cursed-pinions",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Murdertalon Raiders",
+      "enhancementName": "Pact of Cursed Pinions",
+      "restriction": "CHAOS LORD WITH JUMP PACK model only.",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-pact-of-destruction",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Devotees of Destruction",
+      "enhancementName": "Pact of Destruction",
+      "restriction": "WARPSMITH model only.",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 3"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-eye-of-oblivion",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Devotees of Destruction",
+      "enhancementName": "Eye Of Oblivion",
+      "restriction": "WARPSMITH model only.",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 3"
+    },
+    {
+      "id": "restriction-chaos-chaos-space-marines-shadowcowl-talisman",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "detachmentName": "Murdertalon Raiders",
+      "enhancementName": "Shadowcowl Talisman",
+      "restriction": "CHAOS LORD WITH JUMP PACK model only.",
+      "source": "Faction Pack - Chaos Space Marines v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-dark-angels-limitless-zeal",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Dark Angels"
+      },
+      "detachmentName": "Interrogation Conclave",
+      "enhancementName": "Limitless Zeal",
+      "restriction": "CHAPLAIN model only.",
+      "source": "Faction Pack - Dark Angels v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-dark-angels-inescapable-interrogation",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Dark Angels"
+      },
+      "detachmentName": "Interrogation Conclave",
+      "enhancementName": "Inescapable Interrogation",
+      "restriction": "CHAPLAIN model only.",
+      "source": "Faction Pack - Dark Angels v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-death-guard-host-of-the-hybridised-pox",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "detachmentName": "Paragons of Putrescence",
+      "enhancementName": "Host of the Hybridised Pox",
+      "restriction": "DEATH GUARD INFANTRY model only.",
+      "source": "Faction Pack - Death Guard v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-death-guard-rejuvenating-swarm",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "detachmentName": "Paragons of Putrescence",
+      "enhancementName": "Rejuvenating Swarm",
+      "restriction": "DEATH GUARD INFANTRY model only (excluding TERMINATOR models).",
+      "source": "Faction Pack - Death Guard v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-drukhari-towering-arrogance",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Kabalite Cartel",
+      "enhancementName": "Towering Arrogance",
+      "restriction": "ARCHON model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-drukhari-periapt-of-torments",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Spectacle of Spite",
+      "enhancementName": "Periapt of Torments",
+      "restriction": "SUCCUBUS model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-drukhari-hyperstimm-trafficker",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Exhibition of Slaughter",
+      "enhancementName": "Hyperstimm Trafficker",
+      "restriction": "SUCCUBUS model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-drukhari-periapt-of-torments",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Exhibition of Slaughter",
+      "enhancementName": "Periapt of Torments",
+      "restriction": "SUCCUBUS model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-drukhari-towering-arrogance",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Kabalite Agonysts",
+      "enhancementName": "Towering Arrogance",
+      "restriction": "ARCHON model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-drukhari-contempt-for-rivals",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Kabalite Agonysts",
+      "enhancementName": "Contempt For Rivals",
+      "restriction": "ARCHON model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-drukhari-gnarlskin-experimentor",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Drukhari"
+      },
+      "detachmentName": "Tools of Torment",
+      "enhancementName": "Gnarlskin Experimentor",
+      "restriction": "HAEMONCULUS model only.",
+      "source": "Faction Pack - Drukhari v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-emperor-s-children-cacophonic-accompaniment",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "detachmentName": "Elegant Brutes",
+      "enhancementName": "Cacophonic Accompaniment",
+      "restriction": "LORD KAKOPHONIST model only.",
+      "source": "Faction Pack - Emperor's Children v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-emperor-s-children-howling-plate",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "detachmentName": "Frenzied Host",
+      "enhancementName": "Howling Plate",
+      "restriction": "LORD EXULTANT model only.",
+      "source": "Faction Pack - Emperor's Children v1.1, page 3"
+    },
+    {
+      "id": "restriction-chaos-emperor-s-children-euphoric-crown",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "detachmentName": "Frenzied Host",
+      "enhancementName": "Euphoric Crown",
+      "restriction": "LORD EXULTANT model only.",
+      "source": "Faction Pack - Emperor's Children v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-genestealer-cults-contraband-munitions",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Genestealer Cults"
+      },
+      "detachmentName": "Heroes of the Uprising",
+      "enhancementName": "Contraband Munitions",
+      "restriction": "KELERMORPH/REDUCTUS SABOTEUR model only.",
+      "source": "Faction Pack - Genestealer Cults v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-genestealer-cults-gene-tailored-toxins",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Genestealer Cults"
+      },
+      "detachmentName": "Heroes of the Uprising",
+      "enhancementName": "Gene-tailored Toxins",
+      "restriction": "LOCUS/SANCTUS model only.",
+      "source": "Faction Pack - Genestealer Cults v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-genestealer-cults-talons-of-the-sire",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Genestealer Cults"
+      },
+      "detachmentName": "Purestrain Broodswarm",
+      "enhancementName": "Talons of the Sire",
+      "restriction": "PATRIARCH model only.",
+      "source": "Faction Pack - Genestealer Cults v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-genestealer-cults-inspired-to-greatness",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Genestealer Cults"
+      },
+      "detachmentName": "Xenocult Masses",
+      "enhancementName": "Inspired to Greatness",
+      "restriction": "MAGUS/PRIMUS model only.",
+      "source": "Faction Pack - Genestealer Cults v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-grey-knights-psychic-celerity",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "detachmentName": "Argent Assault",
+      "enhancementName": "Psychic Celerity",
+      "restriction": "TERMINATOR model only.",
+      "source": "Faction Pack - Grey Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-grey-knights-vigilance-of-titan",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "detachmentName": "Argent Assault",
+      "enhancementName": "Vigilance of Titan",
+      "restriction": "TERMINATOR model only.",
+      "source": "Faction Pack - Grey Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-imperial-knights-magos-questoris",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Imperial Knights"
+      },
+      "detachmentName": "Questor Forgepact",
+      "enhancementName": "Magos Questoris",
+      "restriction": "TECH-PRIEST model only.",
+      "source": "Faction Pack - Imperial Knights v1.1, page 3"
+    },
+    {
+      "id": "restriction-imperium-imperial-knights-blessed-plate",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Imperial Knights"
+      },
+      "detachmentName": "Dominus Foebreakers",
+      "enhancementName": "Blessed Plate",
+      "restriction": "IMPERIAL KNIGHTS DOMINUS model only.",
+      "source": "Faction Pack - Imperial Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-imperial-knights-archeotech-autoloaders",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Imperial Knights"
+      },
+      "detachmentName": "Dominus Foebreakers",
+      "enhancementName": "Archeotech Autoloaders",
+      "restriction": "IMPERIAL KNIGHTS DOMINUS model only.",
+      "source": "Faction Pack - Imperial Knights v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-leagues-of-votann-high-ka-hl",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Leagues of Votann"
+      },
+      "detachmentName": "Hearthband",
+      "enhancementName": "High Kâhl",
+      "restriction": "KÂHL model only.",
+      "source": "Faction Pack - Leagues of Votann v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-leagues-of-votann-ironskein",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Leagues of Votann"
+      },
+      "detachmentName": "Hearthband",
+      "enhancementName": "Ironskein",
+      "restriction": "KÂHL model only.",
+      "source": "Faction Pack - Leagues of Votann v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-leagues-of-votann-ironskein",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Leagues of Votann"
+      },
+      "detachmentName": "Hearthguard Covenant",
+      "enhancementName": "Ironskein",
+      "restriction": "KÂHL model only.",
+      "source": "Faction Pack - Leagues of Votann v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-leagues-of-votann-high-ka-hl",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Leagues of Votann"
+      },
+      "detachmentName": "Hearthguard Covenant",
+      "enhancementName": "High Kâhl",
+      "restriction": "KÂHL model only.",
+      "source": "Faction Pack - Leagues of Votann v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-necrons-prelocational-optimiser",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Necrons"
+      },
+      "detachmentName": "The Phaeron's Armoury",
+      "enhancementName": "Prelocational Optimiser",
+      "restriction": "NECRONS model only.",
+      "source": "Faction Pack - Necrons v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-orks-slippery-git",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Taktikal Brigade",
+      "enhancementName": "Slippery Git",
+      "restriction": "INFANTRY WARBOSS model only (excluding MEGA ARMOUR models).",
+      "source": "Faction Pack - Orks v1.1, page 5"
+    },
+    {
+      "id": "restriction-xenos-orks-da-gobshot-thunderbuss",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "More Dakka!",
+      "enhancementName": "Da Gobshot Thunderbuss",
+      "restriction": "ORKS INFANTRY model only.",
+      "source": "Faction Pack - Orks v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-orks-kunnin-hunta",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Equatorial Hordes",
+      "enhancementName": "Kunnin’ Hunta",
+      "restriction": "BEASTBOSS/INFANTRY WARBOSS model only.",
+      "source": "Faction Pack - Orks v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-orks-unkillable-scourge",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Equatorial Hordes",
+      "enhancementName": "Unkillable Scourge",
+      "restriction": "BEASTBOSS/INFANTRY WARBOSS model only.",
+      "source": "Faction Pack - Orks v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-marines-celerity",
+      "kind": "enhancement-restriction",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "detachmentName": "Librarius Conclave",
+      "enhancementName": "Celerity",
+      "restriction": "ADEPTUS ASTARTES PSYKER model only.",
+      "source": "Faction Pack - Space Marines v1.1, page 4"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-marines-shroud-field",
+      "kind": "enhancement-restriction",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "detachmentName": "Subversion Assets",
+      "enhancementName": "Shroud Field",
+      "restriction": "PHOBOS model only.",
+      "source": "Faction Pack - Space Marines v1.1, page 5"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-marines-avenging-angel",
+      "kind": "enhancement-restriction",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "detachmentName": "Vengeful Hosts",
+      "enhancementName": "Avenging Angel",
+      "restriction": "ADEPTUS ASTARTES FLY INFANTRY model only.",
+      "source": "Faction Pack - Space Marines v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-marines-orksbane",
+      "kind": "enhancement-restriction",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "detachmentName": "Vengeful Hosts",
+      "enhancementName": "Orksbane",
+      "restriction": "ADEPTUS ASTARTES FLY INFANTRY model only.",
+      "source": "Faction Pack - Space Marines v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-wolves-a-giant-amongst-giants",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Space Wolves"
+      },
+      "detachmentName": "Champions of Fenris",
+      "enhancementName": "A Giant Amongst Giants",
+      "restriction": "ADEPTUS ASTARTES INFANTRY model only.",
+      "source": "Faction Pack - Space Wolves v1.1, page 2"
+    },
+    {
+      "id": "restriction-imperium-adeptus-astartes-space-wolves-preyslayer",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Space Wolves"
+      },
+      "detachmentName": "Champions of Fenris",
+      "enhancementName": "Preyslayer",
+      "restriction": "ADEPTUS ASTARTES INFANTRY model only.",
+      "source": "Faction Pack - Space Wolves v1.1, page 2"
+    },
+    {
+      "id": "restriction-xenos-t-au-empire-student-of-kauyon",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - T'au Empire"
+      },
+      "detachmentName": "Auxiliary Cadre",
+      "enhancementName": "Student of Kauyon",
+      "restriction": "KROOT SHAPER model only.",
+      "source": "Faction Pack - T'au Empire v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-t-au-empire-admired-leader",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - T'au Empire"
+      },
+      "detachmentName": "Auxiliary Cadre",
+      "enhancementName": "Admired Leader",
+      "restriction": "T’AU EMPIRE model only (excluding KROOT models).",
+      "source": "Faction Pack - T'au Empire v1.1, page 3"
+    },
+    {
+      "id": "restriction-xenos-t-au-empire-thermoneutronic-projector",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - T'au Empire"
+      },
+      "detachmentName": "Experimental Prototype Cadre",
+      "enhancementName": "Thermoneutronic Projector",
+      "restriction": "BATTLESUIT model only.",
+      "source": "Faction Pack - T'au Empire v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-t-au-empire-plasma-accelerator-rifle",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - T'au Empire"
+      },
+      "detachmentName": "Experimental Prototype Cadre",
+      "enhancementName": "Plasma Accelerator Rifle",
+      "restriction": "BATTLESUIT model only.",
+      "source": "Faction Pack - T'au Empire v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-t-au-empire-supernova-launcher",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - T'au Empire"
+      },
+      "detachmentName": "Experimental Prototype Cadre",
+      "enhancementName": "Supernova Launcher",
+      "restriction": "BATTLESUIT model only.",
+      "source": "Faction Pack - T'au Empire v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-thousand-sons-curse-of-life",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "detachmentName": "Ritual of Regeneration",
+      "enhancementName": "Curse of Life",
+      "restriction": "INFANTRY/MOUNTED THOUSAND SONS PSYKER model only.",
+      "source": "Faction Pack - Thousand Sons v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-thousand-sons-eruption-of-vitality",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "detachmentName": "Ritual of Regeneration",
+      "enhancementName": "Eruption of Vitality",
+      "restriction": "INFANTRY/MOUNTED THOUSAND SONS PSYKER model only.",
+      "source": "Faction Pack - Thousand Sons v1.1, page 2"
+    },
+    {
+      "id": "restriction-chaos-thousand-sons-occulus-infernum",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "detachmentName": "Sekhetar Cohort",
+      "enhancementName": "Occulus Infernum",
+      "restriction": "SORCERER/EXALTED SORCERER model only.",
+      "source": "Faction Pack - Thousand Sons v1.1, page 3"
+    },
+    {
+      "id": "restriction-chaos-thousand-sons-walking-rampart",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "detachmentName": "Sekhetar Cohort",
+      "enhancementName": "Walking Rampart",
+      "restriction": "SORCERER/EXALTED SORCERER model only.",
+      "source": "Faction Pack - Thousand Sons v1.1, page 3"
+    },
+    {
+      "id": "restriction-chaos-thousand-sons-unravelled-fates",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "detachmentName": "Servants of Change",
+      "enhancementName": "Unravelled Fates",
+      "restriction": "TZAANGOR SHAMAN model only.",
+      "source": "Faction Pack - Thousand Sons v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-tyranids-elevated-might",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Tyranids"
+      },
+      "detachmentName": "Warrior Bioform Onslaught",
+      "enhancementName": "Elevated Might",
+      "restriction": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "source": "Faction Pack - Tyranids v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-tyranids-ocular-adaptation",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Tyranids"
+      },
+      "detachmentName": "Warrior Bioform Onslaught",
+      "enhancementName": "Ocular Adaptation",
+      "restriction": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "source": "Faction Pack - Tyranids v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-world-eaters-archslaughterer",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "detachmentName": "Vessels of Wrath",
+      "enhancementName": "Archslaughterer",
+      "restriction": "WORLD EATERS model only.",
+      "source": "Faction Pack - World Eaters v1.1, page 4"
+    },
+    {
+      "id": "restriction-chaos-world-eaters-gateways-to-glory",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "detachmentName": "Vessels of Wrath",
+      "enhancementName": "Gateways to Glory",
+      "restriction": "WORLD EATERS DAEMON PRINCE model only.",
+      "source": "Faction Pack - World Eaters v1.1, page 4"
+    }
+  ]
+}
