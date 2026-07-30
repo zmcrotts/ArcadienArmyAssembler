@@ -15,6 +15,8 @@ test("mobile build produces a complete installable offline package", () => {
   const offlineApp = fs.readFileSync(path.join(DIST, "offline-app.js"), "utf8");
   const engineApp = fs.readFileSync(path.join(DIST, "engine-app.js"), "utf8");
   const styles = fs.readFileSync(path.join(DIST, "styles.css"), "utf8");
+  const downloadPage = fs.readFileSync(path.join(DIST, "download.html"), "utf8");
+  const downloadStyles = fs.readFileSync(path.join(DIST, "download.css"), "utf8");
   const fileMatch = worker.match(/const OFFLINE_FILES = (\[[\s\S]*?\]);\nconst TOTAL_BYTES = (\d+);/);
 
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
@@ -23,6 +25,11 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(index, /name="apple-mobile-web-app-capable" content="yes"/);
   assert.match(index, /name="apple-mobile-web-app-status-bar-style" content="black-translucent"/);
   assert.match(index, /src="bootstrap-app\.js"/);
+  assert.match(downloadPage, /New version\. Who dis\?/);
+  assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Windows\.exe/);
+  assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Android\.apk/);
+  assert.match(downloadPage, /Open the iPhone\/iPad app/);
+  assert.match(downloadStyles, /\.platformGrid \{/);
   assert.match(index, /src="offline-app\.js\?v=offline2"/);
   assert.match(index, /<div id="mobileSheetBackdrop"[^>]+aria-hidden="true" hidden><\/div>/);
   assert.match(offlineApp, /navigator\.standalone === true/);

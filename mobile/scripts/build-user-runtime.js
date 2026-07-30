@@ -17,6 +17,8 @@ const FILES = [
   ["ui/catalogue-sections.js", "catalogue-sections.js"],
   ["ui/offline-app.js", "offline-app.js"],
   ["ui/app.webmanifest", "app.webmanifest"],
+  ["ui/download.html", "download.html"],
+  ["ui/download.css", "download.css"],
   ["android/app/src/main/res/drawable/crosshair.png", "app-icon.png"],
   ["src/domain/army.js", "domain/army.js"],
   ["src/domain/roster-document.js", "domain/roster-document.js"],
