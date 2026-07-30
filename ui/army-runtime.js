@@ -71,6 +71,112 @@ function effectiveKeywordsForEntry(item, armyState) {
   return [...keywords.values()];
 }
 
+function normalizeKeyword(value) {
+  return normalizeTargetName(value).replace(/^faction /, "");
+}
+
+function stratagemTargetMatches(target, item, armyState) {
+  if (!target || !item) return false;
+  if (target.op) {
+    const operands = Array.isArray(target.operands) ? target.operands : [];
+    if (target.op === "AND") return operands.length > 0 && operands.every(operand => stratagemTargetMatches(operand, item, armyState));
+    if (target.op === "OR") return operands.some(operand => stratagemTargetMatches(operand, item, armyState));
+    if (target.op === "NOT") return operands.length === 1 && !stratagemTargetMatches(operands[0], item, armyState);
+    return false;
+  }
+
+  if (target.type === "any") return true;
+  const expected = normalizeTargetName(target.value);
+  if (!expected) return false;
+  if (target.type === "keyword") {
+    return effectiveKeywordsForEntry(item, armyState).some(keyword => normalizeKeyword(keyword) === normalizeKeyword(expected));
+  }
+  if (target.type === "unit") {
+    const definition = item.definition || item.unitPackage?.definition || {};
+    return [
+      item.name,
+      item.unitPackage?.name,
+      definition.name,
+      ...(item.targetUnitNames || [])
+    ].some(name => normalizeTargetName(name) === expected);
+  }
+  return false;
+}
+
+function stratagemDescriptionTargetMatches(description, item, armyState) {
+  const plain = String(description || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&quot;/gi, '"')
+    .replace(/&amp;/gi, "&");
+  const match = plain.match(/\bTARGET:\s*([\s\S]*?)(?=\b(?:EFFECT|RESTRICTIONS?):|$)/i);
+  if (!match) return false;
+  const targetText = match[1].replace(/\s+/g, " ").trim();
+  if (/\benemy unit\b/i.test(targetText) && !/\bfriendly\b/i.test(targetText)) return false;
+
+  const normalizedText = normalizeTargetName(targetText.replace(/\//g, " or "));
+  const unitNames = [
+    item.name,
+    item.unitPackage?.name,
+    item.definition?.name,
+    item.unitPackage?.definition?.name,
+    ...(item.targetUnitNames || [])
+  ].map(normalizeTargetName).filter(Boolean);
+  if (unitNames.some(name => normalizedText.includes(name))) return true;
+
+  const actualKeywords = new Set(effectiveKeywordsForEntry(item, armyState).map(normalizeKeyword));
+  const vocabulary = [...new Set([...(item.knownKeywords || []), ...actualKeywords].map(normalizeKeyword).filter(Boolean))]
+    .sort((a, b) => b.length - a.length);
+  const mentions = [];
+  for (const keyword of vocabulary) {
+    const pattern = new RegExp(`(^| )${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?= |$)`, "g");
+    let keywordMatch;
+    while ((keywordMatch = pattern.exec(normalizedText))) {
+      const start = keywordMatch.index + keywordMatch[1].length;
+      if (mentions.some(itemMention => start >= itemMention.start && start < itemMention.end)) continue;
+      mentions.push({ keyword, start, end: start + keyword.length });
+    }
+  }
+  mentions.sort((a, b) => a.start - b.start);
+
+  const positiveGroups = [];
+  const negative = [];
+  for (let index = 0; index < mentions.length; index++) {
+    const mention = mentions[index];
+    const prefix = normalizedText.slice(Math.max(0, mention.start - 18), mention.start);
+    if (/\b(?:excluding|except|not)\s*$/.test(prefix)) {
+      negative.push(mention.keyword);
+      continue;
+    }
+    const previous = positiveGroups.at(-1);
+    const separator = previous ? normalizedText.slice(previous.end, mention.start) : "";
+    if (previous && /\bor\b/.test(separator)) {
+      previous.keywords.push(mention.keyword);
+      previous.end = mention.end;
+    } else {
+      positiveGroups.push({ keywords: [mention.keyword], end: mention.end });
+    }
+  }
+  if (negative.some(keyword => actualKeywords.has(keyword))) return false;
+  if (positiveGroups.length) return positiveGroups.every(group => group.keywords.some(keyword => actualKeywords.has(keyword)));
+  return /\b(?:one|that|your) friendly unit\b/i.test(targetText) || /^\s*that unit\b/i.test(targetText);
+}
+
+function eligibleStratagemsForEntry(armyDefinition, armyState, item) {
+  if (!armyDefinition || !item) return [];
+  const detachments = selectedDetachments(armyDefinition, armyState);
+  return [
+    ...(armyDefinition.coreStratagems || []).map(stratagem => ({ ...stratagem, sourceLabel: "Core" })),
+    ...detachments.flatMap(detachment => (detachment.stratagems || []).map(stratagem => ({
+      ...stratagem,
+      detachmentName: detachment.name,
+      sourceLabel: detachment.name
+    })))
+  ].filter(stratagem => stratagem.target
+    ? stratagemTargetMatches(stratagem.target, item, armyState)
+    : stratagemDescriptionTargetMatches(stratagem.description, item, armyState));
+}
+
 function normalizeRosterEntries(rosterEntries, armyState = null) {
   return (rosterEntries || []).map(item => {
     const definition = item.definition || item.unitPackage?.definition || {};
@@ -256,6 +362,13 @@ const DAEMON_DETACHMENT_GATES = {
   "Chaos - Thousand Sons": { detachmentName: "Changehost of Deceit", daemonKeyword: "Tzeentch", daemonFactionCategory: "Faction: Scintillating Legions" },
   "Chaos - World Eaters": { detachmentName: "Khorne Daemonkin", daemonKeyword: "Khorne", daemonFactionCategory: "Faction: Blood Legions" }
 };
+const NATIVE_UNIT_DETACHMENT_GATES = {
+  "Imperium - Imperial Knights": [{
+    detachmentName: "Questor Forgepact",
+    category: "Faction: Adeptus Mechanicus",
+    label: "Adeptus Mechanicus"
+  }]
+};
 
 function normalizeName(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -278,7 +391,26 @@ function daemonDetachmentAllowsSummons(armyDefinition, armyState) {
   return !gate || gate.selected;
 }
 
+function entryCategories(entry) {
+  const definition = entry?.definition || entry?.unitPackage?.definition || {};
+  return entry?.categories || entry?.keywords || entry?.unitPackage?.keywords || definition.categories || definition.keywords || [];
+}
+
+function nativeUnitDetachmentGate(armyDefinition, armyState, entry) {
+  const configs = NATIVE_UNIT_DETACHMENT_GATES[armyDefinition?.faction] || [];
+  const categories = entryCategories(entry).map(normalizeName);
+  const config = configs.find(item => categories.includes(normalizeName(item.category)));
+  if (!config) return null;
+  return {
+    ...config,
+    selected: selectedDetachments(armyDefinition, armyState)
+      .some(detachment => normalizeName(detachment.name) === normalizeName(config.detachmentName))
+  };
+}
+
 function canAddUnitForSelectedDetachment(armyDefinition, armyState, entry) {
+  const nativeGate = nativeUnitDetachmentGate(armyDefinition, armyState, entry);
+  if (nativeGate && !nativeGate.selected) return false;
   const gate = selectedDaemonGate(armyDefinition, armyState);
   if (!gate) return true;
   if (entry?.alliedFor?.type === "chaosDaemons" || entry?.unitPackage?.alliedFor?.type === "chaosDaemons") {
@@ -313,6 +445,9 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
   const warnings = [];
   const detachments = selectedDetachments(armyDefinition, armyState);
   const daemonGate = selectedDaemonGate(armyDefinition, armyState);
+  const gatedNativeUnits = entries
+    .map(entry => ({ entry, gate: nativeUnitDetachmentGate(armyDefinition, armyState, entry) }))
+    .filter(item => item.gate && !item.gate.selected);
 
   if (!detachments.length) warnings.push(warning("DETACHMENT_REQUIRED", "Select at least one valid detachment."));
   const detachmentPoints = detachments.reduce((sum, item) => sum + Number(item.detachmentPoints || 0), 0);
@@ -376,6 +511,18 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
         { requiredDetachmentName: daemonGate.requiredDetachmentName }
       ));
     }
+  }
+  for (const [detachmentName, items] of new Map(gatedNativeUnits.map(item => [
+    item.gate.detachmentName,
+    gatedNativeUnits.filter(candidate => candidate.gate.detachmentName === item.gate.detachmentName)
+  ]))) {
+    const label = items[0].gate.label;
+    warnings.push(warning(
+      "NATIVE_UNIT_DETACHMENT_REQUIRED",
+      `${label} units in ${armyDefinition.faction.replace(/^Imperium - /, "")} require the ${detachmentName} detachment.`,
+      items.map(item => item.entry.instanceId),
+      { requiredDetachmentName: detachmentName, category: items[0].gate.category }
+    ));
   }
   const battleSizeSlots = Math.max(1, Math.min(3, Math.ceil(Number(options.pointsLimit || 1000) / 1000)));
   for (const [type, allied] of alliedGroups) {
@@ -582,6 +729,7 @@ const armyApi = {
   daemonDetachmentAllowsSummons,
   detachmentPointLimitFor,
   enhancementPointsByBearer,
+  eligibleStratagemsForEntry,
   effectiveKeywordsForEntry,
   getEnhancementStates,
   getRosterPresentation,
@@ -592,6 +740,8 @@ const armyApi = {
   selectedDetachment,
   selectedDetachments,
   selectedDetachmentIds,
+  stratagemDescriptionTargetMatches,
+  stratagemTargetMatches,
   setSelectedDetachments,
   setEnhancement,
   setLeaderAttachment,

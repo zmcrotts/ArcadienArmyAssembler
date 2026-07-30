@@ -10,6 +10,7 @@ const {
   nativeUnitLinksFor
 } = require("./unit-definitions");
 const { bsdataFlagIsTrue } = require("./flags");
+const { nativeImportedCatalogueLinks } = require("./catalogue-aliases");
 const PRIMARY_MISSION_CARD_IMAGES = require("../../ui/assets/11th/primary-missions/manifest.json");
 const { supplementalCategoryNamesFor } = require("../rulesets/detachment-keywords");
 
@@ -159,10 +160,61 @@ function rulesFor(node, indexes) {
   return rules;
 }
 
-function catalogueArmyRules(catalogue, indexes, faction = "") {
-  const rules = rulesFor(catalogue, indexes).filter(rule => !/^boarding actions$/i.test(rule.name));
+function armyRuleTablesFor(rule, indexes) {
+  const wanted = normalizeName(rule?.name);
+  if (!wanted) return [];
+  const tables = [];
+  for (const entry of indexes.entries.values()) {
+    if (normalizeName(entry?.name) !== wanted) continue;
+    for (const group of asArray(entry?.selectionEntries?.selectionEntry)) {
+      const rows = asArray(group?.profiles?.profile).map(normalizeProfile).map(profile => ({
+        result: profile.characteristics?.D6 || "",
+        name: profile.name || "",
+        description: profile.characteristics?.Description || ""
+      })).filter(row => row.result && row.name && row.description)
+        .sort((left, right) => Number.parseInt(left.result, 10) - Number.parseInt(right.result, 10));
+      if (!rows.length) continue;
+      tables.push({
+        name: group.name || "Options",
+        dice: "D6",
+        rows
+      });
+    }
+  }
+  return [...new Map(tables.map(table => [
+    `${normalizeName(table.name)}:${JSON.stringify(table.rows)}`,
+    table
+  ])).values()];
+}
+
+function catalogueArmyRules(catalogue, indexes, faction = "", catalogueLookup = null) {
+  const sources = [catalogue];
+  for (const link of nativeImportedCatalogueLinks(catalogue)) {
+    const imported = catalogueLookup?.byId.get(link.targetId) || catalogueLookup?.byName.get(link.name);
+    if (imported?.catalogue) sources.push(imported.catalogue);
+  }
+  const rules = [...new Map(sources
+    .flatMap(source => rulesFor(source, indexes))
+    .filter(rule => !/^boarding actions$/i.test(rule.name))
+    .map(rule => [`${normalizeName(rule.name)}:${normalizeName(rule.description)}`, {
+      ...rule,
+      tables: armyRuleTablesFor(rule, indexes)
+    }])).values()];
   if (/black templars/i.test(faction)) return rules;
   return rules.filter(rule => String(rule.name || "").trim().toLowerCase() !== "templar vows");
+}
+
+function detachmentAbilityRules(entry) {
+  return asArray(entry?.profiles?.profile)
+    .filter(profile => /^abilities$/i.test(String(profile?.typeName || "").trim()))
+    .map(normalizeProfile)
+    .map(profile => ({
+      id: profile.id,
+      name: profile.name,
+      description: profile.characteristics?.Description || "",
+      sourceKind: "detachment-ability"
+    }))
+    .filter(rule => rule.name && rule.description);
 }
 
 function visitResolved(node, indexes, visitor, ancestry = new Set()) {
@@ -512,7 +564,10 @@ function extractArmyDefinitions(dataDirectory) {
     const detachments = detachmentEntries.map(entry => {
       const stratagems = [];
       const forceDisposition = forceDispositionForDetachment(entry, forceDispositionsByName);
-      const rules = rulesFor(entry, indexes);
+      const rules = [...new Map([
+        ...rulesFor(entry, indexes),
+        ...detachmentAbilityRules(entry)
+      ].map(rule => [`${normalizeName(rule.name)}:${normalizeName(rule.description)}`, rule])).values()];
       visitResolved(entry, indexes, node => {
         for (const profile of asArray(node?.profiles?.profile)) {
           if (/stratagem/i.test(profile.typeName || "")) stratagems.push(normalizeProfile(profile));
@@ -594,7 +649,7 @@ function extractArmyDefinitions(dataDirectory) {
       id: catalogue.id || faction,
       faction,
       source: { catalogueId: catalogue.id || null, sourceFile: file },
-      armyRules: catalogueArmyRules(catalogue, indexes, faction),
+      armyRules: catalogueArmyRules(catalogue, indexes, faction, catalogueLookup),
       forceDispositions,
       allowedSelectionKeys: nativeUnitLinks
         .filter(({ link }) => link.type === "selectionEntry" && !bsdataFlagIsTrue(link.hidden) && isRosterUnit(indexes.entries.get(link.targetId)))

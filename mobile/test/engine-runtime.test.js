@@ -14,6 +14,14 @@ test("mobile and desktop browser engine runtimes stay byte-identical", () => {
   assert.deepEqual(mobileRuntime, desktopRuntime);
 });
 
+test("mobile and desktop domain engines stay byte-identical", () => {
+  for (const file of ["army.js", "factions.js", "loadout.js", "pricing.js", "roster-document.js", "sheets.js"]) {
+    const mobileSource = fs.readFileSync(path.join(__dirname, "..", "src", "domain", file));
+    const desktopSource = fs.readFileSync(path.join(__dirname, "..", "..", "src", "domain", file));
+    assert.deepEqual(mobileSource, desktopSource, `${file} has drifted from the desktop domain engine`);
+  }
+});
+
 test("configured profiles retain Transport and other non-weapon datasheet profiles", () => {
   const unit = {
     id: "transport-unit",

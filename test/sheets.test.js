@@ -2,7 +2,41 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { buildRosterSheets } = require("../src/domain/sheets");
+const rosterSheets = require("../src/domain/sheets");
+const mobileRosterSheets = require("../mobile/src/domain/sheets");
+const { buildRosterSheets, extractWeaponEffects } = rosterSheets;
+
+test("statline extraction rejects aura, selectable-mode, phase, and charge effects", () => {
+  const conditionalEffects = [{
+    name: "Assisted Targeting (Aura)",
+    sourceKind: "detachment",
+    description: "Friendly ADEPTUS MECHANICUS units' ranged attacks have +1 BS and the [HEAVY] ability."
+  }, {
+    name: "Doctrina Imperatives",
+    sourceKind: "army",
+    description: "At the start of the battle round, select one of the following. Until the end of the battle round, it is active.\nPROTECTOR\n- Ranged weapons equipped by models in this unit have the [HEAVY] ability."
+  }, {
+    name: "Charge Protocol",
+    sourceKind: "detachment",
+    description: "Ranged weapons equipped by models in a unit that made a Charge move this turn have the [LETHAL HITS] ability."
+  }, {
+    name: "Shooting Protocol",
+    sourceKind: "detachment",
+    description: "In your Shooting phase, ranged weapons equipped by models in this unit have the [SUSTAINED HITS 1] ability."
+  }];
+
+  for (const sheetsRuntime of [rosterSheets, mobileRosterSheets]) {
+    assert.deepEqual(sheetsRuntime.extractWeaponEffects(conditionalEffects), []);
+    assert.deepEqual(
+      sheetsRuntime.extractWeaponEffects([{
+      name: "Permanent Protocol",
+      sourceKind: "detachment",
+      description: "Ranged weapons equipped by models in this unit have the [HEAVY] ability."
+      }]).map(effect => effect.keyword),
+      ["Heavy"]
+    );
+  }
+});
 
 test("printable sheets preserve Transport capacity outside ordinary abilities", () => {
   const sheets = buildRosterSheets({
@@ -47,6 +81,226 @@ test("sheets apply bearer Toughness additions from selected wargear", () => {
 
   assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.T, "12");
 });
+
+test("Bringer of Justice adds two melee attacks to its bearer only", () => {
+  const sheets = buildRosterSheets({
+    rosterEntries: [{
+      instanceId: "armiger-1",
+      name: "Armiger Warglaive",
+      configured: {
+        units: [],
+        weapons: [{
+          name: "Reaper chain-cleaver",
+          typeName: "Melee Weapons",
+          characteristics: { A: "4", WS: "3+", S: "10", AP: "-3", D: "3" }
+        }],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "knight-1",
+      name: "Knight Paladin",
+      configured: {
+        units: [],
+        weapons: [{
+          name: "Reaper chainsword",
+          typeName: "Melee Weapons",
+          characteristics: { A: "6", WS: "3+", S: "14", AP: "-4", D: "6" }
+        }, {
+          name: "Rapid-fire battle cannon",
+          typeName: "Ranged Weapons",
+          characteristics: { A: "2D6", BS: "3+", S: "10", AP: "-1", D: "3" }
+        }],
+        abilities: [],
+        rules: []
+      }
+    }],
+    enhancements: [{
+      name: "Bringer of Justice",
+      bearerInstanceId: "knight-1",
+      description: "Imperial Knights model only. Improve the Attacks characteristic of melee weapons equipped by the bearer by 2, and each time the bearer makes a melee attack, add 1 to the Hit roll."
+    }],
+    groupedPresentation: [{
+      id: "test-group",
+      kind: "attached",
+      title: "Test group",
+      memberInstanceIds: ["armiger-1", "knight-1"],
+      bodyguard: { instanceId: "armiger-1" },
+      leaders: [{ instanceId: "knight-1" }],
+      warnings: []
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.equal(sheet.meleeWeapons.find(item => item.name === "Reaper chain-cleaver").characteristics.A, "4");
+  assert.equal(sheet.meleeWeapons.find(item => item.name === "Reaper chainsword").characteristics.A, "8");
+  assert.equal(sheet.rangedWeapons[0].characteristics.A, "2D6");
+});
+
+test("enhancements apply every unconditional bearer and bearer-unit characteristic change", () => {
+  const sheets = buildRosterSheets({
+    name: "Static Enhancement Coverage",
+    pointsLimit: 1000,
+    totalPoints: 200,
+    enhancements: [{
+      name: "Perfected Arsenal",
+      bearerInstanceId: "leader-1",
+      profiles: [{
+        name: "Perfected Arsenal",
+        characteristics: {
+          Description: [
+            "Add 2\" to the bearer's Move characteristic.",
+            "Add 1 to the bearer's Toughness and Wounds characteristics.",
+            "Improve the bearer's Save characteristic by 1.",
+            "Add 2 to the Objective Control characteristic of the bearer.",
+            "Add 6\" to the Range characteristic of ranged weapons equipped by the bearer.",
+            "Improve the Ballistic Skill characteristic of ranged weapons equipped by the bearer by 1.",
+            "Improve the Weapon Skill characteristic of melee weapons equipped by the bearer by 1.",
+            "Add 2 to the Attacks characteristic of melee weapons equipped by the bearer.",
+            "Add 1 to the Strength and Damage characteristics of Psychic weapons equipped by the bearer.",
+            "Improve the Armour Penetration characteristic of weapons equipped by models in the bearer's unit by 1."
+          ].join(" ")
+        }
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "bodyguard-1",
+      name: "Bodyguard",
+      points: 100,
+      keywords: ["Infantry"],
+      configured: {
+        units: [{ name: "Bodyguard", characteristics: { M: "6\"", T: "4", SV: "3+", W: "2", LD: "6+", OC: "1" } }],
+        weapons: [{ name: "Bodyguard blade", typeName: "Melee Weapons", characteristics: { A: "3", WS: "3+", S: "4", AP: "-1", D: "1", Keywords: "-" } }],
+        abilities: [],
+        rules: []
+      }
+    }, {
+      instanceId: "leader-1",
+      name: "Leader",
+      points: 100,
+      keywords: ["Character", "Psyker"],
+      configured: {
+        units: [{ name: "Leader", characteristics: { M: "6\"", T: "4", SV: "3+", W: "4", LD: "6+", OC: "1" } }],
+        weapons: [
+          { name: "Mind bolt", typeName: "Ranged Weapons", characteristics: { Range: "18\"", A: "2", BS: "3+", S: "5", AP: "-1", D: "D3", Keywords: "Psychic" } },
+          { name: "Force stave", typeName: "Melee Weapons", characteristics: { A: "4", WS: "3+", S: "6", AP: "-2", D: "2", Keywords: "Psychic" } }
+        ],
+        abilities: [],
+        rules: []
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:bodyguard-1",
+      kind: "attached",
+      memberInstanceIds: ["bodyguard-1", "leader-1"],
+      bodyguard: { instanceId: "bodyguard-1" }
+    }]
+  });
+
+  const sheet = sheets.combinedUnitSheets[0];
+  assert.deepEqual(sheet.statlines.map(profile => [
+    profile.name,
+    profile.characteristics.M,
+    profile.characteristics.T,
+    profile.characteristics.SV,
+    profile.characteristics.W,
+    profile.characteristics.OC
+  ]), [
+    ["Bodyguard", "6\"", "4", "3+", "2", "1"],
+    ["Leader", "8\"", "5", "2+", "5", "3"]
+  ]);
+  assert.deepEqual(sheet.meleeWeapons.map(weapon => [
+    weapon.name,
+    weapon.characteristics.A,
+    weapon.characteristics.WS,
+    weapon.characteristics.S,
+    weapon.characteristics.AP,
+    weapon.characteristics.D
+  ]), [
+    ["Bodyguard blade", "3", "3+", "4", "-2", "1"],
+    ["Force stave", "6", "2+", "7", "-3", "3"]
+  ]);
+  assert.deepEqual(sheet.rangedWeapons.map(weapon => [
+    weapon.characteristics.Range,
+    weapon.characteristics.BS,
+    weapon.characteristics.S,
+    weapon.characteristics.AP,
+    weapon.characteristics.D
+  ]), [["24\"", "2+", "6", "-2", "D3+1"]]);
+});
+
+test("detachment stat effects stay target-scoped and ignore conditional sibling clauses", () => {
+  const sheets = buildRosterSheets({
+    name: "Static Detachment Coverage",
+    pointsLimit: 1000,
+    totalPoints: 200,
+    detachments: [{
+      name: "Static Rules",
+      rules: [{
+        name: "Moritoi Ancients",
+        description: "Add 2\" to the Move characteristic of models in ADEPTUS CUSTODES WALKER units from your army and add 1 to Advance and Charge rolls made for such units."
+      }, {
+        name: "Cyber Psalm-Programming",
+        description: "Add 2\" to the Move characteristic of models in LEGIO CYBERNETICA units from your army. In addition, unless that unit is Battle-shocked, add 1 to the Objective Control characteristic of models in that unit."
+      }, {
+        name: "Travelling Players",
+        description: "TROUPE units from your army gain the BATTLELINE keyword and TROUPE models in those units have an Objective Control characteristic of 2."
+      }, {
+        name: "Debt to the Soulforge",
+        description: [
+          "Each time a HERETIC ASTARTES DAEMON VEHICLE model from your army makes a Dark Pact, it can invoke its contract. If it does, subtract 1 from the resulting Leadership test when making that Dark Pact and, until the end of the phase:",
+          "- Each time a model in that unit makes a ranged attack, add 1 to the Wound roll.",
+          "- Add 2 to the Attacks characteristic of melee weapons equipped by models in that unit."
+        ].join("\n")
+      }]
+    }],
+    rosterEntries: [
+      testStatRecord("walker-1", "Contemptor", ["Adeptus Custodes", "Walker"], "6\"", "1"),
+      testStatRecord("robot-1", "Kastelan Robots", ["Legio Cybernetica"], "6\"", "1"),
+      testStatRecord("troupe-1", "Troupe", ["Troupe"], "8\"", "1"),
+      testStatRecord("other-1", "Other Unit", ["Infantry"], "6\"", "1"),
+      {
+        ...testStatRecord("daemon-1", "Daemon Prince", ["Heretic Astartes", "Daemon", "Vehicle"], "8\"", "3"),
+        configured: {
+          ...testStatRecord("daemon-1", "Daemon Prince", ["Heretic Astartes", "Daemon", "Vehicle"], "8\"", "3").configured,
+          weapons: [{
+            name: "Hellforged weapons - strike",
+            typeName: "Melee Weapons",
+            characteristics: { Range: "Melee", A: "6", WS: "2+", S: "8", AP: "-2", D: "3", Keywords: "-" }
+          }]
+        }
+      }
+    ]
+  });
+
+  assert.deepEqual(sheets.combinedUnitSheets.map(sheet => [
+    sheet.title,
+    sheet.statlines[0].characteristics.M,
+    sheet.statlines[0].characteristics.OC
+  ]), [
+    ["Contemptor", "8\"", "1"],
+    ["Kastelan Robots", "8\"", "1"],
+    ["Troupe", "8\"", "2"],
+    ["Other Unit", "6\"", "1"],
+    ["Daemon Prince", "8\"", "3"]
+  ]);
+  assert.equal(sheets.combinedUnitSheets.find(sheet => sheet.title === "Daemon Prince").meleeWeapons[0].characteristics.A, "6");
+});
+
+function testStatRecord(instanceId, name, keywords, move, oc) {
+  return {
+    instanceId,
+    name,
+    points: 50,
+    keywords,
+    configured: {
+      units: [{ name, characteristics: { M: move, T: "4", SV: "3+", W: "4", LD: "6+", OC: oc } }],
+      weapons: [],
+      abilities: [],
+      rules: []
+    }
+  };
+}
 
 test("Writ of Compunction shorthand increases the upgraded unit's OC", () => {
   const sheets = buildRosterSheets({

@@ -34,8 +34,11 @@ function normalizeWarning(item) {
   return null;
 }
 
-function unitName(item) {
-  return item?.unitPackage?.name || item?.name || item?.definition?.name || "Unknown unit";
+function unitName(item, services = {}) {
+  const definition = unitDefinition(item);
+  const entry = item?.entry || {};
+  const baseName = item?.unitPackage?.name || item?.name || definition?.name || "Unknown unit";
+  return services.configuredUnitName?.(definition, entry, baseName) || baseName;
 }
 
 function unitSelectionKey(item) {
@@ -63,7 +66,7 @@ function summarizeUnit(item, services) {
   return {
     instanceId,
     selectionKey: unitSelectionKey(item),
-    name: unitName(item),
+    name: unitName(item, services),
     points,
     roles,
     keywords,
@@ -123,7 +126,7 @@ function summarizeMissionSetup(armyDefinition, armyState) {
   };
 }
 
-function summarizeEnhancements(armyDefinition, armyState, rosterEntries) {
+function summarizeEnhancements(armyDefinition, armyState, rosterEntries, services) {
   const byId = new Map((rosterEntries || []).map(item => [item.instanceId || item.entry?.instanceId, item]));
   return (armyState?.enhancements || []).map(assignment => {
     const enhancement = (armyDefinition?.enhancements || []).find(item => item.id === assignment.enhancementId) || null;
@@ -133,7 +136,7 @@ function summarizeEnhancements(armyDefinition, armyState, rosterEntries) {
       name: enhancement?.name || assignment.enhancementId,
       points: asNumber(enhancement?.points),
       bearerInstanceId: assignment.bearerInstanceId,
-      bearerName: bearer ? unitName(bearer) : null,
+      bearerName: bearer ? unitName(bearer, services) : null,
       profiles: clone(enhancement?.profiles || []),
       rules: clone(enhancement?.rules || []),
       description: enhancementDescription(enhancement),
@@ -150,13 +153,13 @@ function enhancementDescription(enhancement) {
   return descriptions.join(" ").trim();
 }
 
-function summarizeWarlord(armyState, rosterEntries) {
+function summarizeWarlord(armyState, rosterEntries, services) {
   const warlord = (rosterEntries || []).find(item =>
     (item.instanceId || item.entry?.instanceId) === armyState?.warlordInstanceId
   );
   return armyState?.warlordInstanceId ? {
     instanceId: armyState.warlordInstanceId,
-    name: warlord ? unitName(warlord) : null,
+    name: warlord ? unitName(warlord, services) : null,
     selectionKey: warlord ? unitSelectionKey(warlord) : null
   } : null;
 }
@@ -229,8 +232,8 @@ function createRosterDocument(options) {
     missionSetup: summarizeMissionSetup(armyDefinition, armyState),
     coreStratagems: clone(armyDefinition?.coreStratagems || []),
     stratagemSource: clone(armyDefinition?.stratagemSource || null),
-    warlord: summarizeWarlord(armyState, unitRecords),
-    enhancements: summarizeEnhancements(armyDefinition, armyState, unitRecords),
+    warlord: summarizeWarlord(armyState, unitRecords, services),
+    enhancements: summarizeEnhancements(armyDefinition, armyState, unitRecords, services),
     alliedUnits: unitRecords.filter(item => item.alliedFor).map(item => ({
       instanceId: item.instanceId,
       selectionKey: item.selectionKey,

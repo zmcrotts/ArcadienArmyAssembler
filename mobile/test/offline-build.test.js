@@ -19,12 +19,20 @@ test("mobile build produces a complete installable offline package", () => {
 
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
   assert.match(index, /rel="apple-touch-icon" href="app-icon-192\.png"/);
+  assert.match(index, /name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/);
+  assert.match(index, /name="apple-mobile-web-app-capable" content="yes"/);
+  assert.match(index, /name="apple-mobile-web-app-status-bar-style" content="black-translucent"/);
   assert.match(index, /src="bootstrap-app\.js"/);
   assert.match(index, /src="offline-app\.js\?v=offline2"/);
   assert.match(index, /<div id="mobileSheetBackdrop"[^>]+aria-hidden="true" hidden><\/div>/);
   assert.match(offlineApp, /navigator\.standalone === true/);
   assert.match(offlineApp, /panel\.hidden = state === "ready" && installedApp/);
   assert.match(engineApp, /mobileSheetBackdrop\.onclick = closeMobileSheets/);
+  assert.match(engineApp, /class="mobileRosterSectionLabel"/);
+  assert.match(engineApp, /<small>— \$\{section\.groups\.length\}/);
+  assert.match(engineApp, />De-duplicate<\/button>/);
+  assert.match(engineApp, />Un-sync<\/button>/);
+  assert.match(engineApp, /class="startNewRoster" id="startNewRoster">New Roster<\/button>/);
   assert.match(engineApp, /mobileSheetBackdrop\.hidden = mobileSheet !== "details"/);
   assert.match(engineApp, /class="loadoutStepper"/);
   assert.match(engineApp, /quantity" readonly/);
@@ -38,9 +46,16 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /function renderSheetTransportProfiles\(abilities\)/);
   assert.doesNotMatch(engineApp, /sourceIssueWarning|Rules reference data reports/);
   assert.match(engineApp, /function positionWeaponPreview\(wrap, popover, token\)/);
+  assert.match(engineApp, /function renderOptionNamePreview\(name, node = null\)/);
+  assert.match(engineApp, /function collectRulesForOptionNode\(node\)/);
+  assert.match(engineApp, /function autosaveCurrentRoster\(options = \{\}\)/);
+  assert.match(engineApp, /document\.addEventListener\("visibilitychange"/);
   assert.match(engineApp, /const openBelow = availableBelow >= Math\.min\(naturalHeight, 260\) \|\| availableBelow >= availableAbove/);
   assert.match(engineApp, /detailsPanel\?\.addEventListener\("scroll", \(\) => closeOpenWeaponPreview\(\)/);
   assert.match(styles, /\.mobileSheetBackdrop \{[\s\S]*?position: fixed;[\s\S]*?z-index: 60;/);
+  assert.match(styles, /\.startHeaderActions\.hasDisconnect \{[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.startNewRoster \{[\s\S]*?box-sizing: border-box;[\s\S]*?margin-left: 0;[\s\S]*?width: 100%;/);
+  assert.match(styles, /body\.mobileAddOpen \.availablePanel #availableUnitsBody \{[\s\S]*?overflow-y: auto;/);
   assert.match(styles, /\.loadoutStepper \.loadoutStep \{[\s\S]*?min-height: 44px;/);
   assert.match(offlineApp, /registration\?\.update\(\)\.catch/);
   assert.match(offlineApp, /addEventListener\("controllerchange"/);
