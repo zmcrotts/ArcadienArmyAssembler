@@ -47,6 +47,20 @@
     return { all, byId, byDefinitionId, parentById };
   }
 
+  function getConfiguredUnitName(unitDefinition, rosterEntry, baseName = unitDefinition?.name || "Unknown unit") {
+    const name = String(baseName || unitDefinition?.name || "Unknown unit");
+    if (!/^Heretic Astartes Daemon Prince(?: with wings)?$/i.test(name)) return name;
+
+    const blessingGroup = buildTreeIndex(unitDefinition).all.find(node =>
+      node?.kind === "group" && node.name === "God Blessing"
+    );
+    const blessing = (blessingGroup?.children || []).find(node =>
+      ["Khorne", "Nurgle", "Slaanesh", "Tzeentch"].includes(node.name)
+      && Number(rosterEntry?.selections?.[node.id] || 0) > 0
+    );
+    return blessing ? `${name} of ${blessing.name}` : name;
+  }
+
   function groupCount(group, entry) {
     return (group.children || []).reduce((sum, child) => {
       if (child.kind === "group") return sum + groupCount(child, entry);
@@ -542,6 +556,17 @@
     };
   }
 
+  function bundledOptionPoints(node) {
+    if (!node) return 0;
+    let points = Number(node.points || 0);
+    for (const child of node.children || []) {
+      if (child.kind === "group") continue;
+      const minimum = constraintValue(child, "min", "parent") ?? constraintValue(child, "min") ?? 0;
+      if (minimum > 0) points += minimum * bundledOptionPoints(child);
+    }
+    return points;
+  }
+
   function getOptionStates(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
     const states = index.all
@@ -577,6 +602,7 @@
         name: node.name,
         kind: node.kind,
         points: Number(node.points || 0),
+        effectivePoints: bundledOptionPoints(node),
         parentId: parent?.id || null,
         current,
           minimum,
@@ -860,10 +886,49 @@
     return next;
   }
 
+  function isFallbackMeleeProfile(profile) {
+    return /melee weapons$/i.test(profile?.typeName || "")
+      && normalizeProfileText(profile?.name) === "close combat weapon";
+  }
+
+  function modelHasSelectedReplacementMelee(model, entry, index, unitDefinition) {
+    let found = false;
+    function visit(node) {
+      if (found) return;
+      if (
+        node !== model
+        && nodeIsActive(node, entry, index, unitDefinition, true)
+        && actualCount(node, entry) > 0
+        && (node.profiles || []).some(profile =>
+          /melee weapons$/i.test(profile?.typeName || "") && !isFallbackMeleeProfile(profile)
+        )
+      ) {
+        found = true;
+        return;
+      }
+      for (const child of node.children || []) visit(child);
+    }
+    visit(model);
+    return found;
+  }
+
+  function closestModelAncestor(node, index) {
+    let current = node;
+    while (current) {
+      if (current.kind === "model") return current;
+      current = index.parentById.get(current.id);
+    }
+    return null;
+  }
+
   function getConfiguredProfiles(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
     const profiles = new Map();
     const rules = new Map();
+    const modelsWithReplacementMelee = new Set(index.all
+      .filter(node => node.kind === "model" && nodeIsActive(node, entry, index, unitDefinition, true))
+      .filter(node => modelHasSelectedReplacementMelee(node, entry, index, unitDefinition))
+      .map(node => node.id));
 
     for (const node of index.all) {
       if (!nodeIsActive(node, entry, index, unitDefinition, true)) continue;
@@ -874,6 +939,8 @@
           : Number(entry.selections[node.id] || 0);
       if (count <= 0) continue;
       for (const profile of node.profiles || []) {
+        const model = closestModelAncestor(node, index);
+        if (isFallbackMeleeProfile(profile) && model && modelsWithReplacementMelee.has(model.id)) continue;
         const key = profile.typeName === "Unit"
           ? `${profile.typeName}:${profile.name}:${JSON.stringify(profile.characteristics || {})}`
           : profile.id || `${profile.typeName}:${profile.name}`;
@@ -913,9 +980,11 @@
 
   function selectedEquipmentLabels(node, entry, index, unitDefinition) {
     const records = collectEquipmentLabelRecords(node, entry, index, unitDefinition);
+    const suppressFallbackMelee = modelHasSelectedReplacementMelee(node, entry, index, unitDefinition);
     const counts = new Map();
     for (const record of records) {
       if (!record.name) continue;
+      if (suppressFallbackMelee && normalizeProfileText(record.name) === "close combat weapon") continue;
       counts.set(record.name, Number(counts.get(record.name) || 0) + Number(record.count || 0));
     }
     return [...counts.entries()]
@@ -1190,6 +1259,7 @@
 
   window.RosterEngine = {
     createDefaultRosterEntry,
+    getConfiguredUnitName,
     getOptionStates,
     getUnitSizeState,
     setSelection,

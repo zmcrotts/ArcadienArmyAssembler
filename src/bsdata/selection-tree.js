@@ -193,6 +193,39 @@ function shouldIncludeEntryLink(entryLink, definition) {
   return /daemon prince/i.test(String(definition?.name || ""));
 }
 
+function applyKnownLoadoutCorrections(tree) {
+  if (!/^Heretic Astartes Daemon Prince(?: with wings)?$/i.test(String(tree?.name || ""))) return tree;
+  const blessingGroup = (tree.children || []).find(child => child.kind === "group" && child.name === "Mark of Chaos");
+  if (!blessingGroup) return tree;
+
+  blessingGroup.name = "God Blessing";
+  blessingGroup.defaultSelectionId = null;
+  blessingGroup.children = (blessingGroup.children || []).filter(child =>
+    ["Khorne", "Nurgle", "Slaanesh", "Tzeentch"].includes(child.name)
+  );
+  blessingGroup.constraints = (blessingGroup.constraints || []).map(constraint =>
+    constraint.field === "selections" && constraint.type === "min"
+      ? { ...constraint, value: 1, raw: { ...constraint.raw, value: 1 } }
+      : constraint
+  );
+  if (!blessingGroup.constraints.some(constraint =>
+    constraint.field === "selections" && constraint.type === "min"
+  )) {
+    blessingGroup.constraints.push({
+      id: "arcadien-god-blessing-min",
+      type: "min",
+      field: "selections",
+      scope: "parent",
+      value: 1,
+      childId: null,
+      includeChildSelections: false,
+      includeChildForces: false,
+      raw: { type: "min", field: "selections", scope: "parent", value: 1 }
+    });
+  }
+  return tree;
+}
+
 function buildSelectionTree(unit, indexes, rootLink = null) {
   function build(source, link = null, ancestry = new Set(), forcedKind = null, parentPath = null) {
     let definition = source;
@@ -299,7 +332,7 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
     };
   }
 
-  return build(unit, rootLink, new Set(), "unit");
+  return applyKnownLoadoutCorrections(build(unit, rootLink, new Set(), "unit"));
 }
 
 module.exports = { buildSelectionTree };

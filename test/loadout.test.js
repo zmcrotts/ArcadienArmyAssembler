@@ -50,6 +50,56 @@ function option(definition, name, parentName = null) {
   return found;
 }
 
+test("bundled wargear choices expose mandatory descendant costs", () => {
+  const definition = unit11e("Chaos - Chaos Space Marines", "Forgefiend");
+  const entry = createDefaultRosterEntry(definition);
+  const armCannons = option(definition, "2 ectoplasma cannons");
+  const headCannon = option(definition, "Ectoplasma cannon and limbs");
+  const states = new Map(getOptionStates(definition, entry).map(state => [state.id, state]));
+
+  assert.equal(states.get(armCannons.id).points, 0);
+  assert.equal(states.get(armCannons.id).effectivePoints, 10);
+  assert.equal(states.get(headCannon.id).points, 0);
+  assert.equal(states.get(headCannon.id).effectivePoints, 5);
+});
+
+test("Legionary melee replacements suppress their fallback close combat weapons", () => {
+  const definition = unit11e("Chaos - Chaos Space Marines", "Legionaries");
+  const index = require("../src/domain/loadout").buildTreeIndex(definition);
+  const pathFor = node => {
+    const names = [];
+    let current = node;
+    while (current) {
+      names.unshift(current.name);
+      current = index.parentById.get(current.id);
+    }
+    return names.join(" > ");
+  };
+  const find = (name, pathText) => index.all.find(node =>
+    node.name === name && pathFor(node).includes(pathText)
+  );
+
+  let entry = createDefaultRosterEntry(definition);
+  entry = setSelection(definition, entry, find("Legionary w/ chainsword", "4 - 9 Legionaries").id, 3);
+  entry = setSelection(definition, entry, find("Legionary w/ heavy melee weapon", "4 - 9 Legionaries").id, 1);
+  entry = setSelection(definition, entry, find("Heavy melee weapon", "Replace boltgun").id, 1);
+  entry = setSelection(definition, entry, find("Plasma pistol", "Replace bolt pistol").id, 1);
+
+  const models = getConfiguredModels(definition, entry);
+  const weapons = getConfiguredProfiles(definition, entry).weapons;
+  assert.deepEqual(
+    models.map(model => [model.name, model.equipment]),
+    [
+      ["Aspiring Champion", ["Plasma pistol", "Heavy melee weapon"]],
+      ["Legionary w/ chainsword", ["3x Astartes chainsword", "3x Bolt pistol"]],
+      ["Legionary w/ heavy melee weapon", ["Heavy melee weapon", "Bolt pistol"]]
+    ]
+  );
+  assert.equal(weapons.some(weapon => weapon.name === "Close combat weapon"), false);
+  assert.equal(weapons.find(weapon => weapon.name === "Astartes chainsword")?.count, 3);
+  assert.equal(weapons.find(weapon => weapon.name === "Heavy melee weapon")?.count, 2);
+});
+
 legacyTest("Hive Tyrant defaults to both BSData default weapon choices", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   const entry = createDefaultRosterEntry(definition);

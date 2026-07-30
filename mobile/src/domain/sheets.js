@@ -125,8 +125,14 @@ function applyWeaponEffectsToConfigured(configured = {}, effects = [], context =
 function extractWeaponEffects(effects = []) {
   const extracted = asArray(effects).flatMap(effect => {
     if (isWeaponKeywordGlossaryEffect(effect)) return [];
+    if (effectRecordRequiresBattleState(effect)) return [];
     const source = effect?.sourceKind || effect?.source || "";
-    return effectTextParts(effect).flatMap(text => extractWeaponEffectsFromText(text, source));
+    return effectTextParts(effect).flatMap(text => staticEffectClauses(text).flatMap(clause =>
+      extractWeaponEffectsFromText(clause, source).map(extractedEffect => ({
+        ...extractedEffect,
+        bearerInstanceId: extractedEffect.scope === "bearer" ? effect?.bearerInstanceId || null : null
+      }))
+    ));
   });
   return uniqueWeaponEffects(extracted);
 }
@@ -141,9 +147,14 @@ function uniqueWeaponEffects(effects) {
       effect.keyword || "",
       effect.characteristic || "",
       effect.weaponName || "",
+      effect.requiredWeaponKeyword || "",
+      effect.excludedWeaponKeyword || "",
+      effect.scope || "",
       (effect.targets || []).join("/"),
+      effect.bearerInstanceId || "",
       effect.bodyguardOnly ? "bodyguard" : "",
       effect.delta ?? ""
+      , effect.value ?? ""
     ].join(":");
     if (seen.has(key)) continue;
     seen.add(key);
@@ -159,25 +170,150 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
   const effects = [];
   const weaponType = effectWeaponType(normalized);
   effects.push(...bracketedWeaponKeywordEffects(normalized));
+  const genericCharacteristics = weaponCharacteristicEffects(normalized);
+  effects.push(...genericCharacteristics);
 
-  if (apImprovesByOne(normalized)) effects.push({ kind: "ap", weaponType, delta: -1 });
-  if (meleeStrengthImprovesByOne(normalized)) {
+  if (apImprovesByOne(normalized) && !genericCharacteristics.some(effect => effect.characteristic === "AP")) effects.push({ kind: "ap", weaponType, delta: -1 });
+  if (meleeStrengthImprovesByOne(normalized) && !genericCharacteristics.some(effect => effect.characteristic === "S")) {
     effects.push({ kind: "characteristic", weaponType: "Melee Weapons", characteristic: "S", delta: 1, bodyguardOnly: bodyguardModelsOnly(normalized) });
   }
-  const attacks = weaponAttacksImproveByOne(normalized);
-  if (attacks) {
+  const attacks = weaponAttacksImprovement(normalized);
+  if (attacks && !genericCharacteristics.some(effect => effect.characteristic === "A")) {
     effects.push({
       kind: "characteristic",
       weaponType: attacks.weaponType || "",
       weaponName: attacks.weaponName || "",
       characteristic: "A",
-      delta: 1,
+      delta: attacks.delta,
       bodyguardOnly: bodyguardModelsOnly(normalized)
     });
   }
   effects.push(...attackSkillEffects(normalized));
 
   return effects;
+}
+
+function staticEffectClauses(text) {
+  const lines = String(text || "")
+    .replace(/\r\n?/g, "\n")
+    .split(/\n+/)
+    .map(line => line.trim())
+    .filter(Boolean);
+  const contextualized = [];
+  let listIntroduction = "";
+  for (const line of lines) {
+    const bullet = line.match(/^(?:[-*•■]\s*)(.+)$/);
+    if (bullet) {
+      contextualized.push(listIntroduction ? `${listIntroduction} ${bullet[1]}` : bullet[1]);
+      continue;
+    }
+    contextualized.push(line);
+    listIntroduction = /:\s*$/.test(line) ? line : "";
+  }
+  return contextualized
+    .flatMap(line => normalizeText(line).split(/(?<=[.;])\s+|,\s+and\s+(?=each\s+time\b)/i))
+    .map(normalizeText)
+    .filter(Boolean);
+}
+
+function weaponCharacteristicEffects(text) {
+  if (!/\bcharacteristics?\b/i.test(text) || !/\b(?:weapons?|Pistols?|this\s+model['’]s)\b/i.test(text)) return [];
+  const effects = [];
+  const compound = text.match(/\badd\s+(\d+)\s+to\s+(?:the\s+)?(.+?)\s+and\s+add\s+(\d+)\s+to\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)(?=[.;]|$)/i);
+  if (compound) {
+    effects.push(...weaponEffectsForNames(compound[2], compound[5], Number(compound[1]), "add"));
+    effects.push(...weaponEffectsForNames(compound[4], compound[5], Number(compound[3]), "add"));
+  }
+  for (const match of text.matchAll(/\b(add|adds|adding)\s+(\d+)\s*(?:"|&quot;|inches?)?\s+to\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)(?=[.;]|$)/ig)) {
+    if (/\band\s+add\s+\d+/i.test(match[3])) continue;
+    effects.push(...weaponEffectsForNames(match[3], match[4], Number(match[2]), "add"));
+  }
+  for (const match of text.matchAll(/\badd\s+(\d+)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?\bweapons?\b.*?\bbearer\b)(?=[.;]|$)/ig)) {
+    effects.push(...weaponEffectsForNames(match[2], match[3], Number(match[1]), "add"));
+  }
+  for (const match of text.matchAll(/\b(improve|improves|improving)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)\s+by\s+(\d+)\b/ig)) {
+    effects.push(...weaponEffectsForNames(match[2], match[3], Number(match[4]), "improve"));
+  }
+  for (const match of text.matchAll(/\b(improve|improves|improving)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?\bweapons?\s+equipped\s+by\s+the\s+wearer)\s+of\s+(\d+)\b/ig)) {
+    effects.push(...weaponEffectsForNames(match[2], match[3], Number(match[4]), "improve"));
+  }
+  for (const match of text.matchAll(/\bchange\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)\s+to\s+([0-9]+(?:D[0-9]+)?(?:\+\d+)?)(?=[,.;]|$)/ig)) {
+    const scope = weaponEffectScope(match[2]);
+    if (!scope) continue;
+    for (const characteristic of characteristicNames(match[1], true)) {
+      effects.push({ kind: "set-characteristic", ...scope, characteristic, value: normalizeText(match[3]) });
+    }
+  }
+  return effects;
+}
+
+function weaponEffectsForNames(names, scopeText, amount, operation) {
+  const scope = weaponEffectScope(scopeText);
+  if (!scope) return [];
+  return characteristicNames(names, true).map(characteristic => ({
+    kind: "characteristic",
+    ...scope,
+    characteristic,
+    delta: characteristicOperationDelta(characteristic, amount, operation),
+    bodyguardOnly: bodyguardModelsOnly(scopeText)
+  }));
+}
+
+function weaponEffectScope(value) {
+  const text = normalizeText(value);
+  if (!/\b(?:weapons?|Pistols?|this\s+model['’]s)\b/i.test(text)) return null;
+  const weaponType = effectWeaponType(text);
+  const requiredWeaponKeyword = (text.match(/\b(Psychic|Torrent|Pistol)\s+weapons?\b/i) || [])[1] || "";
+  const pistolScope = /\bbearer['’]s\s+Pistols?\b/i.test(text);
+  const excludedWeaponKeyword = /\bexcluding\s+(?:\[[^\]]*\]\s*)?Extra Attacks\b/i.test(text) ? "Extra Attacks" : "";
+  const scope = /\bmodels?\s+in\s+(?:the\s+)?bearer['’]s\s+unit\b|\bmodels?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
+    ? "bearer-unit"
+    : /\bbearer['’]s\b|\bequipped\s+by\s+(?:the\s+)?(?:bearer|wearer)\b/i.test(text)
+      ? "bearer"
+      : "";
+  const generic = text
+    .replace(/\s+equipped\s+by\b.*$/i, "")
+    .replace(/^(?:the\s+)?bearer['’]s\s+/i, "")
+    .replace(/^this\s+model['’]s\s+/i, "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\bPistols?\b/ig, "")
+    .replace(/\b(?:melee|ranged|Psychic|Torrent|Pistol)\b/ig, "")
+    .replace(/\bweapons?\b/ig, "")
+    .replace(/[*^]/g, "")
+    .trim();
+  return {
+    weaponType,
+    requiredWeaponKeyword: requiredWeaponKeyword || (pistolScope ? "Pistol" : ""),
+    excludedWeaponKeyword,
+    weaponName: generic && !/\bmodels?\b|\bunit\b/i.test(generic) ? generic : "",
+    scope
+  };
+}
+
+function characteristicNames(value, weapon = false) {
+  const mappings = weapon
+    ? [
+        ["Armour Penetration", "AP"], ["Armor Penetration", "AP"], ["Ballistic Skill", "BS"],
+        ["Weapon Skill", "WS"], ["Objective Control", "OC"], ["Attacks", "A"], ["Attack", "A"],
+        ["Strength", "S"], ["Damage", "D"], ["Range", "Range"], ["AP", "AP"], ["BS", "BS"], ["WS", "WS"]
+      ]
+    : [
+        ["Objective Control", "OC"], ["Leadership", "LD"], ["Toughness", "T"], ["Movement", "M"], ["Wounds", "W"],
+        ["Wound", "W"], ["Save", "SV"], ["Move", "M"], ["OC", "OC"], ["LD", "LD"],
+        ["SV", "SV"], ["T", "T"], ["W", "W"], ["M", "M"]
+      ];
+  const normalized = normalizeText(value).replace(/[*^]/g, " ");
+  const found = [];
+  for (const [name, characteristic] of mappings) {
+    if (new RegExp(`\\b${name.replace(/\s+/g, "\\s+")}\\b`, "i").test(normalized) && !found.includes(characteristic)) found.push(characteristic);
+  }
+  return found;
+}
+
+function characteristicOperationDelta(characteristic, amount, operation) {
+  if (operation === "improve" && ["AP", "BS", "WS", "LD", "SV"].includes(characteristic)) return -amount;
+  if (operation === "add" && ["AP", "BS", "WS"].includes(characteristic)) return -amount;
+  return amount;
 }
 
 function attackSkillEffects(text) {
@@ -246,15 +382,63 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
     || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text)
     || /\badd\s+\d+\s+to\s+the\s+bearer['’]s\s+\w+\s+characteristic\b/i.test(text)
+    || /\bbearer['’]s\s+.+?\s+characteristics?\b/i.test(text)
+    || /\bthe\s+bearer\s+has\s+(?:an?|their)\s+.+?\s+characteristics?\b/i.test(text)
+    || /\bthe\s+bearer\s+has\b.*\bcharacteristics?\b/i.test(text)
+    || /\bthis\s+model['’]s\s+.+?\s+characteristics?\b/i.test(text)
+    || /\bcharacteristics?\s+of\s+this\s+model['’]s\b/i.test(text)
+    || /\bcharacteristic\s+of\s+(?:the\s+)?bearer\b/i.test(text)
+    || /\bmodels?\s+in\s+(?:the\s+)?bearer['’]s\s+unit\b/i.test(text)
+    || /\bweapons?\s+equipped\s+by\s+(?:the\s+)?bearer\b/i.test(text)
+    || /\bweapons?\s+equipped\s+by\s+(?:the\s+)?wearer\b/i.test(text)
+    || /\bbearer['’]s\s+(?:melee|ranged)?\s*weapons?\b/i.test(text)
+    || /\bbearer['’]s\s+(?:Pistols?|Psychic\s+weapons?|Torrent\s+weapons?)\b/i.test(text)
+    || /\bcharacteristics?\s+of\b.*\bweapons?\b.*\bbearer\b/i.test(text)
     || /\bmodels?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
     || /\bweapons?\s+equipped\s+by\s+models?\s+in\s+(?:this|that)\s+unit\b/i.test(text)
     || /\bthis\s+unit'?s\s+.*weapons?\b/i.test(text)
     || /\bthis\s+unit\s+has\s+\+\d+\s+(?:M|T|SV|W|LD|OC)\b/i.test(text);
 }
 
+function effectRecordRequiresBattleState(effect) {
+  if (!effect || typeof effect !== "object") return false;
+  const label = normalizeText([effect.name, effect.type, effect.kind].filter(Boolean).join(" "));
+  if (/\bAura\b/i.test(label)) return true;
+  const description = normalizeText(effect.description || effect.characteristics?.Description || "");
+  const payloadIndex = firstStaticEffectPayloadIndex(description);
+  if (payloadIndex > 0 && effectRequiresBattleState(description.slice(0, payloadIndex))) return true;
+  return /\b(?:select|choose)\s+one\s+of\s+(?:the\s+)?(?:.+?\s+)?(?:below|following)\b/i.test(description)
+    || /\b(?:select|choose)\s+which\b[\s\S]*?\b(?:active|augmentation|ability|effect)\b/i.test(description)
+    || /\b(?:select|choose)\s+(?:one|a)\b[\s\S]*?\b(?:until\s+the\s+end|is\s+active|becomes?\s+active)\b/i.test(description);
+}
+
+function firstStaticEffectPayloadIndex(text) {
+  const normalized = normalizeText(text);
+  const patterns = [
+    /\b(?:add|adds|adding|improve|improves|improving|change|set)\b[\s\S]*?\bcharacteristics?\b/i,
+    /\b(?:melee|ranged|Psychic|Torrent|Pistol)?\s*weapons?\b[\s\S]*?\b(?:have|has|gain|gains)\b[\s\S]*?\[[^\]]+\]/i,
+    /\b(?:models?\s+(?:in|from)\b[^.;]*?|units?\s+from\b[^.;]*?|(?:this|that)\s+unit)\s+(?:have|has|gain|gains)\s+(?:a\s+)?[2-6]\+\s*(?:InSv|invulnerable\s+save)\b/i,
+    /\b(?:this\s+unit|models?\s+in\s+this\s+unit)\b[\s\S]*?\bhas\s+\+\d+\s+(?:M|T|SV|W|LD|OC)\b/i
+  ];
+  const indexes = patterns.map(pattern => normalized.search(pattern)).filter(index => index >= 0);
+  return indexes.length ? Math.min(...indexes) : -1;
+}
+
 function effectRequiresBattleState(text) {
+  const stableAttachment = /\bwhile\s+.*\b(?:is\s+)?leading\b/i.test(text)
+    || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
+    || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text);
   return /\bAura\b/i.test(text)
     || /\bwithin\s+\d+\s*(?:"|&quot;|inches?\b)/i.test(text)
+    || (!stableAttachment && /\b(?:if|unless|when|whenever|while)\b/i.test(text))
+    || /\b(?:once\s+per|each\s+time|after\s+|during\s+|for\s+every|selected\s+to)\b/i.test(text)
+    || (!stableAttachment && /\b(?:at\s+the\s+start\s+of|until\s+)\b/i.test(text))
+    || /\b(?:in|at\s+the\s+start\s+of|at\s+the\s+end\s+of)\s+(?:your|the|your\s+opponent['’]s|an?\s+opponent['’]s)\s+(?:Command|Movement|Shooting|Charge|Fight)\s+phase\b/i.test(text)
+    || /\b(?:on\s+the\s+charge|made\s+(?:a|an)\s+(?:Charge|Advance|Normal|Fall\s+Back|Ingress)\s+move|charged\s+this\s+turn)\b/i.test(text)
+    || /\b(?:remained\s+stationary|has\s+not\s+moved|is\s+engaged|within\s+Engagement\s+Range)\b/i.test(text)
+    || /\bin\s+a\s+turn\s+in\s+which\b/i.test(text)
+    || /\b(?:this|that)\s+(?:phase|turn|battle\s+round)\b/i.test(text)
+    || /\b(?:is|becomes?|remains?)\s+active\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?'?s?\s+active\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
     || /\bwhile\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
@@ -289,13 +473,23 @@ function meleeStrengthImprovesByOne(text) {
   return /\badd\s+1\s+to\s+the\s+Strength\s+characteristic\s+of\s+melee\s+weapons\b/i.test(text);
 }
 
-function weaponAttacksImproveByOne(text) {
-  const match = text.match(/\badd\s+1\s+to\s+the\s+Attacks\s+characteristic\s+of\s+(.+?)\s+weapons\s+equipped\s+by\s+(?:(?:models\s+in\s+)?(?:this|that)\s+unit|that\s+unit)\b/i);
-  if (!match) return "";
-  const weaponScope = normalizeText(match[1]);
-  if (/^ranged$/i.test(weaponScope)) return { weaponType: "Ranged Weapons" };
-  if (/^melee$/i.test(weaponScope)) return { weaponType: "Melee Weapons" };
-  return { weaponName: weaponScope };
+function weaponAttacksImprovement(text) {
+  const improveMatch = text.match(/\b(?:improve|improves|improving)\s+the\s+Attacks\s+characteristics?\s+of\s+(.+?)\s+by\s+(\d+)\b/i);
+  if (improveMatch) return weaponAttackScope(improveMatch[1], Number(improveMatch[2]));
+
+  const addMatch = text.match(/\b(?:add|adds|adding)\s+(\d+)\s+to\s+the\s+Attacks\s+characteristics?\s+of\s+(.+?)(?=,\s+and\b|[.;]|$)/i);
+  if (addMatch) return weaponAttackScope(addMatch[2], Number(addMatch[1]));
+  return "";
+}
+
+function weaponAttackScope(value, delta) {
+  const weaponScope = normalizeText(value)
+    .replace(/\s+equipped\s+by\s+(?:(?:models?\s+in\s+)?(?:this|that)\s+unit|that\s+unit|(?:the\s+)?bearer)\b.*$/i, "")
+    .replace(/^(?:the\s+)?bearer['’]s\s+/i, "");
+  if (/\bmelee\b/i.test(weaponScope)) return { weaponType: "Melee Weapons", delta };
+  if (/\branged\b/i.test(weaponScope)) return { weaponType: "Ranged Weapons", delta };
+  const namedWeapon = weaponScope.replace(/\s+weapons?$/i, "");
+  return namedWeapon ? { weaponName: namedWeapon, delta } : "";
 }
 
 function bodyguardModelsOnly(text) {
@@ -305,17 +499,33 @@ function bodyguardModelsOnly(text) {
 function applyWeaponEffectsToWeapon(weapon, effects, context = {}) {
   const next = clone(weapon) || {};
   const characteristics = clone(next.characteristics || {});
+  const originalCharacteristics = clone(characteristics);
   for (const effect of effects) {
+    if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;
     if (effect.bodyguardOnly && !context.isBodyguard) continue;
     if (!effectTargetsUnit(effect, context)) continue;
     if (effect.weaponType && effect.weaponType !== next.typeName) continue;
-    if (effect.weaponName && normalizeWeaponName(effect.weaponName) !== normalizeWeaponName(next.name)) continue;
+    if (effect.weaponName && !weaponNameMatches(effect.weaponName, next.name)) continue;
+    if (effect.requiredWeaponKeyword && !weaponHasKeyword(characteristics, effect.requiredWeaponKeyword)) continue;
+    if (effect.excludedWeaponKeyword && weaponHasKeyword(characteristics, effect.excludedWeaponKeyword)) continue;
     if (effect.kind === "keyword") characteristics.Keywords = addWeaponKeyword(characteristics.Keywords ?? characteristics.keywords, effect.keyword);
     if (effect.kind === "ap") characteristics.AP = improveAp(characteristics.AP, effect.delta);
     if (effect.kind === "characteristic") characteristics[effect.characteristic] = applyCharacteristicDelta(characteristics[effect.characteristic], effect.delta, effect.characteristic);
+    if (effect.kind === "set-characteristic") characteristics[effect.characteristic] = effect.value;
   }
   next.characteristics = characteristics;
+  next.modifiedCharacteristics = mergedModifiedCharacteristics(
+    next.modifiedCharacteristics,
+    changedCharacteristicNames(originalCharacteristics, characteristics)
+  );
   return next;
+}
+
+function weaponHasKeyword(characteristics, keyword) {
+  return normalizeText(characteristics.Keywords ?? characteristics.keywords)
+    .split(",")
+    .map(item => normalizeText(item).toLowerCase())
+    .some(item => item === normalizeText(keyword).toLowerCase() || item.startsWith(`${normalizeText(keyword).toLowerCase()} `));
 }
 
 function effectTargetsUnit(effect, context = {}) {
@@ -331,7 +541,14 @@ function effectTargetsUnit(effect, context = {}) {
 }
 
 function normalizeWeaponName(value) {
-  return normalizeText(value).toLowerCase();
+  return normalizeText(value).toLowerCase().replace(/^[^a-z0-9]+/, "");
+}
+
+function weaponNameMatches(effectName, weaponName) {
+  const effect = normalizeWeaponName(effectName);
+  const weapon = normalizeWeaponName(weaponName);
+  return effect === weapon
+    || (weapon.startsWith(effect) && /[\s:—–-]/.test(weapon.charAt(effect.length)));
 }
 
 function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
@@ -340,8 +557,11 @@ function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
   return asArray(profiles).map(profile => {
     const next = clone(profile) || {};
     const characteristics = clone(next.characteristics || {});
+    const originalCharacteristics = clone(characteristics);
     for (const effect of unitEffects) {
+      if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;
       if (effect.bodyguardOnly && !context.isBodyguard) continue;
+      if (!effectTargetsUnit(effect, context)) continue;
       if (effect.kind === "set-characteristic") {
         characteristics[effect.characteristic] = effect.value;
       } else {
@@ -349,19 +569,38 @@ function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
       }
     }
     next.characteristics = characteristics;
+    next.modifiedCharacteristics = mergedModifiedCharacteristics(
+      next.modifiedCharacteristics,
+      changedCharacteristicNames(originalCharacteristics, characteristics)
+    );
     return next;
   });
 }
 
+function changedCharacteristicNames(before = {}, after = {}) {
+  return [...new Set([...Object.keys(before), ...Object.keys(after)])]
+    .filter(key => normalizeText(before[key]) !== normalizeText(after[key]));
+}
+
+function mergedModifiedCharacteristics(existing = [], changed = []) {
+  return [...new Set([...asArray(existing), ...asArray(changed)])];
+}
+
 function extractUnitEffects(effects = []) {
   const extracted = asArray(effects).flatMap(effect => {
+    if (effectRecordRequiresBattleState(effect)) return [];
     const source = effect?.sourceKind || effect?.source || "";
-    return effectTextParts(effect).flatMap(text => extractUnitEffectsFromText(text, source));
+    return effectTextParts(effect).flatMap(text => staticEffectClauses(text).flatMap(clause =>
+      extractUnitEffectsFromText(clause, source).map(extractedEffect => ({
+        ...extractedEffect,
+        bearerInstanceId: extractedEffect.scope === "bearer" ? effect?.bearerInstanceId || null : null
+      }))
+    ));
   });
   const seen = new Set();
   const result = [];
   for (const effect of extracted) {
-    const key = [effect.kind, effect.characteristic, effect.bodyguardOnly ? "bodyguard" : "", effect.delta].join(":");
+    const key = [effect.kind, effect.characteristic, effect.bodyguardOnly ? "bodyguard" : "", effect.scope || "", (effect.targets || []).join("/"), effect.bearerInstanceId || "", effect.delta, effect.value].join(":");
     if (seen.has(key)) continue;
     seen.add(key);
     result.push(effect);
@@ -373,14 +612,117 @@ function extractUnitEffectsFromText(text, sourceKind = "") {
   const normalized = normalizeText(text);
   if (!normalized || !effectAppliesAutomatically(normalized, sourceKind)) return [];
   const effects = [];
+  const genericCharacteristics = genericModelCharacteristicEffects(normalized);
+  effects.push(...genericCharacteristics);
   const toughnessMatch = normalized.match(/\badd\s+(\d+)\s+to\s+the\s+(?:bearer['’]s|model['’]s|models?['’])?\s*Toughness\s+characteristic(?:\s+of\s+(?:Bodyguard\s+)?models)?\b/i);
-  if (toughnessMatch) {
+  if (toughnessMatch && !genericCharacteristics.some(effect => effect.characteristic === "T")) {
     effects.push({ kind: "unit-characteristic", characteristic: "T", delta: Number(toughnessMatch[1]), bodyguardOnly: bodyguardModelsOnly(normalized) });
   }
   for (const effect of modelCharacteristicEffects(normalized)) {
-    effects.push(effect);
+    if (!genericCharacteristics.some(item => item.characteristic === effect.characteristic && item.kind === effect.kind)) effects.push(effect);
   }
   return effects;
+}
+
+function genericModelCharacteristicEffects(text) {
+  if (!/\bcharacteristics?\b/i.test(text) || /\bweapons?\b/i.test(text)) return [];
+  const effects = [];
+  for (const match of text.matchAll(/\b(add|adds|adding)\s+(\d+)\s*(?:"|&quot;|inches?)?\s+to\s+this\s+model['’]s\s+(.+?)\s+characteristics?\b/ig)) {
+    for (const characteristic of characteristicNames(match[3])) {
+      effects.push({
+        kind: "unit-characteristic",
+        scope: "model",
+        characteristic,
+        delta: characteristicOperationDelta(characteristic, Number(match[2]), "add")
+      });
+    }
+  }
+  for (const match of text.matchAll(/\b(add|adds|adding)\s+(\d+)\s*(?:"|&quot;|inches?)?\s+to\s+(?:the\s+)?bearer['’]s\s+(.+?)\s+characteristics?\b/ig)) {
+    for (const characteristic of characteristicNames(match[3])) {
+      effects.push({
+        kind: "unit-characteristic",
+        scope: "bearer",
+        characteristic,
+        delta: characteristicOperationDelta(characteristic, Number(match[2]), "add")
+      });
+    }
+  }
+  for (const match of text.matchAll(/\b(improve|improves|improving)\s+(?:the\s+)?bearer['’]s\s+(.+?)\s+characteristics?\s+by\s+(\d+)\b/ig)) {
+    for (const characteristic of characteristicNames(match[2])) {
+      effects.push({
+        kind: "unit-characteristic",
+        scope: "bearer",
+        characteristic,
+        delta: characteristicOperationDelta(characteristic, Number(match[3]), "improve")
+      });
+    }
+  }
+  for (const match of text.matchAll(/\b(add|adds|adding)\s+(\d+)\s*(?:"|&quot;|inches?)?\s+to\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)(?=(?:\s+and\s+add\s+\d+\s+to\s+(?:Advance|Charge|Hit|Wound|save)\b)|[.;]|$)/ig)) {
+    effects.push(...unitEffectsForNames(match[3], match[4], Number(match[2]), "add"));
+  }
+  for (const match of text.matchAll(/\b(improve|improves|improving)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)\s+by\s+(\d+)\b/ig)) {
+    effects.push(...unitEffectsForNames(match[2], match[3], Number(match[4]), "improve"));
+  }
+  for (const match of text.matchAll(/\b(.+?)\s+have\s+(?:an?|their)\s+(.+?)\s+characteristics?\s+of\s+([0-9]+(?:\+|")?)(?=[.;]|$)/ig)) {
+    const scope = unitEffectScope(match[1]);
+    for (const characteristic of characteristicNames(match[2])) {
+      effects.push({ kind: "set-characteristic", ...scope, characteristic, value: normalizeText(match[3]) });
+    }
+  }
+  for (const match of text.matchAll(/\b(.+?)\s+has\s+(?:an?|their)\s+(.+?)\s+characteristics?\s+of\s+([0-9]+(?:\+|")?)(?=\s+and\b|[.;]|$)/ig)) {
+    const scope = unitEffectScope(match[1]);
+    for (const characteristic of characteristicNames(match[2])) {
+      effects.push({ kind: "set-characteristic", ...scope, characteristic, value: normalizeText(match[3]) });
+    }
+  }
+  for (const match of text.matchAll(/\bthe\s+bearer\s+has\b.*?\band\s+(?:an?|their)\s+(.+?)\s+characteristics?\s+of\s+([0-9]+(?:\+|")?)(?=\s+and\b|[.;]|$)/ig)) {
+    for (const characteristic of characteristicNames(match[1])) {
+      effects.push({ kind: "set-characteristic", scope: "bearer", characteristic, value: normalizeText(match[2]) });
+    }
+  }
+  for (const match of text.matchAll(/\b(?:the\s+)?bearer['’]s\s+(.+?)\s+characteristic\s+(?:becomes|is)\s+([0-9]+(?:\+|")?)(?=[.;]|$)/ig)) {
+    for (const characteristic of characteristicNames(match[1])) {
+      effects.push({ kind: "set-characteristic", scope: "bearer", characteristic, value: normalizeText(match[2]) });
+    }
+  }
+  return effects;
+}
+
+function unitEffectsForNames(names, scopeText, amount, operation) {
+  const scope = unitEffectScope(scopeText);
+  return characteristicNames(names).map(characteristic => ({
+    kind: "unit-characteristic",
+    ...scope,
+    characteristic,
+    delta: characteristicOperationDelta(characteristic, amount, operation),
+    bodyguardOnly: bodyguardModelsOnly(scopeText)
+  }));
+}
+
+function unitEffectScope(value) {
+  const text = normalizeText(value);
+  const scope = /\b(?:the\s+)?bearer\b|\bbearer['’]s\b/i.test(text) && !/\bbearer['’]s\s+unit\b/i.test(text)
+    ? "bearer"
+    : /\bbearer['’]s\s+unit\b|\b(?:this|that)\s+unit\b/i.test(text)
+      ? "bearer-unit"
+      : "";
+  return { scope, targets: unitEffectTargets(text) };
+}
+
+function unitEffectTargets(text) {
+  const patterns = [
+    /\bmodels?\s+in\s+(.+?)\s+units?\s+from\s+your\s+army\b/i,
+    /\bFriendly\s+(.+?)\s+units?\b/i,
+    /\b(.+?)\s+models?\s+in\s+those\s+units?\b/i
+  ];
+  for (const pattern of patterns) {
+    const match = normalizeText(text).match(pattern);
+    if (!match) continue;
+    const subject = match[1].split(/\band\b/i).at(-1) || match[1];
+    const target = normalizeMatchText(subject.replace(/\bmodels?\b/ig, "").replace(/\bunits?\b/ig, ""));
+    return target ? [target] : [];
+  }
+  return [];
 }
 
 function modelCharacteristicEffects(text) {
@@ -439,8 +781,19 @@ function addNumericCharacteristic(value, delta) {
 
 function applyCharacteristicDelta(value, delta, characteristic = "") {
   if (["BS", "WS", "LD", "SV"].includes(characteristic)) return improvePlusCharacteristic(value, delta);
-  if (characteristic === "M") return addMoveCharacteristic(value, delta);
-  return addNumericCharacteristic(value, delta);
+  if (characteristic === "M" || characteristic === "Range") return addMoveCharacteristic(value, delta);
+  return addNumericOrDiceCharacteristic(value, delta);
+}
+
+function addNumericOrDiceCharacteristic(value, delta) {
+  const numeric = addNumericCharacteristic(value, delta);
+  if (numeric !== value) return numeric;
+  const text = normalizeText(value);
+  if (!/^\d*D\d+(?:[+-]\d+)?$/i.test(text) || !Number(delta)) return value;
+  const suffix = text.match(/([+-]\d+)$/);
+  const base = suffix ? text.slice(0, -suffix[1].length) : text;
+  const total = Number(suffix?.[1] || 0) + Number(delta);
+  return total ? `${base}${total > 0 ? "+" : ""}${total}` : base;
 }
 
 function improvePlusCharacteristic(value, delta) {
@@ -603,6 +956,7 @@ function statlinesForRecord(record, enhancements = [], effects = [], context = {
     return {
       name: profile.name,
       count: profile.count || 1,
+      modifiedCharacteristics: clone(profile.modifiedCharacteristics || []),
       characteristics
     };
   });
@@ -622,6 +976,7 @@ function inferredInvulnerableSave(record, enhancements = [], effects = [], conte
 function invulnerableEffectTextsFromEffects(effects = [], context = {}) {
   return asArray(effects).flatMap(effect => {
     if (effect?.bodyguardOnly && !context.isBodyguard) return [];
+    if (effectRecordRequiresBattleState(effect)) return [];
     const source = effect?.sourceKind || effect?.source || "";
     return invulnerableEffectTextParts(effect).filter(text =>
       effectAppliesAutomatically(text, source) && invulnerableEffectTargetsUnit(text, context)
@@ -822,13 +1177,20 @@ function buildCombinedUnitSheet(document, group) {
       unitSize: clone(item.unitSize),
       keywords: clone(item.keywords || [])
     })),
-    statlines: records.flatMap(record => statlinesForRecord(record, enhancementsByBearer.get(record.instanceId), weaponEffects, { isBodyguard: record.instanceId === bodyguardInstanceId })),
+    statlines: records.flatMap(record => statlinesForRecord(record, enhancementsByBearer.get(record.instanceId), weaponEffects, {
+      instanceId: record.instanceId,
+      isBodyguard: record.instanceId === bodyguardInstanceId,
+      unitNames: records.map(item => item.name),
+      keywords
+    })),
     rangedWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Ranged Weapons", weaponEffects, {
+      instanceId: item.instanceId,
       isBodyguard: item.instanceId === bodyguardInstanceId,
       unitNames: records.map(record => record.name),
       keywords
     })).map(clone),
     meleeWeapons: records.flatMap(item => effectiveWeaponsFor(item, "Melee Weapons", weaponEffects, {
+      instanceId: item.instanceId,
       isBodyguard: item.instanceId === bodyguardInstanceId,
       unitNames: records.map(record => record.name),
       keywords
@@ -887,7 +1249,9 @@ function uniqueReferenceSheets(sheets) {
 
 function buildCrusadeSheet(document, record) {
   const weaponEffects = memberRuleEffects([record], document, [record.instanceId]);
-  const profile = statlinesForRecord(record, enhancementRecords(document, [record.instanceId]), weaponEffects)[0] || {};
+  const profile = statlinesForRecord(record, enhancementRecords(document, [record.instanceId]), weaponEffects, {
+    instanceId: record.instanceId
+  })[0] || {};
   return {
     id: `crusade:${record.instanceId}`,
     kind: "crusade-unit",
@@ -1027,7 +1391,15 @@ function buildRosterSheets(document) {
   };
 }
 
-const sheetsApi = { applyUnitEffectsToProfiles, applyWeaponEffectsToConfigured, buildRosterSheets };
+const sheetsApi = {
+  applyUnitEffectsToProfiles,
+  applyWeaponEffectsToConfigured,
+  buildRosterSheets,
+  effectAppliesAutomatically,
+  effectRequiresBattleState,
+  extractUnitEffects,
+  extractWeaponEffects
+};
 
 if (typeof module !== "undefined" && module.exports) module.exports = sheetsApi;
 if (typeof window !== "undefined") window.RosterSheets = sheetsApi;

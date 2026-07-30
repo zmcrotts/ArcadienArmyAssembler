@@ -257,6 +257,26 @@ test("exports support NR, WTC, WTC-Compact, GW, and GW-Compact text formats", ()
   assert.doesNotMatch(gwCompact, /\nCHARACTER\n/);
 });
 
+test("configured unit names flow into roster records and text exports", () => {
+  const bodyguard = rosterEntry("bodyguard", "bodyguard-named", 120, {}, 10);
+  const state = selectDetachment(army, createArmyState(army), "hallowed-martyrs");
+  const document = createRosterDocument({
+    faction: "Imperium - Adepta Sororitas",
+    pointsLimit: 1000,
+    totalPoints: 120,
+    armyDefinition: army,
+    armyState: state,
+    rosterEntries: [bodyguard],
+    services: {
+      ...services,
+      configuredUnitName: (definition, entry, baseName) => `${baseName} of Test`
+    }
+  });
+
+  assert.equal(document.rosterEntries[0].name, "Battle Sisters Squad of Test");
+  assert.match(exportRosterText(document), /Battle Sisters Squad of Test/);
+});
+
 test("exports Discord compact list chunks with hide-subunit and combine options", () => {
   const document = {
     faction: "Xenos - Orks",

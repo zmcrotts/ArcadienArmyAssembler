@@ -12,6 +12,7 @@ const {
 } = require("../src/rulesets/sources");
 const {
   createDefaultRosterEntry,
+  getConfiguredUnitName,
   getConfiguredModels,
   getConfiguredProfiles,
   getOptionStates,
@@ -21,6 +22,11 @@ const {
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { leaderCanTarget } = require("../src/domain/army");
+const {
+  buildRosterSheets,
+  extractUnitEffects,
+  extractWeaponEffects
+} = require("../src/domain/sheets");
 
 test("ruleset registry exposes the default 11e source", () => {
   const source = getRulesetSource(DEFAULT_RULESET_SOURCE_ID);
@@ -47,6 +53,96 @@ test("normalized rulesets are memoized within a process", () => {
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.units), true);
   assert.equal(Object.isFrozen(first.units[0]), true);
+});
+
+test("normalized enhancements and detachments expose only their always-on characteristic changes", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const allEnhancements = ruleset.armies.flatMap(army => army.enhancements || []);
+  const allDetachmentRules = ruleset.armies.flatMap(army =>
+    (army.detachments || []).flatMap(detachment =>
+      (detachment.rules || []).map(rule => ({ ...rule, sourceKind: "detachment" }))
+    )
+  );
+  const effectsFor = (name, items = allEnhancements) => {
+    const item = items.find(candidate => candidate.name === name);
+    assert.ok(item, `Missing corpus rule ${name}`);
+    return [...extractUnitEffects([item]), ...extractWeaponEffects([item])];
+  };
+  const characteristicsFor = (name, items) =>
+    new Set(effectsFor(name, items).map(effect => effect.characteristic));
+
+  assert.deepEqual(characteristicsFor("Bringer of Justice"), new Set(["A"]));
+  assert.deepEqual(characteristicsFor("Weavers' Wail"), new Set(["S", "A"]));
+  assert.deepEqual(characteristicsFor("Iron Surplice of Saint Istalela"), new Set(["SV"]));
+  assert.deepEqual(characteristicsFor("Legacy Sidearm"), new Set(["A"]));
+  assert.deepEqual(characteristicsFor("Supa-burny Fuel"), new Set(["A"]));
+  assert.deepEqual(characteristicsFor("Power of the Hive Mind"), new Set(["S", "AP"]));
+  assert.deepEqual(characteristicsFor("Moritoi Ancients", allDetachmentRules), new Set(["M"]));
+  assert.deepEqual(characteristicsFor("Travelling Players", allDetachmentRules), new Set(["OC"]));
+  assert.deepEqual(characteristicsFor("Cyber Psalm-Programming", allDetachmentRules), new Set(["M"]));
+
+  assert.equal(effectsFor("Panoply of the Cursed Knights").length, 0);
+  assert.equal(effectsFor("Possessed Blade").length, 0);
+  assert.equal(effectsFor("Strategic Conqueror").length, 0);
+});
+
+test("CSM Daemon Princes must choose one God Blessing and each blessing updates their sheet", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const princes = ruleset.units.filter(unit =>
+    unit.faction === "Chaos - Chaos Space Marines"
+    && /^Heretic Astartes Daemon Prince(?: with wings)?$/i.test(unit.name)
+  );
+  assert.equal(princes.length, 2);
+
+  for (const prince of princes) {
+    const initial = createDefaultRosterEntry(prince);
+    const blessingStates = getOptionStates(prince, initial).filter(option =>
+      ["Khorne", "Nurgle", "Slaanesh", "Tzeentch"].includes(option.name)
+    );
+    assert.deepEqual(blessingStates.map(option => option.name), ["Khorne", "Nurgle", "Slaanesh", "Tzeentch"]);
+    assert.equal(blessingStates.filter(option => option.current === 1).length, 1);
+    assert.equal(blessingStates.every(option =>
+      option.groupMinimum === 1 && option.groupMaximum === 1 && option.mutuallyExclusive
+    ), true);
+
+    for (const blessing of blessingStates) {
+      const selected = setSelection(prince, initial, blessing.id, 1);
+      assert.equal(getConfiguredUnitName(prince, selected), `${prince.name} of ${blessing.name}`);
+      const configured = getConfiguredProfiles(prince, selected);
+      const sheets = buildRosterSheets({
+        name: `${prince.name} - ${blessing.name}`,
+        totalPoints: prince.points,
+        rosterEntries: [{
+          ...selected,
+          name: prince.name,
+          points: prince.points,
+          keywords: prince.keywords,
+          configured
+        }]
+      });
+      const sheet = sheets.combinedUnitSheets[0];
+      const statline = sheet.statlines[0].characteristics;
+      const hellforged = sheet.meleeWeapons.filter(weapon => /Hellforged weapons/i.test(weapon.name));
+      const cannon = sheet.rangedWeapons.find(weapon => weapon.name === "Infernal cannon");
+
+      if (blessing.name === "Khorne") {
+        assert.deepEqual(hellforged.map(weapon => weapon.characteristics.S), ["10", "8"]);
+        assert.equal(hellforged.every(weapon => weapon.modifiedCharacteristics.includes("S")), true);
+      }
+      if (blessing.name === "Nurgle") {
+        assert.equal(statline.T, prince.name.endsWith("with wings") ? "10" : "11");
+        assert.equal(sheet.statlines[0].modifiedCharacteristics.includes("T"), true);
+      }
+      if (blessing.name === "Slaanesh") {
+        assert.equal(statline.M, prince.name.endsWith("with wings") ? "14\"" : "10\"");
+        assert.equal(sheet.statlines[0].modifiedCharacteristics.includes("M"), true);
+      }
+      if (blessing.name === "Tzeentch") {
+        assert.equal(cannon.characteristics.A, "6");
+        assert.equal(cannon.modifiedCharacteristics.includes("A"), true);
+      }
+    }
+  }
 });
 
 test("ruleset registry rejects unknown sources", () => {
@@ -116,6 +212,71 @@ test("11e ruleset gap-fills incomplete army rules", () => {
   assert.match(waaagh.description, /Strength and Attacks characteristics/i);
   assert.match(waaagh.description, /5\+ invulnerable save/i);
   assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
+});
+
+test("Imperial Knights inherit Code Chivalric from their native library catalogue", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const knights = ruleset.armies.find(item => item.faction === "Imperium - Imperial Knights");
+  const codeChivalric = knights?.armyRules.find(item => item.name === "Code Chivalric");
+
+  assert.ok(codeChivalric);
+  assert.match(codeChivalric.description, /determine your army's Oath/i);
+  assert.match(codeChivalric.description, /one Deed and one Quality/i);
+  assert.match(codeChivalric.description, /army becomes Honoured/i);
+  assert.deepEqual(codeChivalric.tables.map(table => table.name), ["Deed", "Quality"]);
+  assert.equal(codeChivalric.tables[0].rows.length, 3);
+  assert.equal(codeChivalric.tables[1].rows.length, 3);
+  assert.deepEqual(codeChivalric.tables[0].rows.map(row => row.result), ["1 or 2", "3 or 4", "5 or 6"]);
+  assert.deepEqual(codeChivalric.tables[1].rows.map(row => row.result), ["1 or 2", "3 or 4", "5 or 6"]);
+  assert.match(codeChivalric.tables[0].rows.find(row => row.result === "1 or 2").description, /Character/i);
+  assert.match(codeChivalric.tables[1].rows.find(row => row.result === "5 or 6").description, /Objective Control/i);
+});
+
+test("Questor Forgepact retains its named ability definitions in rules and sheets", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const knights = ruleset.armies.find(item => item.faction === "Imperium - Imperial Knights");
+  const forgepact = knights?.detachments.find(item => item.name === "Questor Forgepact");
+  const assistedTargeting = forgepact?.rules.find(item => item.name === "Assisted Targeting (Aura)");
+  const sacristanPledge = forgepact?.rules.find(item => item.name === "Sacristan Pledge");
+
+  assert.match(assistedTargeting?.description || "", /within 6.+ADEPTUS MECHANICUS/i);
+  assert.match(assistedTargeting?.description || "", /\+1 \*\*BS\*\*/i);
+  assert.match(assistedTargeting?.description || "", /\*\*\[HEAVY\]\*\*/i);
+  assert.match(sacristanPledge?.description || "", /within 3.+heals.+D3 wounds/i);
+
+  const sheets = buildRosterSheets({
+    faction: knights.faction,
+    detachments: [forgepact],
+    rosterEntries: []
+  });
+  const sheetRules = sheets.referenceSheets.rules.detachments[0].rules;
+  assert.ok(sheetRules.some(item => item.name === "Assisted Targeting (Aura)"));
+  assert.ok(sheetRules.some(item => item.name === "Sacristan Pledge"));
+
+  const rangers = ruleset.units.find(item =>
+    item.faction === "Imperium - Imperial Knights"
+    && item.name === "Skitarii Rangers"
+  );
+  const configured = getConfiguredProfiles(rangers, createDefaultRosterEntry(rangers));
+  const rangerSheets = buildRosterSheets({
+    faction: knights.faction,
+    detachments: [forgepact],
+    rosterEntries: [{
+      instanceId: "rangers-1",
+      name: rangers.name,
+      keywords: rangers.keywords || rangers.categories,
+      configured
+    }],
+    groupedPresentation: [{
+      id: "unit:rangers-1",
+      kind: "unit",
+      memberInstanceIds: ["rangers-1"],
+      warnings: []
+    }]
+  });
+  const galvanicRifle = rangerSheets.combinedUnitSheets[0].rangedWeapons.find(item => item.name === "Galvanic rifle");
+  assert.equal(galvanicRifle.characteristics.BS, "4+");
+  assert.doesNotMatch(galvanicRifle.keywords, /\b(?:Heavy|Assault)\b/i);
 });
 
 test("11e ruleset gap-fills missing Tyranids detachment stratagems without replacing New Recruit data", () => {
@@ -791,9 +952,7 @@ test("root-condition enhancement eligibility resolves to retained bearer units",
     "Astral Overlap",
     "Magos Questoris",
     "Unmasking Suite",
-    "Encircling Horrors"
-  ]);
-  const sourceOnlyEnhancementNames = new Set([
+    "Encircling Horrors",
     "Thermoneutronic Projector",
     "Plasma Accelerator Rifle",
     "Supernova Launcher"
@@ -807,7 +966,6 @@ test("root-condition enhancement eligibility resolves to retained bearer units",
     enhancement.eligibleSelectionKeys.length > 0
     && enhancement.eligibleSelectionKeys.every(key => retainedKeys.has(key))
   ), true);
-  assert.equal(allEnhancements.some(enhancement => sourceOnlyEnhancementNames.has(enhancement.name)), false);
 });
 
 test("root-condition enhancement eligibility projects bearer keyword gates through mixed source conditions", () => {

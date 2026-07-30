@@ -480,6 +480,11 @@ button:hover {
   font-weight: 700;
 }
 
+.modifiedCharacteristic {
+  color: #8a681f;
+  font-weight: 800;
+}
+
 .rosterConfiguration {
   border: 1px solid #777;
   background: #e8f2f3;
@@ -1825,6 +1830,10 @@ html[data-theme="dark"] .attachedLeaderReference {
 
 html[data-theme="dark"] .attachmentReference {
   color: #f6c873 !important;
+}
+
+html[data-theme="dark"] .modifiedCharacteristic {
+  color: #f6c873;
 }
 
 html[data-theme="dark"] .displayControls .segmentedControl,

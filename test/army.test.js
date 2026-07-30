@@ -8,6 +8,7 @@ const { extractArmyDefinitions } = require("../src/bsdata/army-definitions");
 const { extractUnitDefinitions } = require("../src/bsdata/unit-definitions");
 const {
   calculateArmyOptionPoints,
+  canAddUnitForSelectedDetachment,
   createArmyState,
   detachBodyguard,
   getEnhancementStates,
@@ -575,4 +576,48 @@ test("detachment keyword grants affect display roles, copy limits, and upgrade e
   assert.equal(enhancement.bearerOptions.every(option => option.eligible), true);
   assert.equal(legality.warnings.some(item => item.code === "UNIT_COPY_LIMIT_EXCEEDED" || item.code === "BATTLELINE_LIMIT_EXCEEDED"), false);
   assert.deepEqual(require("../src/domain/army").effectiveKeywordsForEntry(roster[0], state), ["Vehicle", "Wagon", "Battleline"]);
+});
+
+test("Imperial Knights expose Adeptus Mechanicus units only in Questor Forgepact", () => {
+  const army = {
+    faction: "Imperium - Imperial Knights",
+    allowedSelectionKeys: ["knight", "skitarii"],
+    detachments: [
+      { id: "forgepact", name: "Questor Forgepact" },
+      { id: "freeblades", name: "Freeblade Company" }
+    ],
+    enhancements: []
+  };
+  const knight = {
+    instanceId: "knight-1",
+    selectionKey: "knight",
+    name: "Knight Paladin",
+    categories: ["Faction: Imperial Knights", "Vehicle"],
+    roles: {},
+    rosterRules: {}
+  };
+  const skitarii = {
+    instanceId: "skitarii-1",
+    selectionKey: "skitarii",
+    name: "Skitarii Rangers",
+    categories: ["Faction: Adeptus Mechanicus", "Skitarii", "Battleline"],
+    roles: { battleline: true },
+    rosterRules: {}
+  };
+  const freebladeState = selectDetachment(army, createArmyState(army), "freeblades");
+  const forgepactState = selectDetachment(army, createArmyState(army), "forgepact");
+
+  assert.equal(canAddUnitForSelectedDetachment(army, freebladeState, knight), true);
+  assert.equal(canAddUnitForSelectedDetachment(army, freebladeState, skitarii), false);
+  assert.equal(canAddUnitForSelectedDetachment(army, forgepactState, skitarii), true);
+
+  const warning = validateRosterLegality(army, freebladeState, [skitarii]).warnings
+    .find(item => item.code === "NATIVE_UNIT_DETACHMENT_REQUIRED");
+  assert.equal(warning?.details.requiredDetachmentName, "Questor Forgepact");
+  assert.deepEqual(warning?.affectedInstanceIds, ["skitarii-1"]);
+  assert.equal(
+    validateRosterLegality(army, forgepactState, [skitarii]).warnings
+      .some(item => item.code === "NATIVE_UNIT_DETACHMENT_REQUIRED"),
+    false
+  );
 });

@@ -2,10 +2,179 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 
 global.window = {};
 require("../ui/engine-runtime");
 require("../ui/army-runtime");
+
+test("live roster panels feed selected unit profiles back through static effect rendering", () => {
+  for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(require.resolve(file), "utf8");
+    assert.match(source, /const effects = \[\s*\.\.\.selectedArmyAndDetachmentEffects\(\),\s*\.\.\.configuredEffectSources\(configured\),/);
+    assert.match(source, /function configuredEffectSources[\s\S]*configured\.profiles/);
+    assert.match(source, /class="modifiedCharacteristic" title="Modified from base profile"/);
+  }
+});
+
+test("army rule reference cards render nested D6 tables", () => {
+  for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(require.resolve(file), "utf8");
+    assert.match(source, /function renderArmyRuleTables\(rule\)/);
+    assert.match(source, /<th>\$\{escapeHtml\(table\.dice \|\| "Roll"\)\}<\/th>/);
+    assert.match(source, /\$\{renderArmyRuleTables\(rule\)\}/);
+    assert.match(source, /\$\{renderArmyRuleTables\(item\)\}/);
+  }
+});
+
+test("browser runtime adds the selected God Blessing to CSM Daemon Prince names", () => {
+  const definition = {
+    name: "Heretic Astartes Daemon Prince",
+    selectionTree: {
+      id: "daemon-prince",
+      kind: "unit",
+      children: [{
+        id: "god-blessing",
+        kind: "group",
+        name: "God Blessing",
+        children: [
+          { id: "khorne", kind: "upgrade", name: "Khorne" },
+          { id: "nurgle", kind: "upgrade", name: "Nurgle" },
+          { id: "slaanesh", kind: "upgrade", name: "Slaanesh" },
+          { id: "tzeentch", kind: "upgrade", name: "Tzeentch" }
+        ]
+      }]
+    }
+  };
+
+  assert.equal(
+    window.RosterEngine.getConfiguredUnitName(definition, { selections: { nurgle: 1 } }),
+    "Heretic Astartes Daemon Prince of Nurgle"
+  );
+  assert.equal(
+    window.RosterEngine.getConfiguredUnitName({ name: "Chaos Lord", selectionTree: {} }, { selections: { nurgle: 1 } }),
+    "Chaos Lord"
+  );
+});
+
+test("browser loadout states expose mandatory descendant wargear costs", () => {
+  const definition = {
+    id: "vehicle",
+    selectionTree: {
+      id: "vehicle",
+      kind: "unit",
+      children: [{
+        id: "weapon-choice",
+        kind: "upgrade",
+        name: "2 ectoplasma cannons",
+        points: 0,
+        constraints: [],
+        children: [{
+          id: "ectoplasma-cannon",
+          kind: "upgrade",
+          name: "Ectoplasma cannon",
+          points: 5,
+          constraints: [
+            { id: "weapon-min", type: "min", field: "selections", scope: "parent", value: 2 },
+            { id: "weapon-max", type: "max", field: "selections", scope: "parent", value: 2 }
+          ],
+          children: []
+        }]
+      }]
+    }
+  };
+  const state = window.RosterEngine.getOptionStates(definition, {
+    unitId: "vehicle",
+    selections: { "weapon-choice": 1, "ectoplasma-cannon": 2 }
+  }).find(option => option.id === "weapon-choice");
+
+  assert.equal(state.points, 0);
+  assert.equal(state.effectivePoints, 10);
+});
+
+test("browser configured profiles suppress fallback melee weapons after replacement", () => {
+  const closeCombatProfile = id => ({
+    id,
+    name: "Close combat weapon",
+    typeName: "Melee Weapons",
+    characteristics: {}
+  });
+  const definition = {
+    id: "squad",
+    selectionTree: {
+      id: "squad",
+      kind: "unit",
+      children: [
+        {
+          id: "replacement-model",
+          kind: "model",
+          name: "Model with chainsword",
+          children: [
+            { id: "replacement-close-combat", kind: "upgrade", name: "Close combat weapon", profiles: [closeCombatProfile("ccw-a")], children: [] },
+            {
+              id: "chainsword",
+              kind: "upgrade",
+              name: "Astartes chainsword",
+              profiles: [{ id: "chainsword-profile", name: "Astartes chainsword", typeName: "Melee Weapons", characteristics: {} }],
+              children: []
+            }
+          ]
+        },
+        {
+          id: "fallback-model",
+          kind: "model",
+          name: "Model with fallback weapon",
+          children: [
+            { id: "fallback-close-combat", kind: "upgrade", name: "Close combat weapon", profiles: [closeCombatProfile("ccw-b")], children: [] }
+          ]
+        }
+      ]
+    }
+  };
+  const entry = {
+    unitId: "squad",
+    selections: {
+      "replacement-model": 1,
+      "replacement-close-combat": 1,
+      chainsword: 1,
+      "fallback-model": 1,
+      "fallback-close-combat": 1
+    }
+  };
+
+  const configured = window.RosterEngine.getConfiguredProfiles(definition, entry);
+  const models = window.RosterEngine.getConfiguredModels(definition, entry);
+  assert.equal(configured.weapons.find(weapon => weapon.name === "Close combat weapon")?.count, 1);
+  assert.equal(configured.weapons.find(weapon => weapon.name === "Astartes chainsword")?.count, 1);
+  assert.deepEqual(models.find(model => model.id === "replacement-model").equipment, ["Astartes chainsword"]);
+  assert.deepEqual(models.find(model => model.id === "fallback-model").equipment, ["Close combat weapon"]);
+});
+
+test("browser army runtime gates Knight AdMech units behind Questor Forgepact", () => {
+  const army = {
+    faction: "Imperium - Imperial Knights",
+    detachments: [
+      { id: "forgepact", name: "Questor Forgepact" },
+      { id: "other", name: "Valourstrike Lance" }
+    ]
+  };
+  const skitarii = {
+    name: "Skitarii Vanguard",
+    categories: ["Faction: Adeptus Mechanicus", "Skitarii"]
+  };
+
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, { detachmentIds: ["other"] }, skitarii), false);
+  assert.equal(window.ArmyEngine.canAddUnitForSelectedDetachment(army, { detachmentIds: ["forgepact"] }, skitarii), true);
+});
+
+test("saved roster hydration restores detachment state before matching gated units", () => {
+  for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(require.resolve(file), "utf8");
+    assert.match(source, /function factionUnits\(state = armyState\)/);
+    assert.match(source, /const hydrationArmyState = \{[\s\S]*?\.\.\.\(save\.armyState \|\| \{\}\)[\s\S]*?unitPackages: factionUnits\(hydrationArmyState\)/);
+    assert.match(source, /canAddUnitForSelectedDetachment\(army, state, unit\)/);
+  }
+});
 
 test("browser pricing uses live occurrence counts over stale generated aliases", () => {
   const definition = {
@@ -286,6 +455,70 @@ test("browser army runtime evaluates generic all-keyword Leader targets", () => 
 
   assert.equal(window.ArmyEngine.leaderCanTarget(leader, target), true);
   assert.equal(window.ArmyEngine.leaderCanTarget(leader, { ...target, categories: ["Imperium", "Infantry"] }), false);
+});
+
+test("browser army runtime only returns stratagems whose structured target matches the unit", () => {
+  const army = {
+    coreStratagems: [
+      { id: "reroll", name: "Command Re-roll", scope: "core", target: { type: "any" } },
+      { id: "smoke", name: "Smokescreen", scope: "core", target: { type: "keyword", value: "SMOKE" } }
+    ],
+    detachments: [{
+      id: "detachment",
+      name: "Armoured Spearhead",
+      stratagems: [
+        {
+          id: "vehicle",
+          name: "Armoured Wrath",
+          scope: "detachment",
+          target: { op: "AND", operands: [{ type: "keyword", value: "VEHICLE" }, { op: "NOT", operands: [{ type: "keyword", value: "TITANIC" }] }] }
+        },
+        { id: "named", name: "Russ Doctrine", scope: "detachment", target: { type: "unit", value: "Leman Russ" } },
+        { id: "unverified", name: "Unverified", scope: "detachment", target: null }
+      ]
+    }, {
+      id: "other",
+      name: "Other Detachment",
+      stratagems: [{ id: "other-strat", name: "Other Stratagem", scope: "detachment", target: { type: "any" } }]
+    }]
+  };
+  const state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "detachment");
+  const lemanRuss = { name: "Leman Russ", keywords: ["VEHICLE", "SMOKE"] };
+
+  assert.deepEqual(
+    window.ArmyEngine.eligibleStratagemsForEntry(army, state, lemanRuss).map(item => item.id),
+    ["reroll", "smoke", "vehicle", "named"]
+  );
+  assert.equal(
+    window.ArmyEngine.eligibleStratagemsForEntry(army, state, { name: "Baneblade", keywords: ["VEHICLE", "TITANIC"] })
+      .some(item => item.id === "vehicle"),
+    false
+  );
+  assert.equal(
+    window.ArmyEngine.stratagemTargetMatches({ type: "keyword", value: "TYRANIDS" }, { keywords: ["Faction: Tyranids"] }, state),
+    true
+  );
+});
+
+test("browser army runtime derives conservative eligibility from legacy TARGET wording", () => {
+  const infantryMutant = {
+    name: "Tzaangors",
+    keywords: ["Faction: Thousand Sons", "INFANTRY", "MUTANT"],
+    knownKeywords: ["THOUSAND SONS", "INFANTRY", "MOUNTED", "MUTANT", "MONSTER"]
+  };
+  const targetText = "<b>WHEN:</b> Your Movement phase.<br><br><b>TARGET:</b> One friendly INFANTRY/MOUNTED MUTANT unit.<br><br><b>EFFECT:</b> Do a thing.";
+
+  assert.equal(window.ArmyEngine.stratagemDescriptionTargetMatches(targetText, infantryMutant, {}), true);
+  assert.equal(window.ArmyEngine.stratagemDescriptionTargetMatches(
+    targetText,
+    { ...infantryMutant, keywords: ["Faction: Thousand Sons", "MONSTER", "MUTANT"] },
+    {}
+  ), false);
+  assert.equal(window.ArmyEngine.stratagemDescriptionTargetMatches(
+    "<b>TARGET:</b> One enemy unit within 6\" of your unit.<br><br><b>EFFECT:</b> Do a thing.",
+    infantryMutant,
+    {}
+  ), false);
 });
 
 test("browser army runtime filters unit assignment controls to relevant units", () => {
