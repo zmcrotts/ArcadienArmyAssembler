@@ -1187,12 +1187,19 @@
   function matchingMfmRow(unitDefinition, rosterEntry) {
     const previousCopies = Number(rosterEntry?.context?.previousCopies || 0);
     const context = rosterEntry?.context?.mfmContext || null;
-    return (unitDefinition?.pricing?.mfmRows || []).find(row => {
+    const eligibleRows = (unitDefinition?.pricing?.mfmRows || []).filter(row => {
       if (row.context && row.context !== context) return false;
       if (previousCopies < Number(row.copies?.min || 0)) return false;
       if (row.copies?.max !== null && row.copies?.max !== undefined && previousCopies > Number(row.copies.max)) return false;
-      return matchesMfmComposition(row, unitDefinition, rosterEntry);
-    }) || null;
+      return true;
+    });
+    const exact = eligibleRows.find(row => matchesMfmComposition(row, unitDefinition, rosterEntry));
+    if (exact) return exact;
+    const modelCount = (unitDefinition?.composition || [])
+      .reduce((sum, selection) => sum + selectedCount(rosterEntry, selection.id), 0);
+    return eligibleRows
+      .filter(row => row.modelCount !== null && row.modelCount !== undefined && Number(row.modelCount) >= modelCount)
+      .sort((left, right) => Number(left.modelCount) - Number(right.modelCount))[0] || null;
   }
 
   function calculateEntryPoints(unitDefinition, rosterEntry) {

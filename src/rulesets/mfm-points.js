@@ -21,6 +21,7 @@ const FACTION_ALIASES = new Map(Object.entries({
   "genestealer cults": "Xenos - Genestealer Cults",
   "grey knights": "Imperium - Grey Knights",
   "imperial agents": "Imperium - Agents of the Imperium",
+  "imperial knights": "Imperium - Imperial Knights",
   "leagues of votann": "Xenos - Leagues of Votann",
   "necrons": "Xenos - Necrons",
   "orks": "Xenos - Orks",

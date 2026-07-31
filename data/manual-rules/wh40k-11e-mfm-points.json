@@ -13705,6 +13705,114 @@
       "costBand": "WARGEAR OPTIONS",
       "label": "per Ectoplasma cannon",
       "points": 5
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "PROSECUTORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 45
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "PROSECUTORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "PROSECUTORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "9 models",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "PROSECUTORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VIGILATORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VIGILATORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VIGILATORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "9 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VIGILATORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 100
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "WITCHSEEKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "4 models",
+      "points": 50
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "WITCHSEEKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models",
+      "points": 55
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "WITCHSEEKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "9 models",
+      "points": 90
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "WITCHSEEKERS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models",
+      "points": 100
     }
   ]
 }

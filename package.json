@@ -16,6 +16,8 @@
     "audit:bsdata-loadouts": "node scripts/audit-bsdata-loadouts.js",
     "audit:bsdata-armies": "node scripts/audit-bsdata-armies.js",
     "audit:ruleset-source": "node scripts/audit-ruleset-source.js",
+    "audit:enhancement-eligibility": "node scripts/audit-enhancement-eligibility.js --compact",
+    "audit:enhancement-points": "node scripts/audit-mfm-enhancement-points.js",
     "health": "node scripts/project-health.js"
   },
   "keywords": [],

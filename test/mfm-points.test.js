@@ -129,6 +129,6 @@ test("Faction Pack v1.1 adds the two flagged detachments", () => {
 });
 
 test("every MFM v1.1 row attaches to normalized roster data", () => {
-  assert.equal(ruleset.mfmPointSource.total, 1527);
+  assert.equal(ruleset.mfmPointSource.total, 1539);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
 });

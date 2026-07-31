@@ -27,6 +27,7 @@ const {
   extractUnitEffects,
   extractWeaponEffects
 } = require("../src/domain/sheets");
+const { audit: auditEnhancementEligibility } = require("../scripts/audit-enhancement-eligibility");
 
 test("ruleset registry exposes the default 11e source", () => {
   const source = getRulesetSource(DEFAULT_RULESET_SOURCE_ID);
@@ -608,7 +609,6 @@ test("11e Adepta Sororitas upgrades keep their bearer limits and unit eligibilit
     "Dogmata",
     "Hospitaller",
     "Imagifier",
-    "Ministorum Priest",
     "Palatine"
   ]);
   assert.match(description(hagiomnifex), /ADEPTA SORORITAS CHARACTER model only \(excluding PENITENT units\)/i);
@@ -685,6 +685,50 @@ test("11e Warrior Bioform Onslaught grants Warrior and Battleline keywords to bo
     const unit = ruleset.units.find(item => item.faction === tyranids.faction && item.name === name);
     const grants = unit.conditionalKeywords.filter(grant => grant.detachmentIds.includes(detachment.id)).map(grant => grant.keyword).sort();
     assert.deepEqual(grants, ["Battleline", "Tyranid Warriors"]);
+  }
+});
+
+test("11e Steel Hammer offers a selectable Character keyword to Titanic units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const army = ruleset.armies.find(item => item.faction === "Imperium - Astra Militarum");
+  const detachment = army.detachments.find(item => item.name === "Steel Hammer");
+  const baneblade = ruleset.units.find(item => item.faction === army.faction && item.name === "Baneblade");
+  const grant = baneblade.conditionalKeywords.find(item =>
+    item.keyword === "Character" && item.detachmentIds.includes(detachment.id)
+  );
+
+  assert.equal(grant?.selectable, true);
+});
+
+test("11e Ork Freebooter enhancements enforce their named bearer restrictions", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const army = ruleset.armies.find(item => item.faction === "Xenos - Orks");
+  const namesFor = enhancementName => {
+    const enhancement = army.enhancements.find(item => item.name === enhancementName);
+    const keys = new Set(enhancement.eligibleSelectionKeys);
+    return ruleset.units.filter(item => keys.has(item.selectionKey)).map(item => item.name).sort();
+  };
+
+  assert.equal(namesFor("Bionik Workshop").includes("Beastboss"), false);
+  assert.equal(namesFor("Git-spotter Squig").includes("Beastboss"), true);
+  assert.ok(namesFor("Bionik Workshop").includes("Big Mek"));
+  assert.ok(namesFor("Bionik Workshop").includes("Painboy"));
+});
+
+test("11e Sisters of Silence use stepped MFM points at every selectable size", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const schedules = {
+    Prosecutors: [45, 50, 75, 75, 75, 75, 85],
+    Vigilators: [50, 55, 90, 90, 90, 90, 100],
+    Witchseekers: [50, 55, 90, 90, 90, 90, 100]
+  };
+
+  for (const [name, expected] of Object.entries(schedules)) {
+    const unit = ruleset.units.find(item => item.faction === "Imperium - Adeptus Custodes" && item.name === name);
+    for (let size = 4; size <= 10; size += 1) {
+      const entry = setUnitSize(unit, createDefaultRosterEntry(unit), size);
+      assert.equal(calculateEntryPoints(unit, entry).points, expected[size - 4], `${name} at ${size} models`);
+    }
   }
 });
 
@@ -990,4 +1034,75 @@ test("root-condition enhancement eligibility projects bearer keyword gates throu
     "Chaos Lord on Steed of Slaanesh [Legends]",
     "Sorcerer on Steed of Slaanesh [Legends]"
   ]);
+});
+
+test("every explicit 11e enhancement and upgrade bearer restriction is enforced", () => {
+  const result = auditEnhancementEligibility();
+
+  assert.equal(result.summary.armies, 35);
+  assert.equal(result.summary.records, 1581);
+  assert.equal(result.summary.enhancements, 1469);
+  assert.equal(result.summary.upgrades, 112);
+  assert.equal(result.summary.explicitLimiters, 1256);
+  assert.equal(result.summary.overBroadRecords, 0);
+});
+
+test("keyword-limited enhancements and upgrades expose only their printed bearers", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const eligibleNames = (faction, detachmentName, enhancementName) => {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    const detachment = army?.detachments.find(item => item.name === detachmentName);
+    const enhancement = army?.enhancements.find(item =>
+      item.name === enhancementName && item.detachmentIds.includes(detachment?.id)
+    );
+    assert.ok(enhancement, `${faction}: ${detachmentName}: ${enhancementName}`);
+    return new Set(enhancement.eligibleSelectionKeys.map(key =>
+      ruleset.units.find(unit => unit.selectionKey === key)?.name
+    ).filter(Boolean));
+  };
+
+  const catechism = eligibleNames(
+    "Imperium - Adepta Sororitas", "Penitent Host", "Catechism of Divine Penitence"
+  );
+  assert.deepEqual([...catechism].sort(), [
+    "Canoness", "Canoness with Jump Pack", "Ministorum Priest", "Palatine"
+  ]);
+
+  const bionics = eligibleNames("Xenos - Orks", "Freebooter Krew", "Bionik Workshop");
+  assert.equal(bionics.has("Beastboss"), false);
+  assert.equal(bionics.has("Big Mek"), true);
+  assert.equal(bionics.has("Painboy"), true);
+
+  const dakkamek = eligibleNames("Xenos - Orks", "Speedwaaagh!", "Dakkamek");
+  assert.equal(dakkamek.has("Big Mek with Shokk Attack Gun"), true);
+  assert.equal(dakkamek.has("Beastboss"), false);
+
+  const benediction = eligibleNames(
+    "Imperium - Adeptus Astartes - Black Templars", "Wrathful Procession", "Benediction of Fury"
+  );
+  assert.equal(benediction.has("Chaplain"), true);
+  assert.equal(benediction.has("Captain"), false);
+
+  const psykOutGrenades = eligibleNames(
+    "Imperium - Adeptus Custodes", "Silent Hunters", "Psyk-out Grenades"
+  );
+  assert.equal(psykOutGrenades.has("Vigilators"), true);
+  assert.equal(psykOutGrenades.has("Custodian Wardens"), false);
+
+  const raptorBlade = eligibleNames(
+    "Imperium - Adeptus Custodes", "Null Maiden Vigil", "Raptor Blade"
+  );
+  assert.equal(raptorBlade.has("Knight-Centura"), true);
+  assert.equal(raptorBlade.has("Custodian Wardens"), false);
+
+  const enduringFaith = eligibleNames(
+    "Imperium - Adepta Sororitas", "Penitent Host", "Refrain of Enduring Faith"
+  );
+  assert.equal(enduringFaith.has("Repentia Squad"), true);
+  assert.equal(enduringFaith.has("Battle Sisters Squad"), false);
+
+  const deepeningMadness = eligibleNames(
+    "Xenos - Necrons", "Skyshroud Spearhead", "Deepening Madness"
+  );
+  assert.equal(deepeningMadness.has("Lokhust Lord"), true);
 });

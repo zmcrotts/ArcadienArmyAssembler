@@ -580,6 +580,41 @@ test("browser army runtime offers selected-detachment upgrades without character
   );
 });
 
+test("browser army runtime applies selectable detachment keyword upgrades before enhancement eligibility", () => {
+  const army = {
+    id: "guard",
+    detachments: [{ id: "steel-hammer", name: "Steel Hammer", points: 0 }],
+    enhancements: [{
+      id: "titan-killer",
+      name: "Titan Killer",
+      kind: "enhancement",
+      detachmentIds: ["steel-hammer"],
+      eligibleSelectionKeys: ["baneblade-key"],
+      points: 20
+    }]
+  };
+  const baneblade = {
+    instanceId: "baneblade-1",
+    selectionKey: "baneblade-key",
+    keywords: ["Titanic"],
+    roles: {},
+    rosterRules: { canBeWarlord: true },
+    definition: {
+      conditionalKeywords: [{ keyword: "Character", detachmentIds: ["steel-hammer"], selectable: true }]
+    }
+  };
+  let state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "steel-hammer");
+
+  let assignment = window.ArmyEngine.getUnitAssignmentState(army, state, [baneblade], baneblade);
+  assert.deepEqual(assignment.keywordUpgrades, [{ keyword: "Character", selected: false }]);
+  assert.deepEqual(assignment.enhancements, []);
+
+  state = window.ArmyEngine.setKeywordAssignment(state, baneblade.instanceId, "Character", true);
+  assignment = window.ArmyEngine.getUnitAssignmentState(army, state, [baneblade], baneblade);
+  assert.equal(assignment.showWarlord, true);
+  assert.deepEqual(assignment.enhancements.map(item => item.name), ["Titan Killer"]);
+});
+
 test("browser army runtime recognizes equivalent unit entries across catalogues", () => {
   const army = {
     id: "raven-guard",

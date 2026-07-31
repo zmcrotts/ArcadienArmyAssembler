@@ -662,6 +662,19 @@ function duplicateRosterEntry(sourceEntry) {
   };
   const sourceIndex = roster.findIndex(item => item.instanceId === sourceEntry.instanceId);
   roster.splice(sourceIndex >= 0 ? sourceIndex + 1 : roster.length, 0, duplicate);
+  const army = currentArmyDefinition();
+  for (const assignment of (armyState.keywordAssignments || []).filter(item => item.instanceId === sourceEntry.instanceId)) {
+    armyState = armyEngine.setKeywordAssignment(armyState, duplicate.instanceId, assignment.keyword, true);
+  }
+  for (const assignment of (armyState.enhancements || []).filter(item => item.bearerInstanceId === sourceEntry.instanceId)) {
+    const enhancement = (army?.enhancements || []).find(item => item.id === assignment.enhancementId);
+    if (!enhancement) continue;
+    const repeatable = enhancement.kind === "upgrade" || Number(enhancement.maxSelections || 1) > 1;
+    const selectedCount = (armyState.enhancements || []).filter(item => item.enhancementId === enhancement.id).length;
+    if (repeatable && selectedCount < Number(enhancement.maxSelections || Number.MAX_SAFE_INTEGER)) {
+      armyState = armyEngine.setEnhancement(army, armyState, roster, enhancement.id, duplicate.instanceId, true);
+    }
+  }
   selectedInstanceId = duplicate.instanceId;
   selectedPanel = "unit";
   return duplicate;
@@ -2888,11 +2901,13 @@ function renderUnitAssignments(rosterEntry) {
         leaderTargets: [],
         ledBy: [],
         eligibleLeaders: [],
-        enhancements: []
+        enhancements: [],
+        keywordUpgrades: []
       };
   const hasLeaderControls = Boolean(definition.roles?.leader || assignment.eligibleLeaders.length || assignment.ledBy.length);
   const hasEnhancementControls = assignment.enhancements.length > 0;
-  if (!assignment.showWarlord && !hasLeaderControls && !hasEnhancementControls) return "";
+  const hasKeywordUpgrades = assignment.keywordUpgrades.length > 0;
+  if (!assignment.showWarlord && !hasLeaderControls && !hasEnhancementControls && !hasKeywordUpgrades) return "";
   const ledByLabel = leaderAssignmentLabel(unit, assignment);
 
   return `
@@ -2934,15 +2949,20 @@ function renderUnitAssignments(rosterEntry) {
             </select>
           </label>
         ` : ""}
+        ${assignment.keywordUpgrades.map(upgrade => `<label class="assignmentRow">
+          <span><b>${escapeHtml(upgrade.keyword)}</b><small>Detachment keyword upgrade</small></span>
+          <input class="keywordUpgradeToggle" data-keyword="${escapeHtml(upgrade.keyword)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${upgrade.selected ? "checked" : ""}>
+        </label>`).join("")}
         ${assignment.enhancements.length ? `
           <div class="enhancementAssignments">
             <b>Enhancements & Upgrades</b>
             ${assignment.enhancements.map(state => {
               const bearer = state.bearerOptions.find(item => item.instanceId === rosterEntry.instanceId);
               const selectedHere = (state.bearerInstanceIds || [state.bearerInstanceId]).includes(rosterEntry.instanceId);
+              const takenElsewhere = state.kind !== "upgrade" && Number(state.maxSelections || 1) <= 1 && state.selected && !selectedHere;
               return `<div class="assignmentRow">
                 ${renderEnhancementAssignmentDetails(state, bearer)}
-                <input class="enhancementToggle" data-enhancement-id="${escapeHtml(state.id)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${selectedHere ? "checked" : ""}>
+                <input class="enhancementToggle" data-enhancement-id="${escapeHtml(state.id)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${selectedHere ? "checked" : ""} ${takenElsewhere ? "disabled title=\"Already assigned to another unit\"" : ""}>
               </div>`;
             }).join("")}
           </div>
@@ -3010,6 +3030,17 @@ function bindUnitAssignmentInputs() {
       armyState = armyEngine.setEnhancement(
         currentArmyDefinition(), armyState, roster, event.target.dataset.enhancementId,
         event.target.dataset.instanceId,
+        event.target.checked
+      );
+      render();
+    };
+  }
+  for (const input of document.querySelectorAll(".keywordUpgradeToggle")) {
+    input.onchange = event => {
+      armyState = armyEngine.setKeywordAssignment(
+        armyState,
+        event.target.dataset.instanceId,
+        event.target.dataset.keyword,
         event.target.checked
       );
       render();
@@ -3281,7 +3312,6 @@ function renderOptionNamePreview(name, node = null) {
   if (!abilityProfiles.length && !rules.length) {
     return renderWeaponOptionName(name, weaponProfiles);
   }
-
   const id = `optionPreview${++rulePopupCounter}`;
   return `
     <span class="weaponPreviewWrap">

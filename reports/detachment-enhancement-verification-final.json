@@ -1,0 +1,134 @@
+{
+  "summary": {
+    "pdfs": 28,
+    "armies": 35,
+    "enhancements": 1484,
+    "upgrades": 66,
+    "matchedToFactionPack": 95,
+    "limiterFindings": 0,
+    "eligibilityFindings": 7
+  },
+  "findings": [],
+  "eligibilityFindings": [
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Armoured Warhost"
+      ],
+      "name": "Guiding Presence",
+      "officialLimiter": "AELDARI PSYKER model only.",
+      "verifiedEligibleNames": [
+        "Eldrad Ulthran",
+        "Farseer",
+        "Farseer Skyrunner",
+        "Hemlock Wraithfighter",
+        "Shadowseer",
+        "Spiritseer",
+        "The Yncarne",
+        "Warlock",
+        "Warlock Conclave",
+        "Warlock Skyrunners",
+        "Yvraine",
+        "Wraithseer [Legends]",
+        "Bonesinger [Legends]",
+        "Kharseth"
+      ],
+      "ineligibleNames": [
+        "Corsair Voidscarred"
+      ]
+    },
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Armoured Warhost"
+      ],
+      "name": "Spirit Stone of Raelyth",
+      "officialLimiter": "AELDARI PSYKER model only.",
+      "verifiedEligibleNames": [
+        "Eldrad Ulthran",
+        "Farseer",
+        "Farseer Skyrunner",
+        "Hemlock Wraithfighter",
+        "Shadowseer",
+        "Spiritseer",
+        "The Yncarne",
+        "Warlock",
+        "Warlock Conclave",
+        "Warlock Skyrunners",
+        "Yvraine",
+        "Wraithseer [Legends]",
+        "Bonesinger [Legends]",
+        "Kharseth"
+      ],
+      "ineligibleNames": [
+        "Corsair Voidscarred"
+      ]
+    },
+    {
+      "faction": "Imperium - Astra Militarum",
+      "detachment": [
+        "Bridgehead Strike"
+      ],
+      "name": "Bombast-class Vox-array",
+      "officialLimiter": "MILITARUM TEMPESTUS OFFICER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Militarum Tempestus Command Squad"
+      ]
+    },
+    {
+      "faction": "Imperium - Astra Militarum",
+      "detachment": [
+        "Bridgehead Strike"
+      ],
+      "name": "Priority-drop Beacon",
+      "officialLimiter": "MILITARUM TEMPESTUS OFFICER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Militarum Tempestus Command Squad"
+      ]
+    },
+    {
+      "faction": "Xenos - Genestealer Cults",
+      "detachment": [
+        "Heroes of the Uprising"
+      ],
+      "name": "Contraband Munitions",
+      "officialLimiter": "KELERMORPH/REDUCTUS SABOTEUR model only.",
+      "verifiedEligibleNames": [
+        "Reductus Saboteur"
+      ],
+      "ineligibleNames": [
+        "Kelermorph"
+      ]
+    },
+    {
+      "faction": "Xenos - Tyranids",
+      "detachment": [
+        "Warrior Bioform Onslaught"
+      ],
+      "name": "Elevated Might",
+      "officialLimiter": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "verifiedEligibleNames": [
+        "Tyranid Prime with Lash Whip"
+      ],
+      "ineligibleNames": [
+        "Winged Tyranid Prime"
+      ]
+    },
+    {
+      "faction": "Xenos - Tyranids",
+      "detachment": [
+        "Warrior Bioform Onslaught"
+      ],
+      "name": "Ocular Adaptation",
+      "officialLimiter": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "verifiedEligibleNames": [
+        "Tyranid Prime with Lash Whip"
+      ],
+      "ineligibleNames": [
+        "Winged Tyranid Prime"
+      ]
+    }
+  ]
+}

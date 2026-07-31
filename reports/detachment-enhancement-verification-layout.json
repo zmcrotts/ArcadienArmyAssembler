@@ -1,0 +1,622 @@
+{
+  "summary": {
+    "pdfs": 28,
+    "armies": 35,
+    "enhancements": 1484,
+    "upgrades": 66,
+    "matchedToFactionPack": 204,
+    "limiterFindings": 1,
+    "eligibilityFindings": 25
+  },
+  "findings": [
+    {
+      "faction": "Imperium - Adeptus Astartes - Space Marines",
+      "detachment": [
+        "Vengeful Hosts"
+      ],
+      "name": "Orksbane",
+      "officialLimiter": "ADEPTUS ASTARTES FLY INFANTRY model only.",
+      "eligibleNames": [
+        "Assault Squad with Jump Packs [Legends]",
+        "Captain with Jump Pack",
+        "Chaplain with Jump Pack",
+        "Inceptor Squad",
+        "Librarian with Jump Pack [Legends]",
+        "Vanguard Veteran Squad with Jump Packs",
+        "Suppressor Squad",
+        "Assault Intercessors with Jump Packs",
+        "Vanguard Veteran Squad (Armageddon)"
+      ]
+    }
+  ],
+  "eligibilityFindings": [
+    {
+      "faction": "Imperium - Adepta Sororitas",
+      "detachment": [
+        "Chorus of Condemnation"
+      ],
+      "name": "Clarion of Urgency",
+      "officialLimiter": "CANONESS WITH JUMP PACK model only.",
+      "verifiedEligibleNames": [
+        "Canoness with Jump Pack"
+      ],
+      "ineligibleNames": [
+        "Saint Celestine",
+        "Seraphim Squad",
+        "Zephyrim Squad"
+      ]
+    },
+    {
+      "faction": "Imperium - Adeptus Mechanicus",
+      "detachment": [
+        "Cohort Acquisitus"
+      ],
+      "name": "Explorator Dispensation",
+      "officialLimiter": "SKITARII MARSHAL model only.",
+      "verifiedEligibleNames": [
+        "Skitarii Marshal"
+      ],
+      "ineligibleNames": [
+        "Cybernetica Datasmith",
+        "Tech-Priest Dominus",
+        "Tech-Priest Enginseer",
+        "Tech-Priest Manipulus",
+        "Technoarcheologist",
+        "Sydonian Skatros"
+      ]
+    },
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Armoured Warhost"
+      ],
+      "name": "Guiding Presence",
+      "officialLimiter": "AELDARI PSYKER model only.",
+      "verifiedEligibleNames": [
+        "Eldrad Ulthran",
+        "Farseer",
+        "Farseer Skyrunner",
+        "Hemlock Wraithfighter",
+        "Shadowseer",
+        "Spiritseer",
+        "The Yncarne",
+        "Warlock",
+        "Warlock Conclave",
+        "Warlock Skyrunners",
+        "Yvraine",
+        "Wraithseer [Legends]",
+        "Bonesinger [Legends]",
+        "Kharseth"
+      ],
+      "ineligibleNames": [
+        "Corsair Voidscarred"
+      ]
+    },
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Armoured Warhost"
+      ],
+      "name": "Spirit Stone of Raelyth",
+      "officialLimiter": "AELDARI PSYKER model only.",
+      "verifiedEligibleNames": [
+        "Eldrad Ulthran",
+        "Farseer",
+        "Farseer Skyrunner",
+        "Hemlock Wraithfighter",
+        "Shadowseer",
+        "Spiritseer",
+        "The Yncarne",
+        "Warlock",
+        "Warlock Conclave",
+        "Warlock Skyrunners",
+        "Yvraine",
+        "Wraithseer [Legends]",
+        "Bonesinger [Legends]",
+        "Kharseth"
+      ],
+      "ineligibleNames": [
+        "Corsair Voidscarred"
+      ]
+    },
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Ghosts of the Webway"
+      ],
+      "name": "Mistweave",
+      "officialLimiter": "SHADOWSEER model only.",
+      "verifiedEligibleNames": [
+        "Shadowseer"
+      ],
+      "ineligibleNames": [
+        "Autarch",
+        "Autarch Skyrunner [Legends]",
+        "Autarch Wayleaper",
+        "Corsair Voidreavers",
+        "Corsair Voidscarred",
+        "Death Jester",
+        "Farseer",
+        "Farseer Skyrunner",
+        "Spiritseer",
+        "Troupe Master",
+        "Warlock",
+        "Bonesinger [Legends]",
+        "Corsair Cloud Dancer Band [Legends]",
+        "Corsair Reaver Band [Legends]",
+        "Ynnari Archon",
+        "Ynnari Succubus",
+        "Prince Yriel",
+        "Kharseth",
+        "Starfangs",
+        "Corsair Skyreavers"
+      ]
+    },
+    {
+      "faction": "Xenos - Aeldari",
+      "detachment": [
+        "Spirit Conclave"
+      ],
+      "name": "Higher Duty",
+      "officialLimiter": "eligible to fight this phase, and one friendly TRANSPORT it is able to 'SPIRITSEER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Spiritseer"
+      ]
+    },
+    {
+      "faction": "Imperium - Astra Militarum",
+      "detachment": [
+        "Bridgehead Strike"
+      ],
+      "name": "Bombast-class Vox-array",
+      "officialLimiter": "MILITARUM TEMPESTUS OFFICER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Militarum Tempestus Command Squad"
+      ]
+    },
+    {
+      "faction": "Imperium - Astra Militarum",
+      "detachment": [
+        "Bridgehead Strike"
+      ],
+      "name": "Priority-drop Beacon",
+      "officialLimiter": "MILITARUM TEMPESTUS OFFICER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Militarum Tempestus Command Squad"
+      ]
+    },
+    {
+      "faction": "Chaos - Chaos Knights",
+      "detachment": [
+        "Iconoclast Fiefdom"
+      ],
+      "name": "Cruel Lashmaster",
+      "officialLimiter": "CHAOS KNIGHTS model only.",
+      "verifiedEligibleNames": [
+        "Chaos Cerastus Knight Acheron",
+        "Chaos Cerastus Knight Atrapos",
+        "Chaos Cerastus Knight Castigator",
+        "Chaos Cerastus Knight Lancer",
+        "Chaos Questoris Knight Styrix",
+        "Knight Abominant",
+        "Knight Desecrator",
+        "Knight Despoiler",
+        "Knight Rampager",
+        "Knight Tyrant",
+        "War Dog Brigand",
+        "War Dog Executioner",
+        "War Dog Huntsman",
+        "War Dog Karnivore",
+        "War Dog Moirax",
+        "War Dog Stalker",
+        "Knight Ruinator"
+      ],
+      "ineligibleNames": [
+        "Dark Commune",
+        "Traitor Enforcer",
+        "Cultist Firebrand",
+        "Renegade Enforcer [Legends]",
+        "Rogue Psyker [Legends]",
+        "Chaos Questoris Knight Magaera"
+      ]
+    },
+    {
+      "faction": "Chaos - Chaos Knights",
+      "detachment": [
+        "Iconoclast Fiefdom"
+      ],
+      "name": "Iconoclast Idol",
+      "officialLimiter": "CHAOS KNIGHTS model only.",
+      "verifiedEligibleNames": [
+        "Chaos Cerastus Knight Acheron",
+        "Chaos Cerastus Knight Atrapos",
+        "Chaos Cerastus Knight Castigator",
+        "Chaos Cerastus Knight Lancer",
+        "Chaos Questoris Knight Styrix",
+        "Knight Abominant",
+        "Knight Desecrator",
+        "Knight Despoiler",
+        "Knight Rampager",
+        "Knight Tyrant",
+        "War Dog Brigand",
+        "War Dog Executioner",
+        "War Dog Huntsman",
+        "War Dog Karnivore",
+        "War Dog Moirax",
+        "War Dog Stalker",
+        "Knight Ruinator"
+      ],
+      "ineligibleNames": [
+        "Dark Commune",
+        "Traitor Enforcer",
+        "Cultist Firebrand",
+        "Renegade Enforcer [Legends]",
+        "Rogue Psyker [Legends]",
+        "Chaos Questoris Knight Magaera"
+      ]
+    },
+    {
+      "faction": "Chaos - Chaos Space Marines",
+      "detachment": [
+        "Cabal of Chaos"
+      ],
+      "name": "Touched by the Warp",
+      "officialLimiter": "HERETIC ASTARTES model only (excluding KHORNE models).",
+      "verifiedEligibleNames": [
+        "Heretic Astartes Daemon Prince",
+        "Heretic Astartes Daemon Prince with wings",
+        "Master of Possession",
+        "Chaos Lord",
+        "Chaos Lord in Terminator Armour",
+        "Sorcerer",
+        "Sorcerer in Terminator Armour",
+        "Lord Discordant on Helstalker",
+        "Warpsmith",
+        "Exalted Champion [Legends]",
+        "Dark Apostle",
+        "Dark Commune",
+        "Master of Executions",
+        "Sorcerer on Disc of Tzeentch [Legends]",
+        "Sorcerer on Palanquin of Nurgle [Legends]",
+        "Chaos Lord on Disc of Tzeentch [Legends]",
+        "Chaos Lord on Palanquin of Nurgle [Legends]",
+        "Chaos Lord on Steed of Slaanesh [Legends]",
+        "Sorcerer on Steed of Slaanesh [Legends]",
+        "Renegade Enforcer [Legends]",
+        "Rogue Psyker [Legends]",
+        "Sorcerer on Bike [Legends]",
+        "Chaos Lord on Bike [Legends]",
+        "Chaos Lord with Jump Pack",
+        "Cultist Firebrand",
+        "Red Corsairs Reave-captain"
+      ],
+      "ineligibleNames": [
+        "Traitor Enforcer",
+        "Chaos Lord on Juggernaut [Legends]"
+      ]
+    },
+    {
+      "faction": "Chaos - Chaos Space Marines",
+      "detachment": [
+        "Murdertalon Raiders"
+      ],
+      "name": "Pact of Cursed Pinions",
+      "officialLimiter": "CHAOS LORD WITH JUMP PACK model only.",
+      "verifiedEligibleNames": [
+        "Chaos Lord with Jump Pack"
+      ],
+      "ineligibleNames": [
+        "Haarken Worldclaimer",
+        "Raptors",
+        "Warp Talons"
+      ]
+    },
+    {
+      "faction": "Chaos - Chaos Space Marines",
+      "detachment": [
+        "Murdertalon Raiders"
+      ],
+      "name": "Shadowcowl Talisman",
+      "officialLimiter": "CHAOS LORD WITH JUMP PACK model only.",
+      "verifiedEligibleNames": [
+        "Chaos Lord with Jump Pack"
+      ],
+      "ineligibleNames": [
+        "Haarken Worldclaimer",
+        "Raptors",
+        "Warp Talons"
+      ]
+    },
+    {
+      "faction": "Imperium - Adeptus Astartes - Dark Angels",
+      "detachment": [
+        "Librarius Conclave"
+      ],
+      "name": "Obfuscation",
+      "officialLimiter": "CHAPLAIN model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Ezekiel",
+        "Librarian in Phobos Armour",
+        "Librarian with Jump Pack [Legends]",
+        "Librarian in Terminator Armour",
+        "Librarian",
+        "Librarian on Bike [Legends]"
+      ]
+    },
+    {
+      "faction": "Chaos - Death Guard",
+      "detachment": [
+        "Paragons of Putrescence"
+      ],
+      "name": "Host of the Hybridised Pox",
+      "officialLimiter": "DEATH GUARD INFANTRY model only.",
+      "verifiedEligibleNames": [
+        "Typhus",
+        "Death Guard Chaos Lord [Legends]",
+        "Death Guard Chaos Lord in Terminator Armour [Legends]",
+        "Lord of Virulence",
+        "Lord of Contagion",
+        "Death Guard Sorcerer in Terminator Armour [Legends]",
+        "Malignant Plaguecaster",
+        "Plague Marines",
+        "Death Guard Cultists [Legends]",
+        "Poxwalkers",
+        "Noxious Blightbringer",
+        "Foul Blightspawn",
+        "Biologus Putrifier",
+        "Tallyman",
+        "Plague Surgeon",
+        "Deathshroud Terminators",
+        "Blightlord Terminators",
+        "Icon Bearer",
+        "Chaos Lord on Palanquin of Nurgle [Legends]",
+        "Gellerpox Infected [Legends]",
+        "Sorcerer on Palanquin of Nurgle [Legends]",
+        "Death Guard Possessed [Legends]",
+        "Lord of Poxes"
+      ],
+      "ineligibleNames": [
+        "Plaguebearers"
+      ]
+    },
+    {
+      "faction": "Chaos - Death Guard",
+      "detachment": [
+        "Paragons of Putrescence"
+      ],
+      "name": "Rejuvenating Swarm",
+      "officialLimiter": "DEATH GUARD INFANTRY model only (excluding TERMINATOR models).",
+      "verifiedEligibleNames": [
+        "Death Guard Chaos Lord [Legends]",
+        "Malignant Plaguecaster",
+        "Plague Marines",
+        "Death Guard Cultists [Legends]",
+        "Poxwalkers",
+        "Noxious Blightbringer",
+        "Foul Blightspawn",
+        "Biologus Putrifier",
+        "Tallyman",
+        "Plague Surgeon",
+        "Icon Bearer",
+        "Chaos Lord on Palanquin of Nurgle [Legends]",
+        "Gellerpox Infected [Legends]",
+        "Sorcerer on Palanquin of Nurgle [Legends]",
+        "Death Guard Possessed [Legends]",
+        "Lord of Poxes"
+      ],
+      "ineligibleNames": [
+        "Plaguebearers"
+      ]
+    },
+    {
+      "faction": "Xenos - Genestealer Cults",
+      "detachment": [
+        "Heroes of the Uprising"
+      ],
+      "name": "Contraband Munitions",
+      "officialLimiter": "KELERMORPH/REDUCTUS SABOTEUR model only.",
+      "verifiedEligibleNames": [
+        "Reductus Saboteur"
+      ],
+      "ineligibleNames": [
+        "Kelermorph"
+      ]
+    },
+    {
+      "faction": "Xenos - Leagues of Votann",
+      "detachment": [
+        "Hearthband"
+      ],
+      "name": "Ironskein",
+      "officialLimiter": "KÂHL model only.",
+      "verifiedEligibleNames": [
+        "Kâhl"
+      ],
+      "ineligibleNames": [
+        "Einhyr Champion",
+        "Grimnyr",
+        "Brôkhyr Iron-master",
+        "Memnyr Strategist",
+        "Arkanyst Evaluator"
+      ]
+    },
+    {
+      "faction": "Imperium - Adeptus Astartes - Space Marines",
+      "detachment": [
+        "Gladius Task Force"
+      ],
+      "name": "Fire Discipline",
+      "officialLimiter": "Space Marine Chapters 'ADEPTUS ASTARTES model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Ancient in Terminator Armor",
+        "Apothecary Biologis",
+        "Bladeguard Ancient",
+        "Captain in Gravis Armour",
+        "Captain in Phobos Armour",
+        "Captain in Terminator Armour",
+        "Captain on Bike [Legends]",
+        "Captain with Jump Pack",
+        "Chaplain in Terminator Armour",
+        "Chaplain on Bike",
+        "Chaplain with Jump Pack",
+        "Judiciar",
+        "Librarian in Phobos Armour",
+        "Librarian with Jump Pack [Legends]",
+        "Librarian in Terminator Armour",
+        "Lieutenant in Phobos Armour",
+        "Apothecary",
+        "Lieutenant in Reiver Armour",
+        "Lieutenant with Combi-weapon",
+        "Lieutenant",
+        "Ancient",
+        "Primaris Company Champion [Legends]",
+        "Librarian",
+        "Chaplain",
+        "Captain",
+        "Techmarine",
+        "Imperial Space Marine [Legends]",
+        "Company Champion on Bike [Legends]",
+        "Ancient on Bike [Legends]",
+        "Apothecary on Bike [Legends]",
+        "Techmarine on Bike [Legends]",
+        "Librarian on Bike [Legends]"
+      ]
+    },
+    {
+      "faction": "Imperium - Adeptus Astartes - Space Marines",
+      "detachment": [
+        "Firestorm Assault Force"
+      ],
+      "name": "Forged in Battle",
+      "officialLimiter": "ARMY RULES 'ADEPTUS ASTARTES model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Ancient in Terminator Armor",
+        "Apothecary Biologis",
+        "Bladeguard Ancient",
+        "Captain in Gravis Armour",
+        "Captain in Phobos Armour",
+        "Captain in Terminator Armour",
+        "Captain on Bike [Legends]",
+        "Captain with Jump Pack",
+        "Chaplain in Terminator Armour",
+        "Chaplain on Bike",
+        "Chaplain with Jump Pack",
+        "Judiciar",
+        "Librarian in Phobos Armour",
+        "Librarian with Jump Pack [Legends]",
+        "Librarian in Terminator Armour",
+        "Lieutenant in Phobos Armour",
+        "Apothecary",
+        "Lieutenant in Reiver Armour",
+        "Lieutenant with Combi-weapon",
+        "Lieutenant",
+        "Ancient",
+        "Primaris Company Champion [Legends]",
+        "Librarian",
+        "Chaplain",
+        "Captain",
+        "Techmarine",
+        "Imperial Space Marine [Legends]",
+        "Company Champion on Bike [Legends]",
+        "Ancient on Bike [Legends]",
+        "Apothecary on Bike [Legends]",
+        "Techmarine on Bike [Legends]",
+        "Librarian on Bike [Legends]"
+      ]
+    },
+    {
+      "faction": "Imperium - Adeptus Astartes - Space Marines",
+      "detachment": [
+        "Librarius Conclave"
+      ],
+      "name": "Obfuscation",
+      "officialLimiter": "how to manipulate the energies of the Immaterium to confound ADEPTUS ASTARTES PSYKER model only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Librarian in Phobos Armour",
+        "Librarian with Jump Pack [Legends]",
+        "Librarian in Terminator Armour",
+        "Librarian",
+        "Librarian on Bike [Legends]"
+      ]
+    },
+    {
+      "faction": "Xenos - T'au Empire",
+      "detachment": [
+        "Auxiliary Cadre"
+      ],
+      "name": "Student of Kauyon",
+      "officialLimiter": "KROOT SHAPER model only.",
+      "verifiedEligibleNames": [
+        "Kroot Trail Shaper",
+        "Kroot War Shaper",
+        "Kroot Flesh Shaper"
+      ],
+      "ineligibleNames": [
+        "Commander in Crisis Battlesuit [Legends]",
+        "Commander in Enforcer Battlesuit",
+        "Commander in Coldstar Battlesuit",
+        "Cadre Fireblade",
+        "Ethereal",
+        "Firesight Team",
+        "Kroot Lone-spear"
+      ]
+    },
+    {
+      "faction": "Xenos - T'au Empire",
+      "detachment": [
+        "Auxiliary Cadre"
+      ],
+      "name": "Admired Leader",
+      "officialLimiter": "T’AU EMPIRE model only (excluding KROOT models).",
+      "verifiedEligibleNames": [
+        "Commander in Crisis Battlesuit [Legends]",
+        "Commander in Enforcer Battlesuit",
+        "Commander in Coldstar Battlesuit",
+        "Cadre Fireblade",
+        "Ethereal",
+        "Firesight Team"
+      ],
+      "ineligibleNames": [
+        "Kroot Trail Shaper",
+        "Kroot War Shaper",
+        "Kroot Flesh Shaper",
+        "Kroot Lone-spear"
+      ]
+    },
+    {
+      "faction": "Xenos - Tyranids",
+      "detachment": [
+        "Warrior Bioform Onslaught"
+      ],
+      "name": "Elevated Might",
+      "officialLimiter": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "verifiedEligibleNames": [
+        "Tyranid Prime with Lash Whip"
+      ],
+      "ineligibleNames": [
+        "Winged Tyranid Prime"
+      ]
+    },
+    {
+      "faction": "Xenos - Tyranids",
+      "detachment": [
+        "Warrior Bioform Onslaught"
+      ],
+      "name": "Ocular Adaptation",
+      "officialLimiter": "WINGED TYRANID PRIME/TYRANID PRIME WITH LASH WHIP model only.",
+      "verifiedEligibleNames": [
+        "Tyranid Prime with Lash Whip"
+      ],
+      "ineligibleNames": [
+        "Winged Tyranid Prime"
+      ]
+    }
+  ]
+}

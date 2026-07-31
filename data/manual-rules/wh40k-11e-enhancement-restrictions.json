@@ -938,6 +938,37 @@
       "enhancementName": "Gateways to Glory",
       "restriction": "WORLD EATERS DAEMON PRINCE model only.",
       "source": "Faction Pack - World Eaters v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-orks-git-spotter-squig",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Git-spotter Squig",
+      "restriction": "WARBOSS model only.",
+      "unitKeywordsAny": [
+        "Warboss"
+      ],
+      "restrictEligibility": true,
+      "source": "Faction Pack - Orks v1.1"
+    },
+    {
+      "id": "restriction-xenos-orks-bionik-workshop",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Bionik Workshop",
+      "restriction": "BIG MEK or PAINBOY model only.",
+      "unitKeywordsAny": [
+        "Big Mek",
+        "Painboy"
+      ],
+      "restrictEligibility": true,
+      "source": "Faction Pack - Orks v1.1"
     }
   ]
 }

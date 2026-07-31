@@ -75,6 +75,13 @@ function profilesFor(node, indexes) {
   return profiles;
 }
 
+function categoriesFor(node, indexes) {
+  return asArray(node?.categoryLinks?.categoryLink)
+    .filter(link => !bsdataFlagIsTrue(link.hidden))
+    .map(link => link.name || indexes?.categories?.get(link.targetId)?.name)
+    .filter(Boolean);
+}
+
 function rulesFor(node, indexes) {
   const rules = asArray(node?.rules?.rule)
     .filter(rule => !bsdataFlagIsTrue(rule.hidden))
@@ -324,6 +331,10 @@ function buildSelectionTree(unit, indexes, rootLink = null) {
         ...profilesFor(definition, indexes),
         ...(link && link !== definition ? profilesFor(link, indexes) : [])
       ],
+      categories: [...new Set([
+        ...categoriesFor(definition, indexes),
+        ...(link && link !== definition ? categoriesFor(link, indexes) : [])
+      ])],
       rules: [
         ...rulesFor(definition, indexes),
         ...(link && link !== definition ? rulesFor(link, indexes) : [])

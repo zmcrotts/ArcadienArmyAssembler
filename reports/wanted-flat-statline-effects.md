@@ -1,9 +1,10 @@
 # Effects We Want To Work Flat, All The Time
 
-Generated: 2026-07-06T20:13:50.652Z
+Generated: 2026-07-27T14:16:49.242Z
 
 | Unit | Effect | Y/N |
 | --- | --- | --- |
+| Detachment: Kroot Hunting Pack (Xenos - T'au Empire) | Skirmish Fighters: models gain 6+ invulnerable save | N |
 | ‘Iron Hand’ Straken [Legends] (Imperium - Astra Militarum) | Cold Steel and Courage: melee weapons gain Lethal Hits | Y |
 | Aestred Thurga and Agathae Dolan (Imperium - Adepta Sororitas) | Auto-Tapestry of the Emperor's Judgement: all weapons gain Devastating Wounds | Y |
 | Ancient (Imperium - Adeptus Astartes (generic chapters)) | Astartes Banner: OC +1 | Y |
@@ -20,7 +21,6 @@ Generated: 2026-07-06T20:13:50.652Z
 | Brother Corbulo [Legends] (Imperium - Adeptus Astartes - Blood Angels) | The Red Grail: melee weapons gain A +1 | Y |
 | Brother-Captain (Imperium - Grey Knights) | Hammerhand (Psychic): melee weapons gain Lethal Hits | Y |
 | Cadian Castellan (Imperium - Astra Militarum) | Senior Officer: ranged weapons gain Sustained Hits 1 | Y |
-| Cadian Castellan (Xenos - Genestealer Cults) | Senior Officer: ranged weapons gain Sustained Hits 1 | Y |
 | Cadre Fireblade (Xenos - T'au Empire) | Volley Fire: ranged weapons gain A +1 | Y |
 | Canis Wolfborn [Legends] (Imperium - Adeptus Astartes - Space Wolves) | Born of Wolves: melee weapons gain Sustained Hits 1 | Y |
 | Captain on Bike [Legends] (Imperium - Adeptus Astartes (generic chapters)) | Swift Assault: ranged weapons gain Assault | Y |
@@ -39,9 +39,9 @@ Generated: 2026-07-06T20:13:50.652Z
 | Detachment: Cult of the Arkifane (Chaos - Chaos Space Marines) | Soul Forge Boons: models gain 5+ invulnerable save | Y |
 | Detachment: Host of Ascension (Xenos - Genestealer Cults) | A Perfect Ambush: all weapons gain Ignores Cover | Y |
 | Detachment: Host of Ascension (Xenos - Genestealer Cults) | A Perfect Ambush: all weapons gain Sustained Hits 1 | Y |
-| Detachment: Kroot Hunting Pack (Xenos - T'au Empire) | Skirmish Fighters: models gain 6+ invulnerable save | Y |
 | Detachment: War Horde (Xenos - Orks) | Get Stuck In: melee weapons gain Sustained Hits 1 | Y |
 | Detachment: Warrior Bioform Onslaught (Xenos - Tyranids) | Leader-beasts: models gain 5+ invulnerable save | Y |
+| Detachment: Wrathful Procession (Imperium - Adeptus Astartes - Black Templars) | Wrathful Procession: models gain 5+ invulnerable save | Y |
 | Dogmata (Imperium - Adepta Sororitas) | Unflinching Determination: OC +1 | Y |
 | Epidemius (Chaos - Chaos Daemons) | Blessed by the Plague God: models gain 4+ invulnerable save | Y |
 | Epidemius (Chaos - Daemons Library) | Blessed by the Plague God: models gain 4+ invulnerable save | Y |
@@ -52,8 +52,6 @@ Generated: 2026-07-06T20:13:50.652Z
 | Fabius Bile (Chaos - Chaos Space Marines) | Enhanced Warriors: models gain T +1 | Y |
 | Fateskimmer (Chaos - Chaos Daemons) | Fateskimmer: melee weapons gain Lethal Hits | Y |
 | Fateskimmer (Chaos - Daemons Library) | Fateskimmer: melee weapons gain Lethal Hits | Y |
-| Field Ordnance Battery (Imperium - Astra Militarum) | Rearm, Reload, Fire: all weapons gain Sustained Hits 1 | Y |
-| Field Ordnance Battery (Xenos - Genestealer Cults) | Rearm, Reload, Fire: all weapons gain Sustained Hits 1 | Y |
 | Hell's Last [Legends] (Imperium - Astra Militarum) | Lesk’s Heroes: LD +1 | Y |
 | Herald of Slaanesh on Steed of Slaanesh [Legends] (Chaos - Chaos Daemons) | Lethal Caress: melee weapons improve AP by 1 | Y |
 | Herald of Slaanesh on Steed of Slaanesh [Legends] (Chaos - Daemons Library) | Lethal Caress: melee weapons improve AP by 1 | Y |
@@ -92,13 +90,11 @@ Generated: 2026-07-06T20:13:50.652Z
 | Orikan the Diviner (Xenos - Necrons) | Master Chronomancer: models gain 4+ invulnerable save | Y |
 | Palatine (Imperium - Adepta Sororitas) | Fury of the Righteous: all weapons gain Lethal Hits | Y |
 | Patriarch (Xenos - Genestealer Cults) | Might From Beyond: melee weapons gain Devastating Wounds | Y |
-| Rapier Laser Destroyer Battery (Imperium - Astra Militarum - Library) | Powerful Volley: all weapons gain Lethal Hits | Y |
 | Ravenwing Command Squad (Imperium - Adeptus Astartes - Dark Angels) | Astartes Banner: OC +1 | Y |
 | Sanguinary Priest (Imperium - Adeptus Astartes - Blood Angels) | Blood Chalice: melee weapons improve AP by 1 | Y |
 | Sanguinary Priest on Bike [Legends] (Imperium - Adeptus Astartes - Blood Angels) | Blood Chalice: melee weapons improve AP by 1 | Y |
 | Sanguinary Priest with Jump Pack [Legends] (Imperium - Adeptus Astartes - Blood Angels) | Blood Chalice: melee weapons improve AP by 1 | Y |
 | Sergeant Telion [Legends] (Imperium - Adeptus Astartes - Ultramarines) | Voice of Experience: OC improves by 1 | Y |
-| Shas'o R'alai [Legends] (Xenos - T'au Empire) | Eclipse Field Generator: models gain 5+ invulnerable save | Y |
 | Skorpekh Lord (Xenos - Necrons) | United In Destruction: melee weapons gain Lethal Hits | Y |
 | Skulltaker (Chaos - Chaos Daemons) | Lord of Decapitations: melee weapons gain Devastating Wounds | Y |
 | Skulltaker (Chaos - Daemons Library) | Lord of Decapitations: melee weapons gain Devastating Wounds | Y |
