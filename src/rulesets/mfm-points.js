@@ -43,10 +43,10 @@ function normalize(value) {
 }
 
 function readMfmPoints(filePath) {
-  if (!filePath) return { changes: [], source: null, version: null, generatedAt: null, issues: [] };
+  if (!filePath) return { changes: [], conditionalUnitSchedules: [], source: null, version: null, generatedAt: null, issues: [] };
   if (!fs.existsSync(filePath)) {
     return {
-      changes: [], source: null, version: null, generatedAt: null,
+      changes: [], conditionalUnitSchedules: [], source: null, version: null, generatedAt: null,
       issues: [{ code: "mfm-points-missing", severity: "error", message: `Configured MFM points source is missing: ${filePath}`, filePath }]
     };
   }
@@ -54,6 +54,7 @@ function readMfmPoints(filePath) {
     const document = JSON.parse(fs.readFileSync(filePath, "utf8"));
     return {
       changes: Array.isArray(document?.changes) ? document.changes : [],
+      conditionalUnitSchedules: Array.isArray(document?.conditionalUnitSchedules) ? document.conditionalUnitSchedules : [],
       source: document?.source || null,
       version: document?.version || null,
       generatedAt: document?.generatedAt || null,
@@ -61,7 +62,7 @@ function readMfmPoints(filePath) {
     };
   } catch (error) {
     return {
-      changes: [], source: null, version: null, generatedAt: null,
+      changes: [], conditionalUnitSchedules: [], source: null, version: null, generatedAt: null,
       issues: [{ code: "mfm-points-invalid", severity: "error", message: `Configured MFM points source could not be parsed: ${filePath}`, filePath, cause: error.message }]
     };
   }
@@ -147,7 +148,7 @@ function applyMfmPoints(units, armies, document) {
   let definitions = units.map(unit => ({ ...unit, pricing: { ...(unit.pricing || {}) } }));
   let armyDefinitions = armies.map(army => ({ ...army, enhancements: (army.enhancements || []).map(item => ({ ...item })) }));
   const issues = [...(document?.issues || [])];
-  const summary = { total: 0, unitRows: 0, wargearRows: 0, enhancementRows: 0, unmatched: 0 };
+  const summary = { total: 0, unitRows: 0, conditionalUnitRows: 0, wargearRows: 0, enhancementRows: 0, unmatched: 0 };
   const imperialOccurrences = new Map();
 
   for (const change of document?.changes || []) {
@@ -216,6 +217,38 @@ function applyMfmPoints(units, armies, document) {
       if (!changed) { issues.push(unmatchedIssue(change)); summary.unmatched += 1; }
       else summary.enhancementRows += 1;
     }
+  }
+
+  for (const schedule of document?.conditionalUnitSchedules || []) {
+    const matches = matchingUnits(definitions, { ...schedule, kind: "unit" });
+    if (!matches.length) {
+      issues.push(unmatchedIssue({ ...schedule, kind: "conditional-unit-schedule" }));
+      summary.unmatched += 1;
+      continue;
+    }
+    const rows = (schedule.rows || []).map(row => scheduleRow({
+      costBand: row.costBand || "YOUR UNIT COSTS",
+      label: row.label,
+      points: row.points
+    }, row.context));
+    const matchKeys = new Set(matches.map(unit => unit.selectionKey));
+    definitions = definitions.map(unit => {
+      if (!matchKeys.has(unit.selectionKey)) return unit;
+      return {
+        ...unit,
+        pricing: {
+          ...(unit.pricing || {}),
+          // Context schedules are complete, authoritative tables. Replace
+          // partial flat scrape rows for this unit so they cannot mask the
+          // dedicated allied-Imperium prices.
+          mfmRows: [
+            ...rows,
+            ...(unit.pricing?.mfmRows || []).filter(row => row.source !== "mfm-1.1")
+          ]
+        }
+      };
+    });
+    summary.conditionalUnitRows += rows.length;
   }
 
   return { units: definitions, armies: armyDefinitions, summary, issues };

@@ -3,6 +3,130 @@
   "source": "https://mfm.warhammer-community.com/en",
   "version": "1.1",
   "generatedAt": "2026-07-23T04:47:40.883978Z",
+  "conditionalUnitSchedules": [
+    { "faction": "Imperial Agents", "unitName": "AQUILA KILL TEAM", "rows": [
+      { "context": "Imperial Agents army", "label": "5 models", "points": 100 },
+      { "context": "Imperial Agents army", "label": "10 models", "points": 200 },
+      { "context": "Every model has the Imperium keyword", "label": "5 models", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "10 models", "points": 200 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "CALLIDUS ASSASSIN", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 100 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "CORVUS BLACKSTAR", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 180 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 180 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "CULEXUS ASSASSIN", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 85 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 85 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "DEATHWATCH KILL TEAM", "rows": [
+      { "context": "Imperial Agents army", "label": "5 models", "points": 100 },
+      { "context": "Imperial Agents army", "label": "10 models", "points": 190 },
+      { "context": "Every model has the Imperium keyword", "label": "5 models", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "10 models", "points": 200 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "EVERSOR ASSASSIN", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 110 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 120 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "EXACTION SQUAD", "rows": [
+      { "context": "Imperial Agents army", "label": "11 models", "points": 90 },
+      { "context": "Every model has the Imperium keyword", "label": "11 models", "points": 85 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "GREY KNIGHTS TERMINATOR SQUAD", "rows": [
+      { "context": "Imperial Agents army", "label": "5 models", "points": 190 },
+      { "context": "Every model has the Imperium keyword", "label": "5 models", "points": 210 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "IMPERIAL NAVY BREACHERS", "rows": [
+      { "context": "Imperial Agents army", "label": "10 models", "points": 90 },
+      { "context": "Every model has the Imperium keyword", "label": "10 models", "points": 90 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "IMPERIAL RHINO", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 75 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 75 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITOR", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 55 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 65 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITOR COTEAZ", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 75 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 95 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITOR DRAXUS", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 75 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 110 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITOR GREYFAX", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 65 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 65 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITORIAL AGENTS", "rows": [
+      { "context": "Imperial Agents army", "label": "6 models", "points": 50 },
+      { "context": "Imperial Agents army", "label": "12 models", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "6 models", "points": 60 },
+      { "context": "Every model has the Imperium keyword", "label": "12 models", "points": 120 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITORIAL CHIMERA", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 70 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 70 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "INQUISITOR KROYLE", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 100 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "MINISTORUM PRIEST", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 40 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 40 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "NAVIGATOR", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 60 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 75 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "ROGUE TRADER ENTOURAGE", "rows": [
+      { "context": "Imperial Agents army", "label": "4 models", "points": 75 },
+      { "context": "Every model has the Imperium keyword", "label": "4 models", "points": 105 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "SANCTIFIERS", "rows": [
+      { "context": "Imperial Agents army", "label": "9 models", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "9 models", "points": 100 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "SISTERS OF BATTLE IMMOLATOR", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 115 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "SISTERS OF BATTLE SQUAD", "rows": [
+      { "context": "Imperial Agents army", "label": "10 models", "points": 100 },
+      { "context": "Every model has the Imperium keyword", "label": "10 models", "points": 115 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "SUBDUCTOR SQUAD", "rows": [
+      { "context": "Imperial Agents army", "label": "11 models", "points": 85 },
+      { "context": "Every model has the Imperium keyword", "label": "11 models", "points": 100 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "VIGILANT SQUAD", "rows": [
+      { "context": "Imperial Agents army", "label": "11 models", "points": 85 },
+      { "context": "Every model has the Imperium keyword", "label": "11 models", "points": 85 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "VINDICARE ASSASSIN", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 110 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 125 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "VOIDSMEN-AT-ARMS", "rows": [
+      { "context": "Imperial Agents army", "label": "6 models", "points": 50 },
+      { "context": "Every model has the Imperium keyword", "label": "6 models", "points": 70 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "WATCH CAPTAIN ARTEMIS", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 65 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 65 }
+    ] },
+    { "faction": "Imperial Agents", "unitName": "WATCH MASTER", "rows": [
+      { "context": "Imperial Agents army", "label": "1 model", "points": 95 },
+      { "context": "Every model has the Imperium keyword", "label": "1 model", "points": 105 }
+    ] }
+  ],
   "changes": [
     {
       "kind": "enhancement",
@@ -12963,6 +13087,24 @@
       "kind": "unit",
       "faction": "World Eaters",
       "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 1ST TO 3RD UNITS COST",
+      "label": "1 model",
+      "points": 75
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
+      "unitName": "CHAOS RHINO",
+      "costBand": "YOUR 4TH + UNIT COSTS",
+      "label": "1 model",
+      "points": 85
+    },
+    {
+      "kind": "unit",
+      "faction": "World Eaters",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
       "unitName": "CHAOS PREDATOR DESTRUCTOR",
       "costBand": "YOUR 3RD + UNIT COSTS",
       "label": "1 model",
@@ -13119,7 +13261,7 @@
       "unitName": "KHORNE BERZERKERS",
       "costBand": "YOUR UNIT COSTS",
       "label": "10 models",
-      "points": 170
+      "points": 180
     },
     {
       "kind": "unit",
@@ -13128,7 +13270,7 @@
       "unitName": "KHORNE BERZERKERS",
       "costBand": "YOUR UNIT COSTS",
       "label": "20 models",
-      "points": 330
+      "points": 345
     },
     {
       "kind": "unit",
