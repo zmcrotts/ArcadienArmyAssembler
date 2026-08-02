@@ -949,6 +949,17 @@ async function syncSavedRosters() {
           : `Synced — your lists already match.${folderLabel}`);
     }
   } catch (error) {
+    if (oneDrive && error?.code === "ONEDRIVE_REAUTH_REQUIRED") {
+      syncStatus = { available: true, connected: false };
+      if (appMode === "library") renderStartScreen();
+      showTransientMessage("Your OneDrive connection expired. Opening Microsoft sign-in…");
+      try {
+        await oneDrive.beginSignIn();
+      } catch (signInError) {
+        showTransientMessage(`Microsoft sign-in could not start: ${signInError.message}`);
+      }
+      return;
+    }
     try {
       syncStatus = oneDrive
         ? await oneDrive.getStatus()

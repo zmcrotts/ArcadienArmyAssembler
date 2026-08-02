@@ -20,11 +20,11 @@ function response(status, body) {
   };
 }
 
-function browserSync(fetch) {
-  const storage = new Map([["arcadienOneDriveTokens", JSON.stringify({
+function browserSync(fetch, initialTokens = {
     access_token: "browser-token",
     expires_at: Date.now() + 60_000
-  })]]);
+  }) {
+  const storage = new Map([["arcadienOneDriveTokens", JSON.stringify(initialTokens)]]);
   const localStorage = {
     getItem: key => storage.get(key) || null,
     setItem: (key, value) => storage.set(key, String(value)),
@@ -109,6 +109,25 @@ test("a blocked Safari download is reported instead of pretending OneDrive is em
     browserSync(fixture.fetch).sync([]),
     /Safari blocked the OneDrive file download/
   );
+});
+
+test("an expired browser refresh token clears the stale connection and marks reconnect required", async () => {
+  const service = browserSync(
+    async url => {
+      assert.match(String(url), /\/token$/);
+      return response(400, {
+        error: "invalid_grant",
+        error_description: "The refresh token has expired."
+      });
+    },
+    { refresh_token: "expired-refresh-token", expires_at: 0 }
+  );
+
+  await assert.rejects(
+    service.sync([]),
+    error => error.code === "ONEDRIVE_REAUTH_REQUIRED"
+  );
+  assert.equal((await service.getStatus()).connected, false);
 });
 
 test("Android sync uses the current native connection and Graph bridge", async () => {
