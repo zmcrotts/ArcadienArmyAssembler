@@ -1,6 +1,6 @@
 # Selectable Toggle Effect Candidates
 
-Generated: 2026-07-06T20:13:50.650Z
+Generated: 2026-07-27T14:16:49.239Z
 
 These source effects are not always-on and should not be flattened automatically. They are good future candidates for an explicit roster/battle-state toggle.
 

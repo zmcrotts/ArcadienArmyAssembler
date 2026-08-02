@@ -1,0 +1,546 @@
+{
+  "sourceRoot": "E:\\my own rosterbuilder\\downloads\\warhammer-40000\\2026-07-22",
+  "pdfCount": 32,
+  "redCharacterCount": 28626,
+  "changedPageCount": 57,
+  "documents": [
+    {
+      "file": "core-rules\\Universal Rules Updates.pdf",
+      "revisionStartPage": null,
+      "redCharacterCount": 0,
+      "changedPageCount": 0,
+      "changedPages": []
+    },
+    {
+      "file": "event-companions\\Warhammer Dominatus - Event Companion.pdf",
+      "revisionStartPage": null,
+      "redCharacterCount": 233,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 1,
+          "redCharacterCount": 233,
+          "redText": "WHAT'S NEW?\n\u25aa Generating Command Points section (below)\nGENERATING\nCOMMAND POINTS\nExcluding Core CP, each player can gain a maximum of\n1CP per battle round (including he CP gained when a\nplayer discards an active Secondary Mission card)."
+        }
+      ]
+    },
+    {
+      "file": "event-companions\\Warhammer Event Companion.pdf",
+      "revisionStartPage": null,
+      "redCharacterCount": 975,
+      "changedPageCount": 3,
+      "changedPages": [
+        {
+          "page": 1,
+          "redCharacterCount": 600,
+          "redText": "WHAT'S NEW?\n\u25aa Generating Command Points section (right).\n\u25aa Errata and FAQs updates.\n\u25aa Layout updates:\n\u25ab Take and Hold vs Purge the Foe: Layout A\n\u25ab Take and Hold vs Purge the Foe: Layout B\n\u25ab Take and Hold vs Purge the Foe: Layout C\n\u25ab Purge the Foe vs Disruption: Layout A\n\u25ab Purge the Foe vs Disruption: Layout B\n\u25ab Purge the Foe vs Disruption: Layout C GENERATING\n\u25ab Reconnaissance vs Disruption: Layout A\n\u25ab Reconnaissance vs Disruption: Layout C COMMAND POINTS\nExcluding Core CP, each player can gain a maximum of\n1CP per battle round (including he CP gained when a\nplayer discards an active Secondary Mission card)."
+        },
+        {
+          "page": 4,
+          "redCharacterCount": 374,
+          "redText": "Q: For the purposes of VP scoring limits, is the end\nof the battle the same timing as the end of the fifth\nbattle round?\nA: No, VP scored at the end of the battle are not subject\nto the 15VP per battle round scoring limit.\nQ: When a mission action places an operation marker\nand applies a status (e.g. 'decoyed'), does removing that\noperation marker also remove that status?\nA: Yes."
+        },
+        {
+          "page": 54,
+          "redCharacterCount": 1,
+          "redText": "."
+        }
+      ]
+    },
+    {
+      "file": "event-companions\\Warhammer Teams - Event Companion.pdf",
+      "revisionStartPage": null,
+      "redCharacterCount": 604,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 1,
+          "redCharacterCount": 307,
+          "redText": "WHAT'S NEW?\n\u25aa Generating Command Points section (below).\n\u25aa Update to mission sequence step 4: Determine\nAttacker and Defender.\nGENERATING\nCOMMAND POINTS\nExcluding Core CP, each player can gain a maximum of\n1CP per battle round (including he CP gained when a\nplayer discards an active Secondary Mission card)."
+        },
+        {
+          "page": 2,
+          "redCharacterCount": 297,
+          "redText": "DETERMINE ATTACKER AND DEFENDER\nPlayers look at the selected layout and agree\nwhich edges of the battlefield the players have set up\ncorrespond with the Attacker\u2019s and Defender\u2019s battlefield\nedges labelled on the card.\nRoll off: the winner decides who will be the Attacker and\nwho will be the Defender."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Adepta Sororitas.pdf",
+      "revisionStartPage": 13,
+      "redCharacterCount": 1586,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 13,
+          "redCharacterCount": 784,
+          "redText": "ARMY OF FAITH DETACHMENT\nLight of the Emperor Stratagem, CP Cost\nDivine Intervention Stratagem, Effect section\nChange to:\nBlinding Radiance Stratagem, Target and Effect Sections 'You can discard 1\u20113 Miracle dice. At the end of the phase, set up\none destroyed CHARACTER model from your unit on the battlefield,\nINFANTRY unengaged and as close as possible to where it was destroyed. That\nmodel is not part of an attached unit and its unit has a starting\nstrength of 1. Roll one D3, adding 1 to the result for each Miracle dice\nyou discarded. That model has that number of wounds remaining (up\nto its starting number of wounds).'\nINFANTRY Catechism of Divine Penitence Enhancement\nChange to:\n\u2018CANONESS, PALATINE or MINISTORUM PRIEST model only.\nThe bearer gains the PENITENT keyword.\u2019"
+        },
+        {
+          "page": 14,
+          "redCharacterCount": 802,
+          "redText": "Q: How do Miracle Dice work during the attack sequence?\nA: During the attack sequence, an Adepta Sororitas player\u2019s attacking\nunit can use an Act of Faith when making hit rolls (where they can\nsubstitute a dice from any given group of attacks before making the\nroll), wound rolls (where they can substitute a dice from any given\ngroup of hits before making the roll) or damage rolls (where they\ncan substitute a dice for a single damage roll before making the roll).\nAn Adepta Sororitas player\u2019s target unit can use an Act of Faith when\nmaking save rolls (where they can substitute a dice for any given group\nof wounding attacks before making the roll).\nJunith Eruita, The Pulpit of Saint Holline\u2019s Basilica Ability\nChange to:\n\u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have \u20111 to hit rolls."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Adeptus Custodes.pdf",
+      "revisionStartPage": 35,
+      "redCharacterCount": 177,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 35,
+          "redCharacterCount": 177,
+          "redText": "Shield-Captain on Dawneagle Jetbike and Vertus Praetors,\nRanged Weapons\nAnathema Psykana Rhino, Venerable Land Raider \u2013 Keywords section\nAdd the 'FRAME' keyword."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Adeptus Mechanicus.pdf",
+      "revisionStartPage": 17,
+      "redCharacterCount": 1578,
+      "changedPageCount": 7,
+      "changedPages": [
+        {
+          "page": 17,
+          "redCharacterCount": 603,
+          "redText": "Belisarius Cawl, Corpuscarii Electro-Priests, Cybernetica Datasmith,\nFulgurite Electro-Priests, Kastelan Robots, Tech-Priest Dominus,\nTech-Priest Enginseer, Tech-Priest Manipulus, Technoarcheologist \u2013\nFaction Abilities section\nAdd 'Doctrina Imperatives'.\nRAD-ZONE CORPS DETACHMENT\nRad-bombardment Detachment Rule, Battle Round 1 Section, Unit\nTaking Cover Section\nChange to:\n\u2018\u2022 That unit is battle-shocked.\n\u2022 On a 5+, that unit suffers D3 mortal wounds.\u2019\nStealth Optimisation Detachment Rule\nChange to:\n'Friendly SKITARII INFANTRY, SKITARII MOUNTED and IRONSTRIDER\nBALLISTARII units have Stealth.'"
+        },
+        {
+          "page": 18,
+          "redCharacterCount": 560,
+          "redText": "Belisarius Cawl Onager Dunecrawler\n\u25aa Keywords section: Add 'MOBILE'.\nCybernetica Datasmith\nAdd new ability:\n\u2018Data-severed: If there are no KASTELAN ROBOT models in this unit:\n\u25aa This unit loses VEHICLE.\n\u25aa This unit has INFANTRY.\u2019\nIronstrider Ballistarii, Ranged Weapons\nSicarian Infiltrators, Melee Weapons\nKastelan Robots, Repulsor Grid ability\nChange to:\n\u2018When an enemy unit targets this unit with ranged attacks, until that\nenemy unit has shot, when this unit makes a save roll:\n\u25aa On an unmodified 6, that enemy unit suffers 1 mortal wound after\nthat enemy unit has shot.\u2019"
+        },
+        {
+          "page": 19,
+          "redCharacterCount": 76,
+          "redText": "Sicarian Ruststalkers, Melee Weapons\nSkorpius Disintegrator, Ferrumite Cannon"
+        },
+        {
+          "page": 20,
+          "redCharacterCount": 26,
+          "redText": "6\" 3 4+ 3 8+ 0\n[ANTI\u2011VEHICLE 4+]"
+        },
+        {
+          "page": 22,
+          "redCharacterCount": 135,
+          "redText": "6\" 3 5+ 1 7+ 1\n4+\n[ANTI\u2011VEHICLE 4+, DEVASTATING WOUNDS]\n[DEVASTATING WOUNDS, PISTOL]\n[ANTI\u2011VEHICLE 4+, DEVASTATING WOUNDS, LANCE]\n[IGNORES COVER]"
+        },
+        {
+          "page": 24,
+          "redCharacterCount": 70,
+          "redText": "6\" 3 5+ 1 7+ 1\n6+\n[DEVASTATING WOUNDS, PISTOL]\n[ASSAULT]\n[HEAVY]\n[IGNORES COVER]"
+        },
+        {
+          "page": 26,
+          "redCharacterCount": 108,
+          "redText": "8\" 10 3+ 14 6+ 2\n[RAPID FIRE 2]\n[IGNORES COVER, TORRENT]\n[MELTA 2]\n[DEVASTATING WOUNDS, TWIN\u2011LINKED]\n[ANTI\u2011VEHICLE 3+]"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Adeptus Titanicus.pdf",
+      "revisionStartPage": null,
+      "redCharacterCount": 50,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 1,
+          "redCharacterCount": 50,
+          "redText": "Your army has the Take and Hold\nforce disposition."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Aeldari.pdf",
+      "revisionStartPage": 26,
+      "redCharacterCount": 1082,
+      "changedPageCount": 3,
+      "changedPages": [
+        {
+          "page": 26,
+          "redCharacterCount": 204,
+          "redText": "Unshrouded Truth Stratagem,Target and Effect Sections\nTARGET:\n9\"\nEFFECT:\n\u25aa Place your unit in strategic reserves.\n\u25aa Your unit has Deep Strike.\n\u25aa Your unit must make an ingress move this phase."
+        },
+        {
+          "page": 27,
+          "redCharacterCount": 787,
+          "redText": "D\u2011cannon Platform, Falcon, Fire Prism, Night Spinner, Shadow Weaver\nPlatform, Starweaver, Vibro Cannon Platform, Voidweaver, Wave\nSerpent, Ynnari Raider, Ynnari Venom \u2013 Keywords Section\nAdd 'FRAME'.\nSkyweavers, Acrobatic Grace Ability\nChange to:\n\u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have \u20111 to hit rolls.\nThe Yncarne, Inevitable Death Ability\nDoing so does not prevent this model from being\neligible to move.\nCrimson Hunter, Hemlock Wraithfighter\n\u25aa Profile: Change M and OC to \u2018\u2011\u2019.\nEldrad Ulthran, Leader Section\nChange to:\n\u2018This model can be attached to the following units: GUARDIAN\nDEFENDERS, STORM GUARDIANS, WARLOCK CONCLAVE\nIf this model is not already attached to a unit, you can attach this model\nto a unit, even if one WARLOCKS unit has already been attached to it.\u2019"
+        },
+        {
+          "page": 28,
+          "redCharacterCount": 91,
+          "redText": "Q: Can the Yncarne use the Inevitable Death ability during my\nopponent\u2019s first turn?\nA: Yes."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Astra Militarum.pdf",
+      "revisionStartPage": 23,
+      "redCharacterCount": 1611,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 23,
+          "redCharacterCount": 635,
+          "redText": "Aegis Defence Line, Baneblade, Banehammer, Banesword, Basilisk,\nChimera, Deathstrike, Doomhammer, Hellhammer, Hellhound, Hydra,\nCOMBINED ARMS DETACHMENT\nLeman Russ Battle Tank, Leman Russ Commander, Leman Russ\nReactive Command Enhancement Demolisher, Leman Russ Eradicator, Leman Russ Executioner, Leman\nChange 9\" to 8\". Russ Exterminator, Leman Russ Punisher, Leman Russ Vanquisher,\nManticore, Rogal Dorn Battle Tank, Rogal Dorn Commander,\nShadowsword, Stormlord, Stormsword, Taurox, Taurox Prime, Wyvern\n\u2013 Keywords section\nAdd \u2018FRAME\u2019.\nMasters of Camouflage Detachment Rule\nunits\nunit\nunit\nTripwires Enhancement\nChange 9\u201d to 8\u201d."
+        },
+        {
+          "page": 24,
+          "redCharacterCount": 976,
+          "redText": "Gaunt\u2019s Ghosts, Covert Stealth Team ability\nChange to:\n'At the end of your opponent\u2019s turn, if this unit is unengaged, you can\nuse this ability. If you do:\n\u25aa Place this unit in strategic reserves.\n\u25aa This unit has Deep Strike until the start of your next Shooting phase.\n\u25aa This unit must make an ingress move in your next Movement phase\n(including in your first turn).\u2019\nValkyrie\n\u25aa Profile: Change M to \u201814\"\u2019 and OC to \u2018-\u2019.\n\u25aa Keywords: Remove \u2018AIRCRAFT\u2019.\nLeman Russ Commander, Death Befitting an Officer\nChange to:\n\u2018In your opponent\u2019s Shooting phase, when this unit is destroyed, before\nthis unit\u2019s deadly demise roll, roll one D6:\n\u25aa On a 2+, do not remove this unit from the battlefield. After the\nattacking unit has shot, this unit can shoot using normal shooting,\nbut while doing so this unit can only target that enemy unit. When\nthis unit has shot, or at the end of the phase (whichever comes first),\nresolve this unit\u2019s deadly demise roll, then this unit is removed from\nthe battlefield.\u2019"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Black Templars.pdf",
+      "revisionStartPage": 5,
+      "redCharacterCount": 85,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 5,
+          "redCharacterCount": 85,
+          "redText": "Heresy Begets Retribution Stratagem, Target Section\nChange 9\" to 8\"."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Blood Angels.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 345,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 239,
+          "redText": "Upon Wings of Fire Detachment Rule, Final Paragraph\nC hange to:\n\u25aa Place those units in strategic reserves.\n\u25aa Those units must make an ingress move in your next Movement\nphase (including in your first turn).\nSanguinary Guard"
+        },
+        {
+          "page": 10,
+          "redCharacterCount": 106,
+          "redText": "The Sanguinor, Miraculous Saviour Ability\nThat move does not\nprevent this unit from being eligible to move."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Chaos Daemons.pdf",
+      "revisionStartPage": 131,
+      "redCharacterCount": 0,
+      "changedPageCount": 0,
+      "changedPages": []
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Chaos Knights.pdf",
+      "revisionStartPage": 25,
+      "redCharacterCount": 601,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 25,
+          "redCharacterCount": 501,
+          "redText": "Storm of Darkness Stratagem, Effect Section\nChange to:\n\u25aa Your unit has Stealth.\n\u25aa Melee attacks that target your unit have -1 to hit rolls.\nKnight Abominant\n\u25aa Volkite Combustor weapon\nChange to:\nIGNORES COVER,\nKnight Desecrator\n\u25aa Desecrator Laser Destructor weapon\nChange to:\n[DEVASTATING WOUNDS: MONSTER/VEHICLE]\n\u25aa Obsessive Ruthlessness Ability\nChange to:\n\u2018This unit\u2019s ranged attacks that target a MONSTER/VEHICLE unit can\nignore modifiers to this unit\u2019s:\n\u25ab BS.\n\u25ab Hit rolls and wound rolls.\u2019"
+        },
+        {
+          "page": 26,
+          "redCharacterCount": 100,
+          "redText": "Knight Ruinator\n\u25aa Darkflame Lance weapon\nChange to:\nD6+6\n\u25aa Terrorpulse Missiles weapon\nChange to:\nD6+6"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Chaos Space Marines.pdf",
+      "revisionStartPage": 37,
+      "redCharacterCount": 0,
+      "changedPageCount": 0,
+      "changedPages": []
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Dark Angels.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 3348,
+      "changedPageCount": 3,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 1591,
+          "redText": "Masters of Manoeuvre Detachment Rule\nChange to:\n\u2018Friendly ADEPTUS ASTARTES have:\n\u25aa This unit\u2019s ranged attacks have [ASSAULT].\n\u25aa When this unit is selected to make a fall-back move, that fall-back\nmove does not prevent this unit from being eligible to shoot.\nFriendly ADEPTUS ASTARTES MOUNTED have:\n\u25aa This unit\u2019s ranged attacks have [ASSAULT].\n\u25aa When this unit is selected to make an advance move, that advance\nmove does not prevent this unit from being eligible to declare\na charge.\n\u25aa When this unit is selected to make a fall-back move, that fall-back\nmove does not prevent this unit from being eligible to shoot and\neligible to declare a charge.\u2019\nShroud of Heroes Enhancement\nChange to:\n\u2018ADEPTUS ASTARTES model only. (Once per battle, per army) When this\nmodel is destroyed, at the end of the phase, roll one D6:\n\u25aa On a 2+, set up this model on the battlefield, unengaged and as close\nas possible to where it was destroyed. This model is not part of an\nattached unit and its unit has a starting strength of 1. This model has\n3 wounds remaining, or its full wounds remaining if this model was\nDeath on the Wind Stratagem battle-shocked when it was destroyed.\u2019\nChange to:\n\u2018WHEN: Your Movement phase, when a friendly ADEPTUS ASTARTES unit\nends an advance move.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: That advance move does not prevent your unit from being\neligible to declare a charge.\u2019\nTalon Strike Stratagem\nChange to:\n\u2018WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected\nto fight.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit\u2019s melee attacks have [LANCE].\u2019"
+        },
+        {
+          "page": 10,
+          "redCharacterCount": 918,
+          "redText": "Lion El\u2019Jonson\n\u25aa Keywords section: Add 'MOBILE'.\n\u25aa All Secrets Revealed Ability \u2013 Change to:\n\u2018Mist-wreathed Shadow Realms: At the end of your opponent\u2019s turn,\nif this unit is unengaged, you can use this ability. If you do:\n\u25ab Place this unit in strategic reserves.\n\u25ab This unit can make an ingress move in your next Movement\nphase (including in your first turn).\u2019\nInner Circle Companions, Braziers of Judgement ability\nChange to:\n\u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have \u20111 to hit rolls.\nNephilim Jetfighter, Lightning-fast Manoeuvres Ability\nChange to:\n\u2018Ranged attacks that target this unit have \u20111 to wound rolls.\u2019\nRavenwing Black Knights, Ravenwing Command Squad \u2013 Black Knight\nCombat Weapon Profile\nRavenwing Command Squad, Keywords Section\nRemove \u2018Leader\u2019, add \u2018Support\u2019.\nRavenwing Darkshroud, Icon of Old Caliban Ability\nChange to:\n\u2018Friendly ADEPTUS ASTARTES units within 6\" of this unit have Stealth.\u2019"
+        },
+        {
+          "page": 11,
+          "redCharacterCount": 839,
+          "redText": "Ravenwing Dark Talon, Stasis Bomb Ability\nChange to:\n\u2018Stasis Bomb: At the end of your opponent\u2019s Fight phase, select one\nvisible enemy unit (excluding AIRCRAFT/Lone Operative units) within\n24\" of this unit. That enemy unit is slowed until the end of your\nopponent\u2019s next Movement phase:\n\u25aa While a unit is slowed, in your opponent\u2019s Movement phase, when\nthat unit is selected to move, unless that unit remains stationary,\nroll one D6:\n\u25ab On a 1\u20114, that unit suffers D3 mortal wounds and that unit has\n\u20112\" M.\n\u25ab On a 5\u20116, that unit suffers 2D3 mortal wounds and that unit has\n\u20113\" M.\u2019\nSammael, Grand Master of the Ravenwing Ability\nChange to:\n\u25aa This unit\u2019s ranged attacks have [ASSAULT].\n\u25aa When this unit is selected to make an advance move, that advance\nmove does not prevent this unit from being eligible to declare\na charge.\n\u25aa This unit has MOBILE."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Death Guard.pdf",
+      "revisionStartPage": 7,
+      "redCharacterCount": 535,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 7,
+          "redCharacterCount": 535,
+          "redText": "Mortarion, Inflamed Reprisal Ability\nworsen the BS\ncharacteristic of that attack by 1 and\nVIRULENT VECTORIUM DETACHMENT\nWorldblight Detachment Rule\nChange to:\n\u2018At the end of your Command phase, if a friendly DEATH GUARD unit\nis controlling an objective, that objective is secured. Until you lose\ncontrol of that objective, while an enemy unit is within range of that\nobjective, that enemy unit is Afflicted (pg 71).\u2019\nDeathshroud Terminators, Death Approaches ability\nIn your Movement phase,\nMortarion, Diseased Influence Ability\n8\""
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Drukhari.pdf",
+      "revisionStartPage": 7,
+      "redCharacterCount": 995,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 7,
+          "redCharacterCount": 744,
+          "redText": "Raider, Ravager, Venom \u2013 Keywords Section\nAdd 'FRAME'.\nPostmortality Stratagem, Effect Section\nChange to: Archon, Shadowfield Ability\n\u2018Spend 1\u20113 Pain tokens. At the end of the phase, set up the destroyed Change to:\nmodel on the battlefield, unengaged and as close as possible to where \u2018While this model has an InSv, this unit cannot re\u2011roll save rolls. When\nit was destroyed. That model is not part of an attached unit and its this model loses a wound (excluding from mortal wounds), this model\nunit has a starting strength of 1. That model has a number of wounds has no InSv until the end of the battle.\u2019\nremaining equal to the number of Pain tokens you just spent.\u2019\nScourges with Shardcarbines, Swooping Descent Ability\nChange 9\" to 8\"."
+        },
+        {
+          "page": 8,
+          "redCharacterCount": 251,
+          "redText": "FAQS\nQ: Does the Venom\u2019s Aerialists ability allow a unit to embark within a\nTRANSPORT even if it disembarked from a TRANSPORT this turn?\nA: Yes, because it states 'That unit can embark within this TRANSPORT in\na turn it disembarked from this TRANSPORT.'"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Emperor's Children.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 113,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 113,
+          "redText": "Dark Apparitions Stratagem, Effect Section\nChange 9\" to 8\".\nFulgrim, Keywords Section\nAdd 'MOBILE'."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Genestealer Cults.pdf",
+      "revisionStartPage": 7,
+      "redCharacterCount": 353,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 7,
+          "redCharacterCount": 267,
+          "redText": "Cult Ambush\n(excluding\nCHARACTER models)\nEvasive Vanguard Stratagem, When and Effect Sections\n(not including attached CHARACTER models) Change 9\" to 8\".\n(excluding CHARACTER models)\nIn the Shadow of Iron Stratagem, When and Effect Sections\nChange 9\" to 8\".\n8\""
+        },
+        {
+          "page": 8,
+          "redCharacterCount": 86,
+          "redText": "Along Shadowed Trails Stratagem\n8\"\nRapid Feint Stratagem, Target Section\nChange 9\" to 8\"."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Grey Knights.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 1183,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 1183,
+          "redText": "Land Raider, Land Raider Crusader, Land Raider Redeemer, Razorback,\nRhino \u2013 Keywords Section\nARMY RULES\nAdd \u2018FRAME\u2019.\nGate of Infinity Army Rule, Last Paragraph\nChange to:\n\u25aa Place those units in strategic reserves.\n\u25aa Those units can make an ingress move in your next Movement\nphase (including in your first turn).\nAUGURIUM TASK FORCE DETACHMENT\nOne Foot in the Future Enhancement\nChange to:\n\u2018GREY KNIGHTS model only. When this unit ends an ingress move, you\ncan use this ability. If you do:\n\u25aa This unit can make a normal move of up to D6\".\n\u25aa Until the end of the turn, this unit is not eligible to declare a charge.\u2019\nAggressive Anticipation Stratagem, Effect Section\nChange to:\n\u2018Your unit's attacks can re-roll hit rolls.\u2019\nBANISHERS DETACHMENT\nGrand Master Voldus, Sanctuary Ability\nShadow of Anarch Stratagem, Target Section Change to:\nChange 9\" to 8\". \u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have -1 to hit rolls.\nPrecognitive Strategies Stratagem, Target Section FAQS\nChange 9\" to 8\".\nQ: Can a unit with the Sigil of Exigence enhancement use that ability\nduring my opponent\u2019s first turn?\nA: Yes.\nSANCTIC SPEARHEAD DETACHMENT\nSigil of Exigence Enhancement\nChange 9\" to 8\"."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Imperial Agents.pdf",
+      "revisionStartPage": 10,
+      "redCharacterCount": 545,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 10,
+          "redCharacterCount": 545,
+          "redText": "Imperial Rhino, Inquisitorial Chimera and Sisters of Battle Immolator\n\u2013 Keywords Section\nAdd 'FRAME'.\nCallidus Assassin\n\u25aa Acrobatic Escape Ability: Change to:\n\u25ab At the end of the Fight phase, if this unit is engaged, this unit can\nmake a fall-back move of up to D6\".\n\u25ab At the end of your opponent\u2019s turn, if this unit is more than 3\"\nfrom all enemy units, you can use this ability. If you do:\n\u25ab Place this unit in strategic reserves.\n\u25ab This unit must make an ingress move in your next\nMovement phase (including in your first turn)."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Imperial Knights.pdf",
+      "revisionStartPage": 27,
+      "redCharacterCount": 480,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 27,
+          "redCharacterCount": 480,
+          "redText": "GATE WARDEN LANCE DETACHMENT\nDauntless Defenders Detachment Rule\nAt the start of the first battle round, select two objectives to be your\nfoundations. Place a circular foundation marker in each one. When\nyou draw a line from the closest part of one foundation marker to the\nclosest part of the other, if any part of a model\u2019s base (or any part of a\nmodel\u2019s hull, for a model without a base) crosses that line, that model\u2019s\nunit is said to be on your defensive line."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Leagues of Votann.pdf",
+      "revisionStartPage": 11,
+      "redCharacterCount": 233,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 11,
+          "redCharacterCount": 233,
+          "redText": "BRANDFAST OATHBAND DETACHMENT\nSecure Positions Stratagem\nEnd of any of your phases.\nD\u00caLVE ASSAULT SHIFT DETACHMENT\nD\u00ealvewerke Navigator Enhancement, Last Sentence\n(excluding CHARACTER models)\n(excluding CHARACTER models)"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Necrons.pdf",
+      "revisionStartPage": 29,
+      "redCharacterCount": 3767,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 29,
+          "redCharacterCount": 1972,
+          "redText": "ARMY RULES\nReanimation Protocols Army Rule\nChange to:\n\u2018If your Army Faction is NECRONS, at the end of your Command phase,\neach friendly unit with this ability that is on the battlefield activates its\nReanimation Protocols:\n\u25aa When a unit\u2019s Reanimation Protocols activate, that unit heals\nD3 wounds.\u2019\nInsanity\u2019s Ire Stratagem\nChange to:\n\u2018WHEN: Your opponent\u2019s Shooting phase, when an enemy unit that\ntargeted a friendly unengaged DESTROYER CULT/FLAYED ONES unit this\nphase has shot.\nTARGET: That DESTROYER CULT/FLAYED ONES unit.\nEFFECT: Your unit can make a surge move of up to D6\".\u2019\nAWAKENED DYNASTY DETACHMENT\nVeil of Darkness Enhancement\nChange to:\n\u2018(Once per battle, per army) At the end of your opponent\u2019s turn, if this\nunit is unengaged, you can use this ability. If you do:\n\u25aa Place this unit in strategic reserves.\n\u25aa This unit has Deep Strike until the start of your next Shooting phase. Annihilation Barge, Catacomb Command Barge, Convergence of\n\u25aa This unit must make an ingress move in your next Movement phase Dominion, Doomsday Ark, Ghost Ark, Monolith, Obelisk, Seraptek\n(including in your first turn).\u2019 Heavy Construct, Tesseract Vault, Triarch Stalker \u2013 Keywords Section\nAdd 'FRAME'.\nProtocol of the Eternal Revenant Stratagem, Effect Section\nChange to: Chronomancer, Geomancer, Orikan The Diviner, Plasmancer,\n\u2018At the end of the phase, set up the destroyed model on the Psychomancer, Technomancer\nbattlefield, unengaged and as close as possible to where it was \u25aa Core Abilities: Remove \u2018Leader\u2019, add \u2018Support\u2019.\ndestroyed. That model is not part of an attached unit and its unit has \u25aa Leader Section: Remove \u2018You can attach this model to one of the\na starting strength of 1. That model has half of its starting number of above units even if one ROYAL WARDEN or NOBLE unit has already been\nwounds remaining.\u2019 attached to it. If you do, and that Bodyguard unit is destroyed, the\nLeader units attached to it become separate units, with their orginial\nStarting Strengths.\u2019"
+        },
+        {
+          "page": 30,
+          "redCharacterCount": 1795,
+          "redText": "Lokhust Lord, Overlord, Overlord with Translocation Shroud \u2013\nResurrection Orb Ability\nChange to:\n\u2018(Once per battle, per unit) At the end of any phase, you can use this\nability. If you do, this unit resurrects:\n\u25aa When a unit resurrects, that unit\u2019s Reanimation Protocols activate,\nbut that unit heals D6 wounds (instead of D3 wounds). You cannot\nresurrect more than one unit per turn.\u2019\nCanoptek Reanimator, Nanoscarab Reanimation Beam Ability\nTranscendent C'tan, Transdimensional Displacement Ability\nheals Change to:\n\u2018In your Movement phase, when this unit is selected to make an\nadvance move, you can use this ability. If you do:\nCatacomb Command Barge \u25aa That advance move has no maximum distance.\n\u25aa Keywords Section: Add \u2018NOBLE\u2019. \u25aa This unit can move through all types of model (including enemy\n\u25aa Ressurection Orb Ability: Change to: models and MONSTER/VEHICLE models).\n\u2018(Once per battle, per unit) At the end of any phase, you can use this \u25aa After moving, this unit must be more than 8\" horizontally from all\nability. If you do, select up to one friendly NECRONS INFANTRY/NECRONS enemy units.\u2019\nMOUNTED unit within 6\" of this unit. That unit resurrects:\n\u25ab When a unit resurrects, that unit\u2019s Reanimation Protocols\nactivate, but that unit heals D6 wounds (instead of D3 wounds).\nYou cannot resurrect more than one unit per turn.\u2019\nChronomancer, Timesplinter Mantle Ability\nChange to:\n\u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have -1 to hit rolls.\nNight Scythe\n\u25aa Core Abilities: Add \u2018Deep Strike\u2019.\nOphydian Destroyers, Tunnelling Horrors Ability\nChange to:\n\u2018At the end of your opponent\u2019s turn, if this unit is unengaged, you can\nuse this ability. If you do:\n\u25aa Place this unit in strategic reserves.\n\u25aa This unit must make an ingress move in your next Movement phase\n(including in your first turn).\u2019"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Orks.pdf",
+      "revisionStartPage": 24,
+      "redCharacterCount": 2489,
+      "changedPageCount": 4,
+      "changedPages": [
+        {
+          "page": 24,
+          "redCharacterCount": 366,
+          "redText": "Conniving Runts Stratagem, Target Section\nChange 9\" to 8\".\nGo Get \u2019Em! Stratagem\nChange to:\n\u2018WHEN: Your opponent\u2019s Shooting phase, when an enemy unit that\nCrushing Impact Stratagem, Name targeted a friendly unengaged BOYZ unit this phase has shot.\nChange to: TARGET: That BOYZ unit.\n\u2018Krushin\u2019 Impact\u2019 EFFECT: Your unit can make a surge move of up to D6\".\u2019"
+        },
+        {
+          "page": 25,
+          "redCharacterCount": 1107,
+          "redText": "Boyz\nBattlewagon, Stompa, Trukk \u2013 Keywords Section \u25aa Weapon Profiles: Add the following:\nAdd 'FRAME'.\n\u25aa Wargear Options: Change to:\n\u25aa The Boss Nob can have its big choppa replaced with one of\nthe following:\n\u25ab 1 big choppa and 1 kustom shoota (this model\u2019s big choppa\ncannot be replaced)\n\u25ab 1 big choppa, 1 kombi\u2011rokkit and 1 kombi\u2011shoota (this model\u2019s big\nchoppa cannot be replaced)\n\u25aa Any number of Boyz can each be equipped with 1 shoota.\n\u25aa For every 10 models in this unit, 1 Boy not equipped with 1 shoota can\nhave its choppa and slugga replaced with one of the following:\n\u25ab 1 big shoota and 1 close combat weapon\n\u25ab 1 rokkit launcha and 1 close combat weapon\n\u25aa Bodyguard Section\nRemove this section.\nBoomdakka Snazzwagon, Billowing Fumes Ability\nChange to:\n\u2018While an enemy unit (excluding MONSTER/VEHICLE units) is within 6\" of\nthis unit, when that enemy unit is selected to shoot, that unit\u2019s targets\nhave the benefit of cover until that unit has shot.\u2019\nBoss Snikrot\nKunnin\u2019 Infiltrator Ability: Change to:\n\u25ab This unit has Deep Strike.\n\u25ab This unit must make an ingress move this phase (including in\nyour first turn).\u2019"
+        },
+        {
+          "page": 26,
+          "redCharacterCount": 831,
+          "redText": "Shokkjump Dragsta, Shokk Tunnel Ability\nChange to:\n\u2018In your Movement phase, when this unit is selected to make an\nadvance move, you can use this ability. If you do:\nInvulnerable Save Section, Footnote \u25aa That move has no maximum distance.\nChange to: \u25aa This unit can move through all types of model (including enemy\n\u2018While a friendly Makari model is on the battlefield, you cannot re\u2011roll models and MONSTER/VEHICLE models).\nsave rolls for this unit.\u2019 \u25aa After moving, your unit must be more than 8\" horizontally from all\nenemy units.\u2019\nGretchin\n\u25aa Unit Composition\nChange to:\n\u25ab 0\u20111 Runtherd and 10 Gretchin\nOR\n\u25ab 0\u20112 Runtherds and 20 Gretchin\nWarboss\n\u25aa Weapon Profiles: Add the following:\n\u25aa Wargear Options: Add the following:\n\u2018This model can have its kombi\u2011weapon, twin sluggas and big choppa\nreplaced with 1 kustom choppa and 1 kustom shoota.\u2019"
+        },
+        {
+          "page": 27,
+          "redCharacterCount": 185,
+          "redText": "Q: If I attach a Big Mek to a Mek Gunz unit, does the unit now suffer\n1 mortal wound for each failed hazard roll, because each model in the\nunit is now not a MONSTER/VEHICLE model?\nA: Yes."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Space Marines.pdf",
+      "revisionStartPage": 60,
+      "redCharacterCount": 2682,
+      "changedPageCount": 4,
+      "changedPages": [
+        {
+          "page": 60,
+          "redCharacterCount": 106,
+          "redText": "Oath of Moment\nor one or more units\nfrom those factions\u2019 Munitorum Field Manual sections,"
+        },
+        {
+          "page": 61,
+          "redCharacterCount": 1514,
+          "redText": "Captain, Leader Section\nShock Assault Stratagem Remove the following:\nChange to: \u2018This model cannot be attached to a BLADEGUARD VETERAN SQUAD unless\n\u2018WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected this model is equipped with a relic shield, and cannot be attached to a\nto fight. HELLBLASTER SQUAD unless this model is equipped with a plasma pistol.\u2019\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit\u2019s melee attacks have [LANCE].\u2019\nRide Hard, Ride Fast Stratagem, Effect Section\nChange to:\n\u2018Until the end of the phase, each time an attack targets your unit,\nsubtract 1 from the Wound roll.\u2019\nChaplain with Jump Pack\nRanged Weapons: Add the following profile:\nDrop Pod, Gladiator Lancer, Gladiator Reaper, Gladiator Valiant, Wargear Options Section: Add the following bullet:\nHammerfall Bunker, Impulsor, Invader ATV, Land Raider, Land Raider '\u2022 1 Absolvor Bolt Pistol.'\nCrusader, Land Raider Redeemer, Predator Annihilator, Predator\nDestructor, Razorback, Repulsor, Repulsor Executioner, Rhino, Storm Company Heroes\nSpeeder Hailstrike, Storm Speeder Hammerstrike, Storm Speeder \u25aa Company Heroes Rule: Remove this rule.\nThunderstrike, Vindicator, Whirlwind \u2013 Keywords Section\nAdd 'FRAME'.\nBladeguard Veteran Squad, Bladeguard Ability\nChange to:\n\u2018(Once per turn, per unit): In the Fight phase, when this unit is selected\nto fight or when an enemy unit targets this unit, you can select one of\nthe following:\n\u25aa This unit\u2019s melee attacks have +1 to hit rolls.\n\u25aa Or: Attacks that target this unit have -1 to hit rolls.\u2019"
+        },
+        {
+          "page": 62,
+          "redCharacterCount": 330,
+          "redText": "Intercessor Squad, Abilities Section\nReplace previously added Target Elimination ability with the following\nnew ability:\n\u2018Hail of Bolts: In your Shooting phase, when this unit is selected to\nshoot, select up to one visible enemy unit. While making those attacks,\nthis unit\u2019s Bolt Rifle attacks that targeted that enemy unit have +2 A.\u2019"
+        },
+        {
+          "page": 63,
+          "redCharacterCount": 732,
+          "redText": "Vanguard Veteran Squad with Jump Packs\n\u25aa Ranged Weapons: Add the following profile:\n\u25aa Melee Weapons: Add the following profile:\nRoboute Guilliman\n\u25aa Keywords \u2013 Add \u2018MOBILE\u2019. \u25aa Wargear Options: Add the following:\n\u25ab All models can each have their Bolt Pistol and Vanguard Veteran\nWeapon replaced with:\n\u25ab 1 Heavy Bolt Pistol and 1 Master-crafted Power Weapon\n\u25ab For every 5 models in this unit, 1 model can replace their Heavy\nBolt Pistol with 1 Plasma Pistol.\u2019\nTigurius, Master of Prescience Ability\nChange to:\n\u25aa This unit has Stealth.\n\u25aa Melee attacks that target this unit have -1 to hit rolls.\n\u25aa (Once per battle round, per army) When you target this unit with the\nCounteroffensive/Fire Overwatch/Heroic Intervention stratagem,\nthat use is -1 CP."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Space Wolves.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 847,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 847,
+          "redText": "SAGA OF THE BOLD DETACHMENT\nThunderwolf\u2019s Fortitude Enhancement\nChange to:\n\u2018ADEPTUS ASTARTES model only. (Once per battle, per army) When this\nmodel is destroyed, at the end of the phase, roll one D6:\n\u25aa On a 2+, set up this model on the battlefield, unengaged and as close\nas possible to where it was destroyed. This model is not part of an\nattached unit and its unit has a starting strength of 1. This model has\n3 wounds remaining.\u2019\nWolf\u2011touched Enhancement\nChange to:\n'SPACE WOLVES model only. Add 2\" to the Move characteristic of the\nbearer.'\nImpetuosity Stratagem, Effect Section\nChange to:\n\u2018WHEN: Your opponent's Shooting phase, when an enemy unit that\ntargeted a friendly unengaged WULFEN INFANTRY/BLOOD CLAWS unit this\nphase has shot.\nTARGET: That WULFEN INFANTRY/BLOOD CLAWS unit.\nEFFECT: Your unit can make a surge move of up to D6\".\u2019"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - T'au Empire.pdf",
+      "revisionStartPage": 19,
+      "redCharacterCount": 276,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 19,
+          "redCharacterCount": 276,
+          "redText": "Strike Swiftly Enhancement\nUntil the end of the battle, all models in the selected units\nhave the Scouts 6\" ability.\nDevilfish, Hammerhead Gunship, Piranhas, Sky Ray Gunship, Tidewall\nDroneport, Tidewall Gunrig, Tidewall Shieldline \u2013 Keywords Section\nAdd 'FRAME'."
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Thousand Sons.pdf",
+      "revisionStartPage": 9,
+      "redCharacterCount": 918,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 9,
+          "redCharacterCount": 409,
+          "redText": "Umbralefic Crystal Enhancement\nChange to:\n\u2018THOUSAND SONS model only. (Once per battle, per army) In your\nCommand phase, if this unit is unengaged, you can use this ability. If\nyou do:\n\u25aa Place this unit in strategic reserves.\n\u25aa This unit has Deep Strike until the start of your next Shooting phase.\n\u25aa This unit must make an ingress move in your next Movement phase\n(including in your first turn).\u2019"
+        },
+        {
+          "page": 10,
+          "redCharacterCount": 509,
+          "redText": "Kairos Fateweaver, Ranged Weapons, Infernal Gateway\nBray Lord Enhancement\nSORCERER or INFERNAL MASTER model only. The bearer has the\nScouts 6\" ability.\nTwisted Mirage Stratagem, Effect Section\n\u25aa Change 9\" to 8\".\nInfernal Gateway \u2011 Focused Witchfire\nD3+6\nKairos Fateweaver, One Head Looks Back Ability\nChange to:\n\u2018Once per turn, when your opponent targets a unit from their army\nwithin 12\" of this model with a stratagem, you can use this ability. If you\ndo, increase the CP cost of that use of that stratagem by 1CP.\u2019"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - Tyranids.pdf",
+      "revisionStartPage": 19,
+      "redCharacterCount": 581,
+      "changedPageCount": 2,
+      "changedPages": [
+        {
+          "page": 19,
+          "redCharacterCount": 104,
+          "redText": "Chameleonic Enhancement\nChange to:\n\u2018VANGUARD INVADER model only. This unit has Stealth.\u2019"
+        },
+        {
+          "page": 20,
+          "redCharacterCount": 477,
+          "redText": "Tyranid Warriors with Melee Bio-weapons, Adaptive Instincts Ability\nChange to:\n\u2018Adaptive Instincts (Once per turn, per unit): In the Fight phase, when\nthis unit is selected to fight or when an enemy unit targets this unit,\nyou can select one of the following:\n\u25aa This unit\u2019s melee attacks have +1 S.\n\u25aa Or: This unit has +1 T.\u2019\nTyrannocyte, Aerial Seeding Ability\nChange 9\" to 8\".\nVenomthropes, Foul Spores ability\nChange to:\n\u2018Friendly TYRANIDS units within 6' of this unit have Stealth.\u2019"
+        }
+      ]
+    },
+    {
+      "file": "faction-packs\\Faction Pack - World Eaters.pdf",
+      "revisionStartPage": 7,
+      "redCharacterCount": 354,
+      "changedPageCount": 1,
+      "changedPages": [
+        {
+          "page": 7,
+          "redCharacterCount": 354,
+          "redText": "CULT OF BLOOD DETACHMENT\nButcher Lord Enhancement\nChange to:\n\u2018WORLD EATERS INFANTRY model only. The bearer has the\nInfiltrators ability.\u2019\nDisciple of Khorne Enhancement\nChange to:\n\u2018LORD ON JUGGERNAUT model only. The bearer has the Deep Strike ability,\nand it has the BLOOD LEGIONS Faction keyword instead of the WORLD\nEATERS Faction keyword.\u2019"
+        }
+      ]
+    }
+  ]
+}

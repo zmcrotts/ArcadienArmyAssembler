@@ -12,7 +12,8 @@ function createArmyState(armyDefinition) {
     primaryMissionName: null,
     warlordInstanceId: null,
     attachments: [],
-    enhancements: []
+    enhancements: [],
+    keywordAssignments: []
   };
 }
 
@@ -99,6 +100,14 @@ function effectiveKeywordsForEntry(item, armyState) {
     .map(keyword => [normalizeTargetName(keyword), keyword]));
   for (const grant of item?.conditionalKeywords || definition.conditionalKeywords || []) {
     if (!(grant.detachmentIds || []).some(id => selectedIds.has(id))) continue;
+    if (grant.selectable) {
+      const instanceId = item?.instanceId || item?.entry?.instanceId;
+      const selected = (armyState?.keywordAssignments || []).some(assignment =>
+        assignment.instanceId === instanceId
+        && normalizeTargetName(assignment.keyword) === normalizeTargetName(grant.keyword)
+      );
+      if (!selected) continue;
+    }
     if (grant.keyword) keywords.set(normalizeTargetName(grant.keyword), grant.keyword);
   }
   return [...keywords.values()];
@@ -283,7 +292,8 @@ function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, roster
       leaderTargets: [],
       ledBy: [],
       eligibleLeaders: [],
-      enhancements: []
+      enhancements: [],
+      keywordUpgrades: []
     };
   }
 
@@ -301,6 +311,17 @@ function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, roster
       const bearer = state.bearerOptions.find(item => item.instanceId === selectedId);
       return Boolean(bearer?.eligible || currentEnhancementIds.has(state.id));
     });
+  const definition = rosterEntry?.definition || rosterEntry?.unitPackage?.definition || {};
+  const selectedDetachmentIdSet = new Set(selectedDetachmentIds(armyState));
+  const keywordUpgrades = (definition.conditionalKeywords || [])
+    .filter(grant => grant.selectable && (grant.detachmentIds || []).some(id => selectedDetachmentIdSet.has(id)))
+    .map(grant => ({
+      keyword: grant.keyword,
+      selected: (armyState?.keywordAssignments || []).some(item =>
+        item.instanceId === selectedId
+        && normalizeTargetName(item.keyword) === normalizeTargetName(grant.keyword)
+      )
+    }));
 
   return {
     showWarlord: Boolean(canSelectWarlord(selected) || armyState?.warlordInstanceId === selectedId),
@@ -314,7 +335,8 @@ function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, roster
       leaderCanTarget(leader, selected)
       || ledBy.some(item => item.leaderInstanceId === leader.instanceId)
     ),
-    enhancements
+    enhancements,
+    keywordUpgrades
   };
 }
 
@@ -377,6 +399,20 @@ function setLeaderAttachment(armyState, leaderInstanceId, targetInstanceId) {
   return next;
 }
 
+function setKeywordAssignment(armyState, instanceId, keyword, enabled = undefined) {
+  const next = structuredClone(armyState);
+  const normalized = normalizeTargetName(keyword);
+  const alreadySelected = (next.keywordAssignments || []).some(item =>
+    item.instanceId === instanceId && normalizeTargetName(item.keyword) === normalized
+  );
+  const shouldSelect = enabled === undefined ? !alreadySelected : Boolean(enabled);
+  next.keywordAssignments = (next.keywordAssignments || []).filter(item =>
+    !(item.instanceId === instanceId && normalizeTargetName(item.keyword) === normalized)
+  );
+  if (instanceId && keyword && shouldSelect) next.keywordAssignments.push({ instanceId, keyword });
+  return next;
+}
+
 function detachBodyguard(armyState, targetInstanceId) {
   const next = structuredClone(armyState);
   next.attachments = (next.attachments || []).filter(item => item.targetInstanceId !== targetInstanceId);
@@ -392,6 +428,7 @@ function pruneArmyStateForRoster(armyState, rosterEntries) {
     instanceIds.has(item.leaderInstanceId) && instanceIds.has(item.targetInstanceId)
   );
   next.enhancements = (next.enhancements || []).filter(item => instanceIds.has(item.bearerInstanceId));
+  next.keywordAssignments = (next.keywordAssignments || []).filter(item => instanceIds.has(item.instanceId));
   if (next.warlordInstanceId && !instanceIds.has(next.warlordInstanceId)) next.warlordInstanceId = null;
   return next;
 }
@@ -835,6 +872,7 @@ const armyApi = {
   setOpponentForceDisposition,
   setEnhancement,
   setLeaderAttachment,
+  setKeywordAssignment,
   setWarlord,
   validateArmyState,
   validateRosterLegality

@@ -20,3 +20,7 @@ The mobile web app is published from `main` by `.github/workflows/mobile-pages.y
 ## Android
 
 The native wrapper lives under `android/`. Run `npm.cmd run android:assets` before an Android build to refresh its bundled offline website. The generated Android assets, local toolchain, build outputs, and APK release folder are intentionally ignored.
+
+On the release-signing Windows account, run `npm.cmd run android:release` to rebuild the mobile package, sign it with the permanent Arcadien certificate, verify the certificate, and write the installable APK to `release/`. The private key and Windows-protected password stay outside the repository under `%USERPROFILE%\.android`.
+
+Back up `arcadien-sideload.jks` and its password in a secure external location. Losing either one prevents future APKs from updating installations signed with this release key.

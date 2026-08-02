@@ -312,7 +312,15 @@ function applyFactionPackUpdates(units, armies, document) {
       }
       armyDefinitions = armyDefinitions.map(army => {
         if (!matchesFaction(army.faction, update.target || {})) return army;
-        const result = updateArmy(army, update);
+        const scopedUpdate = update.target?.factionPrefix && update.eligibleSelectionKeys
+          ? {
+            ...update,
+            eligibleSelectionKeys: update.eligibleSelectionKeys.filter(key =>
+              unitDefinitions.some(unit => unit.selectionKey === key && unit.faction === army.faction)
+            )
+          }
+          : update;
+        const result = updateArmy(army, scopedUpdate);
         matches += result.matches;
         return result.value;
       });

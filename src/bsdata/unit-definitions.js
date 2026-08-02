@@ -434,9 +434,21 @@ function categoryIds(...nodes) {
 
 function hasEntryLinkNamed(name, ...nodes) {
   const wanted = String(name).trim().toLowerCase();
-  return nodes.some(node => asArray(node?.entryLinks?.entryLink).some(link =>
-    !bsdataFlagIsTrue(link.hidden) && String(link.name || "").trim().toLowerCase() === wanted
-  ));
+  const visited = new Set();
+  function containsNamedSelection(node) {
+    if (!node || visited.has(node)) return false;
+    visited.add(node);
+    if (asArray(node?.entryLinks?.entryLink).some(link =>
+      !bsdataFlagIsTrue(link.hidden) && String(link.name || "").trim().toLowerCase() === wanted
+    )) return true;
+    const entries = asArray(node?.selectionEntries?.selectionEntry);
+    if (entries.some(entry =>
+      !bsdataFlagIsTrue(entry.hidden) && String(entry.name || "").trim().toLowerCase() === wanted
+    )) return true;
+    return entries.some(containsNamedSelection)
+      || asArray(node?.selectionEntryGroups?.selectionEntryGroup).some(containsNamedSelection);
+  }
+  return nodes.some(containsNamedSelection);
 }
 
 function descriptionText(characteristics) {

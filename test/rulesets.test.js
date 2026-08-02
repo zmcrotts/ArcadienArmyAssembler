@@ -16,6 +16,7 @@ const {
   getConfiguredModels,
   getConfiguredProfiles,
   getOptionStates,
+  getUnitSizeState,
   setSelection,
   setUnitSize,
   validateLoadout
@@ -27,6 +28,7 @@ const {
   extractUnitEffects,
   extractWeaponEffects
 } = require("../src/domain/sheets");
+const { audit: auditEnhancementEligibility } = require("../scripts/audit-enhancement-eligibility");
 
 test("ruleset registry exposes the default 11e source", () => {
   const source = getRulesetSource(DEFAULT_RULESET_SOURCE_ID);
@@ -531,6 +533,127 @@ test("11e Death Company Marines with Jump Packs expose explicit alternate weapon
   );
 });
 
+test("11e Helbrutes gain two melee attacks when equipped with two melee weapons", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const expectedAttacks = new Map([
+    ["Chaos - Chaos Space Marines", "7"],
+    ["Chaos - Death Guard", "7"],
+    ["Chaos - Thousand Sons", "7"],
+    ["Chaos - World Eaters", "8"]
+  ]);
+
+  for (const [faction, attacks] of expectedAttacks) {
+    const unit = ruleset.units.find(item => item.faction === faction && item.name === "Helbrute");
+    assert.ok(unit, `Missing ${faction} Helbrute`);
+    let entry = createDefaultRosterEntry(unit);
+    const choices = [];
+    for (const option of getOptionStates(unit, entry).filter(item => /^Helbrute fist with/i.test(item.name))) {
+      if (!choices.some(item => item.parentId === option.parentId)) choices.push(option);
+    }
+    assert.equal(choices.length, 2, `${faction} should expose one fist choice in each weapon lane`);
+    for (const option of choices) entry = setSelection(unit, entry, option.id, 1);
+
+    const fists = getConfiguredProfiles(unit, entry).weapons.filter(profile => profile.name === "Helbrute fist");
+    assert.ok(fists.length > 0, `${faction} should configure Helbrute fists`);
+    assert.equal(fists.every(profile => profile.characteristics.A === attacks), true, faction);
+  }
+});
+
+test("11e Deathshroud Champion defaults to two plaguespurt gauntlets", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - Death Guard" && item.name === "Deathshroud Terminators"
+  );
+  const entry = createDefaultRosterEntry(unit);
+  const gauntlet = getConfiguredProfiles(unit, entry).weapons.find(profile => profile.name === "Plaguespurt gauntlet");
+  const championOption = getOptionStates(unit, entry).find(option =>
+    option.name === "Plaguespurt gauntlet" && option.maximum === 2
+  );
+
+  assert.equal(championOption?.current, 2);
+  assert.equal(gauntlet?.count, 4);
+  assert.equal(gauntlet?.characteristics.A, "D6");
+});
+
+test("11e ten-model Plague Marines grow and spend the default boltgun row", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item => item.faction === "Chaos - Death Guard" && item.name === "Plague Marines");
+  let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const option = name => getOptionStates(unit, entry).find(item => item.name === name);
+
+  assert.equal(option("Plague Marine w/ boltgun")?.current, 9);
+  assert.equal(option("Plague Marine w/ bubotic weapons")?.current, 0);
+  assert.equal(option("Plague Marine w/ heavy plague weapon")?.current, 0);
+
+  const blightLauncher = option("Plague Marine w/ blight launcher");
+  entry = setSelection(unit, entry, blightLauncher.id, 1);
+  assert.equal(option("Plague Marine w/ boltgun")?.current, 8);
+  assert.equal(option("Plague Marine w/ blight launcher")?.current, 1);
+  assert.equal(option("Plague Marine w/ bubotic weapons")?.current, 0);
+});
+
+test("11e Scarab Occult heavy weapons replace a baseline Terminator without changing unit size", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - Thousand Sons" && item.name === "Scarab Occult Terminators"
+  );
+  for (const name of [
+    "Scarab Occult Terminator w/ heavy warpflamer",
+    "Scarab Occult Terminator w/ soulreaper cannon"
+  ]) {
+    let entry = createDefaultRosterEntry(unit);
+    const heavy = getOptionStates(unit, entry).find(option => option.name === name);
+    assert.ok(heavy, name);
+    entry = setSelection(unit, entry, heavy.id, 1);
+
+    const baseline = getOptionStates(unit, entry).find(option => option.name === "Scarab Occult Terminator");
+    assert.equal(getUnitSizeState(unit, entry).current, 5, name);
+    assert.equal(baseline?.current, 3, name);
+    assert.deepEqual(validateLoadout(unit, entry), [], name);
+  }
+});
+
+test("11e specialist models replace baseline members without increasing unit size", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const cases = [
+    ["Chaos - World Eaters", "Khorne Berzerkers", "Khorne Berzerker w/ eviscerator and bolt pistol", "Khorne Berzerker", 10, 8],
+    ["Chaos - Chaos Space Marines", "Raptors", "Raptor w/ meltagun", "Raptor", 5, 3],
+    ["Chaos - Chaos Space Marines", "Nemesis Claw", "Legionary w/ heavy weapon", "Legionary w/ boltgun", 5, 3],
+    ["Xenos - Aeldari", "Corsair Voidreavers", "Voidreaver with Heavy weapon", "Voidreaver with Shuriken rifle", 5, 3],
+    ["Xenos - Aeldari", "Corsair Skyreavers", "Skyreaver w/ blaster", "Skyreaver w/ pistol and blade", 5, 3],
+    ["Xenos - Aeldari", "Corsair Voidscarred", "Shade Runner", "Voidscarred w/ pistol and sword", 5, 3],
+    ["Xenos - Aeldari", "Corsair Voidscarred", "Soul Weaver", "Voidscarred w/ pistol and sword", 5, 3],
+    ["Xenos - Aeldari", "Corsair Voidscarred", "Way Seeker", "Voidscarred w/ pistol and sword", 5, 3]
+  ];
+
+  for (const [faction, unitName, specialistName, baselineName, size, baselineCount] of cases) {
+    const unit = ruleset.units.find(item => item.faction === faction && item.name === unitName);
+    assert.ok(unit, `${faction} / ${unitName}`);
+    let entry = createDefaultRosterEntry(unit);
+    const specialist = getOptionStates(unit, entry).find(option => option.name === specialistName);
+    assert.ok(specialist, `${unitName}: ${specialistName}`);
+    entry = setSelection(unit, entry, specialist.id, 1);
+
+    const baseline = getOptionStates(unit, entry).find(option => option.name === baselineName);
+    assert.equal(getUnitSizeState(unit, entry).current, size, `${unitName}: ${specialistName}`);
+    assert.equal(baseline?.current, baselineCount, `${unitName}: ${baselineName}`);
+    assert.deepEqual(validateLoadout(unit, entry), [], `${unitName}: ${specialistName}`);
+  }
+});
+
+test("11e Lions of the Emperor enhancements display their confirmed bearer restrictions", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const army = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Custodes");
+  const descriptions = name => {
+    const enhancement = army.enhancements.find(item => item.name === name);
+    assert.ok(enhancement, name);
+    return (enhancement.profiles || []).map(profile => profile.characteristics?.Description).join(" ");
+  };
+
+  assert.match(descriptions("Praesidius"), /^ADEPTUS CUSTODES model only\./i);
+  assert.match(descriptions("Fierce Conqueror"), /^SHIELD-CAPTAIN model only\./i);
+});
+
 test("11e configured abilities collapse duplicate same-name wargear rules", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const captain = ruleset.units.find(unit =>
@@ -608,7 +731,6 @@ test("11e Adepta Sororitas upgrades keep their bearer limits and unit eligibilit
     "Dogmata",
     "Hospitaller",
     "Imagifier",
-    "Ministorum Priest",
     "Palatine"
   ]);
   assert.match(description(hagiomnifex), /ADEPTA SORORITAS CHARACTER model only \(excluding PENITENT units\)/i);
@@ -685,6 +807,50 @@ test("11e Warrior Bioform Onslaught grants Warrior and Battleline keywords to bo
     const unit = ruleset.units.find(item => item.faction === tyranids.faction && item.name === name);
     const grants = unit.conditionalKeywords.filter(grant => grant.detachmentIds.includes(detachment.id)).map(grant => grant.keyword).sort();
     assert.deepEqual(grants, ["Battleline", "Tyranid Warriors"]);
+  }
+});
+
+test("11e Steel Hammer offers a selectable Character keyword to Titanic units", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const army = ruleset.armies.find(item => item.faction === "Imperium - Astra Militarum");
+  const detachment = army.detachments.find(item => item.name === "Steel Hammer");
+  const baneblade = ruleset.units.find(item => item.faction === army.faction && item.name === "Baneblade");
+  const grant = baneblade.conditionalKeywords.find(item =>
+    item.keyword === "Character" && item.detachmentIds.includes(detachment.id)
+  );
+
+  assert.equal(grant?.selectable, true);
+});
+
+test("11e Ork Freebooter enhancements enforce their named bearer restrictions", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const army = ruleset.armies.find(item => item.faction === "Xenos - Orks");
+  const namesFor = enhancementName => {
+    const enhancement = army.enhancements.find(item => item.name === enhancementName);
+    const keys = new Set(enhancement.eligibleSelectionKeys);
+    return ruleset.units.filter(item => keys.has(item.selectionKey)).map(item => item.name).sort();
+  };
+
+  assert.equal(namesFor("Bionik Workshop").includes("Beastboss"), false);
+  assert.equal(namesFor("Git-spotter Squig").includes("Beastboss"), true);
+  assert.ok(namesFor("Bionik Workshop").includes("Big Mek"));
+  assert.ok(namesFor("Bionik Workshop").includes("Painboy"));
+});
+
+test("11e Sisters of Silence use stepped MFM points at every selectable size", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const schedules = {
+    Prosecutors: [45, 50, 75, 75, 75, 75, 85],
+    Vigilators: [50, 55, 90, 90, 90, 90, 100],
+    Witchseekers: [50, 55, 90, 90, 90, 90, 100]
+  };
+
+  for (const [name, expected] of Object.entries(schedules)) {
+    const unit = ruleset.units.find(item => item.faction === "Imperium - Adeptus Custodes" && item.name === name);
+    for (let size = 4; size <= 10; size += 1) {
+      const entry = setUnitSize(unit, createDefaultRosterEntry(unit), size);
+      assert.equal(calculateEntryPoints(unit, entry).points, expected[size - 4], `${name} at ${size} models`);
+    }
   }
 });
 
@@ -873,6 +1039,18 @@ test("compound Leaders inherit Character and Warlord status from their required 
   }
 });
 
+test("11e Emperor's Children Characters expose nested Warlord selections", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  for (const name of ["Lord Exultant", "Lord Kakophonist", "Sorcerer"]) {
+    const definition = ruleset.units.find(unit =>
+      unit.faction === "Chaos - Emperor's Children" && unit.name === name
+    );
+    assert.ok(definition, name);
+    assert.equal(definition.roles.character, true, name);
+    assert.equal(definition.rosterRules.canBeWarlord, true, name);
+  }
+});
+
 test("omitted root hidden flags stay visible for native and allied Imperial Knights", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const names = [
@@ -990,4 +1168,75 @@ test("root-condition enhancement eligibility projects bearer keyword gates throu
     "Chaos Lord on Steed of Slaanesh [Legends]",
     "Sorcerer on Steed of Slaanesh [Legends]"
   ]);
+});
+
+test("every explicit 11e enhancement and upgrade bearer restriction is enforced", () => {
+  const result = auditEnhancementEligibility();
+
+  assert.equal(result.summary.armies, 35);
+  assert.equal(result.summary.records, 1581);
+  assert.equal(result.summary.enhancements, 1469);
+  assert.equal(result.summary.upgrades, 112);
+  assert.equal(result.summary.explicitLimiters, 1258);
+  assert.equal(result.summary.overBroadRecords, 0);
+});
+
+test("keyword-limited enhancements and upgrades expose only their printed bearers", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const eligibleNames = (faction, detachmentName, enhancementName) => {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    const detachment = army?.detachments.find(item => item.name === detachmentName);
+    const enhancement = army?.enhancements.find(item =>
+      item.name === enhancementName && item.detachmentIds.includes(detachment?.id)
+    );
+    assert.ok(enhancement, `${faction}: ${detachmentName}: ${enhancementName}`);
+    return new Set(enhancement.eligibleSelectionKeys.map(key =>
+      ruleset.units.find(unit => unit.selectionKey === key)?.name
+    ).filter(Boolean));
+  };
+
+  const catechism = eligibleNames(
+    "Imperium - Adepta Sororitas", "Penitent Host", "Catechism of Divine Penitence"
+  );
+  assert.deepEqual([...catechism].sort(), [
+    "Canoness", "Canoness with Jump Pack", "Ministorum Priest", "Palatine"
+  ]);
+
+  const bionics = eligibleNames("Xenos - Orks", "Freebooter Krew", "Bionik Workshop");
+  assert.equal(bionics.has("Beastboss"), false);
+  assert.equal(bionics.has("Big Mek"), true);
+  assert.equal(bionics.has("Painboy"), true);
+
+  const dakkamek = eligibleNames("Xenos - Orks", "Speedwaaagh!", "Dakkamek");
+  assert.equal(dakkamek.has("Big Mek with Shokk Attack Gun"), true);
+  assert.equal(dakkamek.has("Beastboss"), false);
+
+  const benediction = eligibleNames(
+    "Imperium - Adeptus Astartes - Black Templars", "Wrathful Procession", "Benediction of Fury"
+  );
+  assert.equal(benediction.has("Chaplain"), true);
+  assert.equal(benediction.has("Captain"), false);
+
+  const psykOutGrenades = eligibleNames(
+    "Imperium - Adeptus Custodes", "Silent Hunters", "Psyk-out Grenades"
+  );
+  assert.equal(psykOutGrenades.has("Vigilators"), true);
+  assert.equal(psykOutGrenades.has("Custodian Wardens"), false);
+
+  const raptorBlade = eligibleNames(
+    "Imperium - Adeptus Custodes", "Null Maiden Vigil", "Raptor Blade"
+  );
+  assert.equal(raptorBlade.has("Knight-Centura"), true);
+  assert.equal(raptorBlade.has("Custodian Wardens"), false);
+
+  const enduringFaith = eligibleNames(
+    "Imperium - Adepta Sororitas", "Penitent Host", "Refrain of Enduring Faith"
+  );
+  assert.equal(enduringFaith.has("Repentia Squad"), true);
+  assert.equal(enduringFaith.has("Battle Sisters Squad"), false);
+
+  const deepeningMadness = eligibleNames(
+    "Xenos - Necrons", "Skyshroud Spearhead", "Deepening Madness"
+  );
+  assert.equal(deepeningMadness.has("Lokhust Lord"), true);
 });

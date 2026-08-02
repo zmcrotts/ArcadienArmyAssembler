@@ -1,0 +1,97 @@
+{
+  "summary": {
+    "pdfs": 28,
+    "armies": 35,
+    "enhancements": 1484,
+    "upgrades": 66,
+    "matchedToFactionPack": 59,
+    "limiterFindings": 0,
+    "eligibilityFindings": 6
+  },
+  "findings": [],
+  "eligibilityFindings": [
+    {
+      "faction": "Imperium - Astra Militarum",
+      "detachment": [
+        "Designation Force"
+      ],
+      "name": "Long-range Scout",
+      "officialLimiter": "SCOUT SENTINEL unit only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Scout Sentinels"
+      ]
+    },
+    {
+      "faction": "Chaos - Death Guard",
+      "detachment": [
+        "Contagion Engines"
+      ],
+      "name": "Parasitic Woe-reaper",
+      "officialLimiter": "CONTAGION ENGINE unit only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Helbrute",
+        "Myphitic Blight-hauler",
+        "Foetid Bloat-drone",
+        "Foetid Bloat-drone with heavy blight launcher"
+      ]
+    },
+    {
+      "faction": "Chaos - Death Guard",
+      "detachment": [
+        "Contagion Engines"
+      ],
+      "name": "Lancet of the Worldsore",
+      "officialLimiter": "Friendly HELBRUTE/MYPHITIC BLIGHT‑HAULER unit only.",
+      "verifiedEligibleNames": [
+        "Myphitic Blight-hauler"
+      ],
+      "ineligibleNames": [
+        "Helbrute"
+      ]
+    },
+    {
+      "faction": "Xenos - Orks",
+      "detachment": [
+        "Rollin' Deff"
+      ],
+      "name": "Targetin' Gizmos",
+      "officialLimiter": "WAGON unit only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Hunta Rig",
+        "Kill Rig",
+        "Battlewagon"
+      ]
+    },
+    {
+      "faction": "Xenos - Orks",
+      "detachment": [
+        "Rollin' Deff"
+      ],
+      "name": "Boarding Ramps",
+      "officialLimiter": "WAGON unit only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Hunta Rig",
+        "Kill Rig",
+        "Battlewagon"
+      ]
+    },
+    {
+      "faction": "Xenos - Tyranids",
+      "detachment": [
+        "Ambush Predators"
+      ],
+      "name": "Encircling Horrors",
+      "officialLimiter": "NEUROLICTOR/LICTOR/VON RYAN’S LEAPERS unit only.",
+      "verifiedEligibleNames": [],
+      "ineligibleNames": [
+        "Lictor",
+        "Von Ryan's Leapers",
+        "Neurolictor"
+      ]
+    }
+  ]
+}

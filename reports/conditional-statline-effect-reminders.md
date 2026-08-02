@@ -1,10 +1,10 @@
 # Conditional Statline Effect Reminders
 
-Generated: 2026-07-06T20:13:50.648Z
+Generated: 2026-07-27T14:16:49.233Z
 
 These source effects mention statline-like changes but are not always-on roster construction changes. Keep them as ability/rule reminders unless we later add explicit toggles.
 
-Conditional source effects: 366
+Conditional source effects: 329
 
 | Unit Name | Expected Change | Y/N |
 | --- | --- | --- |
@@ -25,9 +25,7 @@ Conditional source effects: 366
 | Brôkhyr Iron-master | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Toughness characteristic | N |
 | Broodlord | Xenos - Tyranids: Synapse: mentions Strength characteristic | N |
 | Cadian Castellan | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Cadian Castellan | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
 | Cadian Command Squad | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Cadian Command Squad | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
 | Captain Tycho [Legends] | Imperium - Adeptus Astartes - Blood Angels: Gifted Commander: ranged weapons gain Assault | N |
 | Captain Tycho [Legends] | Imperium - Adeptus Astartes - Blood Angels: Gifted Commander: ranged weapons gain Heavy | N |
 | Captain Tycho [Legends] | Imperium - Adeptus Astartes - Blood Angels: Gifted Commander: ranged weapons gain Rapid Fire 1 | N |
@@ -44,19 +42,18 @@ Conditional source effects: 366
 | Captain with Jump Pack | Imperium - Adeptus Astartes - Ultramarines: Angel's Wrath: melee weapons gain S +1 | N |
 | Captain with Jump Pack | Imperium - Adeptus Astartes - White Scars: Angel's Wrath: melee weapons gain S +1 | N |
 | Catachan Command Squad | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Catachan Command Squad | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
 | Chaos Lord on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Chaos Lord on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Chaos Lord on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
 | Chaplain Grimaldus | Imperium - Adeptus Astartes - Black Templars: Temple Relics: melee weapons improve AP by 1 | N |
 | Chaplain Grimaldus | Imperium - Adeptus Astartes - Black Templars: Temple Relics: models gain T +1 | N |
 | Commissar | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Commissar Graves | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Commissar Graves on Foot | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Commissar Yarrick | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Cybernetica Datasmith | Imperium - Adeptus Mechanicus: Battle Protocols: mentions Toughness characteristic | N |
 | Cybernetica Datasmith | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Cybernetica Datasmith | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Cybernetica Datasmith | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Death Company Captain | Imperium - Adeptus Astartes - Blood Angels: Black Rage: mentions OC characteristic | N |
 | Death Company Captain with Jump Pack | Imperium - Adeptus Astartes - Blood Angels: Black Rage: mentions OC characteristic | N |
 | Death Company Captain with Jump Pack | Imperium - Adeptus Astartes - Blood Angels: Lost to Fury: melee weapons gain Sustained Hits 1 | N |
@@ -99,7 +96,6 @@ Conditional source effects: 366
 | Detachment: Bringers of Flame | Imperium - Adepta Sororitas: Fervent Purgation: ranged weapons gain Assault | N |
 | Detachment: Carnival of Excess | Chaos - Emperor's Children: Daemonic Empowerment: all weapons gain Sustained Hits 1 | N |
 | Detachment: Champions of Faith | Imperium - Adepta Sororitas: Keywords: OC +1 | N |
-| Detachment: Champions of Fenris | Imperium - Adeptus Astartes - Space Wolves: The Great Wolf Watches: OC +1 | N |
 | Detachment: Changehost of Deceit | Chaos - Thousand Sons: Infernal Pacts: models gain 4+ invulnerable save | N |
 | Detachment: Chaos Cult | Chaos - Chaos Space Marines: Desperate Devotion: mentions M characteristic | N |
 | Detachment: Cohort Cybernetica | Imperium - Adeptus Mechanicus: Cyber Psalm-Programming: mentions M characteristic | N |
@@ -114,6 +110,7 @@ Conditional source effects: 366
 | Detachment: Cryptek Conclave | Xenos - Necrons: Technosorcerous Augmentations: ranged weapons gain Assault | N |
 | Detachment: Cult of Blood | Chaos - World Eaters: Idols of Khorne: models gain 4+ invulnerable save | N |
 | Detachment: Cursed Legion | Xenos - Necrons: Cold Fervour: mentions Strength characteristic | N |
+| Detachment: Da Big Hunt | Xenos - Orks: Da Hunt Is On: all weapons improve AP by 1 | N |
 | Detachment: Data-psalm Conclave | Imperium - Adeptus Mechanicus: Benediction of the Omnissiah: all weapons improve AP by 1 | N |
 | Detachment: Dread Mob | Xenos - Orks: Try Dat Button!: all weapons gain Hazardous | N |
 | Detachment: Fellhammer Siege-host | Chaos - Chaos Space Marines: Iron Fortitude: mentions Strength characteristic | N |
@@ -144,6 +141,7 @@ Conditional source effects: 366
 | Detachment: Firestorm Assault Force | Imperium - Adeptus Astartes - White Scars: Close-Range Eradication: ranged weapons gain Assault | N |
 | Detachment: Forgefather's Seekers | Imperium - Adeptus Astartes - Salamanders: Vulkan's Quest: mentions Strength characteristic | N |
 | Detachment: Forgefather's Seekers | Imperium - Adeptus Astartes - Salamanders: Vulkan's Quest: ranged weapons gain Assault | N |
+| Detachment: Gate Warden Lance | Imperium - Imperial Knights: Against the Horde: all weapons gain Sustained Hits 1 | N |
 | Detachment: Goretrack Onslaught | Chaos - World Eaters: Rush to the Fray: melee weapons gain Lance | N |
 | Detachment: Grand Coven | Chaos - Thousand Sons: Kindred Sorcery: ranged weapons gain Devastating Wounds | N |
 | Detachment: Green Tide | Xenos - Orks: Mob Mentality: models gain 6+ invulnerable save | N |
@@ -169,39 +167,6 @@ Conditional source effects: 366
 | Detachment: Khorne Daemonkin | Chaos - World Eaters: Blood Tithe: models gain 4+ invulnerable save | N |
 | Detachment: Liberator Assault Group | Imperium - Adeptus Astartes - Blood Angels: The Red Thirst: melee weapons gain A +1 | N |
 | Detachment: Liberator Assault Group | Imperium - Adeptus Astartes - Blood Angels: The Red Thirst: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Blood Angels: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Blood Angels: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Blood Angels: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Dark Angels: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Dark Angels: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Dark Angels: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Deathwatch: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Deathwatch: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Deathwatch: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Imperial Fists: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Imperial Fists: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Imperial Fists: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Iron Hands: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Iron Hands: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Iron Hands: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Raven Guard: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Raven Guard: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Raven Guard: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Salamanders: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Salamanders: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Salamanders: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Marines: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Marines: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Marines: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Wolves: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Wolves: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Space Wolves: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Ultramarines: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Ultramarines: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - Ultramarines: Psychic Disciplines: ranged weapons improve AP by 1 | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - White Scars: Psychic Disciplines: mentions M characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - White Scars: Psychic Disciplines: mentions Strength characteristic | N |
-| Detachment: Librarius Conclave | Imperium - Adeptus Astartes - White Scars: Psychic Disciplines: ranged weapons improve AP by 1 | N |
 | Detachment: Lords of Dread | Chaos - Chaos Knights: Tyrannical Court: OC improves by 2 | N |
 | Detachment: Lords of the Forge | Imperium - Adeptus Mechanicus: War-form Mantles: models gain 4+ invulnerable save | N |
 | Detachment: Mont'ka | Xenos - T'au Empire: Killing Blow: ranged weapons gain Assault | N |
@@ -224,6 +189,7 @@ Conditional source effects: 366
 | Detachment: Retaliation Cadre | Xenos - T'au Empire: Bonded Heroes: ranged weapons improve AP by 1 | N |
 | Detachment: Sanctic Spearhead | Imperium - Grey Knights: Mailed Fist: ranged weapons gain Assault | N |
 | Detachment: Serpent's Brood | Xenos - Aeldari: Boons of the Brood: all weapons gain Sustained Hits 1 | N |
+| Detachment: Shield Host | Imperium - Adeptus Custodes: Martial Mastery: melee weapons improve AP by 1 | N |
 | Detachment: Siege Regiment | Imperium - Astra Militarum: Artillery Support: mentions M characteristic | N |
 | Detachment: Skysplinter Assault | Xenos - Drukhari: Rain of Cruelty: melee weapons gain Lance | N |
 | Detachment: Skysplinter Assault | Xenos - Drukhari: Rain of Cruelty: ranged weapons gain Ignores Cover | N |
@@ -240,21 +206,18 @@ Conditional source effects: 366
 | Detachment: Vindication Task Force | Imperium - Adeptus Astartes - Black Templars: Purge and Sanctify: mentions Strength characteristic | N |
 | Detachment: Vindication Task Force | Imperium - Adeptus Astartes - Black Templars: Purge and Sanctify: mentions Toughness characteristic | N |
 | Detachment: Warhost | Xenos - Aeldari: Martial Grace: mentions M characteristic | N |
+| Detachment: Warpmeld Pact | Chaos - Thousand Sons: Warpmeld Sacrifice: OC +1 | N |
 | Detachment: Wrath of the Rock | Imperium - Adeptus Astartes - Dark Angels: Dutiful Tenacity: mentions Strength characteristic | N |
 | Detachment: Wrath of the Rock | Imperium - Adeptus Astartes - Dark Angels: Dutiful Tenacity: mentions Toughness characteristic | N |
-| Detachment: Wrathful Procession | Imperium - Adeptus Astartes - Black Templars: Wrathful Procession: melee weapons gain S +1 | N |
-| Detachment: Wrathful Procession | Imperium - Adeptus Astartes - Black Templars: Wrathful Procession: models gain 5+ invulnerable save | N |
 | Dogmata | Imperium - Adepta Sororitas: Executioner of Heretics (Aura): mentions LD characteristic | N |
 | Einhyr Champion | Xenos - Leagues of Votann: Guerrilla Adepts: mentions M characteristic | N |
 | Einhyr Champion | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Strength characteristic | N |
 | Einhyr Champion | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Toughness characteristic | N |
-| Elysian Sniper Squad | Imperium - Astra Militarum - Library: Mark the Target: ranged weapons gain Devastating Wounds | N |
 | Ezekiel | Imperium - Adeptus Astartes - Dark Angels: Book of Salvation: melee weapons gain A +1 | N |
 | Fabius Bile | Chaos - Chaos Space Marines: Surgeon Acolyte: mentions D characteristic | N |
 | Foul Blightspawn | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Foul Blightspawn | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Foul Blightspawn | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
-| Gaunt’s Ghosts | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Ghazghkull Thraka | Xenos - Orks: Ghazghkull’s Waaagh! Banner (Aura): melee weapons gain Lethal Hits | N |
 | Grimnyr | Xenos - Leagues of Votann: Guerrilla Adepts: mentions M characteristic | N |
 | Grimnyr | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Strength characteristic | N |
@@ -280,8 +243,6 @@ Conditional source effects: 366
 | Kravek Morne | Chaos - Chaos Space Marines: Headlong Destruction: all weapons improve AP by 1 | N |
 | Krieg Command Squad | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Krieg Command Squad | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
-| Leman Russ Commander | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Leman Russ Commander | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
 | Lord Marshal Dreir | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Lord of Contagion | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Lord of Contagion | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
@@ -300,8 +261,6 @@ Conditional source effects: 366
 | Malignant Plaguecaster | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Malignant Plaguecaster | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
 | Malignant Plaguecaster | Chaos - Death Guard: Pestilent Fallout (Psychic): mentions M characteristic | N |
-| Manticore | Imperium - Astra Militarum: Furious Barrage: mentions OC characteristic | N |
-| Manticore | Xenos - Genestealer Cults: Furious Barrage: mentions OC characteristic | N |
 | Memnyr Strategist | Xenos - Leagues of Votann: Guerrilla Adepts: mentions M characteristic | N |
 | Memnyr Strategist | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Strength characteristic | N |
 | Memnyr Strategist | Xenos - Leagues of Votann: Prioritised Efficiency: mentions Toughness characteristic | N |
@@ -315,14 +274,11 @@ Conditional source effects: 366
 | Noxious Blightbringer | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Noxious Blightbringer | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Noxious Blightbringer | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
-| Ogryn Squad | Imperium - Astra Militarum: Point-blank Barrage: ranged weapons improve AP by 1 | N |
 | Old One Eye | Xenos - Tyranids: Synapse: mentions Strength characteristic | N |
 | Overlord with Translocation Shroud | Xenos - Necrons: Translocation Shroud: mentions M characteristic | N |
 | Plague Surgeon | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Plague Surgeon | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Plague Surgeon | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
-| Rogal Dorn Commander | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
-| Rogal Dorn Commander | Xenos - Genestealer Cults: Voice Of Command: SV improves by 1 | N |
 | Sergeant Harker [Legends] | Imperium - Astra Militarum: Voice Of Command: SV improves by 1 | N |
 | Sergeant Telion [Legends] | Imperium - Adeptus Astartes - Ultramarines: Guiding Hand: all weapons gain Lethal Hits | N |
 | Sergeant Telion [Legends] | Imperium - Adeptus Astartes - Ultramarines: Guiding Hand: all weapons gain Precision | N |
@@ -335,6 +291,7 @@ Conditional source effects: 366
 | Shield-Captain on Dawneagle Jetbike | Imperium - Adeptus Custodes: Martial Ka'tah: melee weapons gain Sustained Hits 1 | N |
 | Skitarii Marshal | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Skitarii Marshal | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Skitarii Marshal | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Sorcerer on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions OC characteristic | N |
 | Sorcerer on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions SV characteristic | N |
 | Sorcerer on Palanquin of Nurgle [Legends] | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
@@ -343,16 +300,22 @@ Conditional source effects: 366
 | Tallyman | Chaos - Death Guard: Nurgle's Gift (Aura): mentions Toughness characteristic | N |
 | Tech-Priest Dominus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Tech-Priest Dominus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Tech-Priest Dominus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Tech-Priest Dominus | Imperium - Imperial Knights: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Tech-Priest Dominus | Imperium - Imperial Knights: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Tech-Priest Dominus | Imperium - Imperial Knights: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Tech-Priest Enginseer | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Tech-Priest Enginseer | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Tech-Priest Enginseer | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Tech-Priest Manipulus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Tech-Priest Manipulus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Tech-Priest Manipulus | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Tech-Priest Manipulus | Imperium - Imperial Knights: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Tech-Priest Manipulus | Imperium - Imperial Knights: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Tech-Priest Manipulus | Imperium - Imperial Knights: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | Technoarcheologist | Imperium - Adeptus Mechanicus: Doctrina Imperatives: all weapons improve AP by 1 | N |
 | Technoarcheologist | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Assault | N |
+| Technoarcheologist | Imperium - Adeptus Mechanicus: Doctrina Imperatives: ranged weapons gain Heavy | N |
 | The Swarmlord | Xenos - Tyranids: Synapse: mentions Strength characteristic | N |
 | Trajann Valoris | Imperium - Adeptus Custodes: Martial Ka'tah: melee weapons gain Lethal Hits | N |
 | Trajann Valoris | Imperium - Adeptus Custodes: Martial Ka'tah: melee weapons gain Sustained Hits 1 | N |

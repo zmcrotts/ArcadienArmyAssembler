@@ -3,7 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { createDefaultRosterEntry, setUnitSize } = require("../src/domain/loadout");
+const { createDefaultRosterEntry, getOptionStates, setSelection, setUnitSize } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { extractNormalizedRuleset } = require("../src/rulesets/sources");
 
@@ -40,6 +40,17 @@ test("MFM v1.1 preserves separate model-count and copy-count bands", () => {
 test("MFM v1.1 includes red increases", () => {
   const morvenn = unit("Imperium - Adepta Sororitas", "Morvenn Vahl");
   assert.equal(points(morvenn, 1), 200);
+});
+
+test("World Eaters use the current Rhino copy bands and Berzerker costs", () => {
+  const rhino = unit("Chaos - World Eaters", "Chaos Rhino");
+  assert.equal(points(rhino, 1, { previousCopies: 0 }), 75);
+  assert.equal(points(rhino, 1, { previousCopies: 2 }), 75);
+  assert.equal(points(rhino, 1, { previousCopies: 3 }), 85);
+
+  const berzerkers = unit("Chaos - World Eaters", "Khorne Berzerkers");
+  assert.equal(points(berzerkers, 10), 180);
+  assert.equal(points(berzerkers, 20), 345);
 });
 
 test("MFM v1.1 keeps Chapter-specific Space Marine schedules distinct", () => {
@@ -83,8 +94,50 @@ test("MFM v1.1 keeps Chapter-specific Space Marine schedules distinct", () => {
 
 test("Imperial Agents conditional schedules remain distinct", () => {
   const eversor = unit("Imperium - Agents of the Imperium", "Eversor Assassin");
-  assert.equal(points(eversor, 1, { mfmContext: "Imperial Agents army" }), 100);
-  assert.equal(points(eversor, 1, { mfmContext: "Every model has the Imperium keyword" }), 110);
+  assert.equal(points(eversor, 1, { mfmContext: "Imperial Agents army" }), 110);
+  assert.equal(points(eversor, 1, { mfmContext: "Every model has the Imperium keyword" }), 120);
+});
+
+test("Imperial Knights use the complete allied-Imperium schedule for Imperial Agents", () => {
+  const context = { mfmContext: "Every model has the Imperium keyword" };
+  const expected = [
+    ["Aquila Kill Team", 5, 100], ["Aquila Kill Team", 10, 200],
+    ["Callidus Assassin", 1, 100], ["Corvus Blackstar", 1, 180],
+    ["Culexus Assassin", 1, 85],
+    ["Deathwatch Kill Team", 5, 100], ["Deathwatch Kill Team", 10, 200],
+    ["Eversor Assassin", 1, 120], ["Exaction Squad", 11, 85],
+    ["Grey Knights Terminator Squad", 5, 210],
+    ["Imperial Navy Breachers", 10, 90], ["Imperial Rhino", 1, 75],
+    ["Inquisitor", 1, 65], ["Inquisitor Coteaz", 1, 95],
+    ["Inquisitor Draxus", 1, 110], ["Inquisitor Greyfax", 1, 65],
+    ["Inquisitorial Agents", 6, 60], ["Inquisitorial Agents", 12, 120],
+    ["Inquisitorial Chimera", 1, 70], ["Inquisitor Kroyle", 1, 100],
+    ["Ministorum Priest", 1, 40], ["Navigator", 1, 75],
+    ["Rogue Trader Entourage", 4, 105], ["Sanctifiers", 9, 100],
+    ["Sisters of Battle Immolator", 1, 115],
+    ["Sisters of Battle Squad", 10, 115], ["Subductor Squad", 11, 100],
+    ["Vigilant Squad", 11, 85], ["Vindicare Assassin", 1, 125],
+    ["Voidsmen-at-Arms", 6, 70], ["Watch Captain Artemis", 1, 65],
+    ["Watch Master", 1, 105]
+  ];
+
+  for (const [name, size, expectedPoints] of expected) {
+    const definition = unit("Imperium - Agents of the Imperium", name);
+    assert.equal(points(definition, size, context), expectedPoints, `${name} (${size})`);
+  }
+
+  for (const [name, optionName, expectedPoints] of [
+    ["Grey Knights Terminator Squad", "Psycannon", 215],
+    ["Sisters of Battle Immolator", "Twin multi-melta", 130]
+  ]) {
+    const definition = unit("Imperium - Agents of the Imperium", name);
+    let entry = createDefaultRosterEntry(definition);
+    entry.context = context;
+    const option = getOptionStates(definition, entry).find(item => item.name === optionName);
+    assert.ok(option, `${name}: ${optionName}`);
+    entry = setSelection(definition, entry, option.id, 1, false);
+    assert.equal(calculateEntryPoints(definition, entry).points, expectedPoints, `${name}: ${optionName}`);
+  }
 });
 
 test("MFM v1.1 applies enhancement and wargear totals", () => {
@@ -129,6 +182,6 @@ test("Faction Pack v1.1 adds the two flagged detachments", () => {
 });
 
 test("every MFM v1.1 row attaches to normalized roster data", () => {
-  assert.equal(ruleset.mfmPointSource.total, 1527);
+  assert.equal(ruleset.mfmPointSource.total, 1541);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
 });

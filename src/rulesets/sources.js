@@ -21,6 +21,7 @@ const {
 const { applyMfmPoints, readMfmPoints } = require("./mfm-points");
 const { applyMfmDetachments, readMfmDetachments } = require("./mfm-detachments");
 const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-pack-updates");
+const { applyEnhancementEligibilityRestrictions } = require("./enhancement-eligibility");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 
 const ROOT = path.resolve(__dirname, "..", "..");
@@ -126,7 +127,8 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
   const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
-  const reconciledArmies = normalized.armies;
+  const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
+  const reconciledArmies = enhancementEligibilityResult.armies;
 
   const result = {
     source,
@@ -164,6 +166,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       lastUpdated: enhancementRestrictions.lastUpdated,
       ...enhancementRestrictionResult.summary
     },
+    enhancementEligibilitySource: enhancementEligibilityResult.summary,
     manualDetachmentSource: {
       source: manualDetachments.source,
       ...manualDetachmentResult.summary

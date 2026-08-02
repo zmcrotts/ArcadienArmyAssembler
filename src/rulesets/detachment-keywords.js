@@ -17,7 +17,11 @@ const KEYWORD_GRANT_CORRECTIONS = [
   { faction: "Xenos - Genestealer Cults", detachment: "Heroes of the Uprising", keyword: "Killer", names: ["Kelermorph", "Locus", "Reductus Saboteur", "Sanctus"] },
   { faction: "Imperium - Adeptus Mechanicus", detachment: "Cohort Acquisitus", keyword: "Recon Augury", nameIncludes: ["Pteraxii", "Infiltrator", "Rangers", "Serberys Raiders", "Serberys Sulphurhounds"] },
   { faction: "Imperium - Astra Militarum", detachment: "Abhuman Auxiliaries", keyword: "Abhuman", nameIncludes: ["Bullgryn", "Ogryn", "Ratlings"] },
-  { factionPrefix: "Imperium - Adeptus Astartes", detachment: "Fulguris Task Force", keyword: "Speeder", nameIncludes: ["Land Speeder", "Storm Speeder Hailstrike", "Storm Speeder Hammerstrike", "Storm Speeder Thunderstrike"] },
+  { faction: "Imperium - Astra Militarum", detachment: "Steel Hammer", keyword: "Character", anyKeywords: ["Titanic"], selectable: true },
+  { faction: "Imperium - Adeptus Astartes - Dark Angels", allDetachments: true, keyword: "Deathwing", anyKeywords: ["Terminator"], names: ["Bladeguard Ancient"], matchEither: true },
+  { faction: "Imperium - Adeptus Astartes - Dark Angels", allDetachments: true, keyword: "Ravenwing", anyKeywords: ["Mounted"] },
+  { factionPrefix: "Imperium - Adeptus Astartes", detachment: "Fulguris Task Force", keyword: "Speeder", names: ["Land Speeder", "Storm Speeder Hailstrike", "Storm Speeder Hammerstrike", "Storm Speeder Thunderstrike"] },
+  { factionPrefix: "Imperium - Adeptus Astartes", detachment: "Headhunter Task Force", keyword: "Character", anyKeywords: ["Vehicle"], noneKeywords: ["Aircraft", "Drop Pod", "Drop Pods", "Walker", "Fly"], selectable: true },
   { factionPrefix: "Imperium - Adeptus Astartes", detachment: "Armoured Speartip", keyword: "Heavy Transport", anyKeywords: ["Transport"], minimumWounds: 14 }
 ];
 
@@ -54,6 +58,7 @@ function unitMatchesCorrection(unit, correction) {
     ? nameMatch || keywordMatch
     : (!hasNamedMatcher || nameMatch) && (!hasKeywordMatcher || keywordMatch);
   if (!targetMatches) return false;
+  if ((correction.noneKeywords || []).some(item => keywords.has(normalizeName(item)))) return false;
   if ((correction.excludeRoles || []).some(role => unit?.roles?.[role])) return false;
   if (correction.minimumWounds && unitWounds(unit) < correction.minimumWounds) return false;
   return true;
@@ -66,16 +71,26 @@ function findDetachmentId(armies, correction) {
   return army?.detachments?.find(item => normalizeName(item.name) === normalizeName(correction.detachment))?.id || null;
 }
 
+function findDetachmentIds(armies, correction) {
+  const army = (armies || []).find(item => correction.faction
+    ? item.faction === correction.faction
+    : String(item.faction || "").startsWith(correction.factionPrefix || ""));
+  if (correction.allDetachments) return (army?.detachments || []).map(item => item.id);
+  const id = findDetachmentId(armies, correction);
+  return id ? [id] : [];
+}
+
 function applyDetachmentKeywordCorrections(units, armies) {
   return (units || []).map(unit => {
     const additions = [];
     for (const correction of KEYWORD_GRANT_CORRECTIONS) {
       if (!unitMatchesCorrection(unit, correction)) continue;
-      const detachmentId = findDetachmentId(armies.filter(army => army.faction === unit.faction), correction);
-      if (!detachmentId) continue;
+      const detachmentIds = findDetachmentIds(armies.filter(army => army.faction === unit.faction), correction);
+      if (!detachmentIds.length) continue;
       additions.push({
         keyword: correction.keyword,
-        detachmentIds: [detachmentId],
+        detachmentIds,
+        selectable: Boolean(correction.selectable),
         source: "detachment-rule-correction"
       });
     }

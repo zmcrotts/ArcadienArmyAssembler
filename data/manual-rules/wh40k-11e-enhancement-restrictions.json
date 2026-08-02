@@ -60,6 +60,28 @@
       "source": "Faction Pack - Adeptus Custodes v1.1, page 4"
     },
     {
+      "id": "restriction-imperium-adeptus-custodes-praesidius",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Lions of the Emperor",
+      "enhancementName": "Praesidius",
+      "restriction": "ADEPTUS CUSTODES model only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 5"
+    },
+    {
+      "id": "restriction-imperium-adeptus-custodes-fierce-conqueror",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Lions of the Emperor",
+      "enhancementName": "Fierce Conqueror",
+      "restriction": "SHIELD-CAPTAIN model only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 5"
+    },
+    {
       "id": "restriction-imperium-adeptus-mechanicus-explorator-dispensation",
       "kind": "enhancement-restriction",
       "target": {
@@ -938,6 +960,37 @@
       "enhancementName": "Gateways to Glory",
       "restriction": "WORLD EATERS DAEMON PRINCE model only.",
       "source": "Faction Pack - World Eaters v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-orks-git-spotter-squig",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Git-spotter Squig",
+      "restriction": "WARBOSS model only.",
+      "unitKeywordsAny": [
+        "Warboss"
+      ],
+      "restrictEligibility": true,
+      "source": "Faction Pack - Orks v1.1"
+    },
+    {
+      "id": "restriction-xenos-orks-bionik-workshop",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Bionik Workshop",
+      "restriction": "BIG MEK or PAINBOY model only.",
+      "unitKeywordsAny": [
+        "Big Mek",
+        "Painboy"
+      ],
+      "restrictEligibility": true,
+      "source": "Faction Pack - Orks v1.1"
     }
   ]
 }

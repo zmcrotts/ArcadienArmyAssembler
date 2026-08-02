@@ -227,6 +227,18 @@
     return node.kind === "group" ? groupCount(node, entry) : Number(entry.selections[node.id] || 0);
   }
 
+  function constraintActualCount(node, entry, index, unitDefinition) {
+    const actual = actualCount(node, entry);
+    if (node.kind !== "group") return actual;
+    const parent = index.parentById.get(node.id);
+    if (parent?.kind !== "group" || !nodeContainsReference(node, parent.defaultSelectionId)) return actual;
+    const compositionIds = new Set((unitDefinition.composition || []).map(item => item.id));
+    return actual + (parent.children || []).reduce((sum, sibling) => {
+      if (sibling.id === node.id || sibling.kind !== "model" || !compositionIds.has(sibling.definitionId)) return sum;
+      return sum + actualCount(sibling, entry);
+    }, 0);
+  }
+
   function validateLoadout(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
     const errors = [];
@@ -240,7 +252,7 @@
           ? nearestSelectedParentCount(node, entry, index)
           : 1;
         const limit = effectiveConstraintValue(constraint, unitDefinition, entry, index) * multiplier;
-        const actual = actualCount(node, entry);
+        const actual = constraintActualCount(node, entry, index, unitDefinition);
         if (constraint.type === "min" && actual < limit) {
           errors.push({ nodeId: node.id, name: node.name, type: "min", actual, limit });
         }
@@ -535,6 +547,21 @@
     };
     const index = buildTreeIndex(unitDefinition);
     applyDefaults(unitDefinition.selectionTree, 1, entry.selections, unitDefinition, index);
+    if (unitDefinition?.name === "Deathshroud Terminators") {
+      const championGauntlet = index.all.find(node => {
+        if (node.name !== "Plaguespurt gauntlet") return false;
+        let parent = index.parentById.get(node.id);
+        while (parent) {
+          if (/Deathshroud Terminator Champion/i.test(parent.name || "")) return true;
+          parent = index.parentById.get(parent.id);
+        }
+        return false;
+      });
+      if (championGauntlet) {
+        const maximum = evaluatedLimits(championGauntlet, entry, index, unitDefinition).maximum;
+        if (maximum >= 2) return setSelection(unitDefinition, entry, championGauntlet.id, 2, false);
+      }
+    }
     return entry;
   }
 
@@ -554,6 +581,37 @@
       minimum: minimums.length ? Math.max(...minimums) : 0,
       maximum: maximums.length ? Math.min(...maximums) : Infinity
     };
+  }
+
+  function replaceNestedCompositionModel(node, amount, entry, unitDefinition, index) {
+    if (amount <= 0 || node.kind !== "model") return;
+    const compositionIds = new Set((unitDefinition.composition || []).map(item => item.id));
+    if (!compositionIds.has(node.definitionId)) return;
+
+    const immediateParent = index.parentById.get(node.id);
+    let ancestor = immediateParent;
+    while (ancestor) {
+      if (ancestor.kind === "group") {
+        const nestedDefault = ancestor === immediateParent
+          && ancestor.defaultSelectionId
+          && !(ancestor.children || []).some(child =>
+            child.kind !== "group" && nodeReferencesId(child, ancestor.defaultSelectionId)
+          );
+        const hasCompositionAlternative = (ancestor.children || []).some(child =>
+          !nodeContains(child, node.id)
+          && index.all.some(candidate =>
+            candidate.kind === "model"
+            && compositionIds.has(candidate.definitionId)
+            && nodeContains(child, candidate.id)
+          )
+        );
+        if (hasCompositionAlternative && (ancestor !== immediateParent || nestedDefault)) {
+          reduceGroupExcluding(ancestor, amount, node.id, entry.selections, unitDefinition, index);
+          return;
+        }
+      }
+      ancestor = index.parentById.get(ancestor.id);
+    }
   }
 
   function bundledOptionPoints(node) {
@@ -691,6 +749,7 @@
     }
 
     if (newCount > 0) refreshDescendants(node, newCount, next.selections, unitDefinition, index);
+    replaceNestedCompositionModel(node, newCount - oldCount, next, unitDefinition, index);
     rebalanceAncestorGroups(node, next, unitDefinition, index);
     return next;
   }
@@ -861,7 +920,13 @@
     const records = compositionModelRecords(unitDefinition, entry);
     let next = JSON.parse(JSON.stringify(entry));
     let remaining = target - state.current;
-    const preferred = record => record.selection.defaultCount !== null && record.selection.defaultCount !== undefined ? 0 : 1;
+    const preferred = record => {
+      const parent = index.parentById.get(record.node.id);
+      if (parent?.kind === "group" && nodeReferencesId(record.node, parent.defaultSelectionId)) return 0;
+      if (record.selection.defaultCount !== null && record.selection.defaultCount !== undefined) return 1;
+      if (record.current > 0) return 2;
+      return 3;
+    };
     const candidates = [...records].sort((a, b) => preferred(a) - preferred(b));
     if (remaining > 0) {
       for (const record of candidates) {
@@ -921,6 +986,31 @@
     return null;
   }
 
+  function applyKnownConfiguredProfileCorrections(unitDefinition, entry, index, profiles) {
+    if (unitDefinition?.name !== "Helbrute") return profiles;
+
+    const selectedMeleeWeapons = index.all.reduce((total, node) => {
+      if (!nodeIsActive(node, entry, index, unitDefinition, true)) return total;
+      if (!(node.profiles || []).some(profile =>
+        /melee weapons$/i.test(profile?.typeName || "")
+        && /^(?:Helbrute fist|Helbrute hammer|Power scourge)$/i.test(profile?.name || "")
+      )) return total;
+      return total + actualCount(node, entry);
+    }, 0);
+    if (selectedMeleeWeapons < 2) return profiles;
+
+    return profiles.map(profile => {
+      if (!/melee weapons$/i.test(profile?.typeName || "")) return profile;
+      if (!/^(?:Helbrute fist|Helbrute hammer|Power scourge)$/i.test(profile?.name || "")) return profile;
+      const attacks = Number(profile.characteristics?.A);
+      if (!Number.isFinite(attacks)) return profile;
+      return {
+        ...profile,
+        characteristics: { ...profile.characteristics, A: String(attacks + 2) }
+      };
+    });
+  }
+
   function getConfiguredProfiles(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
     const profiles = new Map();
@@ -952,7 +1042,13 @@
       for (const rule of node.rules || []) rules.set(rule.id || rule.name, rule);
     }
 
-    const values = mergeDuplicateAbilityProfiles([...profiles.values()].filter(profile => Number(profile.count || 0) > 0));
+    const corrected = applyKnownConfiguredProfileCorrections(
+      unitDefinition,
+      entry,
+      index,
+      [...profiles.values()].filter(profile => Number(profile.count || 0) > 0)
+    );
+    const values = mergeDuplicateAbilityProfiles(corrected);
     return {
       profiles: [...values],
       weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
@@ -1187,12 +1283,19 @@
   function matchingMfmRow(unitDefinition, rosterEntry) {
     const previousCopies = Number(rosterEntry?.context?.previousCopies || 0);
     const context = rosterEntry?.context?.mfmContext || null;
-    return (unitDefinition?.pricing?.mfmRows || []).find(row => {
+    const eligibleRows = (unitDefinition?.pricing?.mfmRows || []).filter(row => {
       if (row.context && row.context !== context) return false;
       if (previousCopies < Number(row.copies?.min || 0)) return false;
       if (row.copies?.max !== null && row.copies?.max !== undefined && previousCopies > Number(row.copies.max)) return false;
-      return matchesMfmComposition(row, unitDefinition, rosterEntry);
-    }) || null;
+      return true;
+    });
+    const exact = eligibleRows.find(row => matchesMfmComposition(row, unitDefinition, rosterEntry));
+    if (exact) return exact;
+    const modelCount = (unitDefinition?.composition || [])
+      .reduce((sum, selection) => sum + selectedCount(rosterEntry, selection.id), 0);
+    return eligibleRows
+      .filter(row => row.modelCount !== null && row.modelCount !== undefined && Number(row.modelCount) >= modelCount)
+      .sort((left, right) => Number(left.modelCount) - Number(right.modelCount))[0] || null;
   }
 
   function calculateEntryPoints(unitDefinition, rosterEntry) {

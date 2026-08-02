@@ -34,10 +34,16 @@ test("supported release targets exclude Linux", () => {
 
 test("manual Android distribution is non-debuggable and requires release signing", () => {
   const gradle = read("mobile/android/app/build.gradle");
+  const packageJson = JSON.parse(read("mobile/package.json"));
+  const releaseScript = read("mobile/scripts/build-signed-android.ps1");
   assert.match(gradle, /sideload\s*\{[\s\S]*?debuggable false/);
   assert.match(gradle, /ARCADIEN_KEYSTORE_FILE/);
   assert.match(gradle, /Sideload signing is required/);
   assert.doesNotMatch(gradle, /sideload\s*\{[\s\S]*?signingConfig signingConfigs\.debug/);
+  assert.match(packageJson.scripts["android:release"], /build-signed-android\.ps1/);
+  assert.match(releaseScript, /arcadien-sideload\.password\.dpapi/);
+  assert.match(releaseScript, /expectedCertificate/);
+  assert.match(releaseScript, /apksigner verify --print-certs/);
 });
 
 test("Android WebView keeps credentials native and restricts file-origin privileges", () => {
@@ -48,6 +54,9 @@ test("Android WebView keeps credentials native and restricts file-origin privile
   assert.doesNotMatch(activity, /getCachedAccessToken/);
   assert.match(activity, /void graphRequest\(/);
   assert.match(activity, /path\.startsWith\("\/android_asset\/www\/"\)/);
+  assert.doesNotMatch(activity, /minimumCameraClearance/);
+  assert.doesNotMatch(activity, /setPadding\(left, Math\.max\(top/);
+  assert.match(activity, /setPadding\(left, top, right, 0\)/);
 });
 
 test("desktop close and navigation protections are wired through preload", () => {

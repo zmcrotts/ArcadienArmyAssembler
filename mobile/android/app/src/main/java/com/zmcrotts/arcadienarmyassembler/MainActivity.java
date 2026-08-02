@@ -20,8 +20,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.view.WindowInsets;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -89,7 +89,6 @@ public final class MainActivity extends Activity {
             int left;
             int top;
             int right;
-            int bottom;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 Insets safeInsets = windowInsets.getInsets(
                     WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
@@ -97,15 +96,12 @@ public final class MainActivity extends Activity {
                 left = safeInsets.left;
                 top = safeInsets.top;
                 right = safeInsets.right;
-                bottom = safeInsets.bottom;
             } else {
                 left = windowInsets.getSystemWindowInsetLeft();
                 top = windowInsets.getSystemWindowInsetTop();
                 right = windowInsets.getSystemWindowInsetRight();
-                bottom = windowInsets.getSystemWindowInsetBottom();
             }
-            int minimumCameraClearance = Math.round(40 * getResources().getDisplayMetrics().density);
-            view.setPadding(left, Math.max(top, minimumCameraClearance), right, bottom);
+            view.setPadding(left, top, right, 0);
             return windowInsets;
         });
         setContentView(appFrame);

@@ -474,6 +474,7 @@
     {
       "id": "sororitas-catechism", "kind": "enhancement-replace",
       "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Penitent Host", "enhancementName": "Catechism of Divine Penitence",
+      "unitNames": ["Canoness", "Canoness with Jump Pack", "Palatine", "Ministorum Priest"],
       "description": "CANONESS, PALATINE or MINISTORUM PRIEST model only. The bearer gains the PENITENT keyword.",
       "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
     },
@@ -897,7 +898,7 @@
       "id": "audit-votann-shroudwerke-talismans", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Farseekers", "enhancementName": "Shroudwërke Talismans", "unitNames": ["Hernkyn Yaegirs"], "restriction": "YAEGIRS unit only.", "source": "Faction Pack - Leagues of Votann v1.1"
     },
     {
-      "id": "audit-necrons-deepening-madness", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Skyshroud Spearhead", "enhancementName": "Deepening Madness", "restriction": "DESTROYER CULT MOUNTED unit only.", "source": "Faction Pack - Necrons v1.1"
+      "id": "audit-necrons-deepening-madness", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Skyshroud Spearhead", "enhancementName": "Deepening Madness", "unitKeywordsAll": ["Faction: Necrons", "Destroyer Cult", "Mounted"], "restriction": "DESTROYER CULT MOUNTED unit only.", "source": "Faction Pack - Necrons v1.1, page 3"
     },
     {
       "id": "audit-necrons-enlivened-sentinels", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Hand of the Dynasty", "enhancementName": "Enlivened Sentinels", "unitNames": ["Necron Warriors"], "restriction": "NECRON WARRIORS unit only.", "source": "Faction Pack - Necrons v1.1"
@@ -954,6 +955,15 @@
       "id": "audit-csm-touched-by-warp-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Cabal of Chaos", "enhancementName": "Touched by the Warp", "unitKeywordsAll": ["Faction: Heretic Astartes"], "unitKeywordsNone": ["Khorne"], "restrictEligibility": true, "restriction": "HERETIC ASTARTES model only (excluding KHORNE models).", "source": "Faction Pack - Chaos Space Marines v1.1"
     },
     {
+      "id": "audit-csm-conduit-of-chaos-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Cabal of Chaos", "enhancementName": "Conduit of Chaos", "unitKeywordsAll": ["Faction: Heretic Astartes", "Daemon"], "unitKeywordsNone": ["Khorne"], "restriction": "HERETIC ASTARTES DAEMON model only (excluding KHORNE models).", "source": "Faction Pack - Chaos Space Marines v1.1, page 2"
+    },
+    {
+      "id": "audit-dark-angels-petition-of-stability-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Dark Age Arsenal", "enhancementName": "Petition of Stability", "unitKeywordsAll": ["Faction: Adeptus Astartes"], "restriction": "ADEPTUS ASTARTES unit only.", "source": "Faction Pack - Dark Angels v1.1, page 2"
+    },
+    {
+      "id": "audit-orks-dakkamek-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Xenos - Orks" }, "detachmentName": "Speedwaaagh!", "enhancementName": "Dakkamek", "unitKeywordsAll": ["Faction: Orks", "Mek"], "restriction": "MEK model only.", "source": "Faction Pack - Orks v1.1, page 6"
+    },
+    {
       "id": "audit-csm-pact-pinions-eligibility", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Murdertalon Raiders", "enhancementName": "Pact of Cursed Pinions", "unitNames": ["Chaos Lord with Jump Pack"], "restriction": "CHAOS LORD WITH JUMP PACK model only.", "source": "Faction Pack - Chaos Space Marines v1.1"
     },
     {
@@ -991,6 +1001,150 @@
     },
     {
       "id": "audit-daemons-library-soul-hungry-slaughterers", "kind": "enhancement-restriction", "target": { "faction": "Chaos - Daemons Library" }, "enhancementName": "Soul-hungry Slaughterers", "restriction": "LEGIONES DAEMONICA BATTLELINE unit only.", "source": "Faction Pack - Chaos Daemons v1.1"
+    },
+    {
+      "id": "missing-custodes-psyk-out-grenades", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Imperium - Adeptus Custodes" }, "detachmentName": "Silent Hunters", "enhancementName": "Psyk-out Grenades", "points": 10,
+      "unitKeywordsAll": ["Anathema Psykana"],
+      "description": "ANATHEMA PSYKANA unit only. This unit has [EXPLOSIVES]. When you target this unit with the Explosives stratagem, if you select an enemy PSYKER unit, you can re-roll rolls to determine whether that enemy unit suffers a mortal wound.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-bellicose-weapon-spirits", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Fulguris Task Force", "enhancementName": "Bellicose Weapon Spirits", "points": 15,
+      "unitNames": ["Land Speeder", "Storm Speeder Hailstrike", "Storm Speeder Hammerstrike", "Storm Speeder Thunderstrike"],
+      "description": "SPEEDER unit only. This unit can re-roll Damage rolls and rolls to determine the Attacks characteristic of a weapon.",
+      "source": "Faction Pack - Space Marines v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-raptorial-cogitator-core", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Fulguris Task Force", "enhancementName": "Raptorial Cogitator Core", "points": 15,
+      "unitNames": ["Land Speeder", "Storm Speeder Hailstrike", "Storm Speeder Hammerstrike", "Storm Speeder Thunderstrike"],
+      "description": "SPEEDER unit only. This unit's ranged attacks have [IGNORES COVER].",
+      "source": "Faction Pack - Space Marines v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-death-in-the-dark", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Subversion Assets", "enhancementName": "Death in the Dark", "points": 15,
+      "unitKeywordsAll": ["Infantry", "Phobos"],
+      "description": "INFANTRY PHOBOS unit only. This unit's attacks that target a hidden unit have +1 to hit rolls.",
+      "source": "Faction Pack - Space Marines v1.1, page 5; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-redoubtable-machine-spirit", "kind": "enhancement-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Headhunter Task Force", "enhancementName": "Redoubtable Machine Spirit", "points": 25,
+      "unitKeywordsAll": ["Faction: Adeptus Astartes", "Vehicle"],
+      "unitKeywordsNone": ["Aircraft", "Drop Pod", "Drop Pods", "Walker", "Fly"],
+      "description": "ADEPTUS ASTARTES VEHICLE model only. The bearer has a 5+ invulnerable save and, at the end of your Command phase, the bearer regains 1 lost wound.",
+      "source": "Faction Pack - Space Marines v1.1, page 8; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-gunnery-honours", "kind": "enhancement-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Headhunter Task Force", "enhancementName": "Gunnery Honours", "points": 20,
+      "unitKeywordsAll": ["Faction: Adeptus Astartes", "Vehicle"],
+      "unitKeywordsNone": ["Aircraft", "Drop Pod", "Drop Pods", "Walker", "Fly"],
+      "description": "ADEPTUS ASTARTES VEHICLE model only. Once per phase, you can re-roll one Hit roll, one Wound roll and one Damage roll for the bearer.",
+      "source": "Faction Pack - Space Marines v1.1, page 8; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-firestorm-coordinators", "kind": "enhancement-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Headhunter Task Force", "enhancementName": "Firestorm Coordinators", "points": 20,
+      "unitKeywordsAll": ["Faction: Adeptus Astartes", "Vehicle"],
+      "unitKeywordsNone": ["Aircraft", "Drop Pod", "Drop Pods", "Walker", "Fly"],
+      "description": "ADEPTUS ASTARTES VEHICLE model only. Ranged weapons equipped by the bearer have the [SUSTAINED HITS 1] ability.",
+      "source": "Faction Pack - Space Marines v1.1, page 8; MFM v1.1"
+    },
+    {
+      "id": "missing-astartes-tank-ace", "kind": "enhancement-add",
+      "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Headhunter Task Force", "enhancementName": "Astartes Tank Ace", "points": 40,
+      "unitKeywordsAll": ["Faction: Adeptus Astartes", "Vehicle"],
+      "unitKeywordsNone": ["Aircraft", "Drop Pod", "Drop Pods", "Walker", "Fly"],
+      "description": "ADEPTUS ASTARTES VEHICLE model only. In your Shooting phase, while a friendly ADEPTUS ASTARTES VEHICLE unit is within 6 inches of the bearer, ranged weapons equipped by models in that unit have the [ASSAULT] ability.",
+      "source": "Faction Pack - Space Marines v1.1, page 8; MFM v1.1"
+    },
+    {
+      "id": "missing-chaos-knights-soul-spoor-auspicator", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Chaos - Chaos Knights" }, "detachmentName": "Hunting Warpack", "enhancementName": "Soul-spoor Auspicator", "points": 15,
+      "unitNames": ["War Dog Huntsman"],
+      "description": "HUNTSMAN unit only. This unit's ranged attacks have +6 inches Range.",
+      "source": "Faction Pack - Chaos Knights v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-chaos-knights-snarling-rivalry", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Chaos - Chaos Knights" }, "detachmentName": "Hunting Warpack", "enhancementName": "Snarling Rivalry", "points": 10,
+      "unitNames": ["War Dog Executioner"],
+      "description": "EXECUTIONER unit only. This unit's ranged attacks have [IGNORES COVER].",
+      "source": "Faction Pack - Chaos Knights v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-csm-dread-talons-warp-fuelled-thrusters", "kind": "enhancement-add",
+      "target": { "faction": "Chaos - Chaos Space Marines" }, "detachmentName": "Dread Talons", "enhancementName": "Warp-Fuelled Thrusters", "points": 20,
+      "unitNames": ["Chaos Lord with Jump Pack"],
+      "description": "CHAOS LORD WITH JUMP PACK model only.",
+      "source": "MFM v1.1"
+    },
+    {
+      "id": "missing-dark-angels-thundercowl-turbines", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Darkflight Pursuit", "enhancementName": "Thundercowl Turbines", "points": 15,
+      "unitKeywordsAll": ["Ravenwing", "Fly"],
+      "description": "RAVENWING FLY unit only. In your first Movement phase, this unit can make an ingress move.",
+      "source": "Faction Pack - Dark Angels v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-dark-angels-nightforged-battery", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "detachmentName": "Darkflight Pursuit", "enhancementName": "Nightforged Battery", "points": 15,
+      "unitNames": ["Land Speeder Vengeance"],
+      "description": "LAND SPEEDER VENGEANCE unit only. This unit can re-roll rolls to determine the Attacks characteristic of a weapon and Hazard rolls.",
+      "source": "Faction Pack - Dark Angels v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-space-wolves-fierce-example", "kind": "enhancement-add", "enhancementKind": "upgrade", "maxSelections": 3,
+      "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Legends of Saga and Song", "enhancementName": "Fierce Example", "points": 25,
+      "unitNames": ["Wolf Guard Terminators"],
+      "description": "WOLF GUARD TERMINATORS unit only. This unit has +1 Toughness.",
+      "source": "Faction Pack - Space Wolves v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "missing-space-wolves-eye-of-the-hunter", "kind": "enhancement-add",
+      "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Veterans of the Fang", "enhancementName": "Eye of the Hunter", "points": 20,
+      "unitNames": ["Wolf Guard Battle Leader", "Wolf Guard Battle Leader in Terminator Armour [Legends]", "Wolf Guard Battle Leader on Thunderwolf [Legends]"],
+      "description": "WOLF GUARD BATTLE LEADER model only. This unit's ranged attacks have [ASSAULT], [IGNORES COVER] and +1 Armour Penetration.",
+      "source": "Faction Pack - Space Wolves v1.1, page 4; MFM v1.1"
+    },
+    {
+      "id": "missing-space-wolves-weaver-of-sagas", "kind": "enhancement-add",
+      "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Veterans of the Fang", "enhancementName": "Weaver of Sagas", "points": 15,
+      "unitKeywordsAll": ["Wolf Priest"],
+      "description": "WOLF PRIEST model only. (Once per battle round, per army) In your Movement phase, at the start or end of this unit's move, select one friendly ADEPTUS ASTARTES unit within 6 inches of this unit or one friendly GREY HUNTERS unit within 18 inches of this unit. That unit is no longer battle-shocked.",
+      "source": "Faction Pack - Space Wolves v1.1, page 4; MFM v1.1"
+    },
+    {
+      "id": "missing-necrons-singularity-matrix", "kind": "enhancement-add", "enhancementKind": "upgrade",
+      "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Pantheon of Woe", "enhancementName": "Singularity Matrix", "points": 45,
+      "unitNames": ["C'tan Shard of the Deceiver"],
+      "description": "C'TAN SHARD OF THE DECEIVER model only. This model has the Lord of Deceit (Aura) ability.",
+      "source": "Faction Pack - Necrons v1.1, page 11; MFM v1.1"
+    },
+    {
+      "id": "missing-necrons-quantum-goad", "kind": "enhancement-add", "enhancementKind": "upgrade",
+      "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Pantheon of Woe", "enhancementName": "Quantum Goad", "points": 45,
+      "unitNames": ["C'tan Shard of the Nightbringer"],
+      "description": "C'TAN SHARD OF THE NIGHTBRINGER model only. This model is eligible to declare a charge in a turn in which it Advanced.",
+      "source": "Faction Pack - Necrons v1.1, page 11; MFM v1.1"
+    },
+    {
+      "id": "missing-necrons-animus-damper", "kind": "enhancement-add", "enhancementKind": "upgrade",
+      "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Pantheon of Woe", "enhancementName": "Animus Damper", "points": 35,
+      "unitNames": ["C'tan Shard of the Void Dragon"],
+      "description": "C'TAN SHARD OF THE VOID DRAGON model only. Once per turn, at the start of your opponent's Shooting phase, select one enemy VEHICLE unit visible to the bearer. That unit must take a Leadership test. Until the end of the phase, subtract 1 from the Hit roll and, if that Leadership test was failed, subtract 1 from the Wound roll as well.",
+      "source": "Faction Pack - Necrons v1.1, page 11; MFM v1.1"
+    },
+    {
+      "id": "missing-necrons-reletavistic-tether", "kind": "enhancement-add", "enhancementKind": "upgrade",
+      "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Pantheon of Woe", "enhancementName": "Reletavistic Tether", "points": 40,
+      "unitNames": ["Transcendent C'tan"],
+      "description": "TRANSCENDENT C'TAN model only. In your turn, when this unit makes an ingress/advance move using its Transdimensional Displacement ability, this unit can end that move more than 6 inches horizontally from all enemy units. When this unit ends that move within 8 inches of an enemy unit, this unit is not eligible to declare a charge until the end of the turn.",
+      "source": "Faction Pack - Necrons v1.1, page 11; MFM v1.1"
     }
   ],
   "audit": {
