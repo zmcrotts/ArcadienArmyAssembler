@@ -81,7 +81,11 @@ async function tokenRequest(body) {
     body: new URLSearchParams(body)
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error_description || "Microsoft sign-in could not finish.");
+  if (!response.ok) {
+    const error = new Error(data.error_description || "Microsoft sign-in could not finish.");
+    if (["invalid_grant", "interaction_required"].includes(data.error)) error.code = "ONEDRIVE_REAUTH_REQUIRED";
+    throw error;
+  }
   return data;
 }
 
@@ -108,12 +112,18 @@ async function accessToken() {
   if (!tokens) return null;
   if (tokens.access_token && Number(tokens.expires_at || 0) > Date.now()) return tokens.access_token;
   if (!tokens.refresh_token) return null;
-  const refreshed = await tokenRequest({
-    client_id: ONEDRIVE_CLIENT_ID,
-    grant_type: "refresh_token",
-    refresh_token: tokens.refresh_token,
-    scope: ONEDRIVE_SCOPE
-  });
+  let refreshed;
+  try {
+    refreshed = await tokenRequest({
+      client_id: ONEDRIVE_CLIENT_ID,
+      grant_type: "refresh_token",
+      refresh_token: tokens.refresh_token,
+      scope: ONEDRIVE_SCOPE
+    });
+  } catch (error) {
+    if (error?.code === "ONEDRIVE_REAUTH_REQUIRED") clearStoredConnection();
+    throw error;
+  }
   saveTokens({ ...refreshed, refresh_token: refreshed.refresh_token || tokens.refresh_token });
   return refreshed.access_token;
 }
@@ -152,7 +162,9 @@ async function graph(path, options = {}) {
   }
   if (response.status === 401) {
     clearStoredConnection();
-    throw new Error("Your OneDrive connection expired. Connect it again to sync.");
+    const error = new Error("Your OneDrive connection expired. Sign in again to sync.");
+    error.code = "ONEDRIVE_REAUTH_REQUIRED";
+    throw error;
   }
   if (!response.ok && !allowStatuses.includes(response.status)) {
     const data = await response.json().catch(() => ({}));

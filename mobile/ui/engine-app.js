@@ -1160,6 +1160,7 @@ function handleMobileRosterAction(button) {
 function renderStartScreen() {
   const saves = sortedSavedRosterLibrary();
   const factionOptions = savedRosterFactionOptions(saves);
+  const syncLabel = syncStatus?.connected === false ? "Reconnect" : "Sync";
   startScreen.innerHTML = `
     <div class="startHeader">
       <div class="startBrandRow">
@@ -1167,7 +1168,7 @@ function renderStartScreen() {
         <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
       </div>
       <div class="startHeaderActions${syncStatus?.connected ? " hasDisconnect" : ""}">
-        <button id="startSyncRosters">Sync</button>
+        <button id="startSyncRosters">${syncLabel}</button>
         <button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>
         ${syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
         <button id="startImportJson" title="Import a roster JSON file">Import</button>
@@ -1815,6 +1816,17 @@ async function syncSavedRosters() {
         ? `OneDrive folder ${result.summary?.cloudFolder || "unknown"} is empty. Reconnect and select the same Microsoft account shown on the other device.`
         : `Synced — your lists already match.${folderLabel}`);
   } catch (error) {
+    if (error?.code === "ONEDRIVE_REAUTH_REQUIRED") {
+      syncStatus = { available: true, connected: false };
+      if (appMode === "library") renderStartScreen();
+      showTransientMessage("Your OneDrive connection expired. Opening Microsoft sign-in…");
+      try {
+        await service.beginSignIn();
+      } catch (signInError) {
+        showTransientMessage(`Microsoft sign-in could not start: ${signInError.message}`);
+      }
+      return;
+    }
     try {
       syncStatus = await service.getStatus();
     } catch {
@@ -1863,7 +1875,9 @@ function setSyncButtonsDisabled(disabled, activeLabel = "") {
   const cleanButton = document.getElementById("startCleanSync");
   const disconnectButton = document.getElementById("startDisconnectSync");
   for (const button of [syncButton, cleanButton, disconnectButton].filter(Boolean)) button.disabled = disabled;
-  if (syncButton) syncButton.textContent = disabled && activeLabel ? activeLabel : "Sync";
+  if (syncButton) syncButton.textContent = disabled && activeLabel
+    ? activeLabel
+    : syncStatus?.connected === false ? "Reconnect" : "Sync";
   if (cleanButton) cleanButton.textContent = "Repair sync duplicates";
 }
 
