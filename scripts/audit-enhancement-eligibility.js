@@ -79,6 +79,20 @@ function tagsForUnit(unit, detachmentId, army = null) {
   return tags;
 }
 
+function selectableBlessingTagsForUnit(unit) {
+  const tags = new Set();
+  if (!/daemon prince/i.test(String(unit?.name || ""))) return tags;
+  function visit(node) {
+    if (!node) return;
+    if (["god blessing", "mark of chaos"].includes(normalize(node.name))) {
+      for (const child of node.children || []) addTag(tags, child.name);
+    }
+    for (const child of node.children || []) visit(child);
+  }
+  visit(unit.selectionTree);
+  return tags;
+}
+
 function wordsSegmentedByTags(phrase, tags) {
   const words = normalize(phrase).split(" ").filter(Boolean);
   const memo = new Map();
@@ -139,7 +153,8 @@ function limiterMatchesUnit(limiter, unit, detachmentId, army = null) {
   );
   if (!match) return true;
   const tags = tagsForUnit(unit, detachmentId, army);
-  if (!phraseMatchesTags(match[1], tags)) return false;
+  if (!phraseMatchesTags(match[1], tags)
+    && !phraseMatchesTags(match[1], selectableBlessingTagsForUnit(unit))) return false;
   const exclusion = String(match[2] || "")
     .replace(/^excluding\s+/i, "")
     .replace(/\s+(?:models?|units?)$/i, "")

@@ -909,6 +909,38 @@
     return null;
   }
 
+  function setSwordBrethrenCountPreservingWeapons(unitDefinition, entry, node, count, index) {
+    const next = JSON.parse(JSON.stringify(entry));
+    next.selections[node.id] = count;
+    for (const group of (node.children || []).filter(child => child.kind === "group")) {
+      const limits = evaluatedLimits(group, next, index, unitDefinition);
+      let actual = groupCount(group, next);
+      if (Number.isFinite(limits.maximum) && actual > limits.maximum) {
+        let remaining = actual - limits.maximum;
+        const preferred = defaultChild(group);
+        const choices = (group.children || []).filter(child => child.kind !== "group");
+        const ordered = preferred
+          ? [preferred, ...choices.filter(child => child.id !== preferred.id)]
+          : choices;
+        for (const choice of ordered) {
+          if (remaining <= 0) break;
+          const current = Number(next.selections[choice.id] || 0);
+          const removed = Math.min(current, remaining);
+          if (removed <= 0) continue;
+          next.selections[choice.id] = current - removed;
+          if (next.selections[choice.id] === 0) clearSubtree(choice, next.selections);
+          remaining -= removed;
+        }
+      }
+      actual = groupCount(group, next);
+      if (actual < limits.minimum) {
+        allocateAdditional(group, limits.minimum - actual, count, next.selections, unitDefinition, index);
+      }
+    }
+    rebalanceAncestorGroups(node, next, unitDefinition, index);
+    return next;
+  }
+
   function setUnitSize(unitDefinition, entry, requestedSize) {
     const state = getUnitSizeState(unitDefinition, entry);
     if (!state.editable) return JSON.parse(JSON.stringify(entry));
@@ -932,7 +964,9 @@
       for (const record of candidates) {
         const change = Math.min(remaining, record.maximum - record.current);
         if (change <= 0) continue;
-        next = setSelection(unitDefinition, next, record.node.id, record.current + change, false);
+        next = unitDefinition.name === "Sword Brethren Squad"
+          ? setSwordBrethrenCountPreservingWeapons(unitDefinition, next, record.node, record.current + change, index)
+          : setSelection(unitDefinition, next, record.node.id, record.current + change, false);
         record.current += change;
         remaining -= change;
         if (remaining <= 0) break;
@@ -941,7 +975,9 @@
       for (const record of candidates) {
         const change = Math.min(-remaining, record.current - record.minimum);
         if (change <= 0) continue;
-        next = setSelection(unitDefinition, next, record.node.id, record.current - change, false);
+        next = unitDefinition.name === "Sword Brethren Squad"
+          ? setSwordBrethrenCountPreservingWeapons(unitDefinition, next, record.node, record.current - change, index)
+          : setSelection(unitDefinition, next, record.node.id, record.current - change, false);
         record.current -= change;
         remaining += change;
         if (remaining >= 0) break;

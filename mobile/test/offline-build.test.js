@@ -6,6 +6,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const MOBILE_ROOT = path.resolve(__dirname, "..");
+const PROJECT_ROOT = path.resolve(MOBILE_ROOT, "..");
 const DIST = path.join(MOBILE_ROOT, "dist-user");
 
 test("mobile build produces a complete installable offline package", () => {
@@ -17,6 +18,9 @@ test("mobile build produces a complete installable offline package", () => {
   const styles = fs.readFileSync(path.join(DIST, "styles.css"), "utf8");
   const downloadPage = fs.readFileSync(path.join(DIST, "download.html"), "utf8");
   const downloadStyles = fs.readFileSync(path.join(DIST, "download.css"), "utf8");
+  const release = JSON.parse(fs.readFileSync(path.join(MOBILE_ROOT, "public-release.json"), "utf8"));
+  const desktopPackage = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, "package.json"), "utf8"));
+  const mobilePackage = JSON.parse(fs.readFileSync(path.join(MOBILE_ROOT, "package.json"), "utf8"));
   const fileMatch = worker.match(/const OFFLINE_FILES = (\[[\s\S]*?\]);\nconst TOTAL_BYTES = (\d+);/);
 
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
@@ -29,6 +33,17 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Windows\.exe/);
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Android\.apk/);
   assert.match(downloadPage, /Open the iPhone\/iPad app/);
+  assert.equal(release.windows.version, desktopPackage.version, "public Windows version must match package.json");
+  assert.equal(release.android.version, mobilePackage.version, "public Android version must match mobile/package.json");
+  assert.equal(release.ios.version, mobilePackage.version, "public iOS version must match mobile/package.json");
+  for (const platform of ["windows", "android", "ios"]) {
+    assert.match(release[platform].sha256, /^[A-F0-9]{64}$/, `${platform} release hash must be SHA-256`);
+    assert.match(downloadPage, new RegExp(release[platform].sha256));
+  }
+  assert.match(downloadPage, new RegExp(`Windows ${release.windows.version.replaceAll(".", "\\.")}`));
+  assert.match(downloadPage, new RegExp(`Android ${release.android.version.replaceAll(".", "\\.")}`));
+  assert.match(downloadPage, new RegExp(`web app ${release.ios.version.replaceAll(".", "\\.")}`));
+  assert.doesNotMatch(downloadPage, /\{\{[A-Z0-9_]+\}\}/);
   assert.match(downloadStyles, /\.platformGrid \{/);
   assert.match(index, /src="offline-app\.js\?v=offline2"/);
   assert.match(index, /<div id="mobileSheetBackdrop"[^>]+aria-hidden="true" hidden><\/div>/);

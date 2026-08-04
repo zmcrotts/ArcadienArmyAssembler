@@ -189,7 +189,10 @@ function eligibleStratagemsForEntry(armyDefinition, armyState, item) {
 function normalizeRosterEntries(rosterEntries, armyState = null) {
   return (rosterEntries || []).map(item => {
     const definition = item.definition || item.unitPackage?.definition || {};
-    const keywords = effectiveKeywordsForEntry(item, armyState);
+    const keywords = [...new Set([
+      ...effectiveKeywordsForEntry(item, armyState),
+      ...selectedGodBlessings(item, definition)
+    ])];
     const roles = { ...(item.roles || definition.roles || {}) };
     if (keywords.some(keyword => normalizeTargetName(keyword) === "battleline")) roles.battleline = true;
     if (keywords.some(keyword => normalizeTargetName(keyword) === "character")) roles.character = true;
@@ -206,6 +209,22 @@ function normalizeRosterEntries(rosterEntries, armyState = null) {
       alliedFor: item.alliedFor || item.unitPackage?.alliedFor || null
     };
   });
+}
+
+function selectedGodBlessings(item, definition) {
+  const selections = item.entry?.selections || item.selections || {};
+  const selected = [];
+  function visit(node) {
+    if (!node) return;
+    if (["god blessing", "mark of chaos"].includes(normalizeTargetName(node.name))) {
+      for (const child of node.children || []) {
+        if (Number(selections[child.id] || 0) > 0) selected.push(child.name);
+      }
+    }
+    for (const child of node.children || []) visit(child);
+  }
+  visit(definition.selectionTree);
+  return selected;
 }
 
 function getEnhancementStates(armyDefinition, armyState, rosterEntries) {
@@ -233,6 +252,14 @@ function getEnhancementStates(armyDefinition, armyState, rosterEntries) {
 function canBearEnhancement(enhancement, entry) {
   if (!entry || !selectionKeyMatchesAny(entry.selectionKey, enhancement?.eligibleSelectionKeys)) return false;
   if (enhancement.kind === "upgrade") return true;
+  const description = [
+    ...(enhancement.profiles || []).map(profile => profile.characteristics?.Description),
+    ...(enhancement.rules || []).map(rule => rule.description)
+  ].filter(Boolean).join(" ");
+  const godRestriction = description.match(/^\s*(KHORNE|NURGLE|SLAANESH|TZEENTCH)\s+model only\./i)?.[1];
+  if (godRestriction && !(entry.keywords || []).some(keyword =>
+    normalizeTargetName(keyword) === normalizeTargetName(godRestriction)
+  )) return false;
   return Boolean(entry.roles?.character && !entry.roles?.epicHero);
 }
 

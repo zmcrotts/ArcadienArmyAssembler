@@ -56,7 +56,7 @@ test("Android WebView keeps credentials native and restricts file-origin privile
   assert.match(activity, /path\.startsWith\("\/android_asset\/www\/"\)/);
   assert.doesNotMatch(activity, /minimumCameraClearance/);
   assert.doesNotMatch(activity, /setPadding\(left, Math\.max\(top/);
-  assert.match(activity, /setPadding\(left, top, right, 0\)/);
+  assert.match(activity, /setPadding\(left, top, right, bottom\)/);
 });
 
 test("desktop close and navigation protections are wired through preload", () => {

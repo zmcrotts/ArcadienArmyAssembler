@@ -44,11 +44,21 @@ function matchesName(name, names) {
 function matchesUnitTarget(unit, update) {
   if (update.unitNames && !matchesName(unit.name, update.unitNames)) return false;
   const keywords = new Set((unit.keywords || []).map(normalize));
+  const potentialKeywords = new Set(keywords);
+  if (/daemon prince/i.test(String(unit.name || ""))) {
+    walkTree(unit.selectionTree, node => {
+      if (["god blessing", "mark of chaos"].includes(normalize(node.name))) {
+        for (const child of node.children || []) potentialKeywords.add(normalize(child.name));
+      }
+    });
+  }
   const all = (update.unitKeywordsAll || []).map(normalize);
   const any = (update.unitKeywordsAny || []).map(normalize);
+  const potentialAny = (update.unitKeywordsPotentialAny || []).map(normalize);
   const none = (update.unitKeywordsNone || []).map(normalize);
   if (all.some(keyword => !keywords.has(keyword))) return false;
   if (any.length && !any.some(keyword => keywords.has(keyword))) return false;
+  if (potentialAny.length && !potentialAny.some(keyword => potentialKeywords.has(keyword))) return false;
   if (none.some(keyword => keywords.has(keyword))) return false;
   return true;
 }
@@ -304,7 +314,7 @@ function applyFactionPackUpdates(units, armies, document) {
     summary.configured += 1;
     let matches = 0;
     if (["army-rule-add", "army-rule-replace", "detachment-rule-replace", "stratagem-replace", "stratagem-patch", "enhancement-add", "enhancement-replace", "enhancement-restriction"].includes(update.kind)) {
-      const hasUnitTarget = update.unitNames || update.unitKeywordsAll || update.unitKeywordsAny || update.unitKeywordsNone;
+      const hasUnitTarget = update.unitNames || update.unitKeywordsAll || update.unitKeywordsAny || update.unitKeywordsPotentialAny || update.unitKeywordsNone;
       if (update.kind === "enhancement-add" || (["enhancement-replace", "enhancement-restriction"].includes(update.kind) && hasUnitTarget)) {
         update.eligibleSelectionKeys = unitDefinitions
           .filter(unit => matchesFaction(unit.faction, update.target || {}) && matchesUnitTarget(unit, update))

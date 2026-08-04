@@ -16,6 +16,7 @@ const FILES = [
   ["ui/engine-runtime.js", "engine-runtime.js"],
   ["ui/catalogue-sections.js", "catalogue-sections.js"],
   ["ui/offline-app.js", "offline-app.js"],
+  ["ui/play-mode.js", "play-mode.js"],
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
   ["ui/download.css", "download.css"],
@@ -76,6 +77,24 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');
 
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), html, "utf8");
+}
+
+function buildDownloadPage() {
+  const source = path.join(ROOT, "ui", "download.html");
+  const manifestPath = path.join(ROOT, "public-release.json");
+  const release = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  const replacements = {
+    "{{WINDOWS_VERSION}}": release.windows.version,
+    "{{ANDROID_VERSION}}": release.android.version,
+    "{{IOS_VERSION}}": release.ios.version,
+    "{{WINDOWS_SHA256}}": release.windows.sha256,
+    "{{ANDROID_SHA256}}": release.android.sha256,
+    "{{IOS_SHA256}}": release.ios.sha256
+  };
+  let html = fs.readFileSync(source, "utf8");
+  for (const [token, value] of Object.entries(replacements)) html = html.replaceAll(token, value);
+  if (/\{\{[A-Z0-9_]+\}\}/.test(html)) throw new Error("The public download page contains an unresolved release token.");
+  fs.writeFileSync(path.join(OUT_DIR, "download.html"), html, "utf8");
 }
 
 function writeInstallIcons() {
@@ -284,6 +303,7 @@ function main() {
   copyProjectDirectory("ui/assets", "assets");
   writeInstallIcons();
   buildIndex();
+  buildDownloadPage();
   writeReadme();
   writeServiceWorker();
 

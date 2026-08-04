@@ -89,6 +89,7 @@ public final class MainActivity extends Activity {
             int left;
             int top;
             int right;
+            int bottom;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 Insets safeInsets = windowInsets.getInsets(
                     WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
@@ -96,12 +97,14 @@ public final class MainActivity extends Activity {
                 left = safeInsets.left;
                 top = safeInsets.top;
                 right = safeInsets.right;
+                bottom = safeInsets.bottom;
             } else {
                 left = windowInsets.getSystemWindowInsetLeft();
                 top = windowInsets.getSystemWindowInsetTop();
                 right = windowInsets.getSystemWindowInsetRight();
+                bottom = windowInsets.getSystemWindowInsetBottom();
             }
-            view.setPadding(left, top, right, 0);
+            view.setPadding(left, top, right, bottom);
             return windowInsets;
         });
         setContentView(appFrame);

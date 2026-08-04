@@ -134,6 +134,7 @@
             <span id="mobilePointsTotal">0/0 pts</span>
           </div>
           <div class="mobileHeaderActions">
+            <button id="mobilePlayMode" class="mobilePlayButton" type="button">Play Mode</button>
             <button id="mobileSaveRoster" type="button">Save</button>
             <button id="mobileExportRoster" type="button">Export</button>
           </div>
@@ -146,6 +147,26 @@
       </footer>
     </section>
   </div>
+
+  <section id="playModeShell" class="playModeShell" hidden aria-label="Play Mode">
+    <header class="playModeHeader">
+      <button id="playModeExit" class="playModeBack" type="button" aria-label="Return to lists">‹ Lists</button>
+      <div>
+        <span class="playModeEyebrow">PLAY MODE</span>
+        <strong id="playModeRosterName">Match</strong>
+      </div>
+      <button id="playModeEnd" class="playModeEndButton" type="button">End Game</button>
+    </header>
+    <main id="playModeContent" class="playModeContent"></main>
+    <nav id="playModeNav" class="playModeNav" aria-label="Play Mode sections">
+      <button type="button" data-play-view="battle" class="active">Battle</button>
+      <button type="button" data-play-view="missions">Missions</button>
+      <button type="button" data-play-view="army">Army</button>
+      <button type="button" data-play-view="ledger">Score</button>
+    </nav>
+  </section>
+
+  <div id="playModeModal" class="playModeModal" hidden></div>
 
   <div id="newRosterModal" class="modalBackdrop" hidden>
     <div class="modalPanel" role="dialog" aria-modal="true" aria-labelledby="newRosterTitle">
@@ -265,6 +286,7 @@
   <script defer src="catalogue-sections.js?v=milestone2"></script>
   <script defer src="onedrive-roster-sync.js?v=sync7"></script>
   <script defer src="offline-app.js?v=offline2"></script>
+  <script defer src="play-mode.js?v=play1"></script>
   <script defer src="engine-app.js?v=mobile27"></script>
 </body>
 </html>
