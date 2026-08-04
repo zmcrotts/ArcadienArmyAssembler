@@ -2,8 +2,11 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $mobileRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$package = Get-Content -Raw -LiteralPath (Join-Path $mobileRoot "package.json") | ConvertFrom-Json
-$version = [string]$package.version
+$gradleConfig = Get-Content -Raw -LiteralPath (Join-Path $mobileRoot "android\app\build.gradle")
+if ($gradleConfig -notmatch 'versionName\s+"([^"]+)"') {
+  throw "Android versionName is missing from android/app/build.gradle."
+}
+$version = [string]$Matches[1]
 $androidHome = Join-Path $mobileRoot ".android-toolchain\android-sdk"
 $javaHome = Join-Path $mobileRoot ".android-toolchain\jdk"
 $gradle = Join-Path $mobileRoot ".android-toolchain\gradle-8.9\bin\gradle.bat"

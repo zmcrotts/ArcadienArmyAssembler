@@ -7,12 +7,16 @@ const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
 
 const FILES = [
-  ["ui/bootstrap-app.js", "bootstrap-app.js"],
-  ["ui/styles.css", "styles.css"],
-  ["ui/engine-app.js", "engine-app.js"],
+  ["mobile/ui/bootstrap-app.js", "bootstrap-app.js"],
+  ["mobile/ui/styles.css", "styles.css"],
+  ["mobile/ui/engine-app.js", "engine-app.js"],
   ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
-  ["ui/engine-runtime.js", "engine-runtime.js"],
-  ["ui/catalogue-sections.js", "catalogue-sections.js"],
+  ["mobile/ui/engine-runtime.js", "engine-runtime.js"],
+  ["mobile/ui/catalogue-sections.js", "catalogue-sections.js"],
+  ["mobile/ui/offline-app.js", "offline-app.js"],
+  ["mobile/ui/play-mode.js", "play-mode.js"],
+  ["mobile/ui/app.webmanifest", "app.webmanifest"],
+  ["mobile/android/app/src/main/res/drawable/crosshair.png", "app-icon-192.png"],
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
   ["src/domain/army.js", "domain/army.js"],
   ["src/domain/roster-document.js", "domain/roster-document.js"],
@@ -39,7 +43,7 @@ function copyDirectory(source, target) {
 }
 
 function buildIndex() {
-  const source = path.join(ROOT, "ui", "index.html");
+  const source = path.join(ROOT, "mobile", "ui", "index.html");
   let html = fs.readFileSync(source, "utf8");
 
   html = html

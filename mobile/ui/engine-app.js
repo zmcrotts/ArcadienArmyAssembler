@@ -56,6 +56,7 @@ const mobileOpenMenu = document.getElementById("mobileOpenMenu");
 const mobileAddUnit = document.getElementById("mobileAddUnit");
 const mobileSaveRoster = document.getElementById("mobileSaveRoster");
 const mobileExportRoster = document.getElementById("mobileExportRoster");
+const mobilePlayMode = document.getElementById("mobilePlayMode");
 const rosterSavesSelect = document.getElementById("rosterSaves");
 const importJsonFile = document.getElementById("importJsonFile");
 const exportMenuToggle = document.getElementById("exportMenuToggle");
@@ -297,6 +298,7 @@ function init() {
     };
   }
   if (mobileSaveRoster) mobileSaveRoster.onclick = saveRoster;
+  if (mobilePlayMode) mobilePlayMode.onclick = openCurrentRosterPlayMode;
   if (mobileExportRoster) mobileExportRoster.onclick = openMobileExport;
   if (mobileOpenMenu) mobileOpenMenu.onclick = openNewRosterModal;
   if (closeMobileDetails) closeMobileDetails.onclick = closeMobileSheets;
@@ -338,6 +340,9 @@ function init() {
   });
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") autosaveCurrentRoster();
+  });
+  document.addEventListener("arcadien-playmode-close", () => {
+    if (appMode === "library") render();
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closeOpenWeaponPreview();
@@ -1210,6 +1215,7 @@ function renderStartScreen() {
             </div>
           </div>
           <div class="savedRosterActions">
+            <button class="startPlayRoster" data-save-id="${escapeHtml(save.id)}">${window.ArcadienPlayMode?.hasActive?.(save.id) ? "Resume" : "Play Mode"}</button>
             <button class="startLoadRoster" data-save-id="${escapeHtml(save.id)}">Load</button>
             <button class="startDeleteRoster" data-save-id="${escapeHtml(save.id)}">Delete</button>
           </div>
@@ -1237,6 +1243,9 @@ function renderStartScreen() {
   };
   for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
     button.onclick = () => loadRosterById(button.dataset.saveId);
+  }
+  for (const button of startScreen.querySelectorAll(".startPlayRoster")) {
+    button.onclick = () => openSavedRosterPlayMode(button.dataset.saveId);
   }
   for (const button of startScreen.querySelectorAll(".startDeleteRoster")) {
     button.onclick = () => requestDeleteRoster(button.dataset.saveId);
@@ -4257,6 +4266,19 @@ function currentRosterDocument() {
       selectedDetachments: armyEngine.selectedDetachments
     }
   });
+}
+
+function openSavedRosterPlayMode(id) {
+  const save = savedRosterLibrary().find(item => item.id === id);
+  if (!save) return alert("That saved list could not be found.");
+  window.ArcadienPlayMode?.open?.(save.id, save.document);
+}
+
+function openCurrentRosterPlayMode() {
+  if (!preserveCurrentRosterBeforeLeaving()) return;
+  const save = savedRosterLibrary().find(item => item.id === currentRosterSaveId);
+  if (!save) return alert("Save this list before starting Play Mode.");
+  window.ArcadienPlayMode?.open?.(save.id, save.document);
 }
 
 function savedRosterLibrary() {

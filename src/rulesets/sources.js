@@ -383,6 +383,14 @@ function applyManualLoadoutCorrections(definitions) {
     }
 
     if (
+      definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Imperium - Adeptus Astartes - Black Templars"
+      && definition.name === "Sword Brethren Squad"
+    ) {
+      return fixSwordBrethrenLoadout(definition);
+    }
+
+    if (
       definition.rulesetId !== "wh40k-11e-vflam"
       || definition.faction !== "Imperium - Adeptus Astartes - Blood Angels"
       || definition.name !== "Death Company Marines with Jump Packs"
@@ -569,6 +577,38 @@ function fixEinhyrHearthguardLoadout(definition) {
       option.modifiers = [];
       option.constraints = [manualSelectionConstraint(`${option.sourceId || option.id}-max`, "max", "parent", 1)];
     }
+  }
+  return unit;
+}
+
+function fixSwordBrethrenLoadout(definition) {
+  const unit = clone(definition);
+  unit.composition = (unit.composition || []).map(item => normalizeName(item.name) === "sword brother"
+    ? { ...item, min: 5, defaultCount: 5 }
+    : item);
+  unit.compositionConstraints = (unit.compositionConstraints || []).map(item => normalizeName(item.name) === "sword brethren"
+    ? { ...item, min: 5 }
+    : item);
+
+  for (const node of [
+    ...findNodesByName(unit.selectionTree, "Sword Brethren"),
+    ...findNodesByName(unit.selectionTree, "Sword Brother")
+  ]) {
+    node.constraints = (node.constraints || []).map(constraint =>
+      constraint.field === "selections" && constraint.type === "min" && constraint.scope === "parent"
+        ? { ...constraint, value: 5, raw: { ...constraint.raw, value: 5 } }
+        : constraint
+    );
+  }
+
+  const swordBrother = findNodeByName(unit.selectionTree, "Sword Brother");
+  if (swordBrother) {
+    swordBrother.modifiers = (swordBrother.modifiers || []).map(modifier =>
+      modifier.type === "set"
+      && (swordBrother.constraints || []).some(constraint => constraint.id === modifier.field && constraint.type === "min")
+        ? { ...modifier, value: 4, raw: { ...modifier.raw, value: 4 } }
+        : modifier
+    );
   }
   return unit;
 }

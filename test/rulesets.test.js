@@ -22,7 +22,7 @@ const {
   validateLoadout
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
-const { leaderCanTarget } = require("../src/domain/army");
+const { createArmyState, getUnitAssignmentState, leaderCanTarget } = require("../src/domain/army");
 const {
   buildRosterSheets,
   extractUnitEffects,
@@ -822,6 +822,71 @@ test("11e Steel Hammer offers a selectable Character keyword to Titanic units", 
   assert.equal(grant?.selectable, true);
 });
 
+test("11e Sword Brethren default to five models and retain specialist weapons across size changes", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const unit = ruleset.units.find(item =>
+    item.faction === "Imperium - Adeptus Astartes - Black Templars"
+    && item.name === "Sword Brethren Squad"
+  );
+  let entry = createDefaultRosterEntry(unit);
+  assert.deepEqual(getUnitSizeState(unit, entry), {
+    current: 5, minimum: 5, maximum: 10, editable: true
+  });
+
+  const option = name => getOptionStates(unit, entry).find(item => item.name === name);
+  assert.equal(option("Plasma pistol").maximum, 1);
+  assert.equal(option("Pyre Pistol").maximum, 2);
+  assert.equal(option("Thunder Hammer").maximum, 1);
+  assert.equal(option("Sword Brother w/ Twin Lightning Claws").maximum, 1);
+
+  for (const name of ["Plasma pistol", "Pyre Pistol", "Thunder Hammer"]) {
+    entry = setSelection(unit, entry, option(name).id, 1);
+  }
+  const selectedCount = name => getOptionStates(unit, entry).find(item => item.name === name)?.current;
+  const before = ["Plasma pistol", "Pyre Pistol", "Thunder Hammer"].map(selectedCount);
+  entry = setUnitSize(unit, entry, 6);
+  entry = setUnitSize(unit, entry, 5);
+
+  assert.deepEqual(["Plasma pistol", "Pyre Pistol", "Thunder Hammer"].map(selectedCount), before);
+  assert.deepEqual(validateLoadout(unit, entry), []);
+});
+
+test("11e Pactbound Daemon Princes receive only the enhancement matching their selected God Blessing", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const army = ruleset.armies.find(item => item.faction === "Chaos - Chaos Space Marines");
+  const detachment = army.detachments.find(item => item.name === "Pactbound Zealots");
+  const expectedByGod = {
+    Khorne: "Talisman of Burning Blood",
+    Nurgle: "Orbs of Unlife",
+    Slaanesh: "Intoxicating Elixir",
+    Tzeentch: "Eye of Tzeentch"
+  };
+
+  for (const prince of ruleset.units.filter(item =>
+    item.faction === army.faction && /^Heretic Astartes Daemon Prince(?: with wings)?$/i.test(item.name)
+  )) {
+    const baseEntry = createDefaultRosterEntry(prince, `${prince.id}-test`);
+    for (const [god, expected] of Object.entries(expectedByGod)) {
+      const blessing = getOptionStates(prince, baseEntry).find(item => item.name === god);
+      const entry = setSelection(prince, baseEntry, blessing.id, 1, false);
+      const rosterEntry = {
+        instanceId: entry.instanceId,
+        unitPackage: {
+          definition: prince,
+          selectionKey: prince.selectionKey,
+          name: prince.name,
+          faction: prince.faction
+        },
+        entry
+      };
+      const state = { ...createArmyState(army), detachmentIds: [detachment.id] };
+      const names = getUnitAssignmentState(army, state, [rosterEntry], rosterEntry)
+        .enhancements.map(item => item.name);
+      assert.deepEqual(names, [expected], `${prince.name} / ${god}`);
+    }
+  }
+});
+
 test("11e Ork Freebooter enhancements enforce their named bearer restrictions", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const army = ruleset.armies.find(item => item.faction === "Xenos - Orks");
@@ -1159,11 +1224,15 @@ test("root-condition enhancement eligibility projects bearer keyword gates throu
   assert.equal(eligibleNames("Talisman of Burning Blood").includes("Chaos Lord"), false);
   assert.equal(eligibleNames("Talisman of Burning Blood").includes("Chaos Lord on Juggernaut [Legends]"), true);
   assert.deepEqual(eligibleNames("Eye of Tzeentch"), [
+    "Heretic Astartes Daemon Prince",
+    "Heretic Astartes Daemon Prince with wings",
     "Rubric Marines",
     "Sorcerer on Disc of Tzeentch [Legends]",
     "Chaos Lord on Disc of Tzeentch [Legends]"
   ]);
   assert.deepEqual(eligibleNames("Intoxicating Elixir"), [
+    "Heretic Astartes Daemon Prince",
+    "Heretic Astartes Daemon Prince with wings",
     "Noise Marines",
     "Chaos Lord on Steed of Slaanesh [Legends]",
     "Sorcerer on Steed of Slaanesh [Legends]"
@@ -1177,7 +1246,7 @@ test("every explicit 11e enhancement and upgrade bearer restriction is enforced"
   assert.equal(result.summary.records, 1581);
   assert.equal(result.summary.enhancements, 1469);
   assert.equal(result.summary.upgrades, 112);
-  assert.equal(result.summary.explicitLimiters, 1258);
+  assert.equal(result.summary.explicitLimiters, 1262);
   assert.equal(result.summary.overBroadRecords, 0);
 });
 

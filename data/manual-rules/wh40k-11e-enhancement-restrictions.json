@@ -991,6 +991,46 @@
       ],
       "restrictEligibility": true,
       "source": "Faction Pack - Orks v1.1"
+    },
+    {
+      "id": "restriction-chaos-csm-pactbound-talisman-burning-blood",
+      "kind": "enhancement-restriction",
+      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "detachmentName": "Pactbound Zealots",
+      "enhancementName": "Talisman of Burning Blood",
+      "restriction": "KHORNE model only.",
+      "unitKeywordsPotentialAny": ["Khorne"],
+      "source": "Pactbound Zealots enhancement restriction"
+    },
+    {
+      "id": "restriction-chaos-csm-pactbound-eye-of-tzeentch",
+      "kind": "enhancement-restriction",
+      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "detachmentName": "Pactbound Zealots",
+      "enhancementName": "Eye of Tzeentch",
+      "restriction": "TZEENTCH model only.",
+      "unitKeywordsPotentialAny": ["Tzeentch"],
+      "source": "Pactbound Zealots enhancement restriction"
+    },
+    {
+      "id": "restriction-chaos-csm-pactbound-orbs-of-unlife",
+      "kind": "enhancement-restriction",
+      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "detachmentName": "Pactbound Zealots",
+      "enhancementName": "Orbs of Unlife",
+      "restriction": "NURGLE model only.",
+      "unitKeywordsPotentialAny": ["Nurgle"],
+      "source": "Pactbound Zealots enhancement restriction"
+    },
+    {
+      "id": "restriction-chaos-csm-pactbound-intoxicating-elixir",
+      "kind": "enhancement-restriction",
+      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "detachmentName": "Pactbound Zealots",
+      "enhancementName": "Intoxicating Elixir",
+      "restriction": "SLAANESH model only.",
+      "unitKeywordsPotentialAny": ["Slaanesh"],
+      "source": "Pactbound Zealots enhancement restriction"
     }
   ]
 }

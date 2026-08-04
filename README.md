@@ -4,6 +4,8 @@ Offline Warhammer 40,000 roster builder for Windows, mobile browsers, and manual
 
 Arcadien Army Assembler is a local-first list builder focused on practical roster editing: add units, configure loadouts, assign detachments, choose enhancements, attach Leaders, check warnings, save lists, export text, and print unit or Crusade sheets.
 
+**[Download Arcadien Army Assembler for Windows, Android, iPhone, or iPad](https://zmcrotts.github.io/ArcadienArmyAssembler/download.html)**
+
 ## Current Features
 
 - Offline desktop app. No account or live service required.
@@ -24,7 +26,7 @@ Run **Arcadien Army Assembler Setup.exe** and follow the installer. Windows Smar
 
 ### iPhone or iPad
 
-1. Open the [Arcadien Army Assembler install site](https://zmcrotts.github.io/ArcadienArmyAssembler/) in Safari.
+1. Open the [Arcadien Army Assembler download page](https://zmcrotts.github.io/ArcadienArmyAssembler/download.html) in Safari.
 2. Tap **Share**.
 3. Choose **Add to Home Screen**.
 4. Open Arcadien Army Assembler from the new Home Screen icon.
