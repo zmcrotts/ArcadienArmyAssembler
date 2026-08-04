@@ -105,6 +105,9 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(worker, /type === "SKIP_WAITING"/);
   assert.doesNotMatch(worker, /addEventListener\("install", \(\) => self\.skipWaiting\(\)\)/);
   assert.match(worker, /name\.startsWith\(CACHE_PREFIX\) && name !== CACHE_NAME/);
+  assert.match(worker, /const publicDownloadPage = requestUrl\.pathname\.endsWith\("\/download\.html"\)/);
+  assert.match(worker, /fetch\(new Request\(request, \{ cache: "reload" \}\)\)/);
+  assert.ok(worker.indexOf("if (publicDownloadPage)") < worker.indexOf("if (offlineReady)"), "the public download page must bypass cache-first app handling");
 
 });
 
