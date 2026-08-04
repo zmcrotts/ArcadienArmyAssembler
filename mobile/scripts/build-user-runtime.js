@@ -264,6 +264,19 @@ async function downloadOfflineCopy(client) {
 }
 
 async function serveRequest(request) {
+  const requestUrl = new URL(request.url);
+  const publicDownloadPage = requestUrl.pathname.endsWith("/download.html");
+  if (publicDownloadPage) {
+    try {
+      const network = await fetch(new Request(request, { cache: "reload" }));
+      if (network.ok) return network;
+    } catch {
+      // Fall back to the packaged download page while offline.
+    }
+    const cachedDownloadPage = await caches.match(request, { ignoreSearch: true });
+    if (cachedDownloadPage) return cachedDownloadPage;
+  }
+
   const currentCache = await caches.open(CACHE_NAME);
   if (offlineReady) {
     const current = await currentCache.match(request, { ignoreSearch: true });
