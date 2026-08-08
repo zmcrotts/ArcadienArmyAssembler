@@ -17,6 +17,7 @@ const FILES = [
   ["ui/catalogue-sections.js", "catalogue-sections.js"],
   ["ui/offline-app.js", "offline-app.js"],
   ["ui/play-mode.js", "play-mode.js"],
+  ["ui/roster-storage.js", "roster-storage.js"],
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
   ["ui/download.css", "download.css"],
