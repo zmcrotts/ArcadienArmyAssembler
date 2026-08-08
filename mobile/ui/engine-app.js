@@ -154,7 +154,13 @@ const mobileRosterSectionDisclosureState = {};
 const mobileAddSectionDisclosureState = {};
 let rosterAutosaveTimer = null;
 
-function init() {
+async function init() {
+  try {
+    await window.ArcadienRosterStorage?.initialize();
+  } catch (error) {
+    rosterStorageReadFailed = true;
+    rosterStorageWarning = `Saved rosters could not be read and were left untouched: ${error.message}`;
+  }
   applySavedTheme();
   applyAvailableUnitsLayoutState();
   loadCompactorData();
@@ -807,7 +813,10 @@ function autosaveCurrentRoster(options = {}) {
     const existingIndex = saves.findIndex(save => save.id === id);
     if (existingIndex >= 0) saves[existingIndex] = record;
     else saves.push(record);
-    saveRosterLibrary(saves);
+    void saveRosterLibrary(saves).catch(error => {
+      rosterStorageWarning = `Automatic save failed: ${error.message}`;
+      showTransientMessage(rosterStorageWarning);
+    });
     currentRosterSaveId = id;
     rosterNameInput.value = document.name;
     if (mobileRosterName) mobileRosterName.value = document.name;
@@ -1813,7 +1822,7 @@ async function syncSavedRosters() {
     const result = await service.sync(savedRosterLibrary());
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
     syncStatus = { ...(syncStatus || {}), ...result, available: true, connected: true };
-    saveRosterLibrary(syncedSaves);
+    await saveRosterLibrary(syncedSaves);
     renderStartScreen();
     const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
     const details = [uploaded && `${uploaded} uploaded`, downloaded && `${downloaded} added`, conflicts && `${conflicts} kept safely`].filter(Boolean);
@@ -1859,7 +1868,7 @@ async function cleanSyncedDuplicates() {
     const result = await service.cleanDuplicates(savedRosterLibrary());
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
     syncStatus = { ...(syncStatus || {}), ...result, available: true, connected: true };
-    saveRosterLibrary(syncedSaves);
+    await saveRosterLibrary(syncedSaves);
     renderStartScreen();
     const cleanup = result.cleanup || {};
     const conflicts = result.summary?.conflicts || 0;
@@ -4282,6 +4291,20 @@ function openCurrentRosterPlayMode() {
 }
 
 function savedRosterLibrary() {
+  if (window.ArcadienRosterStorage) {
+    try {
+      const saves = window.ArcadienRosterStorage.current();
+      if (!Array.isArray(saves) || saves.some(record => !validRosterSaveRecord(record))) {
+        throw new Error("The saved-roster library has an invalid structure.");
+      }
+      rosterStorageReadFailed = false;
+      return saves;
+    } catch (error) {
+      rosterStorageReadFailed = true;
+      rosterStorageWarning = `Saved rosters could not be read and were left untouched: ${error.message}`;
+      return [];
+    }
+  }
   try {
     const raw = localStorage.getItem("engineRosterSaves");
     if (!raw) {
@@ -4309,6 +4332,11 @@ function saveRosterLibrary(saves) {
   if (!Array.isArray(saves) || saves.some(record => !validRosterSaveRecord(record))) {
     throw new Error("The roster library is invalid and was not saved.");
   }
+  if (window.ArcadienRosterStorage) {
+    return window.ArcadienRosterStorage.save(saves).then(() => {
+      rosterStorageWarning = null;
+    });
+  }
   const serialized = JSON.stringify(saves);
   try {
     localStorage.setItem("engineRosterSaves", serialized);
@@ -4322,6 +4350,7 @@ function saveRosterLibrary(saves) {
   } catch {
     rosterStorageWarning = "The roster library was saved, but an obsolete legacy copy could not be removed.";
   }
+  return Promise.resolve();
 }
 
 function validRosterSaveRecord(record) {
@@ -4457,14 +4486,14 @@ function importedRosterRecords(input) {
   return records;
 }
 
-function mergeRosterSaves(records) {
+async function mergeRosterSaves(records) {
   const saves = savedRosterLibrary();
   for (const record of records) {
     const existingIndex = saves.findIndex(save => save.id === record.id);
     if (existingIndex >= 0) saves[existingIndex] = record;
     else saves.push(record);
   }
-  saveRosterLibrary(saves);
+  await saveRosterLibrary(saves);
   renderRosterSaveBrowser();
 }
 
@@ -4559,7 +4588,7 @@ function renderValidation() {
     : results.map(result => `<div class="valid">✓ ${escapeHtml(result.text)}</div>`).join("") || `<div class="valid">✓ Roster is legal.</div>`;
 }
 
-function saveRoster() {
+async function saveRoster() {
   const document = currentRosterDocument();
   document.name = document.name || `${currentSubfaction || currentFaction} roster`;
   const saves = savedRosterLibrary();
@@ -4573,7 +4602,7 @@ function saveRoster() {
   if (existingIndex >= 0) saves[existingIndex] = record;
   else saves.push(record);
   try {
-    saveRosterLibrary(saves);
+    await saveRosterLibrary(saves);
   } catch (error) {
     alert(`Save failed: ${error.message}`);
     return;
@@ -4700,7 +4729,7 @@ async function importRosterJsonFile(event) {
     const sameNameCount = [...nameCounts.values()].filter(ids => ids.size > 1 && [...ids].some(id => importedIds.has(id))).length;
     if (sameNameCount && !confirm(`This import creates ${sameNameCount} same-name roster group${sameNameCount === 1 ? "" : "s"}. Keep each as a separate saved roster?`)) return;
     if (!preserveCurrentRosterBeforeLeaving()) return;
-    mergeRosterSaves(records);
+    await mergeRosterSaves(records);
     currentRosterSaveId = records[0].id;
     const loaded = await loadRosterDocument(records[0].document, { showWarnings: false });
     const warningCount = hydrated.reduce((sum, item) => sum + item.warnings.length, 0);
@@ -4760,20 +4789,20 @@ function closeDeleteRosterModal() {
   deleteRosterMessage.textContent = "";
 }
 
-function confirmPendingRosterDelete() {
+async function confirmPendingRosterDelete() {
   if (!pendingDeleteRosterId) return;
   const id = pendingDeleteRosterId;
   closeDeleteRosterModal();
-  deleteRosterById(id);
+  await deleteRosterById(id);
 }
 
-function deleteRosterById(id) {
+async function deleteRosterById(id) {
   const savesBefore = savedRosterLibrary();
   const target = savesBefore.find(save => save.id === id);
   if (!target) return;
   const saves = savesBefore.filter(save => save.id !== id);
   try {
-    saveRosterLibrary(saves);
+    await saveRosterLibrary(saves);
   } catch (error) {
     alert(`Delete failed: ${error.message}`);
     return;
@@ -5562,4 +5591,7 @@ function formatRichDescription(value) {
     .replace(/&lt;\/span&gt;/gi, "</span>");
 }
 
-init();
+init().catch(error => {
+  rosterStorageWarning = `The app could not finish starting: ${error.message}`;
+  render();
+});
