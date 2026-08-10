@@ -969,12 +969,8 @@
       },
       "detachmentName": "Freebooter Krew",
       "enhancementName": "Git-spotter Squig",
-      "restriction": "WARBOSS model only.",
-      "unitKeywordsAny": [
-        "Warboss"
-      ],
-      "restrictEligibility": true,
-      "source": "Faction Pack - Orks v1.1"
+      "restriction": "ORKS model only.",
+      "source": "Faction Pack - Orks v1.0, page 9"
     },
     {
       "id": "restriction-xenos-orks-bionik-workshop",

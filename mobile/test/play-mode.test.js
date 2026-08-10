@@ -11,6 +11,7 @@ const source = fs.readFileSync(path.join(root, "ui", "play-mode.js"), "utf8");
 const engineSource = fs.readFileSync(path.join(root, "ui", "engine-app.js"), "utf8");
 const desktopBuildSource = fs.readFileSync(path.join(projectRoot, "scripts", "build-user-runtime.js"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, "ui", "assets", "11th", "secondary-missions", "manifest.json"), "utf8"));
+const armyDefinitions = fs.readFileSync(path.join(projectRoot, "src", "bsdata", "army-definitions.js"), "utf8");
 
 test("Play Mode contains every Chapter Approved secondary card", () => {
   assert.equal(manifest.cards.length, 18);
@@ -81,12 +82,74 @@ test("army rows show defensive stats and profile-aware wound references", () => 
   assert.match(source, /\["M", "Move", "Movement"\]/);
   assert.match(source, /\["T", "Toughness"\]/);
   assert.match(source, /\["SV", "Save"\]/);
+  assert.match(source, /\["OC", "Objective Control", "Objective control"\]/);
   assert.match(source, /\["InSv", "Invulnerable Save"/);
   assert.match(source, /function groupWoundSummary\(group, models = groupModels\(group\)\)/);
   assert.match(source, /models\[0\]\.current.*models\[0\]\.max/);
   assert.match(source, /playArmyWounds/);
+  assert.match(source, /<small>OC<\/small>/);
   assert.match(css, /\.playArmyStats\{display:grid!important/);
   assert.match(css, /@media\(max-width:700px\).*\.playArmyReference\{grid-column:1\/-1\}/);
+});
+
+test("army summary wound controls are limited to multi-wound single-model listings", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /models\.length === 1 && models\[0\]\.max > 1/);
+  assert.match(source, /data-summary-model-delta/);
+  assert.match(source, /data-summary-model-toggle/);
+  assert.match(source, /changeModelWounds\([^\n]+\{ groupId: button\.dataset\.summaryGroup, summary: true \}\)/);
+  assert.match(css, /\.playArmyQuickWounds\{display:grid/);
+});
+
+test("Half-strength states use model counts for units and wounds for single models", () => {
+  const start = source.indexOf("function strengthStateForModels(models)");
+  const end = source.indexOf("\n  function groupDefenseProfiles", start);
+  assert.ok(start >= 0 && end > start);
+  const strengthStateForModels = new Function(`${source.slice(start, end)}; return strengthStateForModels;`)();
+  const unit = (total, alive) => Array.from({ length: total }, (_, index) => ({ current: index < alive ? 1 : 0, max: 1 }));
+  assert.equal(strengthStateForModels(unit(14, 8)), "normal");
+  assert.equal(strengthStateForModels(unit(14, 7)), "halfStrength");
+  assert.equal(strengthStateForModels(unit(15, 8)), "normal");
+  assert.equal(strengthStateForModels(unit(15, 7)), "halfStrength");
+  assert.equal(strengthStateForModels([{ current: 6, max: 10 }]), "normal");
+  assert.equal(strengthStateForModels([{ current: 5, max: 10 }]), "halfStrength");
+  assert.equal(strengthStateForModels([{ current: 0, max: 10 }]), "destroyed");
+});
+
+test("your Command phase shows a non-blocking Battle-shock reminder for Half-strength units", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /function renderBattleShockReminder\(\)/);
+  assert.match(source, /session\.turn !== "you" \|\| session\.phase !== "Command"/);
+  assert.match(source, /groupStrengthState\(group\) === "halfStrength"/);
+  assert.match(source, /BATTLE-SHOCK STEP/);
+  assert.match(source, /AT OR BELOW HALF STRENGTH/);
+  assert.match(css, /\.playArmyUnit\.halfStrength\{border-color:#d8972f/);
+  assert.match(css, /\.playBattleShockReminder\{display:grid/);
+});
+
+test("Battleshocked toggles persist, mark Army rows, and block unit Stratagems", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /battleShockedGroups: \{\}/);
+  assert.match(source, /session\.battleShockedGroups \|\|= \{\}/);
+  assert.match(source, /function toggleBattleShock\(groupId\)/);
+  assert.match(source, /data-battleshock-toggle/);
+  assert.match(source, /aria-pressed="\$\{battleShocked\}"/);
+  assert.match(source, /aria-label="\$\{battleShocked \? "Clear Battleshocked" : "Mark Battleshocked"\}"/);
+  assert.match(source, /battleShocked \? `<b>BATTLESHOCKED<\/b>` : ""/);
+  assert.match(source, /Unavailable while Battleshocked/);
+  assert.match(source, /if \(isGroupBattleShocked\(group\.id\) \|\| stratagemUsedThisPhase/);
+  assert.match(css, /\.playArmyUnit\.battleShocked::after\{content:""/);
+  assert.match(css, /\.playBattleShockToggle:not\(\.active\)\{width:38px/);
+  assert.match(css, /\.playBattleShockToggle\.active\{/);
+  assert.match(css, /\.playStratagemBlockedFlag\{display:flex/);
+});
+
+test("opened units show full model statlines without leaving the Army view", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /function renderUnitStatlines\(group\)/);
+  assert.match(source, /Full statline/);
+  for (const label of ["M", "T", "SV", "W", "LD", "OC", "INV"]) assert.match(source, new RegExp(`<span>${label}<\\/span>`));
+  assert.match(css, /\.playUnitStatlineTable\{min-width:600px/);
 });
 
 test("Play Mode rebuilds complete attached-unit groups from roster entries", () => {
@@ -147,9 +210,13 @@ test("game setup captures both player names and factions for crest-bearing score
   assert.match(source, /assets\/factions\/\$\{factionRecord/);
 });
 
-test("final scorecards rely on screenshots without dead Save or Share actions", () => {
-  assert.doesNotMatch(source, /data-save-card/);
-  assert.doesNotMatch(source, /data-share-card/);
+test("final scorecards can save the scorecard-only PNG to the gallery", () => {
+  assert.match(source, /data-save-gallery/);
+  assert.match(source, /function saveScorecardToGallery\(canvas\)/);
+  assert.match(source, /canvas\.toBlob/);
+  assert.match(source, /navigator\.share\(\{ files: \[file\]/);
+  assert.match(source, /choose Save Image in the share sheet/i);
+  assert.match(source, /link\.download = fileName/);
   assert.match(source, /data-return-lists/);
 });
 
@@ -191,6 +258,17 @@ test("Primary scoring stages card taps, flips one card, and confirms or cancels 
   assert.match(css, /\.playPrimaryFlip\{[^}]*top:auto!important;right:0!important;bottom:0/);
   assert.match(css, /\.playPrimaryFlip:hover,\.playPrimaryFlip:focus-visible/);
   assert.match(css, /\.playPrimaryCardScorer\.showingBack \.playPrimaryScoreHotspot\{display:none\}/);
+});
+
+test("every primary mission name resolves to a scoring hotspot entry", () => {
+  const hotspotBlock = source.slice(source.indexOf("const PRIMARY_SCORE_HOTSPOTS"), source.indexOf("const cardById"));
+  const hotspotKeys = new Set([...hotspotBlock.matchAll(/^\s+"([^"]+)":/gm)].map(match => match[1]));
+  const missionBlock = armyDefinitions.slice(armyDefinitions.indexOf("const FORCE_DISPOSITION_MISSION_MAP"), armyDefinitions.indexOf("function missionSlug"));
+  const missionNames = [...missionBlock.matchAll(/\{ name: "([^"]+)"/g)].map(match => match[1]);
+  const scoringKey = name => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, "-");
+  assert.equal(missionNames.length, 25);
+  assert.deepEqual(missionNames.filter(name => !hotspotKeys.has(scoringKey(name))), []);
+  assert.equal(hotspotKeys.has("destroyer-s-wrath"), true);
 });
 
 test("stratagem WHEN TARGET and EFFECT sections always render as separate blocks", () => {

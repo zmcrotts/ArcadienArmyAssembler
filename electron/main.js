@@ -4,11 +4,10 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const crypto = require("crypto");
-const { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, safeStorage, shell } = require("electron");
 const { CLIENT_ID, SCOPE, createOneDriveRosterSync } = require("./onedrive-roster-sync");
 
 const APP_NAME = "Arcadien Army Assembler";
-let allowAppQuit = false;
 let mainWindow = null;
 
 app.setName(APP_NAME);
@@ -49,7 +48,6 @@ function ensureLocalDataFolders() {
 ensureLocalDataFolders();
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
 if (!hasSingleInstanceLock) {
-  allowAppQuit = true;
   app.quit();
 }
 
@@ -268,50 +266,6 @@ function createWindow() {
     }
   });
 
-  let closeRequestPending = false;
-  let forceClose = false;
-  let closeFallbackTimer = null;
-
-  const clearCloseFallback = () => {
-    if (closeFallbackTimer) clearTimeout(closeFallbackTimer);
-    closeFallbackTimer = null;
-  };
-
-  const finishClose = () => {
-    clearCloseFallback();
-    forceClose = true;
-    allowAppQuit = true;
-    app.quit();
-  };
-
-  const requestRendererCloseDecision = () => {
-    if (closeRequestPending || mainWindow.isDestroyed()) return;
-    closeRequestPending = true;
-    mainWindow.webContents.send("app:close-requested");
-    closeFallbackTimer = setTimeout(async () => {
-      if (!closeRequestPending || mainWindow.isDestroyed()) return;
-      const result = await dialog.showMessageBox(mainWindow, {
-        type: "warning",
-        buttons: ["Keep app open", "Close anyway"],
-        defaultId: 0,
-        cancelId: 0,
-        title: APP_NAME,
-        message: "The roster editor did not answer the close request.",
-        detail: "Keep the app open if you may have unsaved changes."
-      });
-      closeRequestPending = false;
-      if (result.response === 1) finishClose();
-    }, 5000);
-  };
-
-  const handleCloseResponse = (event, allow) => {
-    if (event.sender !== mainWindow.webContents || !closeRequestPending) return;
-    clearCloseFallback();
-    closeRequestPending = false;
-    if (allow === true) finishClose();
-  };
-  ipcMain.on("app:close-response", handleCloseResponse);
-
   mainWindow.removeMenu();
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -327,15 +281,7 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "..", "dist-user", "index.html"));
 
-  mainWindow.on("close", event => {
-    if (forceClose || allowAppQuit) return;
-    event.preventDefault();
-    requestRendererCloseDecision();
-  });
-
   mainWindow.on("closed", () => {
-    clearCloseFallback();
-    ipcMain.removeListener("app:close-response", handleCloseResponse);
     mainWindow = null;
   });
 
@@ -362,19 +308,7 @@ if (hasSingleInstanceLock) {
     });
   });
 
-  app.on("before-quit", event => {
-    if (allowAppQuit) return;
-    const window = mainWindow && !mainWindow.isDestroyed() ? mainWindow : null;
-    if (!window) {
-      allowAppQuit = true;
-      return;
-    }
-    event.preventDefault();
-    window.close();
-  });
-
   app.on("window-all-closed", () => {
-    allowAppQuit = true;
     app.quit();
   });
 }

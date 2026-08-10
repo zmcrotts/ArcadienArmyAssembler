@@ -78,6 +78,7 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(styles, /\.startHeaderActions\.hasDisconnect \{[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.startNewRoster \{[\s\S]*?box-sizing: border-box;[\s\S]*?margin-left: 0;[\s\S]*?width: 100%;/);
   assert.match(styles, /body\.mobileAddOpen \.availablePanel #availableUnitsBody \{[\s\S]*?overflow-y: auto;/);
+  assert.match(styles, /\.mobileUnitAddList \{\s*display: none;\s*\}/, "desktop build must hide the mobile-only unit picker");
   assert.match(styles, /\.loadoutStepper \.loadoutStep \{[\s\S]*?min-height: 44px;/);
   assert.match(offlineApp, /registration\?\.update\(\)\.catch/);
   assert.match(offlineApp, /addEventListener\("controllerchange"/);

@@ -51,7 +51,7 @@
     "vanguard-operation": [[.238,4],[.311,2],[.496,4],[.629,10]],
     "vital-link": [[.238,2],[.329,1],[.505,4],[.597,4],[.720,10]],
     "consecrate": [[.369,3],[.466,6],[.641,4],[.715,4],[.838,5]],
-    "destroyers-wrath": [[.238,3],[.422,4],[.496,6],[.667,4]],
+    "destroyer-s-wrath": [[.238,3],[.422,4],[.496,6],[.667,4]],
     "meatgrinder": [[.238,3],[.422,4],[.593,5],[.667,5]],
     "punishment": [[.350,5],[.534,4],[.608,5],[.741,8]],
     "unstoppable-force": [[.238,3],[.422,4],[.597,3],[.734,5]],
@@ -286,6 +286,7 @@
       ledger: [],
       stratagemUses: [],
       abilityUses: [],
+      battleShockedGroups: {},
       decks: {
         you: createDeck(setup.yourMissionMode, [setup.yourFixedOne, setup.yourFixedTwo]),
         opponent: createDeck(setup.opponentMissionMode, [setup.opponentFixedOne, setup.opponentFixedTwo])
@@ -353,6 +354,7 @@
     session.decks ||= { you: createDeck(), opponent: createDeck() };
     session.stratagemUses ||= [];
     session.abilityUses ||= [];
+    session.battleShockedGroups ||= {};
     session.setup.missionMode ||= { you: session.decks.you?.mode || "tactical", opponent: session.decks.opponent?.mode || "tactical" };
     for (const player of PLAYERS) {
       session.decks[player] ||= createDeck();
@@ -409,6 +411,7 @@
         <label>Turn<select data-state="turn"><option value="you" ${session.turn === "you" ? "selected" : ""}>Your turn</option><option value="opponent" ${session.turn === "opponent" ? "selected" : ""}>Opponent's turn</option></select></label>
         <label>Phase<select data-state="phase">${PHASES.map(value => `<option ${value === session.phase ? "selected" : ""}>${value}</option>`).join("")}</select></label>
       </div>
+      ${renderBattleShockReminder()}
       <section class="playScoreboard">
         ${playerScore("you", yourVp)}
         <div class="playScoreDivider">${yourVp === opponentVp ? "TIED" : yourVp > opponentVp ? "LEADING" : "TRAILING"}</div>
@@ -685,6 +688,25 @@
     const groups = playRosterGroups();
     content.innerHTML = `<header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>Combined Units</h2></div><span>${groups.length} units</span></header><section class="playArmyList">${groups.map(renderArmyGroup).join("")}</section>`;
     for (const button of content.querySelectorAll("[data-group]")) button.onclick = () => openUnit(button.dataset.group);
+    for (const button of content.querySelectorAll("[data-summary-model-delta]")) button.onclick = event => {
+      event.stopPropagation();
+      changeModelWounds(button.dataset.modelId, Number(button.dataset.summaryModelDelta), { groupId: button.dataset.summaryGroup, summary: true });
+    };
+    for (const button of content.querySelectorAll("[data-summary-model-toggle]")) button.onclick = event => {
+      event.stopPropagation();
+      toggleModel(button.dataset.summaryModelToggle, Number(button.dataset.maxWounds), { groupId: button.dataset.summaryGroup, summary: true });
+    };
+    for (const button of content.querySelectorAll("[data-battleshock-toggle]")) button.onclick = event => {
+      event.stopPropagation();
+      toggleBattleShock(button.dataset.battleshockToggle);
+    };
+  }
+
+  function renderBattleShockReminder() {
+    if (session.turn !== "you" || session.phase !== "Command") return "";
+    const affected = playRosterGroups().filter(group => groupStrengthState(group) === "halfStrength");
+    if (!affected.length) return "";
+    return `<aside class="playBattleShockReminder" role="status"><span aria-hidden="true">!</span><div><small>BATTLE-SHOCK STEP</small><b>${affected.length} ${affected.length === 1 ? "unit is" : "units are"} at or below Half-strength</b><p>${affected.map(group => escapeHtml(group.title)).join(" · ")}</p></div></aside>`;
   }
 
   function playRosterGroups() {
@@ -737,12 +759,44 @@
   function renderArmyGroup(group) {
     const models = groupModels(group);
     const alive = models.filter(item => item.current > 0).length;
+    const strengthState = groupStrengthState(group, models);
+    const battleShocked = isGroupBattleShocked(group.id);
     const profiles = groupDefenseProfiles(group);
     const showProfileNames = profiles.length > 1;
     const stats = profiles.length
-      ? profiles.map(profile => `<span class="playArmyStatProfile">${showProfileNames ? `<i>${escapeHtml(profile.name)}</i>` : ""}<span class="playArmyStats"><span><small>M</small><b>${escapeHtml(profile.move)}</b></span><span><small>T</small><b>${escapeHtml(profile.toughness)}</b></span><span><small>SV</small><b>${escapeHtml(profile.save)}</b></span><span><small>INV</small><b>${escapeHtml(profile.invulnerable)}</b></span></span></span>`).join("")
-      : `<span class="playArmyStats"><span><small>M</small><b>–</b></span><span><small>T</small><b>–</b></span><span><small>SV</small><b>–</b></span><span><small>INV</small><b>–</b></span></span>`;
-    return `<button class="playArmyUnit ${alive ? "" : "destroyed"}" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em></span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>`;
+      ? profiles.map(profile => `<span class="playArmyStatProfile">${showProfileNames ? `<i>${escapeHtml(profile.name)}</i>` : ""}<span class="playArmyStats"><span><small>M</small><b>${escapeHtml(profile.move)}</b></span><span><small>T</small><b>${escapeHtml(profile.toughness)}</b></span><span><small>SV</small><b>${escapeHtml(profile.save)}</b></span><span><small>OC</small><b>${escapeHtml(profile.objectiveControl)}</b></span><span><small>INV</small><b>${escapeHtml(profile.invulnerable)}</b></span></span></span>`).join("")
+      : `<span class="playArmyStats"><span><small>M</small><b>–</b></span><span><small>T</small><b>–</b></span><span><small>SV</small><b>–</b></span><span><small>OC</small><b>–</b></span><span><small>INV</small><b>–</b></span></span>`;
+    const editableModel = models.length === 1 && models[0].max > 1 ? models[0] : null;
+    const quickWounds = editableModel ? `<div class="playArmyQuickWounds" aria-label="Edit ${escapeHtml(editableModel.name)} wounds"><button type="button" data-summary-model-delta="-1" data-model-id="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" aria-label="Remove one wound">−</button><button type="button" class="playWoundValue" data-summary-model-toggle="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" data-max-wounds="${editableModel.max}" aria-label="Toggle between zero and full wounds">${editableModel.current}<small>/${editableModel.max} W</small></button><button type="button" data-summary-model-delta="1" data-model-id="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" aria-label="Restore one wound">+</button></div>` : "";
+    const strengthFlag = strengthState === "halfStrength" ? `<span class="playStrengthFlag">AT OR BELOW HALF STRENGTH</span>` : "";
+    const statusBar = strengthState === "destroyed" ? "" : `<div class="playArmyStatusBar"><button type="button" class="playBattleShockToggle ${battleShocked ? "active" : ""}" data-battleshock-toggle="${escapeHtml(group.id)}" aria-pressed="${battleShocked}" aria-label="${battleShocked ? "Clear Battleshocked" : "Mark Battleshocked"}"><span aria-hidden="true">ϟ</span>${battleShocked ? `<b>BATTLESHOCKED</b>` : ""}</button>${quickWounds}</div>`;
+    return `<article class="playArmyUnit ${strengthState} ${battleShocked ? "battleShocked" : ""}"><button type="button" class="playArmyUnitOpen" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em>${strengthFlag}</span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>${statusBar}</article>`;
+  }
+
+  function isGroupBattleShocked(groupId) {
+    return session.battleShockedGroups?.[groupId] === true;
+  }
+
+  function toggleBattleShock(groupId) {
+    const group = playRosterGroups().find(item => item.id === groupId);
+    if (!group || groupStrengthState(group) === "destroyed") return;
+    session.battleShockedGroups ||= {};
+    if (isGroupBattleShocked(groupId)) delete session.battleShockedGroups[groupId];
+    else session.battleShockedGroups[groupId] = true;
+    persist();
+    renderArmy();
+  }
+
+  function groupStrengthState(group, models = groupModels(group)) {
+    return strengthStateForModels(models);
+  }
+
+  function strengthStateForModels(models) {
+    if (!models.length) return "normal";
+    const alive = models.filter(model => model.current > 0);
+    if (!alive.length) return "destroyed";
+    if (models.length === 1) return models[0].current <= Math.floor(models[0].max / 2) ? "halfStrength" : "normal";
+    return alive.length <= Math.floor(models.length / 2) ? "halfStrength" : "normal";
   }
 
   function groupDefenseProfiles(group) {
@@ -755,9 +809,12 @@
           move: unitStat(chars, ["M", "Move", "Movement"]),
           toughness: unitStat(chars, ["T", "Toughness"]),
           save: unitStat(chars, ["SV", "Save"]),
+          wounds: unitStat(chars, ["W", "Wounds"]),
+          leadership: unitStat(chars, ["LD", "Leadership"]),
+          objectiveControl: unitStat(chars, ["OC", "Objective Control", "Objective control"]),
           invulnerable: unitStat(chars, ["InSv", "Invulnerable Save", "Invulnerable save", "Invulnerable"])
         };
-        const signature = [record.move, record.toughness, record.save, record.invulnerable].join("|");
+        const signature = [record.move, record.toughness, record.save, record.wounds, record.leadership, record.objectiveControl, record.invulnerable].join("|");
         if (!output.some(item => item.signature === signature)) output.push({ ...record, signature });
       }
     }
@@ -806,8 +863,9 @@
     const weapons = group.members.flatMap(member => member.configured?.weapons || []);
     const rules = unitRules(group);
     const stratagems = eligibleStratagems(group);
+    const battleShocked = isGroupBattleShocked(group.id);
     modal.hidden = false;
-    modal.innerHTML = `<div class="playUnitPanel"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.map(weapon => renderWeapon(weapon, models)).join("") || `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
+    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.map(weapon => renderWeapon(weapon, models)).join("") || `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
     modal.querySelector("[data-close]").onclick = closeModal;
     for (const button of modal.querySelectorAll("[data-model-delta]")) button.onclick = () => changeModelWounds(button.dataset.modelId, Number(button.dataset.modelDelta));
     for (const button of modal.querySelectorAll("[data-model-toggle]")) button.onclick = () => toggleModel(button.dataset.modelToggle, Number(button.dataset.maxWounds));
@@ -817,6 +875,12 @@
       const item = stratagems.find(candidate => stratagemKey(candidate) === button.dataset.useStratagem);
       if (item) useStratagem(group, item, Number(button.dataset.paidCost));
     };
+  }
+
+  function renderUnitStatlines(group) {
+    const profiles = groupDefenseProfiles(group);
+    if (!profiles.length) return `<p>No model statlines are available for this unit.</p>`;
+    return `<div class="playUnitStatlineTable"><div class="playUnitStatlineHeader"><span>Model</span><span>M</span><span>T</span><span>SV</span><span>W</span><span>LD</span><span>OC</span><span>INV</span></div>${profiles.map(profile => `<div class="playUnitStatlineRow"><b>${escapeHtml(profile.name)}</b><span>${escapeHtml(profile.move)}</span><span>${escapeHtml(profile.toughness)}</span><span>${escapeHtml(profile.save)}</span><span>${escapeHtml(profile.wounds)}</span><span>${escapeHtml(profile.leadership)}</span><span>${escapeHtml(profile.objectiveControl)}</span><span>${escapeHtml(profile.invulnerable)}</span></div>`).join("")}</div>`;
   }
 
   function groupModels(group) {
@@ -857,21 +921,23 @@
     return `<div class="playModel ${dead ? "dead" : ""}"><div><b>${escapeHtml(model.name)}</b><small>${escapeHtml(model.equipment.join(", ") || "Standard loadout")}</small></div>${model.max <= 1 ? `<button data-model-toggle="${escapeHtml(model.id)}" data-max-wounds="1">${dead ? "Restore" : "Alive ✓"}</button>` : `<div class="playWounds"><button data-model-delta="-1" data-model-id="${escapeHtml(model.id)}">−</button><button class="playWoundValue" data-model-toggle="${escapeHtml(model.id)}" data-max-wounds="${model.max}">${model.current}<small>/${model.max} W</small></button><button data-model-delta="1" data-model-id="${escapeHtml(model.id)}">+</button></div>`}</div>`;
   }
 
-  function changeModelWounds(id, delta) {
-    const group = playRosterGroups().find(item => item.id === selectedGroupId);
+  function changeModelWounds(id, delta, options = {}) {
+    const groupId = options.groupId || selectedGroupId;
+    const group = playRosterGroups().find(item => item.id === groupId);
+    if (!group) return;
     const model = groupModels(group).find(item => item.id === id);
     if (!model) return;
     session.modelState[id] = Math.max(0, Math.min(model.max, model.current + delta));
     persist();
     if (currentView === "army") renderArmy();
-    openUnit(selectedGroupId);
+    if (!options.summary) openUnit(groupId);
   }
 
-  function toggleModel(id, max) {
+  function toggleModel(id, max, options = {}) {
     session.modelState[id] = Number(session.modelState[id] ?? max) > 0 ? 0 : max;
     persist();
     if (currentView === "army") renderArmy();
-    openUnit(selectedGroupId);
+    if (!options.summary) openUnit(options.groupId || selectedGroupId);
   }
 
   function renderWeapon(weapon, models) {
@@ -1014,12 +1080,20 @@
     const cost = stratagemCost(item);
     const discountedCost = Math.max(0, cost - 1);
     const used = stratagemUsedThisPhase(group.id, item);
+    const battleShocked = isGroupBattleShocked(group.id);
     const unavailable = session.cp.you < cost;
     const discountUnavailable = session.cp.you < discountedCost;
-    const actions = used
+    const actions = battleShocked
+      ? `<div class="playStratagemBlockedFlag"><span aria-hidden="true">ϟ</span> Unavailable while Battleshocked</div>`
+      : used
       ? `<div class="playStratagemUsedFlag">Used this phase ✓</div>`
       : `<div class="playStratagemButtons"><button data-use-stratagem="${escapeHtml(stratagemKey(item))}" data-paid-cost="${cost}" ${unavailable ? "disabled" : ""}>${unavailable ? `Need ${cost} CP` : `Use for ${cost} CP`}</button>${cost ? `<button class="playDiscountStratagem" data-use-stratagem="${escapeHtml(stratagemKey(item))}" data-paid-cost="${discountedCost}" ${discountUnavailable ? "disabled" : ""}>${discountUnavailable ? `Need ${discountedCost} CP` : `Use reduced for ${discountedCost} CP`}</button>` : ""}</div>`;
-    return `<details class="playStratagem ${used ? "used" : ""}" ${used ? "open" : ""}><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.turn || "Any turn")} · ${escapeHtml(item.phase || session.phase)}</small></span><strong>${cost} CP</strong></summary><div class="playStratagemText">${formatStratagemDescription(item.description)}</div><div class="playStratagemAction">${actions}${used ? `<small>Applied to ${escapeHtml(group.title)} in this ${escapeHtml(session.phase)} phase.</small>` : `<small>You have ${session.cp.you} CP. Reduced use costs 1 CP less than the printed cost.</small>`}</div></details>`;
+    const actionNote = battleShocked
+      ? `<small>Clear Battleshocked on the Army screen to restore Stratagem access.</small>`
+      : used
+        ? `<small>Applied to ${escapeHtml(group.title)} in this ${escapeHtml(session.phase)} phase.</small>`
+        : `<small>You have ${session.cp.you} CP. Reduced use costs 1 CP less than the printed cost.</small>`;
+    return `<details class="playStratagem ${used ? "used" : ""} ${battleShocked ? "blocked" : ""}" ${used ? "open" : ""}><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.turn || "Any turn")} · ${escapeHtml(item.phase || session.phase)}</small></span><strong>${cost} CP</strong></summary><div class="playStratagemText">${formatStratagemDescription(item.description)}</div><div class="playStratagemAction">${actions}${actionNote}</div></details>`;
   }
 
   function formatStratagemDescription(description) {
@@ -1054,7 +1128,7 @@
   function useStratagem(group, item, paidCost = stratagemCost(item)) {
     const printedCost = stratagemCost(item);
     const cost = Math.max(0, Math.min(printedCost, Number.isFinite(paidCost) ? paidCost : printedCost));
-    if (stratagemUsedThisPhase(group.id, item) || session.cp.you < cost) return;
+    if (isGroupBattleShocked(group.id) || stratagemUsedThisPhase(group.id, item) || session.cp.you < cost) return;
     session.cp.you -= cost;
     session.stratagemUses.push({ id: uid(), groupId: group.id, unitName: group.title, stratagemKey: stratagemKey(item), stratagemName: item.name, cost, printedCost, discount: printedCost - cost, round: session.round, turn: session.turn, phase: session.phase, createdAt: new Date().toISOString() });
     if (cost) session.cpHistory.push({ id: uid(), round: session.round, turn: session.turn, player: "you", amount: -cost, reason: `${item.name} · ${group.title}${printedCost > cost ? " · discounted" : ""}` });
@@ -1123,10 +1197,46 @@
     modal.hidden = false;
     modal.innerHTML = `<div class="playScorePanel"><small>FINAL SCORECARD</small><h2>Preparing scorecard…</h2></div>`;
     const canvas = await buildScorecardCanvas();
-    modal.innerHTML = `<div class="playFinalPanel"><header><div><small>FINAL SCORECARD</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><button data-close>Review game</button></header><div class="playScorecardPreview"></div><div class="playModalActions playFinalActions"><button class="playPrimaryButton" data-return-lists>Return to Lists</button></div></div>`;
+    modal.innerHTML = `<div class="playFinalPanel"><header><div><small>FINAL SCORECARD</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><button data-close>Review game</button></header><div class="playScorecardPreview"></div><p class="playGalleryHint" data-gallery-status>Save exports only the scorecard image. On iPhone or iPad, choose Save Image in the share sheet.</p><div class="playModalActions playFinalActions"><button type="button" data-save-gallery>Save to Gallery</button><button class="playPrimaryButton" data-return-lists>Return to Lists</button></div></div>`;
     modal.querySelector(".playScorecardPreview").appendChild(canvas);
     modal.querySelector("[data-close]").onclick = closeModal;
+    modal.querySelector("[data-save-gallery]").onclick = () => saveScorecardToGallery(canvas);
     modal.querySelector("[data-return-lists]").onclick = returnToListsAfterGame;
+  }
+
+  async function saveScorecardToGallery(canvas) {
+    const button = modal.querySelector("[data-save-gallery]");
+    const status = modal.querySelector("[data-gallery-status]");
+    const originalLabel = button?.textContent || "Save to Gallery";
+    if (button) { button.disabled = true; button.textContent = "Preparing PNG…"; }
+    try {
+      const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error("The scorecard image could not be created.")), "image/png"));
+      const fileName = scorecardFileName();
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        if (status) status.textContent = "Choose Save Image in the share sheet to add this scorecard to Photos.";
+        await navigator.share({ files: [file], title: "Arcadien Army Assembler final scorecard" });
+        if (status) status.textContent = "Scorecard sent to the iPadOS share sheet.";
+      } else {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        if (status) status.textContent = "Scorecard PNG saved to your downloads.";
+      }
+    } catch (error) {
+      if (error?.name !== "AbortError" && status) status.textContent = error?.message || "The scorecard could not be saved.";
+    } finally {
+      if (button) { button.disabled = false; button.textContent = originalLabel; }
+    }
+  }
+
+  function scorecardFileName() {
+    const date = String(session.endedAt || new Date().toISOString()).slice(0, 10);
+    const matchup = `${session.setup.yourName || "Player"}-vs-${session.setup.opponentName || "Opponent"}`.replace(/[^a-z0-9-]+/gi, "-").replace(/-+/g, "-");
+    return `Arcadien-Scorecard-${date}-${matchup}.png`;
   }
 
   async function buildScorecardCanvas() {
