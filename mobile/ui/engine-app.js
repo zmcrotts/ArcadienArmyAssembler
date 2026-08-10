@@ -1174,23 +1174,26 @@ function handleMobileRosterAction(button) {
 function renderStartScreen() {
   const saves = sortedSavedRosterLibrary();
   const factionOptions = savedRosterFactionOptions(saves);
+  const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
   const syncLabel = syncStatus?.connected === false ? "Reconnect" : "Sync";
   startScreen.innerHTML = `
     <div class="startHeader">
-      <div class="startBrandRow">
-        <span class="startBrand" aria-label="Arcadien Army Assembler"><span>Arcadien</span> <span>Army</span> <span>Assembler</span></span>
-        <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
+      <div class="startHeaderLead">
+        <div class="startBrandRow">
+          <span class="startBrand" aria-label="Arcadien Army Assembler"><span>Arcadien</span> <span>Army</span> <span>Assembler</span></span>
+          <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
+        </div>
+        <div class="startIntro">
+          <h2>Saved Rosters</h2>
+          <p class="muted">Load an existing roster or start a new one.</p>
+        </div>
       </div>
       <div class="startHeaderActions${syncStatus?.connected ? " hasDisconnect" : ""}">
-        <button id="startSyncRosters">${syncLabel}</button>
-        <button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>
-        ${syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
+        ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
+        ${syncProvider?.cleanDuplicates ? `<button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>` : ""}
+        ${syncProvider && syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
         <button id="startImportJson" title="Import a roster JSON file">Import</button>
-      </div>
-      <button class="startNewRoster" id="startNewRoster">New Roster</button>
-      <div class="startIntro">
-        <h2>Saved Rosters</h2>
-        <p class="muted">Load an existing roster or start a new one.</p>
+        <button class="startNewRoster" id="startNewRoster">New Roster</button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
@@ -1235,8 +1238,10 @@ function renderStartScreen() {
     </div>
   `;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
-  document.getElementById("startSyncRosters").onclick = syncSavedRosters;
-  document.getElementById("startCleanSync").onclick = cleanSyncedDuplicates;
+  const syncButton = document.getElementById("startSyncRosters");
+  if (syncButton) syncButton.onclick = syncSavedRosters;
+  const cleanSyncButton = document.getElementById("startCleanSync");
+  if (cleanSyncButton) cleanSyncButton.onclick = cleanSyncedDuplicates;
   const disconnectSyncButton = document.getElementById("startDisconnectSync");
   if (disconnectSyncButton) disconnectSyncButton.onclick = disconnectRosterSync;
   document.getElementById("startNewRoster").onclick = openNewRosterModal;
@@ -1809,15 +1814,19 @@ function renderUnits() {
 }
 
 async function syncSavedRosters() {
-  const service = window.OneDriveRosterSync;
-  if (!service?.available || syncActionInFlight) return;
+  const oneDrive = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : null;
+  const service = oneDrive || window.desktopRosterSync;
+  if (!service || syncActionInFlight) return;
   syncActionInFlight = true;
   setSyncButtonsDisabled(true, "Syncing…");
+  showTransientMessage(syncStatus?.connected
+    ? "Syncing saved rosters…"
+    : "Connecting to OneDrive… Microsoft sign-in may open in your browser.");
   try {
-    if (!syncStatus?.connected) {
+    if (oneDrive && !syncStatus?.connected) {
       setSyncButtonsDisabled(true, "Connecting…");
-      await service.beginSignIn();
-      syncStatus = await service.getStatus();
+      await oneDrive.beginSignIn();
+      syncStatus = await oneDrive.getStatus();
     }
     const result = await service.sync(savedRosterLibrary());
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
@@ -1834,12 +1843,12 @@ async function syncSavedRosters() {
         ? `OneDrive folder ${result.summary?.cloudFolder || "unknown"} is empty. Reconnect and select the same Microsoft account shown on the other device.`
         : `Synced — your lists already match.${folderLabel}`);
   } catch (error) {
-    if (error?.code === "ONEDRIVE_REAUTH_REQUIRED") {
+    if (oneDrive && error?.code === "ONEDRIVE_REAUTH_REQUIRED") {
       syncStatus = { available: true, connected: false };
       if (appMode === "library") renderStartScreen();
       showTransientMessage("Your OneDrive connection expired. Opening Microsoft sign-in…");
       try {
-        await service.beginSignIn();
+        await oneDrive.beginSignIn();
       } catch (signInError) {
         showTransientMessage(`Microsoft sign-in could not start: ${signInError.message}`);
       }
@@ -1859,11 +1868,12 @@ async function syncSavedRosters() {
 }
 
 async function cleanSyncedDuplicates() {
-  const service = window.OneDriveRosterSync;
-  if (!service?.available || syncActionInFlight) return;
+  const service = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  if (!service?.cleanDuplicates || syncActionInFlight) return;
   if (!confirm("Repair exact duplicate cloud files? Differing rosters and same-named rosters will all be kept.")) return;
   syncActionInFlight = true;
   setSyncButtonsDisabled(true, "Repairing…");
+  showTransientMessage("Checking OneDrive for exact duplicate roster files…");
   try {
     const result = await service.cleanDuplicates(savedRosterLibrary());
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
@@ -1896,16 +1906,16 @@ function setSyncButtonsDisabled(disabled, activeLabel = "") {
   if (syncButton) syncButton.textContent = disabled && activeLabel
     ? activeLabel
     : syncStatus?.connected === false ? "Reconnect" : "Sync";
-  if (cleanButton) cleanButton.textContent = "Repair sync duplicates";
+  if (cleanButton) cleanButton.textContent = "De-duplicate";
 }
 
 async function disconnectRosterSync() {
   if (syncActionInFlight) return;
-  const service = window.OneDriveRosterSync;
+  const service = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
   if (!service?.disconnect || !confirm("Disconnect this device from OneDrive? Synced roster files will remain in OneDrive.")) return;
   try {
-    await service.disconnect();
-    syncStatus = { available: true, connected: false };
+    syncStatus = await service.disconnect();
+    if (!syncStatus || typeof syncStatus !== "object") syncStatus = { available: true, connected: false };
     renderStartScreen();
     showTransientMessage("OneDrive disconnected from this device.");
   } catch (error) {

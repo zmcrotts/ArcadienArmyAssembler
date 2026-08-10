@@ -74,7 +74,13 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /document\.addEventListener\("visibilitychange"/);
   assert.match(engineApp, /const openBelow = availableBelow >= Math\.min\(naturalHeight, 260\) \|\| availableBelow >= availableAbove/);
   assert.match(engineApp, /detailsPanel\?\.addEventListener\("scroll", \(\) => closeOpenWeaponPreview\(\)/);
+  assert.match(engineApp, /startHeaderLead/);
+  assert.match(engineApp, /startIntro/);
+  assert.match(engineApp, /syncProvider\?\.cleanDuplicates \? `<button id="startCleanSync"/);
+  assert.match(engineApp, /if \(syncButton\) syncButton\.onclick = syncSavedRosters/);
   assert.match(styles, /\.mobileSheetBackdrop \{[\s\S]*?position: fixed;[\s\S]*?z-index: 60;/);
+  assert.match(styles, /html\[data-mobile-ui="false"\] \.startScreen \{[\s\S]*?height: calc\(100vh - 32px\);[\s\S]*?overflow: hidden;/);
+  assert.match(styles, /html\[data-mobile-ui="false"\] \.savedRosterCards \{[\s\S]*?flex: 1 1 auto;[\s\S]*?max-height: none;/);
   assert.match(styles, /\.startHeaderActions\.hasDisconnect \{[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.startNewRoster \{[\s\S]*?box-sizing: border-box;[\s\S]*?margin-left: 0;[\s\S]*?width: 100%;/);
   assert.match(styles, /body\.mobileAddOpen \.availablePanel #availableUnitsBody \{[\s\S]*?overflow-y: auto;/);

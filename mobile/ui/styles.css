@@ -524,9 +524,18 @@ button:hover {
 
 .startScreen {
   border: 1px solid #bac5ca;
+  display: flex;
+  flex-direction: column;
   margin: 16px;
   max-height: none;
   min-height: 45vh;
+}
+
+html[data-mobile-ui="false"] .startScreen {
+  box-sizing: border-box;
+  height: calc(100vh - 32px);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .startupPanel {
@@ -578,6 +587,10 @@ button:hover {
   justify-content: space-between;
 }
 
+.startHeaderLead {
+  min-width: 0;
+}
+
 .startBrand {
   color: #4d5f63;
   display: block;
@@ -610,6 +623,22 @@ button:hover {
   white-space: nowrap;
 }
 
+.startHeaderActions button {
+  margin-left: 0;
+}
+
+.startIntro {
+  margin-top: 18px;
+}
+
+.startIntro h2 {
+  margin: 0 0 6px;
+}
+
+.startIntro p {
+  margin: 0;
+}
+
 .startRosterFilters {
   align-items: end;
   display: grid;
@@ -630,6 +659,13 @@ button:hover {
   margin-top: 12px;
   overflow-y: auto;
   padding-right: 4px;
+}
+
+html[data-mobile-ui="false"] .savedRosterCards {
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
 }
 
 .savedRosterCard {
@@ -2181,6 +2217,11 @@ button:hover {
     width: 100%;
   }
 
+  .startHeaderLead {
+    display: grid;
+    gap: 12px;
+  }
+
   .startBrandRow {
     align-items: flex-start;
     display: flex;
@@ -2219,6 +2260,10 @@ button:hover {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .startHeaderActions .startNewRoster {
+    grid-column: 1 / -1;
+  }
+
   .startHeaderActions button {
     font-size: 13px;
     margin-left: 0;
@@ -2240,8 +2285,12 @@ button:hover {
 
   .startIntro h2 {
     font-size: 24px;
-    margin: 2px 0 6px;
+    margin: 0 0 6px;
     white-space: nowrap;
+  }
+
+  .startIntro {
+    margin-top: 0;
   }
 
   .startIntro p {
