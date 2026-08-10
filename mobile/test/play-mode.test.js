@@ -101,6 +101,49 @@ test("army summary wound controls are limited to multi-wound single-model listin
   assert.match(css, /\.playArmyQuickWounds\{display:grid/);
 });
 
+test("Half-strength states use model counts for units and wounds for single models", () => {
+  const start = source.indexOf("function strengthStateForModels(models)");
+  const end = source.indexOf("\n  function groupDefenseProfiles", start);
+  assert.ok(start >= 0 && end > start);
+  const strengthStateForModels = new Function(`${source.slice(start, end)}; return strengthStateForModels;`)();
+  const unit = (total, alive) => Array.from({ length: total }, (_, index) => ({ current: index < alive ? 1 : 0, max: 1 }));
+  assert.equal(strengthStateForModels(unit(14, 8)), "normal");
+  assert.equal(strengthStateForModels(unit(14, 7)), "halfStrength");
+  assert.equal(strengthStateForModels(unit(15, 8)), "normal");
+  assert.equal(strengthStateForModels(unit(15, 7)), "halfStrength");
+  assert.equal(strengthStateForModels([{ current: 6, max: 10 }]), "normal");
+  assert.equal(strengthStateForModels([{ current: 5, max: 10 }]), "halfStrength");
+  assert.equal(strengthStateForModels([{ current: 0, max: 10 }]), "destroyed");
+});
+
+test("your Command phase shows a non-blocking Battle-shock reminder for Half-strength units", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /function renderBattleShockReminder\(\)/);
+  assert.match(source, /session\.turn !== "you" \|\| session\.phase !== "Command"/);
+  assert.match(source, /groupStrengthState\(group\) === "halfStrength"/);
+  assert.match(source, /BATTLE-SHOCK STEP/);
+  assert.match(source, /AT OR BELOW HALF STRENGTH/);
+  assert.match(css, /\.playArmyUnit\.halfStrength\{border-color:#d8972f/);
+  assert.match(css, /\.playBattleShockReminder\{display:grid/);
+});
+
+test("Battleshocked toggles persist, mark Army rows, and block unit Stratagems", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /battleShockedGroups: \{\}/);
+  assert.match(source, /session\.battleShockedGroups \|\|= \{\}/);
+  assert.match(source, /function toggleBattleShock\(groupId\)/);
+  assert.match(source, /data-battleshock-toggle/);
+  assert.match(source, /aria-pressed="\$\{battleShocked\}"/);
+  assert.match(source, /aria-label="\$\{battleShocked \? "Clear Battleshocked" : "Mark Battleshocked"\}"/);
+  assert.match(source, /battleShocked \? `<b>BATTLESHOCKED<\/b>` : ""/);
+  assert.match(source, /Unavailable while Battleshocked/);
+  assert.match(source, /if \(isGroupBattleShocked\(group\.id\) \|\| stratagemUsedThisPhase/);
+  assert.match(css, /\.playArmyUnit\.battleShocked::after\{content:""/);
+  assert.match(css, /\.playBattleShockToggle:not\(\.active\)\{width:38px/);
+  assert.match(css, /\.playBattleShockToggle\.active\{/);
+  assert.match(css, /\.playStratagemBlockedFlag\{display:flex/);
+});
+
 test("opened units show full model statlines without leaving the Army view", () => {
   const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
   assert.match(source, /function renderUnitStatlines\(group\)/);
