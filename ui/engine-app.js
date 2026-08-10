@@ -290,9 +290,6 @@ function init() {
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") autosaveCurrentRoster();
   });
-  window.desktopLifecycle?.onCloseRequested?.(() => {
-    window.desktopLifecycle.respondToClose(autosaveCurrentRoster({ reportFailure: true }));
-  });
   newRosterModal.addEventListener("click", event => {
     if (event.target === newRosterModal) closeNewRosterModal();
   });

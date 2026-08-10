@@ -11,6 +11,7 @@ const source = fs.readFileSync(path.join(root, "ui", "play-mode.js"), "utf8");
 const engineSource = fs.readFileSync(path.join(root, "ui", "engine-app.js"), "utf8");
 const desktopBuildSource = fs.readFileSync(path.join(projectRoot, "scripts", "build-user-runtime.js"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, "ui", "assets", "11th", "secondary-missions", "manifest.json"), "utf8"));
+const armyDefinitions = fs.readFileSync(path.join(projectRoot, "src", "bsdata", "army-definitions.js"), "utf8");
 
 test("Play Mode contains every Chapter Approved secondary card", () => {
   assert.equal(manifest.cards.length, 18);
@@ -81,12 +82,31 @@ test("army rows show defensive stats and profile-aware wound references", () => 
   assert.match(source, /\["M", "Move", "Movement"\]/);
   assert.match(source, /\["T", "Toughness"\]/);
   assert.match(source, /\["SV", "Save"\]/);
+  assert.match(source, /\["OC", "Objective Control", "Objective control"\]/);
   assert.match(source, /\["InSv", "Invulnerable Save"/);
   assert.match(source, /function groupWoundSummary\(group, models = groupModels\(group\)\)/);
   assert.match(source, /models\[0\]\.current.*models\[0\]\.max/);
   assert.match(source, /playArmyWounds/);
+  assert.match(source, /<small>OC<\/small>/);
   assert.match(css, /\.playArmyStats\{display:grid!important/);
   assert.match(css, /@media\(max-width:700px\).*\.playArmyReference\{grid-column:1\/-1\}/);
+});
+
+test("army summary wound controls are limited to multi-wound single-model listings", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /models\.length === 1 && models\[0\]\.max > 1/);
+  assert.match(source, /data-summary-model-delta/);
+  assert.match(source, /data-summary-model-toggle/);
+  assert.match(source, /changeModelWounds\([^\n]+\{ groupId: button\.dataset\.summaryGroup, summary: true \}\)/);
+  assert.match(css, /\.playArmyQuickWounds\{display:grid/);
+});
+
+test("opened units show full model statlines without leaving the Army view", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /function renderUnitStatlines\(group\)/);
+  assert.match(source, /Full statline/);
+  for (const label of ["M", "T", "SV", "W", "LD", "OC", "INV"]) assert.match(source, new RegExp(`<span>${label}<\\/span>`));
+  assert.match(css, /\.playUnitStatlineTable\{min-width:600px/);
 });
 
 test("Play Mode rebuilds complete attached-unit groups from roster entries", () => {
@@ -147,9 +167,13 @@ test("game setup captures both player names and factions for crest-bearing score
   assert.match(source, /assets\/factions\/\$\{factionRecord/);
 });
 
-test("final scorecards rely on screenshots without dead Save or Share actions", () => {
-  assert.doesNotMatch(source, /data-save-card/);
-  assert.doesNotMatch(source, /data-share-card/);
+test("final scorecards can save the scorecard-only PNG to the gallery", () => {
+  assert.match(source, /data-save-gallery/);
+  assert.match(source, /function saveScorecardToGallery\(canvas\)/);
+  assert.match(source, /canvas\.toBlob/);
+  assert.match(source, /navigator\.share\(\{ files: \[file\]/);
+  assert.match(source, /choose Save Image in the share sheet/i);
+  assert.match(source, /link\.download = fileName/);
   assert.match(source, /data-return-lists/);
 });
 
@@ -191,6 +215,17 @@ test("Primary scoring stages card taps, flips one card, and confirms or cancels 
   assert.match(css, /\.playPrimaryFlip\{[^}]*top:auto!important;right:0!important;bottom:0/);
   assert.match(css, /\.playPrimaryFlip:hover,\.playPrimaryFlip:focus-visible/);
   assert.match(css, /\.playPrimaryCardScorer\.showingBack \.playPrimaryScoreHotspot\{display:none\}/);
+});
+
+test("every primary mission name resolves to a scoring hotspot entry", () => {
+  const hotspotBlock = source.slice(source.indexOf("const PRIMARY_SCORE_HOTSPOTS"), source.indexOf("const cardById"));
+  const hotspotKeys = new Set([...hotspotBlock.matchAll(/^\s+"([^"]+)":/gm)].map(match => match[1]));
+  const missionBlock = armyDefinitions.slice(armyDefinitions.indexOf("const FORCE_DISPOSITION_MISSION_MAP"), armyDefinitions.indexOf("function missionSlug"));
+  const missionNames = [...missionBlock.matchAll(/\{ name: "([^"]+)"/g)].map(match => match[1]);
+  const scoringKey = name => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, "-");
+  assert.equal(missionNames.length, 25);
+  assert.deepEqual(missionNames.filter(name => !hotspotKeys.has(scoringKey(name))), []);
+  assert.equal(hotspotKeys.has("destroyer-s-wrath"), true);
 });
 
 test("stratagem WHEN TARGET and EFFECT sections always render as separate blocks", () => {

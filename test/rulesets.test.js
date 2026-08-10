@@ -898,6 +898,8 @@ test("11e Ork Freebooter enhancements enforce their named bearer restrictions", 
 
   assert.equal(namesFor("Bionik Workshop").includes("Beastboss"), false);
   assert.equal(namesFor("Git-spotter Squig").includes("Beastboss"), true);
+  assert.equal(namesFor("Git-spotter Squig").includes("Big Mek"), true);
+  assert.equal(namesFor("Git-spotter Squig").includes("Boyz"), false);
   assert.ok(namesFor("Bionik Workshop").includes("Big Mek"));
   assert.ok(namesFor("Bionik Workshop").includes("Painboy"));
 });

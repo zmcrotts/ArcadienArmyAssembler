@@ -59,15 +59,13 @@ test("Android WebView keeps credentials native and restricts file-origin privile
   assert.match(activity, /setPadding\(left, top, right, bottom\)/);
 });
 
-test("desktop close and navigation protections are wired through preload", () => {
+test("desktop closes directly while retaining navigation protections", () => {
   const main = read("electron/main.js");
   const preload = read("electron/preload.js");
   assert.match(main, /fs\.existsSync\(path\.join\(executableRoot, "user-data"\)\)/);
-  assert.match(main, /app:close-requested/);
-  assert.match(main, /app:close-response/);
   assert.match(main, /will-navigate/);
-  assert.match(preload, /desktopLifecycle/);
-  assert.match(preload, /respondToClose/);
+  assert.doesNotMatch(main, /app:close-requested|app:close-response|showMessageBox|event\.preventDefault\(\);\s*requestRendererCloseDecision/);
+  assert.doesNotMatch(preload, /desktopLifecycle|respondToClose/);
 });
 
 test("local installer rollback restores metadata and cleanup cannot mask the original failure", () => {
