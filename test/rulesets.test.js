@@ -884,6 +884,7 @@ test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafte
       option.name === "Heavy bolt pistol and master-crafted power weapon"
     );
     assert.equal(kits.length, 2, unit.faction);
+    assert.ok(kits.every(kit => kit.groupMaximum === kit.maximum), unit.faction);
 
     for (const kit of kits) entry = setSelection(unit, entry, kit.id, kit.maximum);
 

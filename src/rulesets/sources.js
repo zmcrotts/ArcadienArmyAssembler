@@ -548,7 +548,8 @@ function fixVanguardVeteransRulesUpdate(definition) {
     const model = findNodesByName(unit.selectionTree, modelName).find(node => node.kind === "model");
     if (!model) continue;
     const id = `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`;
-    if ((model.children || []).some(item => item.id === id)) continue;
+    const groupId = `${id}-group`;
+    if ((model.children || []).some(item => item.id === groupId)) continue;
     const option = manualOption(id, "Heavy bolt pistol and master-crafted power weapon", {
       profiles: [
         manualWeaponProfile(`${id}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
@@ -558,7 +559,23 @@ function fixVanguardVeteransRulesUpdate(definition) {
       replacesEquipment: ["Bolt pistol", "Vanguard Veteran Weapon"]
     });
     option.constraints = [manualSelectionConstraint(`${id}-max`, "max", "parent", 1)];
-    model.children.push(option);
+    model.children.push({
+      id: groupId,
+      sourceId: groupId,
+      definitionId: groupId,
+      targetId: null,
+      name: "Alternate weapon option",
+      kind: "group",
+      collective: false,
+      hidden: false,
+      forceVisible: false,
+      defaultSelectionId: null,
+      constraints: [manualSelectionConstraint(`${groupId}-max`, "max", "parent", 1)],
+      modifiers: [],
+      profiles: [],
+      rules: [],
+      children: [option]
+    });
   }
   return unit;
 }
