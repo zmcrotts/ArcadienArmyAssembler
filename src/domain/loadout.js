@@ -820,9 +820,17 @@ function compositionModelRecords(unitDefinition, entry) {
   });
 }
 
+function unitSizeCompositionModelRecords(unitDefinition, entry) {
+  return compositionModelRecords(unitDefinition, entry).filter(record =>
+    record.minimum > 0 || Number.isFinite(record.maximum)
+  );
+}
+
 function getUnitSizeState(unitDefinition, entry) {
   const index = buildTreeIndex(unitDefinition);
-  const records = compositionModelRecords(unitDefinition, entry);
+  // Optional add-on models without a local selection limit (for example an
+  // Invader ATV in an Outrider Squad) are not part of the unit's size band.
+  const records = unitSizeCompositionModelRecords(unitDefinition, entry);
   if (!records.length) return { current: 1, minimum: 1, maximum: 1, editable: false };
   const covered = new Set();
   let minimum = 0;
@@ -989,7 +997,7 @@ function setUnitSize(unitDefinition, entry, requestedSize) {
   const bundleSized = trySetBundleUnitSize(unitDefinition, entry, target, index);
   if (bundleSized) return bundleSized;
 
-  const records = compositionModelRecords(unitDefinition, entry);
+  const records = unitSizeCompositionModelRecords(unitDefinition, entry);
   let next = JSON.parse(JSON.stringify(entry));
   let remaining = target - state.current;
   const preferred = record => {

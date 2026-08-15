@@ -851,6 +851,52 @@ test("11e Sword Brethren default to five models and retain specialist weapons ac
   assert.deepEqual(validateLoadout(unit, entry), []);
 });
 
+test("11e Outrider Squads can be increased from three to six models", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const units = ruleset.units.filter(item =>
+    item.faction.startsWith("Imperium - Adeptus Astartes")
+    && item.name === "Outrider Squad"
+  );
+
+  assert.ok(units.length > 0);
+  for (const unit of units) {
+    let entry = createDefaultRosterEntry(unit);
+    assert.deepEqual(getUnitSizeState(unit, entry), {
+      current: 3, minimum: 3, maximum: 6, editable: true
+    }, unit.faction);
+    entry = setUnitSize(unit, entry, 6);
+    assert.equal(getUnitSizeState(unit, entry).current, 6, unit.faction);
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+  }
+});
+
+test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafted weapon kit", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const units = ruleset.units.filter(item =>
+    item.faction.startsWith("Imperium - Adeptus Astartes")
+    && item.name === "Vanguard Veteran Squad with Jump Packs"
+  );
+
+  assert.ok(units.length > 0);
+  for (const unit of units) {
+    let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+    const kits = getOptionStates(unit, entry).filter(option =>
+      option.name === "Heavy bolt pistol and master-crafted power weapon"
+    );
+    assert.equal(kits.length, 2, unit.faction);
+
+    for (const kit of kits) entry = setSelection(unit, entry, kit.id, kit.maximum);
+
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+    const weapons = getConfiguredProfiles(unit, entry).weapons;
+    const kitProfiles = weapons.filter(profile => String(profile.id || "").startsWith("rules-update-vanguard-kit-"));
+    assert.equal(kitProfiles.filter(profile => profile.name === "Heavy bolt pistol").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
+    assert.equal(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
+    assert.ok(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").every(profile => profile.typeName === "Melee Weapons"), unit.faction);
+    assert.equal(weapons.some(profile => profile.name === "Vanguard Veteran Weapon"), false, unit.faction);
+  }
+});
+
 test("11e Pactbound Daemon Princes receive only the enhancement matching their selected God Blessing", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
   const army = ruleset.armies.find(item => item.faction === "Chaos - Chaos Space Marines");

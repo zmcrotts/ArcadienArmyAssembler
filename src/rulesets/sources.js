@@ -545,17 +545,20 @@ function fixVanguardVeteransRulesUpdate(definition) {
   const rangedTypeId = profilesFor(profiles, "bolt pistol")[0]?.typeId || "f77d-b953-8fa4-b762";
   const meleeTypeId = profilesFor(profiles, "vanguard veteran weapon")[0]?.typeId || "cc42-6422-7180-e5f2";
   for (const modelName of ["Vanguard Veterans with Jump Packs", "Vanguard Veteran Sergeant with Jump Pack"]) {
-    const model = findNodeByName(unit.selectionTree, modelName);
-    if (!model || (model.children || []).some(item => item.id === `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`)) continue;
+    const model = findNodesByName(unit.selectionTree, modelName).find(node => node.kind === "model");
+    if (!model) continue;
     const id = `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`;
-    model.children.push(manualOption(id, "Heavy bolt pistol and master-crafted power weapon", {
+    if ((model.children || []).some(item => item.id === id)) continue;
+    const option = manualOption(id, "Heavy bolt pistol and master-crafted power weapon", {
       profiles: [
         manualWeaponProfile(`${id}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
         manualWeaponProfile(`${id}-weapon`, "Master-crafted power weapon", meleeTypeId, { Range: "Melee", A: "3", WS: "3+", S: "5", AP: "-2", D: "2", Keywords: "-" })
       ],
       replaceProfiles: [...profilesFor(profiles, "bolt pistol"), ...profilesFor(profiles, "vanguard veteran weapon")],
       replacesEquipment: ["Bolt pistol", "Vanguard Veteran Weapon"]
-    }));
+    });
+    option.constraints = [manualSelectionConstraint(`${id}-max`, "max", "parent", 1)];
+    model.children.push(option);
   }
   return unit;
 }
@@ -756,7 +759,7 @@ function manualWeaponProfile(id, name, typeId, characteristics) {
     id,
     name,
     typeId,
-    typeName: "Ranged Weapons",
+    typeName: characteristics?.Range === "Melee" ? "Melee Weapons" : "Ranged Weapons",
     characteristics: { ...characteristics },
     linked: false,
     source: "Faction Pack - Orks v1.1, page 25"
