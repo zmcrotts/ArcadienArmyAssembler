@@ -544,25 +544,79 @@ function fixVanguardVeteransRulesUpdate(definition) {
   const profiles = profilesByOptionName(unit.selectionTree);
   const rangedTypeId = profilesFor(profiles, "bolt pistol")[0]?.typeId || "f77d-b953-8fa4-b762";
   const meleeTypeId = profilesFor(profiles, "vanguard veteran weapon")[0]?.typeId || "cc42-6422-7180-e5f2";
-  for (const modelName of ["Vanguard Veterans with Jump Packs", "Vanguard Veteran Sergeant with Jump Pack"]) {
-    const model = findNodesByName(unit.selectionTree, modelName).find(node => node.kind === "model");
-    if (!model) continue;
-    const id = `rules-update-vanguard-kit-${normalizeName(modelName).replace(/[^a-z0-9]+/g, "-")}`;
-    const groupId = `${id}-group`;
-    if ((model.children || []).some(item => item.id === groupId)) continue;
-    const option = manualOption(id, "Heavy bolt pistol and master-crafted power weapon", {
+  const veteranGroup = findNodesByName(unit.selectionTree, "Vanguard Veterans with Jump Packs")
+    .find(node => node.kind === "group");
+  const veteran = findNodesByName(unit.selectionTree, "Vanguard Veterans with Jump Packs")
+    .find(node => node.kind === "model");
+  const sergeant = findNodesByName(unit.selectionTree, "Vanguard Veteran Sergeant with Jump Pack")
+    .find(node => node.kind === "model");
+  if (!veteranGroup || !veteran || !sergeant) return unit;
+
+  const alternateId = "rules-update-vanguard-power-weapon-veteran";
+  veteranGroup.defaultSelectionId = veteran.id;
+  unit.composition = (unit.composition || []).map(item => item.id === veteran.definitionId
+    ? { ...item, min: 0, defaultCount: 4 }
+    : item);
+  veteran.constraints = (veteran.constraints || []).map(constraint =>
+    constraint.field === "selections" && constraint.type === "min" && constraint.scope === "parent"
+      ? { ...constraint, value: 0, raw: { ...constraint.raw, value: 0 } }
+      : constraint
+  );
+  if (!(veteranGroup.children || []).some(item => item.id === alternateId)) {
+    veteranGroup.children.push({
+      id: alternateId,
+      sourceId: alternateId,
+      definitionId: alternateId,
+      targetId: null,
+      name: "Vanguard Veteran with Heavy Bolt Pistol and Master-crafted Power Weapon",
+      kind: "model",
+      collective: false,
+      hidden: false,
+      forceVisible: false,
+      defaultSelectionId: null,
+      constraints: [manualSelectionConstraint(`${alternateId}-max`, "max", "parent", 9)],
+      modifiers: [],
       profiles: [
-        manualWeaponProfile(`${id}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
-        manualWeaponProfile(`${id}-weapon`, "Master-crafted power weapon", meleeTypeId, { Range: "Melee", A: "3", WS: "3+", S: "5", AP: "-2", D: "2", Keywords: "-" })
+        ...(veteran.profiles || []).filter(profile => profile.typeName === "Unit").map(clone),
+        manualWeaponProfile(`${alternateId}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
+        manualWeaponProfile(`${alternateId}-weapon`, "Master-crafted power weapon", meleeTypeId, { Range: "Melee", A: "3", WS: "3+", S: "5", AP: "-2", D: "2", Keywords: "-" })
+      ],
+      rules: [],
+      children: [],
+      defaultEquipment: ["Heavy bolt pistol", "Master-crafted power weapon"]
+    });
+    unit.composition.push({
+      id: alternateId,
+      name: "Vanguard Veteran with Heavy Bolt Pistol and Master-crafted Power Weapon",
+      min: 0,
+      max: 9,
+      defaultCount: 0,
+      points: 0,
+      source: "manual-alternate-model"
+    });
+    unit.compositionConstraints = (unit.compositionConstraints || []).map(constraint =>
+      constraint.id === veteranGroup.definitionId
+        ? { ...constraint, selectionIds: [...new Set([...(constraint.selectionIds || []), alternateId])] }
+        : constraint
+    );
+  }
+
+  const sergeantOptionId = "rules-update-vanguard-kit-vanguard-veteran-sergeant-with-jump-pack";
+  const sergeantGroupId = `${sergeantOptionId}-group`;
+  if (!(sergeant.children || []).some(item => item.id === sergeantGroupId)) {
+    const option = manualOption(sergeantOptionId, "Heavy bolt pistol and master-crafted power weapon", {
+      profiles: [
+        manualWeaponProfile(`${sergeantOptionId}-pistol`, "Heavy bolt pistol", rangedTypeId, { Range: '18"', A: "1", BS: "3+", S: "4", AP: "-1", D: "1", Keywords: "Close-quarters" }),
+        manualWeaponProfile(`${sergeantOptionId}-weapon`, "Master-crafted power weapon", meleeTypeId, { Range: "Melee", A: "3", WS: "3+", S: "5", AP: "-2", D: "2", Keywords: "-" })
       ],
       replaceProfiles: [...profilesFor(profiles, "bolt pistol"), ...profilesFor(profiles, "vanguard veteran weapon")],
       replacesEquipment: ["Bolt pistol", "Vanguard Veteran Weapon"]
     });
-    option.constraints = [manualSelectionConstraint(`${id}-max`, "max", "parent", 1)];
-    model.children.push({
-      id: groupId,
-      sourceId: groupId,
-      definitionId: groupId,
+    option.constraints = [manualSelectionConstraint(`${sergeantOptionId}-max`, "max", "parent", 1)];
+    sergeant.children.push({
+      id: sergeantGroupId,
+      sourceId: sergeantGroupId,
+      definitionId: sergeantGroupId,
       targetId: null,
       name: "Alternate weapon option",
       kind: "group",
@@ -570,7 +624,7 @@ function fixVanguardVeteransRulesUpdate(definition) {
       hidden: false,
       forceVisible: false,
       defaultSelectionId: null,
-      constraints: [manualSelectionConstraint(`${groupId}-max`, "max", "parent", 1)],
+      constraints: [manualSelectionConstraint(`${sergeantGroupId}-max`, "max", "parent", 1)],
       modifiers: [],
       profiles: [],
       rules: [],

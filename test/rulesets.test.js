@@ -880,17 +880,28 @@ test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafte
   assert.ok(units.length > 0);
   for (const unit of units) {
     let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
-    const kits = getOptionStates(unit, entry).filter(option =>
-      option.name === "Heavy bolt pistol and master-crafted power weapon"
-    );
-    assert.equal(kits.length, 2, unit.faction);
-    assert.ok(kits.every(kit => kit.groupMaximum === kit.maximum), unit.faction);
+    const state = name => getOptionStates(unit, entry).find(option => option.name === name);
+    const standardVeterans = state("Vanguard Veterans with Jump Packs");
+    const powerWeaponVeterans = state("Vanguard Veteran with Heavy Bolt Pistol and Master-crafted Power Weapon");
+    const sergeantKit = state("Heavy bolt pistol and master-crafted power weapon");
+    assert.equal(powerWeaponVeterans.maximum, 9, unit.faction);
+    assert.equal(sergeantKit.maximum, 1, unit.faction);
 
-    for (const kit of kits) entry = setSelection(unit, entry, kit.id, kit.maximum);
+    entry = setSelection(unit, entry, powerWeaponVeterans.id, 4);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 5, unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 4, unit.faction);
+    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+
+    entry = setSelection(unit, entry, powerWeaponVeterans.id, 9);
+    entry = setSelection(unit, entry, sergeantKit.id, 1);
 
     assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 0, unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 9, unit.faction);
+    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
     const weapons = getConfiguredProfiles(unit, entry).weapons;
-    const kitProfiles = weapons.filter(profile => String(profile.id || "").startsWith("rules-update-vanguard-kit-"));
+    const kitProfiles = weapons.filter(profile => String(profile.id || "").startsWith("rules-update-vanguard-"));
     assert.equal(kitProfiles.filter(profile => profile.name === "Heavy bolt pistol").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
     assert.equal(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
     assert.ok(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").every(profile => profile.typeName === "Melee Weapons"), unit.faction);
