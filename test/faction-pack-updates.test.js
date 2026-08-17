@@ -77,7 +77,10 @@ test("Ork red-text loadout changes are selectable", () => {
   assert.ok(nodes(warboss, "Kustom choppa and kustom shoota").length);
   assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count)), [[10, 0], [10, 1], [20, 0], [20, 1], [20, 2]]);
   assert.deepEqual(gretchin.unitSizePresets.map(item => item.size), [10, 11, 20, 21, 22]);
-  assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === "Gretchin (Armageddon)"), false);
+  for (const name of ["Warboss (Armageddon)", "Boyz (Armageddon)", "Gretchin (Armageddon)"]) {
+    assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === name), false, name);
+    assert.equal(ruleset.excludedUnits.find(unit => unit.faction === "Xenos - Orks" && unit.name === name)?.sourceDisposition, "not-valid-for-matched-play", name);
+  }
   assert.equal(boyz.rosterRules.allowsMultipleLeadersAsBodyguard, false);
 });
 
@@ -88,6 +91,8 @@ test("Space Marine red-text weapon options are present", () => {
   assert.ok(nodes(chaplain, "Absolvor bolt pistol").length);
   assert.equal(nodes(veterans, "Veteran: heavy bolt pistol + master-crafted power weapon").length, 1);
   assert.equal(nodes(veterans, "Heavy bolt pistol + master-crafted power weapon").length, 1);
+  assert.equal(ruleset.units.some(unit => unit.name === "Vanguard Veteran Squad (Armageddon)"), false);
+  assert.equal(ruleset.excludedUnits.find(unit => unit.name === "Vanguard Veteran Squad (Armageddon)")?.sourceDisposition, "not-valid-for-matched-play");
 });
 
 test("representative army, detachment and datasheet red changes are exact", () => {

@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { copySharedRuntime } = require("./shared-runtime-package");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
@@ -11,21 +12,12 @@ const FILES = [
   ["mobile/ui/styles.css", "styles.css"],
   ["mobile/ui/engine-app.js", "engine-app.js"],
   ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
-  ["mobile/ui/engine-runtime.js", "engine-runtime.js"],
   ["mobile/ui/catalogue-sections.js", "catalogue-sections.js"],
   ["mobile/ui/offline-app.js", "offline-app.js"],
   ["mobile/ui/play-mode.js", "play-mode.js"],
+  ["mobile/ui/roster-storage.js", "roster-storage.js"],
   ["mobile/ui/app.webmanifest", "app.webmanifest"],
-  ["mobile/android/app/src/main/res/drawable/crosshair.png", "app-icon-192.png"],
-  ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
-  ["src/domain/army.js", "domain/army.js"],
-  ["src/domain/roster-document.js", "domain/roster-document.js"],
-  ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
-  ["src/domain/sheets.js", "domain/sheets.js"]
-];
-
-const DATA_FILES = [
-  ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
+  ["mobile/android/app/src/main/res/drawable/crosshair.png", "app-icon-192.png"]
 ];
 
 function copyFile(source, target) {
@@ -36,13 +28,6 @@ function copyFile(source, target) {
   fs.copyFileSync(from, to);
 }
 
-function copyDirectory(source, target) {
-  const from = path.join(ROOT, source);
-  const to = path.join(OUT_DIR, target);
-  if (!fs.existsSync(from)) throw new Error(`Missing runtime directory: ${source}`);
-  fs.cpSync(from, to, { recursive: true });
-}
-
 function buildIndex() {
   const source = path.join(ROOT, "mobile", "ui", "index.html");
   let html = fs.readFileSync(source, "utf8");
@@ -50,11 +35,11 @@ function buildIndex() {
   html = html
     .replace(/<script(?:\s+defer)? src="engine-data-milestone15\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
-    .replace(/<script(?:\s+defer)? src="engine-runtime\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-runtime.js"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/army\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/army.js"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/roster-document\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-document.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/\.\.\/ui\/)?engine-runtime\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-runtime.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/army\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/army.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-document\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-document.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-share-code\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-share-code.js"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/sheets\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/sheets.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/sheets\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/sheets.js"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=[^"]+"><\/script>/, '<script defer src="catalogue-sections.js"></script>')
     .replace(/<script(?:\s+defer)? src="onedrive-roster-sync\.js\?v=[^"]+"><\/script>/, '<script defer src="onedrive-roster-sync.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-app.js"></script>');
@@ -86,9 +71,7 @@ function main() {
   fs.rmSync(OUT_DIR, { recursive: true, force: true });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   for (const [source, target] of FILES) copyFile(source, target);
-  for (const [source, target] of DATA_FILES) copyFile(source, target);
-  copyDirectory("ui/engine-data", "engine-data");
-  copyDirectory("ui/assets", "assets");
+  copySharedRuntime(ROOT, OUT_DIR);
   buildIndex();
   writeReadme();
 

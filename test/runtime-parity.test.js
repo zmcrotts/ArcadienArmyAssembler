@@ -8,19 +8,28 @@ const test = require("node:test");
 
 const { auditRuntimeParity } = require("../scripts/runtime-parity");
 
-test("runtime parity ignores line endings but detects source divergence", t => {
+test("shared runtime audit rejects platform rule-engine duplicates and bypasses", t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "roster-runtime-parity-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
-  fs.mkdirSync(path.join(root, "shared"));
-  fs.mkdirSync(path.join(root, "mobile"));
-  fs.writeFileSync(path.join(root, "shared", "runtime.js"), "first\r\nsecond\r\n");
-  fs.writeFileSync(path.join(root, "mobile", "runtime.js"), "first\nsecond\n");
-  const pairs = [["shared/runtime.js", "mobile/runtime.js"]];
+  const shared = "src/domain/army.js";
+  const windowsBuilder = "scripts/build-user-runtime.js";
+  const mobileBuilder = "mobile/scripts/build-user-runtime.js";
+  for (const relative of [shared, windowsBuilder, mobileBuilder]) {
+    fs.mkdirSync(path.dirname(path.join(root, relative)), { recursive: true });
+    fs.writeFileSync(path.join(root, relative), relative === shared ? "module.exports = 1;\n" : "copySharedRuntime();\n");
+  }
+  const options = {
+    root,
+    sharedSources: [shared],
+    packagedSources: [shared],
+    forbiddenDuplicates: ["mobile/src/domain"],
+    platformBuilders: [windowsBuilder, mobileBuilder]
+  };
 
-  assert.deepEqual(auditRuntimeParity({ root, pairs }), []);
+  assert.deepEqual(auditRuntimeParity(options), []);
 
-  fs.writeFileSync(path.join(root, "mobile", "runtime.js"), "different\n");
-  const findings = auditRuntimeParity({ root, pairs });
-  assert.equal(findings.length, 1);
-  assert.equal(findings[0].code, "runtime-parity-mismatch");
+  fs.mkdirSync(path.join(root, "mobile", "src", "domain"), { recursive: true });
+  fs.writeFileSync(path.join(root, mobileBuilder), "buildSomethingElse();\n");
+  const findings = auditRuntimeParity(options);
+  assert.deepEqual(findings.map(item => item.code), ["shared-runtime-duplicate", "platform-builder-bypasses-shared-runtime"]);
 });

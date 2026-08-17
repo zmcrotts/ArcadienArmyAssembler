@@ -19,6 +19,7 @@ ui/engine-data/
 dist-user/
 release/
 .test-env/
+.tmp-test-run/
 
 # Local applications and installers
 *.exe
@@ -34,6 +35,14 @@ _git-backups/
 /Arcadien Card Scribe v4/
 /warhammer-40k-stratagem-card-generator-main/
 /wh40k-11e-main/
+/NR-faction-icons/
+/STL-stuff-project-transfer/
+/downloads/
+/tmp/
+/.codex/
+/AGENTS.md
+/faction-icons.7z
+/scripts/__pycache__/
 
 # Root-level diagnostic artifacts
 /*-debug.json

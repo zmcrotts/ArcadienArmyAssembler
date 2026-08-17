@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { createCrosshairPng } = require("../../scripts/write-crosshair-icon");
+const { copySharedRuntime } = require("../../scripts/shared-runtime-package");
 
 const ROOT = path.resolve(__dirname, "..");
 const PROJECT_ROOT = path.resolve(ROOT, "..");
@@ -13,7 +14,6 @@ const FILES = [
   ["ui/bootstrap-app.js", "bootstrap-app.js"],
   ["ui/styles.css", "styles.css"],
   ["ui/engine-app.js", "engine-app.js"],
-  ["ui/engine-runtime.js", "engine-runtime.js"],
   ["ui/catalogue-sections.js", "catalogue-sections.js"],
   ["ui/offline-app.js", "offline-app.js"],
   ["ui/play-mode.js", "play-mode.js"],
@@ -21,18 +21,10 @@ const FILES = [
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
   ["ui/download.css", "download.css"],
-  ["android/app/src/main/res/drawable/crosshair.png", "app-icon.png"],
-  ["src/domain/army.js", "domain/army.js"],
-  ["src/domain/roster-document.js", "domain/roster-document.js"],
-  ["src/domain/sheets.js", "domain/sheets.js"]
+  ["android/app/src/main/res/drawable/crosshair.png", "app-icon.png"]
 ];
 
-const PROJECT_FILES = [
-  ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
-  ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
-  ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
-  ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
-];
+const PROJECT_FILES = [["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"]];
 
 function copyFile(source, target) {
   const from = path.join(ROOT, source);
@@ -50,20 +42,6 @@ function copyProjectFile(source, target) {
   fs.copyFileSync(from, to);
 }
 
-function copyDirectory(source, target) {
-  const from = path.join(ROOT, source);
-  const to = path.join(OUT_DIR, target);
-  if (!fs.existsSync(from)) throw new Error(`Missing runtime directory: ${source}`);
-  fs.cpSync(from, to, { recursive: true });
-}
-
-function copyProjectDirectory(source, target) {
-  const from = path.join(PROJECT_ROOT, source);
-  const to = path.join(OUT_DIR, target);
-  if (!fs.existsSync(from)) throw new Error(`Missing shared project directory: ${source}`);
-  fs.cpSync(from, to, { recursive: true });
-}
-
 function buildIndex() {
   const source = path.join(ROOT, "ui", "index.html");
   let html = fs.readFileSync(source, "utf8");
@@ -71,11 +49,11 @@ function buildIndex() {
   html = html
     .replace(/<script(?:\s+defer)? src="engine-data-milestone15\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
-    .replace(/<script(?:\s+defer)? src="engine-runtime\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-runtime.js?v=$1"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/army\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/army.js?v=$1"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/roster-document\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-document.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/\.\.\/ui\/)?engine-runtime\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-runtime.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/army\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/army.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-document\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-document.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-share-code\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-share-code.js?v=$1"></script>')
-    .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/sheets\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/sheets.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/sheets\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/sheets.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=([^"]+)"><\/script>/, '<script defer src="catalogue-sections.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');
 
@@ -315,8 +293,7 @@ function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   for (const [source, target] of FILES) copyFile(source, target);
   for (const [source, target] of PROJECT_FILES) copyProjectFile(source, target);
-  copyProjectDirectory("ui/engine-data", "engine-data");
-  copyProjectDirectory("ui/assets", "assets");
+  copySharedRuntime(PROJECT_ROOT, OUT_DIR);
   writeInstallIcons();
   buildIndex();
   buildDownloadPage();

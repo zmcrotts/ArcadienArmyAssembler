@@ -3,7 +3,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const rosterSheets = require("../src/domain/sheets");
-const mobileRosterSheets = require("../mobile/src/domain/sheets");
 const { buildRosterSheets, extractWeaponEffects } = rosterSheets;
 
 test("statline extraction rejects aura, selectable-mode, phase, and charge effects", () => {
@@ -25,17 +24,15 @@ test("statline extraction rejects aura, selectable-mode, phase, and charge effec
     description: "In your Shooting phase, ranged weapons equipped by models in this unit have the [SUSTAINED HITS 1] ability."
   }];
 
-  for (const sheetsRuntime of [rosterSheets, mobileRosterSheets]) {
-    assert.deepEqual(sheetsRuntime.extractWeaponEffects(conditionalEffects), []);
-    assert.deepEqual(
-      sheetsRuntime.extractWeaponEffects([{
+  assert.deepEqual(rosterSheets.extractWeaponEffects(conditionalEffects), []);
+  assert.deepEqual(
+    rosterSheets.extractWeaponEffects([{
       name: "Permanent Protocol",
       sourceKind: "detachment",
       description: "Ranged weapons equipped by models in this unit have the [HEAVY] ability."
-      }]).map(effect => effect.keyword),
-      ["Heavy"]
-    );
-  }
+    }]).map(effect => effect.keyword),
+    ["Heavy"]
+  );
 });
 
 test("printable sheets preserve Transport capacity outside ordinary abilities", () => {

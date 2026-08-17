@@ -362,10 +362,6 @@ function applyManualLoadoutCorrections(definitions) {
       return fixOrkGretchinRulesUpdate(definition);
     }
 
-    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Gretchin (Armageddon)") {
-      return { ...definition, rosterSelectable: false, sourceDisposition: "superseded-duplicate" };
-    }
-
     if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Warboss") {
       return fixOrkWarbossRulesUpdate(definition);
     }

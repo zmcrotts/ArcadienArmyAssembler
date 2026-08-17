@@ -2,49 +2,63 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { SHARED_RUNTIME_FILES } = require("./shared-runtime-package");
 
 const ROOT = path.resolve(__dirname, "..");
-const DEFAULT_PAIRS = [
-  ["src/domain/army.js", "mobile/src/domain/army.js"],
-  ["src/domain/factions.js", "mobile/src/domain/factions.js"],
-  ["src/domain/loadout.js", "mobile/src/domain/loadout.js"],
-  ["src/domain/pricing.js", "mobile/src/domain/pricing.js"],
-  ["src/domain/roster-document.js", "mobile/src/domain/roster-document.js"],
-  ["src/domain/sheets.js", "mobile/src/domain/sheets.js"],
-  ["ui/catalogue-sections.js", "mobile/ui/catalogue-sections.js"],
-  ["ui/engine-runtime.js", "mobile/ui/engine-runtime.js"]
+const REQUIRED_SHARED_SOURCES = [
+  "ui/engine-data-manifest.js",
+  "ui/engine-runtime.js",
+  "src/domain/army.js",
+  "src/domain/roster-document.js",
+  "src/domain/roster-share-code.js",
+  "src/domain/sheets.js"
 ];
-
-function normalizedSource(filePath) {
-  return fs.readFileSync(filePath, "utf8").replace(/\r\n/g, "\n");
-}
+const FORBIDDEN_DUPLICATES = ["mobile/ui/engine-runtime.js", "mobile/src/domain"];
+const PLATFORM_BUILDERS = ["scripts/build-user-runtime.js", "mobile/scripts/build-user-runtime.js"];
 
 function auditRuntimeParity(options = {}) {
   const root = path.resolve(options.root || ROOT);
-  const pairs = options.pairs || DEFAULT_PAIRS;
+  const sharedSources = options.sharedSources || REQUIRED_SHARED_SOURCES;
+  const packagedSources = new Set(options.packagedSources || SHARED_RUNTIME_FILES.map(([source]) => source));
+  const forbiddenDuplicates = options.forbiddenDuplicates || FORBIDDEN_DUPLICATES;
+  const platformBuilders = options.platformBuilders || PLATFORM_BUILDERS;
   const findings = [];
-  for (const [sharedPath, mobilePath] of pairs) {
-    const shared = path.join(root, sharedPath);
-    const mobile = path.join(root, mobilePath);
-    if (!fs.existsSync(shared) || !fs.existsSync(mobile)) {
+
+  for (const source of sharedSources) {
+    if (!fs.existsSync(path.join(root, source))) {
       findings.push({
-        code: "runtime-parity-file-missing",
+        code: "shared-runtime-source-missing",
         severity: "error",
-        message: `Runtime parity input is missing: ${!fs.existsSync(shared) ? sharedPath : mobilePath}`,
-        sharedPath,
-        mobilePath
+        message: `Canonical shared runtime source is missing: ${source}`,
+        source
       });
-      continue;
-    }
-    if (normalizedSource(shared) !== normalizedSource(mobile)) {
+    } else if (!packagedSources.has(source)) {
       findings.push({
-        code: "runtime-parity-mismatch",
+        code: "shared-runtime-source-unpackaged",
         severity: "error",
-        message: `Shared and mobile runtime sources have diverged: ${sharedPath} <> ${mobilePath}`,
-        sharedPath,
-        mobilePath
+        message: `Canonical shared runtime source is not in the shared package: ${source}`,
+        source
       });
     }
+  }
+
+  for (const duplicate of forbiddenDuplicates) {
+    if (fs.existsSync(path.join(root, duplicate))) findings.push({
+      code: "shared-runtime-duplicate",
+      severity: "error",
+      message: `Platform-specific rules/runtime duplicate must be removed: ${duplicate}`,
+      duplicate
+    });
+  }
+
+  for (const builder of platformBuilders) {
+    const absolute = path.join(root, builder);
+    if (!fs.existsSync(absolute) || !/copySharedRuntime/.test(fs.readFileSync(absolute, "utf8"))) findings.push({
+      code: "platform-builder-bypasses-shared-runtime",
+      severity: "error",
+      message: `Platform builder does not consume the shared runtime package: ${builder}`,
+      builder
+    });
   }
   return findings;
 }
@@ -52,14 +66,14 @@ function auditRuntimeParity(options = {}) {
 function main() {
   const findings = auditRuntimeParity();
   if (!findings.length) {
-    console.log("Runtime parity: OK");
+    console.log("Shared runtime package: OK");
     return;
   }
-  console.error(`Runtime parity: ${findings.length} problem(s)`);
+  console.error(`Shared runtime package: ${findings.length} problem(s)`);
   for (const item of findings) console.error(`- ${item.message}`);
   process.exitCode = 1;
 }
 
 if (require.main === module) main();
 
-module.exports = { DEFAULT_PAIRS, auditRuntimeParity };
+module.exports = { FORBIDDEN_DUPLICATES, PLATFORM_BUILDERS, REQUIRED_SHARED_SOURCES, auditRuntimeParity };

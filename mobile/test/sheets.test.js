@@ -2,7 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { buildRosterSheets } = require("../src/domain/sheets");
+const { buildRosterSheets } = require("../../src/domain/sheets");
 
 test("mobile sheets preserve Transport capacity as a dedicated profile type", () => {
   const sheets = buildRosterSheets({

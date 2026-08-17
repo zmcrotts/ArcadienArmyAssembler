@@ -11,12 +11,12 @@ const {
   setLeaderAttachment,
   setWarlord,
   validateRosterLegality
-} = require("../src/domain/army");
+} = require("../../src/domain/army");
 const {
   createRosterDocument,
   exportRosterText,
   hydrateRosterDocument
-} = require("../src/domain/roster-document");
+} = require("../../src/domain/roster-document");
 
 const army = {
   id: "adepta-sororitas",

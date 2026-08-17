@@ -208,8 +208,13 @@ ui/index.html
 ui/engine-app.js
 ui/engine-runtime.js
 ui/styles.css
+mobile/ui/**/*.js
+mobile/ui/**/*.html
+mobile/ui/**/*.css
 package.json
 ```
+
+The root `src/` domain modules, `ui/engine-runtime.js`, generated `ui/engine-data*`, and shared assets form the single canonical rules/unit/options package. Windows and mobile consume that package through `scripts/shared-runtime-package.js`; platform-specific UI files may differ. Do not add duplicate rule-engine modules under `mobile/src/` or `mobile/ui/engine-runtime.js`.
 
 Files in the project root such as `*-debug.*`, `*-dump.txt`, `cat-files.txt`,
 and `json-files.txt` are diagnostic artifacts. They are neither rules sources

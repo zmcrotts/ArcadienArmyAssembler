@@ -214,6 +214,13 @@ function directPointModifiers(node, source) {
     });
 }
 
+function isNotValidForMatchedPlay(...nodes) {
+  return nodes.some(node => asArray(node?.modifiers?.modifier).some(modifier =>
+    ["warning", "error"].includes(String(modifier?.field || "").toLowerCase())
+    && /^not valid for matched play$/i.test(String(modifier?.value || "").trim())
+  ));
+}
+
 function directModels(unit, indexes) {
   const modelsById = new Map();
   const visitedGroups = new Set();
@@ -684,7 +691,8 @@ function extractUnitDefinitions(dataDirectory) {
       ];
       const hasRosterPoints = hasUsableRosterPoints(base, composition, modifiers);
       const nonUnitTerrainFeature = isNonUnitTerrainFeature(unit, indexes);
-      const rosterSelectable = hasRosterPoints && !nonUnitTerrainFeature;
+      const notValidForMatchedPlay = isNotValidForMatchedPlay(unit, link);
+      const rosterSelectable = hasRosterPoints && !nonUnitTerrainFeature && !notValidForMatchedPlay;
       if (unit.type === "model" && !hasRosterPoints && !nonUnitTerrainFeature) continue;
       const defaultModelEntries = composition
         .filter(item => Number(item.defaultCount || 0) > 0 && item.source !== "self-model")
@@ -715,7 +723,9 @@ function extractUnitDefinitions(dataDirectory) {
         rosterSelectable,
         sourceDisposition: nonUnitTerrainFeature
           ? "non-unit-terrain-feature"
-          : rosterSelectable ? "priced-roster-unit" : "zero-point-placeholder",
+          : notValidForMatchedPlay
+            ? "not-valid-for-matched-play"
+            : rosterSelectable ? "priced-roster-unit" : "zero-point-placeholder",
         source: {
           catalogueId: sourceCatalogueId,
           selectionCatalogueId: selectionCatalogueId || null,

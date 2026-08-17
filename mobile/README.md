@@ -1,8 +1,8 @@
 # Arcadien Army Assembler Mobile
 
-This directory preserves the mobile prototype as a separate code path. Mobile UI and domain changes belong here and must not be made in the desktop project's root `ui/`, `src/`, or `scripts/` directories.
+This directory owns the mobile UI and native wrappers. Windows and mobile may present different interfaces, but they deliberately consume one canonical rules and roster-engine package from the project root.
 
-The mobile build owns copies of its application code. To avoid duplicating more than 150 MB of generated faction data, it reads the root project's generated `ui/engine-data-manifest.js`, `ui/engine-data/`, and `ui/assets/` as read-only build inputs.
+Rules, units, options, pricing, roster documents, sheets, and share codes live under root `src/`, `data/`, and the generated root `ui/engine-data*` files. Do not create mobile copies of those sources. Both platform builders consume `scripts/shared-runtime-package.js`, while mobile-only UI work remains under `mobile/ui/`.
 
 Build and test from this directory:
 
