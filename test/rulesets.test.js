@@ -882,10 +882,17 @@ test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafte
     let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
     const state = name => getOptionStates(unit, entry).find(option => option.name === name);
     const standardVeterans = state("Vanguard Veterans with Jump Packs");
-    const powerWeaponVeterans = state("Vanguard Veteran with Heavy Bolt Pistol and Master-crafted Power Weapon");
-    const sergeantKit = state("Heavy bolt pistol and master-crafted power weapon");
+    const powerWeaponVeterans = state("Veteran: heavy bolt pistol + master-crafted power weapon");
+    const sergeantKit = state("Heavy bolt pistol + master-crafted power weapon");
     assert.equal(powerWeaponVeterans.maximum, 9, unit.faction);
     assert.equal(sergeantKit.maximum, 1, unit.faction);
+    assert.equal(unit.selectionTree.children
+      .find(node => node.name === "Vanguard Veterans with Jump Packs")
+      .children[1].id, powerWeaponVeterans.id, unit.faction);
+    assert.equal(getOptionStates(unit, entry).some(option => option.name === "Alternate weapon option"), false, unit.faction);
+    assert.equal(getConfiguredProfiles(unit, entry).weapons.some(profile =>
+      profile.name === "Heavy bolt pistol" || profile.name === "Master-crafted power weapon"
+    ), false, unit.faction);
 
     entry = setSelection(unit, entry, powerWeaponVeterans.id, 4);
     assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 5, unit.faction);

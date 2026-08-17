@@ -763,12 +763,6 @@
       "id": "space-marines-company-heroes-remove", "kind": "rule-remove", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Company Heroes"], "ruleName": "Company Heroes", "source": "Faction Pack - Space Marines v1.1, page 61"
     },
     {
-      "id": "space-marines-vanguard-heavy-bolt", "kind": "profile-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Vanguard Veteran Squad with Jump Packs"], "profileName": "Heavy bolt pistol", "typeName": "Ranged Weapons", "characteristics": { "Range": "18\"", "A": "1", "BS": "3+", "S": "4", "AP": "-1", "D": "1", "Keywords": "Close-quarters" }, "source": "Faction Pack - Space Marines v1.1, page 63"
-    },
-    {
-      "id": "space-marines-vanguard-power", "kind": "profile-add", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "unitNames": ["Vanguard Veteran Squad with Jump Packs"], "profileName": "Master-crafted power weapon", "typeName": "Melee Weapons", "characteristics": { "Range": "Melee", "A": "3", "WS": "3+", "S": "5", "AP": "-2", "D": "2" }, "source": "Faction Pack - Space Marines v1.1, page 63"
-    },
-    {
       "id": "space-wolves-thunderwolf-fortitude", "kind": "enhancement-replace", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Saga of the Bold", "enhancementName": "Thunderwolf's Fortitude", "description": "ADEPTUS ASTARTES model only. (Once per battle, per army) When this model is destroyed, at the end of the phase, roll one D6: on a 2+, set up this model on the battlefield, unengaged and as close as possible to where it was destroyed. This model is not part of an attached unit and its unit has a starting strength of 1. This model has 3 wounds remaining.", "source": "Faction Pack - Space Wolves v1.1, page 9"
     },
     {
