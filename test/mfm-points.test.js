@@ -42,6 +42,12 @@ test("MFM v1.1 includes red increases", () => {
   assert.equal(points(morvenn, 1), 200);
 });
 
+test("Vertus Praetors use separate two- and three-model costs", () => {
+  const vertusPraetors = unit("Imperium - Adeptus Custodes", "Vertus Praetors");
+  assert.equal(points(vertusPraetors, 2), 145);
+  assert.equal(points(vertusPraetors, 3), 215);
+});
+
 test("World Eaters use the current Rhino copy bands and Berzerker costs", () => {
   const rhino = unit("Chaos - World Eaters", "Chaos Rhino");
   assert.equal(points(rhino, 1, { previousCopies: 0 }), 75);
@@ -182,6 +188,6 @@ test("Faction Pack v1.1 adds the two flagged detachments", () => {
 });
 
 test("every MFM v1.1 row attaches to normalized roster data", () => {
-  assert.equal(ruleset.mfmPointSource.total, 1541);
+  assert.equal(ruleset.mfmPointSource.total, 1543);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
 });

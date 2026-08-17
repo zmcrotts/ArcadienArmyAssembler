@@ -102,6 +102,21 @@ test("production UI does not render source-quality audit banners", () => {
   }
 });
 
+test("every non-sheet export opens the shared text preview", () => {
+  const index = read("mobile/ui/index.html");
+  const app = read("mobile/ui/engine-app.js");
+  const initStart = app.indexOf("async function init()");
+  const initEnd = app.indexOf("\nfunction loadAvailableUnitsCollapsed", initStart);
+  const init = app.slice(initStart, initEnd);
+
+  assert.match(index, /<option value="json">JSON Backup<\/option>/);
+  assert.match(init, /getElementById\("exportJson"\)[\s\S]*?openRosterExport\("json"\)/);
+  assert.match(init, /getElementById\("openDiscordExport"\)[\s\S]*?openRosterExport\("discord-extended"\)/);
+  assert.match(init, /querySelectorAll\("\.exportTextFormat"\)[\s\S]*?openRosterExport\(exportStyleForFormat/);
+  assert.doesNotMatch(init, /exportRosterJson\(\)|exportRosterText\(/);
+  assert.match(app, /style === "json" \? "Save \.json" : "Save \.txt"/);
+});
+
 test("Leader and Support render once as collapsed abilities", () => {
   for (const relative of ["ui/engine-app.js", "mobile/ui/engine-app.js"]) {
     const source = read(relative);

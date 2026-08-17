@@ -63,6 +63,19 @@ test("bundled wargear choices expose mandatory descendant costs", () => {
   assert.equal(states.get(headCannon.id).effectivePoints, 5);
 });
 
+test("model wargear profiles retain their bearer model profile", () => {
+  const definition = unit11e("Imperium - Adeptus Custodes", "Custodian Guard");
+  let entry = createDefaultRosterEntry(definition);
+  const vexilla = option(definition, "Custodian Guard (Vexilla, Praesidium Shield & Misericordia)");
+  entry = setSelection(definition, entry, vexilla.id, 1);
+
+  const configured = getConfiguredProfiles(definition, entry);
+  const vexillaProfile = configured.units.find(profile => profile.name === "Custodian Guard (Vexilla)");
+  const shield = configured.abilities.find(profile => profile.name === "Praesidium Shield");
+
+  assert.deepEqual(shield.bearerProfileIds, [vexillaProfile.id]);
+});
+
 test("Legionary melee replacements suppress their fallback close combat weapons", () => {
   const definition = unit11e("Chaos - Chaos Space Marines", "Legionaries");
   const index = require("../src/domain/loadout").buildTreeIndex(definition);

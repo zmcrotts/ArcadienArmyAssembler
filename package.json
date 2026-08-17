@@ -1,12 +1,13 @@
 {
   "name": "my-own-rosterbuilder",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "Offline Warhammer 40,000 roster builder.",
   "main": "electron/main.js",
   "scripts": {
     "test": "node --test test/*.test.js",
     "build:user": "node scripts/build-engine-ui-data.js && node scripts/build-user-runtime.js",
     "desktop": "npm.cmd run build:user && electron .",
+    "desktop:test": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/launch-test-environment.ps1",
     "prepare:icons": "node scripts/write-crosshair-icon.js",
     "dist:dir": "npm.cmd run prepare:icons && npm.cmd run build:user && node scripts/build-electron-dir.js",
     "dist:local-installer": "npm.cmd run dist:dir && node scripts/build-local-installer.js",

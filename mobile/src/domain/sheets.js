@@ -219,6 +219,11 @@ function staticEffectClauses(text) {
 function weaponCharacteristicEffects(text) {
   if (!/\bcharacteristics?\b/i.test(text) || !/\b(?:weapons?|Pistols?|this\s+model['’]s)\b/i.test(text)) return [];
   const effects = [];
+  const coordinatedImprove = text.match(/\bimprov(?:e|es|ing)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)\s+by\s+(\d+)\s*,?\s+and\s+improv(?:e|es|ing)\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(?:those|these|the\s+same)\s+weapons?\s+by\s+(\d+)\b/i);
+  if (coordinatedImprove) {
+    effects.push(...weaponEffectsForNames(coordinatedImprove[1], coordinatedImprove[2], Number(coordinatedImprove[3]), "improve"));
+    effects.push(...weaponEffectsForNames(coordinatedImprove[4], coordinatedImprove[2], Number(coordinatedImprove[5]), "improve"));
+  }
   const compound = text.match(/\badd\s+(\d+)\s+to\s+(?:the\s+)?(.+?)\s+and\s+add\s+(\d+)\s+to\s+(?:the\s+)?(.+?)\s+characteristics?\s+of\s+(.+?)(?=[.;]|$)/i);
   if (compound) {
     effects.push(...weaponEffectsForNames(compound[2], compound[5], Number(compound[1]), "add"));
@@ -262,6 +267,7 @@ function weaponEffectsForNames(names, scopeText, amount, operation) {
 function weaponEffectScope(value) {
   const text = normalizeText(value);
   if (!/\b(?:weapons?|Pistols?|this\s+model['’]s)\b/i.test(text)) return null;
+  if (/^(?:those|these|the\s+same)\s+weapons?$/i.test(text)) return null;
   const weaponType = effectWeaponType(text);
   const requiredWeaponKeyword = (text.match(/\b(Psychic|Torrent|Pistol)\s+weapons?\b/i) || [])[1] || "";
   const pistolScope = /\bbearer['’]s\s+Pistols?\b/i.test(text);
@@ -560,6 +566,7 @@ function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
     const originalCharacteristics = clone(characteristics);
     for (const effect of unitEffects) {
       if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;
+      if ((effect.bearerProfileIds || []).length && !effect.bearerProfileIds.includes(profile.id)) continue;
       if (effect.bodyguardOnly && !context.isBodyguard) continue;
       if (!effectTargetsUnit(effect, context)) continue;
       if (effect.kind === "set-characteristic") {
@@ -593,14 +600,15 @@ function extractUnitEffects(effects = []) {
     return effectTextParts(effect).flatMap(text => staticEffectClauses(text).flatMap(clause =>
       extractUnitEffectsFromText(clause, source).map(extractedEffect => ({
         ...extractedEffect,
-        bearerInstanceId: extractedEffect.scope === "bearer" ? effect?.bearerInstanceId || null : null
+        bearerInstanceId: extractedEffect.scope === "bearer" ? effect?.bearerInstanceId || null : null,
+        bearerProfileIds: extractedEffect.scope === "bearer" ? asArray(effect?.bearerProfileIds) : []
       }))
     ));
   });
   const seen = new Set();
   const result = [];
   for (const effect of extracted) {
-    const key = [effect.kind, effect.characteristic, effect.bodyguardOnly ? "bodyguard" : "", effect.scope || "", (effect.targets || []).join("/"), effect.bearerInstanceId || "", effect.delta, effect.value].join(":");
+    const key = [effect.kind, effect.characteristic, effect.bodyguardOnly ? "bodyguard" : "", effect.scope || "", (effect.targets || []).join("/"), effect.bearerInstanceId || "", (effect.bearerProfileIds || []).join("/"), effect.delta, effect.value].join(":");
     if (seen.has(key)) continue;
     seen.add(key);
     result.push(effect);
@@ -1314,7 +1322,12 @@ function buildReferenceSheets(document) {
       sourceLabel: detachment.name || stratagem.detachment || "Detachment"
     }))
   }));
-  const forceDispositions = asArray(document?.forceDispositions).map(disposition => ({
+  const selectedForceDispositionId = document?.missionSetup?.forceDisposition?.id
+    || document?.armyState?.forceDispositionId
+    || null;
+  const forceDispositions = asArray(document?.forceDispositions)
+    .filter(disposition => selectedForceDispositionId && disposition.id === selectedForceDispositionId)
+    .map(disposition => ({
     id: disposition.id,
     name: disposition.name,
     hidden: Boolean(disposition.hidden),

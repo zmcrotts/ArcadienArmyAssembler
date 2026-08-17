@@ -791,9 +791,17 @@
     return maximum;
   }
 
+  function unitSizeCompositionModelRecords(unitDefinition, entry) {
+    return compositionModelRecords(unitDefinition, entry).filter(record =>
+      record.minimum > 0 || Number.isFinite(record.maximum)
+    );
+  }
+
   function getUnitSizeState(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
-    const records = compositionModelRecords(unitDefinition, entry);
+    // Optional add-on models without a local selection limit (for example an
+    // Invader ATV in an Outrider Squad) are not part of the unit's size band.
+    const records = unitSizeCompositionModelRecords(unitDefinition, entry);
     if (!records.length) return { current: 1, minimum: 1, maximum: 1, editable: false };
     const covered = new Set();
     let minimum = 0;
@@ -949,7 +957,7 @@
     const index = buildTreeIndex(unitDefinition);
     const bundleSized = trySetBundleUnitSize(unitDefinition, entry, target, index);
     if (bundleSized) return bundleSized;
-    const records = compositionModelRecords(unitDefinition, entry);
+    const records = unitSizeCompositionModelRecords(unitDefinition, entry);
     let next = JSON.parse(JSON.stringify(entry));
     let remaining = target - state.current;
     const preferred = record => {
@@ -1067,13 +1075,24 @@
       for (const profile of node.profiles || []) {
         const model = closestModelAncestor(node, index);
         if (isFallbackMeleeProfile(profile) && model && modelsWithReplacementMelee.has(model.id)) continue;
+        const bearerProfileIds = model
+          ? (model.profiles || []).filter(item => item.typeName === "Unit").map(item => item.id).filter(Boolean)
+          : [];
+        const configuredProfile = bearerProfileIds.length && profile.typeName !== "Unit"
+          ? { ...profile, bearerProfileIds }
+          : profile;
         const key = profile.typeName === "Unit"
           ? `${profile.typeName}:${profile.name}:${JSON.stringify(profile.characteristics || {})}`
           : profile.id || `${profile.typeName}:${profile.name}`;
         const contribution = count * Number(profile.countMultiplier ?? 1);
         const existing = profiles.get(key);
-        if (existing) existing.count += contribution;
-        else profiles.set(key, { ...profile, count: contribution });
+        if (existing) {
+          existing.count += contribution;
+          existing.bearerProfileIds = [...new Set([
+            ...(existing.bearerProfileIds || []),
+            ...(configuredProfile.bearerProfileIds || [])
+          ])];
+        } else profiles.set(key, { ...configuredProfile, count: contribution });
       }
       for (const rule of node.rules || []) rules.set(rule.id || rule.name, rule);
     }
@@ -1174,7 +1193,11 @@
       output[existingIndex] = {
         ...(preferNext ? profile : existing),
         id: existing.id || profile.id,
-        count: Math.max(Number(existing.count || 0), Number(profile.count || 0))
+        count: Math.max(Number(existing.count || 0), Number(profile.count || 0)),
+        bearerProfileIds: [...new Set([
+          ...(existing.bearerProfileIds || []),
+          ...(profile.bearerProfileIds || [])
+        ])]
       };
     }
     return output;

@@ -4,8 +4,10 @@ const engineData = window.ROSTER_ENGINE_DATA;
 const engine = window.RosterEngine;
 const armyEngine = window.ArmyEngine;
 const rosterDocument = window.RosterDocument;
+const rosterShareCode = window.RosterShareCode;
 const rosterSheets = window.RosterSheets;
 const catalogueSections = window.CatalogueSections;
+const activeTestProfile = new URLSearchParams(window.location.search).get("aaaTestProfile") || "";
 
 const startScreen = document.getElementById("startScreen");
 const builderShell = document.getElementById("builderShell");
@@ -13,6 +15,8 @@ const newRosterModal = document.getElementById("newRosterModal");
 const newRosterForm = document.getElementById("newRosterForm");
 const deleteRosterModal = document.getElementById("deleteRosterModal");
 const deleteRosterMessage = document.getElementById("deleteRosterMessage");
+const shareCodeModal = document.getElementById("shareCodeModal");
+const shareCodeInput = document.getElementById("shareCodeInput");
 const discordExportModal = document.getElementById("discordExportModal");
 const discordExportPreview = document.getElementById("discordExportPreview");
 const discordListStyle = document.getElementById("discordListStyle");
@@ -133,6 +137,7 @@ let rosterStorageReadFailed = false;
 let rosterAutosaveTimer = null;
 
 function init() {
+  applyTestProfileIdentity();
   applySavedTheme();
   applyAvailableUnitsLayoutState();
   loadCompactorData();
@@ -236,12 +241,14 @@ function init() {
 
   document.getElementById("saveRoster").onclick = saveRoster;
   document.getElementById("deleteRoster").onclick = deleteRoster;
+  document.getElementById("importShareCode").onclick = openRosterShareCodeModal;
   document.getElementById("importJson").onclick = () => importJsonFile.click();
   importJsonFile.addEventListener("change", importRosterJsonFile);
   document.getElementById("exportJson").onclick = () => {
     setExportMenuOpen(false);
     exportRosterJson();
   };
+  document.getElementById("copyShareCode").onclick = copyCurrentRosterShareCode;
   document.getElementById("openDiscordExport").onclick = () => {
     setExportMenuOpen(false);
     openDiscordExportModal();
@@ -264,6 +271,12 @@ function init() {
   document.getElementById("openNewRoster").onclick = openNewRosterModal;
   document.getElementById("cancelDeleteRoster").onclick = closeDeleteRosterModal;
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
+  document.getElementById("cancelShareCodeImport").onclick = closeRosterShareCodeModal;
+  document.getElementById("confirmShareCodeImport").onclick = submitRosterShareCode;
+  shareCodeInput.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeRosterShareCodeModal();
+    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) submitRosterShareCode();
+  });
   document.getElementById("closeDiscordExport").onclick = closeDiscordExportModal;
   document.getElementById("copyDiscordExport").onclick = copyDiscordExport;
   document.getElementById("downloadDiscordExport").onclick = downloadDiscordExport;
@@ -801,7 +814,7 @@ function render() {
 function renderStartScreen() {
   const saves = sortedSavedRosterLibrary();
   const factionOptions = savedRosterFactionOptions(saves);
-  const syncEnabled = Boolean(window.OneDriveRosterSync?.available || window.desktopRosterSync);
+  const syncEnabled = syncStatus?.available !== false && Boolean(window.OneDriveRosterSync?.available || window.desktopRosterSync);
   const syncLabel = "Sync";
   startScreen.innerHTML = `
     <div class="startHeader">
@@ -814,6 +827,7 @@ function renderStartScreen() {
         ${syncEnabled ? `<button id="startSyncRosters" class="subtleAction">${syncLabel}</button>` : ""}
         ${syncEnabled ? `<button id="startCleanSync" class="subtleAction">Repair sync duplicates</button>` : ""}
         ${syncEnabled && syncStatus?.connected ? `<button id="startDisconnectSync" class="subtleAction">Disconnect OneDrive</button>` : ""}
+        <button id="startImportShareCode">Import Code</button>
         <button id="startImportJson">Import JSON</button>
         <button id="startNewRoster">New roster</button>
       </div>
@@ -859,6 +873,7 @@ function renderStartScreen() {
     </div>
     <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer" target="_blank" rel="noopener noreferrer">☕ Support development</a>
   `;
+  document.getElementById("startImportShareCode").onclick = openRosterShareCodeModal;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
@@ -4042,6 +4057,77 @@ async function loadRosterDocument(save, options = {}) {
     alert(`Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}. Recoverable choices were preserved where possible.`);
   }
   return loaded;
+}
+
+async function shareContextForIdentity(faction, subfaction = faction) {
+  const sources = rosterShareCode.requiredSourceFactions(engineData, faction, subfaction);
+  await Promise.all(sources.map(loadFactionData));
+  return rosterShareCode.contextForRoster(engineData, faction, subfaction);
+}
+
+function applyTestProfileIdentity() {
+  if (!activeTestProfile || document.querySelector(".testEnvironmentBanner")) return;
+  const label = activeTestProfile.replace(/[-_]+/g, " ").trim();
+  document.title = `AAA TEST — ${label || "Test"}`;
+  const banner = document.createElement("div");
+  banner.className = "testEnvironmentBanner";
+  banner.textContent = `TEST ENVIRONMENT · ${label || "isolated"}`;
+  document.body.prepend(banner);
+  document.documentElement.dataset.testEnvironment = "true";
+}
+
+async function copyCurrentRosterShareCode() {
+  setExportMenuOpen(false);
+  try {
+    const document = currentRosterDocument();
+    const context = await shareContextForIdentity(document.faction, document.subfaction);
+    const code = rosterShareCode.encodeRoster(document, context);
+    if (await copyTextToClipboard(code)) {
+      showTransientMessage(`Copied ${code.length}-character roster share code.`);
+    } else {
+      window.prompt("Copy this roster share code:", code);
+    }
+  } catch (error) {
+    alert(`Share code failed: ${error.message}`);
+  }
+}
+
+function openRosterShareCodeModal() {
+  shareCodeInput.value = "";
+  shareCodeModal.hidden = false;
+  requestAnimationFrame(() => shareCodeInput.focus());
+}
+
+function closeRosterShareCodeModal() {
+  shareCodeModal.hidden = true;
+}
+
+function submitRosterShareCode() {
+  const code = shareCodeInput.value;
+  closeRosterShareCodeModal();
+  void importRosterShareCode(code);
+}
+
+async function importRosterShareCode(code) {
+  if (!String(code || "").trim()) return;
+  try {
+    const identity = rosterShareCode.inspectRosterIdentity(code, { factionIds: rosterShareCode.playableFactionIds(engineData) });
+    const context = await shareContextForIdentity(identity.faction, identity.subfaction);
+    const imported = rosterShareCode.decodeRoster(code, context);
+    await validateImportedRosterHydration({ document: imported }, 0);
+    if (!preserveCurrentRosterBeforeLeaving()) return;
+    await loadRosterDocument(imported);
+    const normalizedDocument = currentRosterDocument();
+    const now = new Date().toISOString();
+    const record = { id: newRosterSaveId(), savedAt: now, lastEditedAt: now, document: normalizedDocument };
+    await mergeRosterSaves([record]);
+    currentRosterSaveId = record.id;
+    markRosterClean();
+    render();
+    showTransientMessage(`Imported “${imported.name}” from a share code.`);
+  } catch (error) {
+    alert(`Share code import failed: ${error.message}`);
+  }
 }
 
 async function importRosterJsonFile(event) {

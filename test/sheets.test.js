@@ -82,6 +82,39 @@ test("sheets apply bearer Toughness additions from selected wargear", () => {
   assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.T, "12");
 });
 
+test("bearer-only wargear characteristics target the equipped model profile", () => {
+  const document = {
+    rosterEntries: [{
+      instanceId: "guard-1",
+      name: "Custodian Guard",
+      configured: {
+        units: [
+          { id: "spear-profile", name: "Custodian Guard", count: 3, characteristics: { W: "3", OC: "2" } },
+          { id: "vexilla-profile", name: "Custodian Guard (Vexilla)", count: 1, characteristics: { W: "3", OC: "2" } }
+        ],
+        abilities: [
+          {
+            name: "Praesidium Shield",
+            bearerProfileIds: ["vexilla-profile"],
+            characteristics: { Description: "Add 1 to the bearer's Wounds characteristic." }
+          },
+          {
+            name: "Vexilla",
+            characteristics: { Description: "Add 1 to the Objective Control characteristic of models in the bearer's unit." }
+          }
+        ]
+      }
+    }],
+    presentationGroups: [{ id: "guard-1", memberInstanceIds: ["guard-1"] }]
+  };
+
+  const sheet = buildRosterSheets(document).combinedUnitSheets[0];
+  assert.deepEqual(sheet.statlines.map(profile => [profile.name, profile.characteristics.W, profile.characteristics.OC]), [
+    ["Custodian Guard", "3", "3"],
+    ["Custodian Guard (Vexilla)", "4", "3"]
+  ]);
+});
+
 test("Bringer of Justice adds two melee attacks to its bearer only", () => {
   const sheets = buildRosterSheets({
     rosterEntries: [{
@@ -135,6 +168,51 @@ test("Bringer of Justice adds two melee attacks to its bearer only", () => {
   assert.equal(sheet.meleeWeapons.find(item => item.name === "Reaper chain-cleaver").characteristics.A, "4");
   assert.equal(sheet.meleeWeapons.find(item => item.name === "Reaper chainsword").characteristics.A, "8");
   assert.equal(sheet.rangedWeapons[0].characteristics.A, "2D6");
+});
+
+test("Admonimortis applies Strength, AP, and Damage only to the bearer’s melee weapons", () => {
+  const sheets = buildRosterSheets({
+    enhancements: [{
+      name: "Admonimortis",
+      bearerInstanceId: "captain-1",
+      profiles: [{
+        characteristics: {
+          Description: "Shield-Captain model only. Improve the Strength characteristic of melee weapons equipped by the bearer by 3, and improve the Armour Penetration and Damage characteristics of those weapons by 1."
+        }
+      }]
+    }],
+    rosterEntries: [{
+      instanceId: "allarus-1",
+      name: "Allarus Custodians",
+      configured: {
+        units: [],
+        weapons: [{ name: "Castellan axe", typeName: "Melee Weapons", count: 2, characteristics: { S: "9", AP: "-2", D: "3" } }]
+      }
+    }, {
+      instanceId: "captain-1",
+      name: "Shield-Captain in Allarus Terminator Armour",
+      configured: {
+        units: [],
+        weapons: [{ name: "Castellan axe", typeName: "Melee Weapons", count: 1, characteristics: { S: "9", AP: "-2", D: "3" } }]
+      }
+    }],
+    groupedPresentation: [{
+      id: "attached:allarus-1",
+      kind: "attached",
+      memberInstanceIds: ["allarus-1", "captain-1"],
+      bodyguard: { instanceId: "allarus-1" }
+    }]
+  });
+
+  assert.deepEqual(sheets.combinedUnitSheets[0].meleeWeapons.map(weapon => [
+    weapon.count,
+    weapon.characteristics.S,
+    weapon.characteristics.AP,
+    weapon.characteristics.D
+  ]), [
+    [2, "9", "-2", "3"],
+    [1, "12", "-3", "4"]
+  ]);
 });
 
 test("enhancements apply every unconditional bearer and bearer-unit characteristic change", () => {
@@ -1282,6 +1360,13 @@ test("unit sheet packets include rule and stratagem reference sheets", () => {
       phase: "Any phase",
       description: "Re-roll an eligible roll."
     }],
+    forceDispositions: [
+      { id: "aggressive", name: "Aggressive", missionMap: [{ name: "Take and Hold" }] },
+      { id: "defensive", name: "Defensive", missionMap: [{ name: "Hold the Line" }] }
+    ],
+    missionSetup: {
+      forceDisposition: { id: "defensive", name: "Defensive" }
+    },
     detachments: [{
       id: "invasion",
       name: "Invasion Fleet",
@@ -1327,6 +1412,7 @@ test("unit sheet packets include rule and stratagem reference sheets", () => {
   ]);
   assert.deepEqual(sheets.referenceSheets.stratagems.coreStratagems.map(item => [item.name, item.sourceLabel]), [["Command Re-roll", "Core"]]);
   assert.equal(sheets.referenceSheets.stratagems.detachmentStratagems, undefined);
+  assert.deepEqual(sheets.referenceSheets.rules.forceDispositions.map(item => item.name), ["Defensive"]);
 });
 
 test("printable sheets label abilities with the model or unit providing them", () => {

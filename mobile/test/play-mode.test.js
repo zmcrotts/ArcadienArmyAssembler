@@ -237,6 +237,13 @@ test("game setup keeps both player columns aligned without an orphan detachment 
   assert.match(css, /\.playSetupYou\{grid-column:1\}\.playSetupOpponent\{grid-column:2\}/);
 });
 
+test("the opponent secondary hand always uses its own red tint", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /content\.classList\.toggle\("playOpponentHand", currentView === "missions" && missionPlayer === "opponent"\)/);
+  assert.match(css, /\.playModeContent\.playOpponentHand\{background:radial-gradient\([^}]+#492d32[^}]+#1a1014/);
+  assert.match(css, /\.playOpponentHand \.playPlayerTabs button\.active\{background:#67343b!important\}/);
+});
+
 test("Primary scoring stages card taps, flips one card, and confirms or cancels at View-card size", () => {
   const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
   assert.match(source, /function openPrimaryScoreModal\(player\)/);

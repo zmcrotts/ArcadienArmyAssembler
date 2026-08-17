@@ -4,8 +4,10 @@ const engineData = window.ROSTER_ENGINE_DATA;
 const engine = window.RosterEngine;
 const armyEngine = window.ArmyEngine;
 const rosterDocument = window.RosterDocument;
+const rosterShareCode = window.RosterShareCode;
 const rosterSheets = window.RosterSheets;
 const catalogueSections = window.CatalogueSections;
+const activeTestProfile = new URLSearchParams(window.location.search).get("aaaTestProfile") || "";
 
 const startScreen = document.getElementById("startScreen");
 const builderShell = document.getElementById("builderShell");
@@ -13,6 +15,8 @@ const newRosterModal = document.getElementById("newRosterModal");
 const newRosterForm = document.getElementById("newRosterForm");
 const deleteRosterModal = document.getElementById("deleteRosterModal");
 const deleteRosterMessage = document.getElementById("deleteRosterMessage");
+const shareCodeModal = document.getElementById("shareCodeModal");
+const shareCodeInput = document.getElementById("shareCodeInput");
 const discordExportModal = document.getElementById("discordExportModal");
 const discordExportPreview = document.getElementById("discordExportPreview");
 const discordListStyle = document.getElementById("discordListStyle");
@@ -161,6 +165,7 @@ async function init() {
     rosterStorageReadFailed = true;
     rosterStorageWarning = `Saved rosters could not be read and were left untouched: ${error.message}`;
   }
+  applyTestProfileIdentity();
   applySavedTheme();
   applyAvailableUnitsLayoutState();
   loadCompactorData();
@@ -270,20 +275,22 @@ async function init() {
 
   document.getElementById("saveRoster").onclick = saveRoster;
   document.getElementById("deleteRoster").onclick = deleteRoster;
+  document.getElementById("importShareCode").onclick = openRosterShareCodeModal;
   document.getElementById("importJson").onclick = () => importJsonFile.click();
   importJsonFile.addEventListener("change", importRosterJsonFile);
   document.getElementById("exportJson").onclick = () => {
     setExportMenuOpen(false);
-    exportRosterJson();
+    openRosterExport("json");
   };
+  document.getElementById("copyShareCode").onclick = copyCurrentRosterShareCode;
   document.getElementById("openDiscordExport").onclick = () => {
     setExportMenuOpen(false);
-    openDiscordExportModal();
+    openRosterExport("discord-extended");
   };
   for (const button of document.querySelectorAll(".exportTextFormat")) {
     button.onclick = () => {
       setExportMenuOpen(false);
-      exportRosterText(button.dataset.format || "NR");
+      openRosterExport(exportStyleForFormat(button.dataset.format || "NR"));
     };
   }
   document.getElementById("printUnitSheets").onclick = () => {
@@ -311,6 +318,12 @@ async function init() {
   if (mobileSheetBackdrop) mobileSheetBackdrop.onclick = closeMobileSheets;
   document.getElementById("cancelDeleteRoster").onclick = closeDeleteRosterModal;
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
+  document.getElementById("cancelShareCodeImport").onclick = closeRosterShareCodeModal;
+  document.getElementById("confirmShareCodeImport").onclick = submitRosterShareCode;
+  shareCodeInput.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeRosterShareCodeModal();
+    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) submitRosterShareCode();
+  });
   document.getElementById("closeDiscordExport").onclick = closeDiscordExportModal;
   document.getElementById("copyDiscordExport").onclick = copyDiscordExport;
   document.getElementById("downloadDiscordExport").onclick = downloadDiscordExport;
@@ -1174,7 +1187,9 @@ function handleMobileRosterAction(button) {
 function renderStartScreen() {
   const saves = sortedSavedRosterLibrary();
   const factionOptions = savedRosterFactionOptions(saves);
-  const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  const syncProvider = syncStatus?.available === false
+    ? null
+    : window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
   const syncLabel = syncStatus?.connected === false ? "Reconnect" : "Sync";
   startScreen.innerHTML = `
     <div class="startHeader">
@@ -1192,7 +1207,8 @@ function renderStartScreen() {
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider?.cleanDuplicates ? `<button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>` : ""}
         ${syncProvider && syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
-        <button id="startImportJson" title="Import a roster JSON file">Import</button>
+        <button id="startImportShareCode" title="Paste a roster share code">Import Code</button>
+        <button id="startImportJson" title="Import a roster JSON file">Import File</button>
         <button class="startNewRoster" id="startNewRoster">New Roster</button>
       </div>
     </div>
@@ -1237,6 +1253,7 @@ function renderStartScreen() {
       <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
     </div>
   `;
+  document.getElementById("startImportShareCode").onclick = openRosterShareCodeModal;
   document.getElementById("startImportJson").onclick = () => importJsonFile.click();
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
@@ -1907,6 +1924,17 @@ function setSyncButtonsDisabled(disabled, activeLabel = "") {
     ? activeLabel
     : syncStatus?.connected === false ? "Reconnect" : "Sync";
   if (cleanButton) cleanButton.textContent = "De-duplicate";
+}
+
+function applyTestProfileIdentity() {
+  if (!activeTestProfile || document.querySelector(".testEnvironmentBanner")) return;
+  const label = activeTestProfile.replace(/[-_]+/g, " ").trim();
+  document.title = `AAA TEST — ${label || "Test"}`;
+  const banner = document.createElement("div");
+  banner.className = "testEnvironmentBanner";
+  banner.textContent = `TEST ENVIRONMENT · ${label || "isolated"}`;
+  document.body.prepend(banner);
+  document.documentElement.dataset.testEnvironment = "true";
 }
 
 async function disconnectRosterSync() {
@@ -2862,7 +2890,10 @@ function renderAttachedConfigured(groupEntries) {
   ];
   for (const rosterEntry of groupEntries) {
     const configured = engine.getConfiguredProfiles(rosterEntry.unitPackage.definition, rosterEntry.entry);
-    const context = { isBodyguard: rosterEntry.instanceId === bodyguardInstanceId };
+    const context = {
+      instanceId: rosterEntry.instanceId,
+      isBodyguard: rosterEntry.instanceId === bodyguardInstanceId
+    };
     const enhancedUnits = unitProfilesWithDerivedInvulnerableSaves(
       configured.units || [],
       configured,
@@ -2911,7 +2942,10 @@ function assignedEnhancementsForRosterEntry(rosterEntry) {
   const army = currentArmyDefinition();
   return (armyState?.enhancements || [])
     .filter(assignment => assignment.bearerInstanceId === rosterEntry.instanceId)
-    .map(assignment => (army?.enhancements || []).find(item => item.id === assignment.enhancementId))
+    .map(assignment => {
+      const enhancement = (army?.enhancements || []).find(item => item.id === assignment.enhancementId);
+      return enhancement ? { ...enhancement, bearerInstanceId: assignment.bearerInstanceId } : null;
+    })
     .filter(Boolean);
 }
 
@@ -4705,6 +4739,66 @@ async function loadRosterDocument(save, options = {}) {
   return loaded;
 }
 
+async function shareContextForIdentity(faction, subfaction = faction) {
+  const sources = rosterShareCode.requiredSourceFactions(engineData, faction, subfaction);
+  await Promise.all(sources.map(loadFactionData));
+  return rosterShareCode.contextForRoster(engineData, faction, subfaction);
+}
+
+async function copyCurrentRosterShareCode() {
+  setExportMenuOpen(false);
+  try {
+    const document = currentRosterDocument();
+    const context = await shareContextForIdentity(document.faction, document.subfaction);
+    const code = rosterShareCode.encodeRoster(document, context);
+    if (await copyTextToClipboard(code)) {
+      showTransientMessage(`Copied ${code.length}-character roster share code.`);
+    } else {
+      window.prompt("Copy this roster share code:", code);
+    }
+  } catch (error) {
+    alert(`Share code failed: ${error.message}`);
+  }
+}
+
+function openRosterShareCodeModal() {
+  shareCodeInput.value = "";
+  shareCodeModal.hidden = false;
+  requestAnimationFrame(() => shareCodeInput.focus());
+}
+
+function closeRosterShareCodeModal() {
+  shareCodeModal.hidden = true;
+}
+
+function submitRosterShareCode() {
+  const code = shareCodeInput.value;
+  closeRosterShareCodeModal();
+  void importRosterShareCode(code);
+}
+
+async function importRosterShareCode(code) {
+  if (!String(code || "").trim()) return;
+  try {
+    const identity = rosterShareCode.inspectRosterIdentity(code, { factionIds: rosterShareCode.playableFactionIds(engineData) });
+    const context = await shareContextForIdentity(identity.faction, identity.subfaction);
+    const imported = rosterShareCode.decodeRoster(code, context);
+    await validateImportedRosterHydration({ document: imported }, 0);
+    if (!preserveCurrentRosterBeforeLeaving()) return;
+    await loadRosterDocument(imported);
+    const normalizedDocument = currentRosterDocument();
+    const now = new Date().toISOString();
+    const record = { id: newRosterSaveId(), savedAt: now, lastEditedAt: now, document: normalizedDocument };
+    await mergeRosterSaves([record]);
+    currentRosterSaveId = record.id;
+    markRosterClean();
+    render();
+    showTransientMessage(`Imported “${imported.name}” from a share code.`);
+  } catch (error) {
+    alert(`Share code import failed: ${error.message}`);
+  }
+}
+
 async function importRosterJsonFile(event) {
   const file = event.target.files?.[0];
   event.target.value = "";
@@ -4832,25 +4926,17 @@ function fileSafeRosterName(document) {
   return name || "roster";
 }
 
-function exportRosterJson() {
-  const document = currentRosterDocument();
-  downloadFile(`${fileSafeRosterName(document)}.json`, JSON.stringify(document, null, 2));
-}
-
-function exportRosterText(format = "NR") {
-  const document = currentRosterDocument();
-  const suffix = String(format || "NR").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  downloadFile(`${fileSafeRosterName(document)}-${suffix || "text"}.txt`, rosterDocument.exportRosterText(document, {
-    format,
-    skippableWargear: compactorSkippableWargear
-  }));
-}
-
 function openMobileExport() {
-  if (discordListStyle) discordListStyle.value = "wtc-compact";
-  if (discordMultilineHeader) discordMultilineHeader.checked = true;
-  if (discordHideSubunits) discordHideSubunits.checked = false;
-  if (discordHideBullets) discordHideBullets.checked = false;
+  openRosterExport("wtc-compact", true);
+}
+
+function openRosterExport(style = "wtc-compact", resetOptions = false) {
+  if (discordListStyle) discordListStyle.value = style;
+  if (resetOptions) {
+    if (discordMultilineHeader) discordMultilineHeader.checked = true;
+    if (discordHideSubunits) discordHideSubunits.checked = false;
+    if (discordHideBullets) discordHideBullets.checked = false;
+  }
   renderExportFormatButtons();
   openDiscordExportModal();
 }
@@ -4862,19 +4948,12 @@ function renderExportFormatButtons() {
     <button type="button" class="${option.value === current ? "selected" : ""}" data-export-style="${escapeHtml(option.value)}">
       ${escapeHtml(option.textContent || option.value)}
     </button>
-  `).join("") + `<button type="button" data-export-json>JSON Backup</button>`;
+  `).join("");
   for (const button of exportFormatButtons.querySelectorAll("[data-export-style]")) {
     button.onclick = () => {
       discordListStyle.value = button.dataset.exportStyle || "wtc-compact";
       renderExportFormatButtons();
       renderDiscordExportPreview();
-    };
-  }
-  const jsonButton = exportFormatButtons.querySelector("[data-export-json]");
-  if (jsonButton) {
-    jsonButton.onclick = () => {
-      closeDiscordExportModal();
-      exportRosterJson();
     };
   }
 }
@@ -4945,6 +5024,7 @@ function discordExportOptions() {
 
 function discordExportSuffix() {
   const style = discordListStyle?.value || "discord-extended";
+  if (style === "json") return "backup";
   const directFormat = directExportFormatForStyle(style);
   if (directFormat) return directFormat.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   if (style.startsWith("plain-")) return style;
@@ -4966,8 +5046,21 @@ function directExportFormatForStyle(style) {
   return map[style] || "";
 }
 
+function exportStyleForFormat(format) {
+  const map = {
+    NR: "nr",
+    WTC: "wtc",
+    "WTC-Compact": "wtc-compact",
+    GW: "gw",
+    "GW-Compact": "gw-compact"
+  };
+  return map[format] || "nr";
+}
+
 function currentDiscordExportText() {
-  return rosterDocument.exportRosterText(currentRosterDocument(), discordExportOptions());
+  const document = currentRosterDocument();
+  if (discordListStyle?.value === "json") return JSON.stringify(document, null, 2);
+  return rosterDocument.exportRosterText(document, discordExportOptions());
 }
 
 function openDiscordExportModal() {
@@ -4988,6 +5081,8 @@ function renderDiscordExportPreview() {
   renderExportFormatButtons();
   const style = discordListStyle?.value || "";
   const discordLike = style.startsWith("discord-");
+  const downloadButton = document.getElementById("downloadDiscordExport");
+  if (downloadButton) downloadButton.textContent = style === "json" ? "Save .json" : "Save .txt";
   for (const element of [
     discordMultilineHeader?.closest("label"),
     discordCombineIdentical?.closest("label"),
@@ -5088,7 +5183,8 @@ async function copyTextToClipboard(text) {
 function downloadDiscordExport() {
   const document = currentRosterDocument();
   const text = lastDiscordExportText || currentDiscordExportText();
-  downloadFile(`${fileSafeRosterName(document)}-${discordExportSuffix()}.txt`, text);
+  const extension = discordListStyle?.value === "json" ? "json" : "txt";
+  downloadFile(`${fileSafeRosterName(document)}-${discordExportSuffix()}.${extension}`, text);
 }
 
 async function loadCompactorData() {

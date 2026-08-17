@@ -14,6 +14,8 @@ test("live roster panels feed selected unit profiles back through static effect 
     assert.match(source, /const effects = \[\s*\.\.\.selectedArmyAndDetachmentEffects\(\),\s*\.\.\.configuredEffectSources\(configured\),/);
     assert.match(source, /function configuredEffectSources[\s\S]*configured\.profiles/);
     assert.match(source, /class="modifiedCharacteristic" title="Modified from base profile"/);
+    assert.match(source, /const context = \{\s*instanceId: rosterEntry\.instanceId,\s*isBodyguard:/);
+    assert.match(source, /enhancement \? \{ \.\.\.enhancement, bearerInstanceId: assignment\.bearerInstanceId \} : null/);
   }
 });
 

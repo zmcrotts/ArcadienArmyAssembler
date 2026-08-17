@@ -5,6 +5,27 @@ body {
   color: #182124;
 }
 
+.testEnvironmentBanner {
+  background: #8b0000;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  left: 0;
+  letter-spacing: 0.12em;
+  padding: 6px 12px;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  text-transform: uppercase;
+  top: 0;
+  z-index: 10000;
+}
+
+html[data-test-environment="true"] body {
+  padding-top: 27px;
+}
+
 label {
   margin-right: 16px;
 }
@@ -1222,6 +1243,19 @@ html[data-mobile-ui="false"] .savedRosterCards {
 .mobileShell,
 .mobileSheetClose {
   display: none;
+}
+
+.shareCodePanel {
+  width: min(620px, calc(100vw - 32px));
+}
+
+.shareCodeInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
 .mobileUnitAddList {
@@ -3293,3 +3327,10 @@ html[data-theme="dark"] svg {
 .playArmyUnit.halfStrength{border-color:#d8972f;background:#302516;box-shadow:0 0 0 1px #d8972f55,0 0 22px #d8972f18}.playArmyUnit.halfStrength .playArmyUnitOpen{background:linear-gradient(90deg,#4a3318aa,#202c3500 52%)!important}.playArmyUnit.halfStrength .playArmyQuickWounds{border-top-color:#805d25;background:#2d251a}.playStrengthFlag{width:max-content;margin-top:3px;padding:3px 6px;border:1px solid #d8972f;border-radius:999px;background:#4b3419;color:#ffd37a;font-size:8px;font-weight:900;letter-spacing:.08em}.playBattleShockReminder{display:grid;grid-template-columns:38px 1fr;align-items:center;gap:10px;margin:10px 0 14px;padding:10px 13px;border:1px solid #c9882a;border-left:4px solid #e5aa35;border-radius:11px;background:#302515;color:#f5f1e8}.playBattleShockReminder>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#d8972f;color:#1b1710;font-size:21px;font-weight:1000}.playBattleShockReminder>div{display:grid;gap:2px}.playBattleShockReminder small{color:#efb84f;font-size:9px;font-weight:900;letter-spacing:.14em}.playBattleShockReminder b{font-size:13px}.playBattleShockReminder p{margin:0;color:#cfc3ad;font-size:11px;line-height:1.35}
 .playArmyStatusBar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-top:1px solid #34414b;background:#18242c}.playArmyStatusBar .playArmyQuickWounds{padding:0;border:0;background:transparent}.playBattleShockToggle{display:flex!important;align-items:center;gap:6px;min-height:36px!important;padding:0 11px!important;border-color:#69537e!important;background:#261f30!important;color:#cdb6e3!important;font-size:10px!important;letter-spacing:.04em}.playBattleShockToggle>span{font-size:17px}.playBattleShockToggle.active{border-color:#c16cff!important;background:#54266f!important;color:#fff!important;box-shadow:0 0 16px #b64cff66}.playBattleShockFlag{display:flex;align-items:center;gap:4px;width:max-content;margin-top:3px;padding:3px 7px;border:1px solid #bb62ee;border-radius:999px;background:#4a225e;color:#f0c9ff;font-size:8px;font-weight:900;letter-spacing:.09em}.playBattleShockFlag i{color:#df8dff;font-size:13px;font-style:normal;line-height:.7}.playArmyUnit.battleShocked{position:relative;border-color:#b65bea;background:#25192d;box-shadow:0 0 0 1px #b65bea66,0 0 25px #a43de733}.playArmyUnit.battleShocked::after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;opacity:.28;background:linear-gradient(117deg,transparent 0 28%,#dc91ff 28.2% 28.45%,transparent 28.7% 100%),linear-gradient(63deg,transparent 0 62%,#a84bd8 62.2% 62.45%,transparent 62.7% 100%),linear-gradient(146deg,transparent 0 76%,#e0a2ff 76.2% 76.4%,transparent 76.65% 100%);background-size:210px 120px,260px 170px,320px 190px}.playArmyUnit.battleShocked .playArmyUnitOpen{position:relative;z-index:2;background:linear-gradient(90deg,#4a205c99,#202c3500 60%)!important}.playArmyUnit.battleShocked .playArmyStatusBar{border-top-color:#654075;background:#241b2d}.playArmyUnit.halfStrength.battleShocked{box-shadow:inset 4px 0 #dc9b31,0 0 0 1px #b65bea66,0 0 25px #a43de733}.playUnitBattleShockNotice{display:grid;grid-template-columns:38px 1fr;align-items:center;gap:10px;margin:14px 16px 0;padding:10px 12px;border:1px solid #a855d4;border-radius:10px;background:#321d3e}.playUnitBattleShockNotice>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#71378c;color:#f3d6ff;font-size:22px}.playUnitBattleShockNotice>div{display:grid;gap:2px}.playUnitBattleShockNotice b{color:#edc5ff;font-size:12px;letter-spacing:.12em}.playUnitBattleShockNotice small{color:#c9b8d2}.playStratagem.blocked{border-color:#74478b;background:#221a29}.playStratagemBlockedFlag{display:flex;align-items:center;justify-content:center;gap:7px;min-height:52px;border:1px solid #a958d0;border-radius:10px;background:#482358;color:#efceff;font-size:13px;font-weight:900;letter-spacing:.03em}.playStratagemBlockedFlag>span{font-size:20px}@media(max-width:520px){.playArmyStatusBar{align-items:stretch;flex-direction:column}.playBattleShockToggle{justify-content:center}.playArmyStatusBar .playArmyQuickWounds{align-self:center}}
 .playBattleShockToggle:not(.active){width:38px;padding:0!important;justify-content:center}.playBattleShockToggle.active b{font-size:9px;letter-spacing:.1em}.playArmyUnit.halfStrength .playArmyStatusBar .playArmyQuickWounds,.playArmyUnit.battleShocked .playArmyStatusBar .playArmyQuickWounds{background:transparent}
+
+/* Keep secondary hands visually distinct regardless of the active turn or round. */
+.playModeContent.playOpponentHand{background:radial-gradient(circle at 50% -20%,#492d32 0,#1a1014 42%)}
+.playOpponentHand .playPlayerTabs{background:#27191d}
+.playOpponentHand .playPlayerTabs button.active{background:#67343b!important}
+.playOpponentHand .playMissionModeBadge{background:#2b1c20;border-left-color:#b95860}
+.playOpponentHand .playDeckControls>div button,.playOpponentHand .playEmptyHand,.playOpponentHand .playMissionCard{border-color:#654047;background-color:#281a1e}

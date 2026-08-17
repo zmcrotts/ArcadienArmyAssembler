@@ -13888,6 +13888,24 @@
       "kind": "unit",
       "faction": "Adeptus Custodes",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VERTUS PRAETORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "2 models",
+      "points": 145
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "unitName": "VERTUS PRAETORS",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "3 models",
+      "points": 215
+    },
+    {
+      "kind": "unit",
+      "faction": "Adeptus Custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
       "unitName": "VIGILATORS",
       "costBand": "YOUR UNIT COSTS",
       "label": "4 models",

@@ -5,6 +5,27 @@ body {
   color: #182124;
 }
 
+.testEnvironmentBanner {
+  background: #8b0000;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  left: 0;
+  letter-spacing: 0.12em;
+  padding: 6px 12px;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  text-transform: uppercase;
+  top: 0;
+  z-index: 10000;
+}
+
+html[data-test-environment="true"] body {
+  padding-top: 27px;
+}
+
 label {
   margin-right: 16px;
 }
@@ -1347,6 +1368,19 @@ button:hover {
   color: #315f67;
   font-style: normal;
   margin-top: 7px;
+}
+
+.shareCodePanel {
+  width: min(620px, calc(100vw - 32px));
+}
+
+.shareCodeInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
 .optionRulePreview > span {

@@ -45,18 +45,20 @@
         <button id="showLibrary">Lists</button>
         <button id="openNewRoster">New List</button>
         <button id="saveRoster">Save</button>
+        <button id="importShareCode">Import Code</button>
         <button id="importJson">Import JSON</button>
         <input id="importJsonFile" type="file" accept=".json,application/json" hidden>
         <select id="rosterSaves" aria-label="Saved rosters"></select>
         <div class="exportMenu">
           <button id="exportMenuToggle" aria-expanded="false">Export</button>
           <div id="exportMenuPanel" class="exportMenuPanel" hidden>
-            <button id="exportJson">Export JSON</button>
-            <button class="exportTextFormat" data-format="NR">Export NR Text</button>
-            <button class="exportTextFormat" data-format="WTC-Compact">Export WTC-Compact</button>
-            <button class="exportTextFormat" data-format="WTC">Export WTC</button>
-            <button class="exportTextFormat" data-format="GW">Export GW</button>
-            <button id="openDiscordExport">Discord</button>
+            <button id="copyShareCode">Copy Share Code</button>
+            <button id="exportJson">JSON Backup</button>
+            <button class="exportTextFormat" data-format="NR">New Recruit</button>
+            <button class="exportTextFormat" data-format="WTC-Compact">WTC Short</button>
+            <button class="exportTextFormat" data-format="WTC">WTC Long</button>
+            <button class="exportTextFormat" data-format="GW">GW Long</button>
+            <button id="openDiscordExport">Discord Text</button>
             <label class="exportMenuToggle"><input id="includeSheetReferences" type="checkbox" checked> Rules reference</label>
             <button id="printUnitSheets">Unit Sheets</button>
             <button id="printCrusadeSheets">Crusade Sheets</button>
@@ -186,6 +188,18 @@
     </div>
   </div>
 
+  <div id="shareCodeModal" class="modalBackdrop" hidden>
+    <div class="modalPanel shareCodePanel" role="dialog" aria-modal="true" aria-labelledby="shareCodeTitle">
+      <h2 id="shareCodeTitle">Import roster code</h2>
+      <p>Paste the complete AAA share code below.</p>
+      <textarea id="shareCodeInput" class="shareCodeInput" rows="6" spellcheck="false" autocomplete="off" placeholder="AAA2-…" aria-label="Roster share code"></textarea>
+      <div class="modalActions">
+        <button id="cancelShareCodeImport" type="button">Cancel</button>
+        <button id="confirmShareCodeImport" type="button">Import Roster</button>
+      </div>
+    </div>
+  </div>
+
   <div id="discordExportModal" class="modalBackdrop" hidden>
     <div class="modalPanel discordExportPanel" role="dialog" aria-modal="true" aria-labelledby="discordExportTitle">
       <div class="modalTitleRow">
@@ -208,6 +222,7 @@
               <option value="plain-extended">Plain Extended</option>
               <option value="discord-compact">Discord Short</option>
               <option value="discord-extended">Discord Long</option>
+              <option value="json">JSON Backup</option>
             </select>
           </label>
           <label class="toggleRow">
@@ -282,6 +297,7 @@
   <script defer src="engine-runtime.js?v=milestone4"></script>
   <script defer src="../src/domain/army.js?v=milestone28"></script>
   <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
+  <script defer src="../../src/domain/roster-share-code.js?v=pilot1"></script>
   <script defer src="../src/domain/sheets.js?v=milestone5"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
   <script defer src="onedrive-roster-sync.js?v=sync7"></script>

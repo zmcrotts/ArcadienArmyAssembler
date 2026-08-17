@@ -30,6 +30,7 @@ const FILES = [
 const PROJECT_FILES = [
   ["ui/onedrive-roster-sync.js", "onedrive-roster-sync.js"],
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
+  ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
   ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
 ];
 
@@ -73,6 +74,7 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="engine-runtime\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-runtime.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/army\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/army.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/roster-document\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-document.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-share-code\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-share-code.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/sheets\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/sheets.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=([^"]+)"><\/script>/, '<script defer src="catalogue-sections.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');

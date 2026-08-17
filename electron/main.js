@@ -7,12 +7,30 @@ const crypto = require("crypto");
 const { app, BrowserWindow, ipcMain, safeStorage, shell } = require("electron");
 const { CLIENT_ID, SCOPE, createOneDriveRosterSync } = require("./onedrive-roster-sync");
 
-const APP_NAME = "Arcadien Army Assembler";
+const BASE_APP_NAME = "Arcadien Army Assembler";
+const testProfileArgument = process.argv.find(argument => argument.startsWith("--aaa-test-profile="));
+const TEST_PROFILE = String(testProfileArgument?.split("=").slice(1).join("=") || "")
+  .trim()
+  .toLowerCase()
+  .replace(/[^a-z0-9-]+/g, "-")
+  .replace(/^-+|-+$/g, "")
+  .slice(0, 32);
+const testSuffixArgument = process.argv.find(argument => argument.startsWith("--aaa-test-name-suffix="));
+const TEST_NAME_SUFFIX = String(testSuffixArgument?.split("=").slice(1).join("=") || "").slice(0, 40);
+const TEST_PROFILE_LABEL = TEST_PROFILE
+  ? TEST_PROFILE.split("-").filter(Boolean).map(part => part[0].toUpperCase() + part.slice(1)).join(" ")
+  : "";
+const APP_NAME = TEST_PROFILE ? `${BASE_APP_NAME} TEST — ${TEST_PROFILE_LABEL}` : BASE_APP_NAME;
 let mainWindow = null;
 
 app.setName(APP_NAME);
 
 function userDataRoot() {
+  if (TEST_PROFILE) {
+    return app.isPackaged
+      ? path.resolve(path.dirname(app.getPath("exe")), "..", "..", ".test-env", TEST_PROFILE)
+      : path.join(__dirname, "..", ".test-env", TEST_PROFILE);
+  }
   if (app.isPackaged && process.platform === "win32") {
     const executableRoot = path.dirname(app.getPath("exe"));
     if (
@@ -192,12 +210,14 @@ async function syncStatus() {
   // Merely opening Lists must never contact Microsoft. A stored connection is
   // enough to present Sync; validation/refresh happens only after its button
   // is explicitly pressed.
+  if (TEST_PROFILE) return { available: false, connected: false, testProfile: TEST_PROFILE };
   return { available: true, connected: Boolean(readOneDriveTokens()) };
 }
 
 let oneDriveConnectionInFlight = null;
 
 async function ensureOneDriveConnected() {
+  if (TEST_PROFILE) throw new Error("OneDrive sync is disabled in AAA test profiles.");
   if (oneDriveConnectionInFlight) return oneDriveConnectionInFlight;
   oneDriveConnectionInFlight = (async () => {
     try {
@@ -243,6 +263,41 @@ function registerRosterSyncHandlers() {
   }));
 }
 
+async function prepareTestRosterCopies(window) {
+  if (!TEST_PROFILE || !TEST_NAME_SUFFIX) return;
+  const markerKey = `aaaTestRosterCopy:${TEST_PROFILE}:${TEST_NAME_SUFFIX}`;
+  const script = `(() => {
+    const markerKey = ${JSON.stringify(markerKey)};
+    const suffix = ${JSON.stringify(TEST_NAME_SUFFIX)};
+    const raw = localStorage.getItem("engineRosterSaves");
+    if (!raw) return { changed: false, records: [] };
+    const source = JSON.parse(raw);
+    if (!Array.isArray(source)) throw new Error("The copied roster library is invalid.");
+    if (localStorage.getItem(markerKey) === "done") return { changed: false, records: source };
+    const records = source.map(record => {
+      const copy = structuredClone(record);
+      copy.id = typeof crypto.randomUUID === "function"
+        ? \`roster-\${crypto.randomUUID()}\`
+        : \`roster-test-\${Date.now()}-\${Math.random().toString(16).slice(2)}\`;
+      const currentName = String(copy.document?.name || "Unnamed roster");
+      if (copy.document) copy.document.name = currentName.endsWith(suffix) ? currentName : currentName + suffix;
+      return copy;
+    });
+    localStorage.setItem("engineRosterSaves", JSON.stringify(records));
+    localStorage.setItem(markerKey, "done");
+    return { changed: true, records };
+  })()`;
+  const result = await window.webContents.executeJavaScript(script, true);
+  const exportPath = path.join(userDataRoot(), "test-roster-library.json");
+  fs.writeFileSync(exportPath, JSON.stringify({
+    kind: "roster-engine.savedRosterLibrary",
+    exportedAt: new Date().toISOString(),
+    testProfile: TEST_PROFILE,
+    engineRosterSaves: result.records || []
+  }, null, 2));
+  if (result.changed) window.webContents.reload();
+}
+
 function createWindow() {
   if (mainWindow && !mainWindow.isDestroyed()) {
     if (mainWindow.isMinimized()) mainWindow.restore();
@@ -268,6 +323,18 @@ function createWindow() {
 
   mainWindow.removeMenu();
 
+  if (TEST_PROFILE) {
+    mainWindow.on("page-title-updated", event => {
+      event.preventDefault();
+      mainWindow.setTitle(APP_NAME);
+    });
+    mainWindow.webContents.on("did-finish-load", () => {
+      prepareTestRosterCopies(mainWindow).catch(error => {
+        console.error(`Could not prepare the AAA test roster library: ${error.message}`);
+      });
+    });
+  }
+
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith("blob:")) return { action: "allow" };
     openTrustedExternal(url);
@@ -279,7 +346,9 @@ function createWindow() {
     openTrustedExternal(url);
   });
 
-  mainWindow.loadFile(path.join(__dirname, "..", "dist-user", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "..", "dist-user", "index.html"), {
+    query: TEST_PROFILE ? { aaaTestProfile: TEST_PROFILE } : {}
+  });
 
   mainWindow.on("closed", () => {
     mainWindow = null;

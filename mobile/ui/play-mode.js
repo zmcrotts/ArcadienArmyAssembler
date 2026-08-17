@@ -392,6 +392,7 @@
     const endButton = document.getElementById("playModeEnd");
     if (endButton) endButton.textContent = session.status === "final" ? "Scorecard" : "End Game";
     for (const button of nav.querySelectorAll("button")) button.classList.toggle("active", button.dataset.playView === currentView);
+    content.classList.toggle("playOpponentHand", currentView === "missions" && missionPlayer === "opponent");
     if (currentView === "battle") renderBattle();
     if (currentView === "missions") renderMissions();
     if (currentView === "army") renderArmy();

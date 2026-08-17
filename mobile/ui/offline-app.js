@@ -8,6 +8,25 @@
   const action = document.getElementById("offlineAction");
   if (!panel || !title || !detail || !progress || !action) return;
 
+  const testProfile = new URLSearchParams(location.search).get("aaaTestProfile");
+  if (testProfile) {
+    // A test URL must always reflect the files currently being served. Leaving
+    // the production offline worker active here can make localhost display an
+    // older cached release after a successful rebuild.
+    panel.hidden = true;
+    if ("serviceWorker" in navigator) {
+      void navigator.serviceWorker.getRegistrations()
+        .then(registrations => Promise.all(registrations.map(item => item.unregister())))
+        .catch(() => null);
+    }
+    if (typeof caches !== "undefined") {
+      void caches.keys()
+        .then(keys => Promise.all(keys.map(key => caches.delete(key))))
+        .catch(() => null);
+    }
+    return;
+  }
+
   const supportedProtocol = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
   if (window.AndroidFiles || !supportedProtocol) return;
 

@@ -20,6 +20,7 @@ const FILES = [
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
   ["src/domain/army.js", "domain/army.js"],
   ["src/domain/roster-document.js", "domain/roster-document.js"],
+  ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
   ["src/domain/sheets.js", "domain/sheets.js"]
 ];
 
@@ -52,6 +53,7 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="engine-runtime\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-runtime.js"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/army\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/army.js"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/roster-document\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-document.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-share-code\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-share-code.js"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/src\/domain\/sheets\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/sheets.js"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=[^"]+"><\/script>/, '<script defer src="catalogue-sections.js"></script>')
     .replace(/<script(?:\s+defer)? src="onedrive-roster-sync\.js\?v=[^"]+"><\/script>/, '<script defer src="onedrive-roster-sync.js"></script>')

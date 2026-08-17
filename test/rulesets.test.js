@@ -79,6 +79,7 @@ test("normalized enhancements and detachments expose only their always-on charac
   assert.deepEqual(characteristicsFor("Legacy Sidearm"), new Set(["A"]));
   assert.deepEqual(characteristicsFor("Supa-burny Fuel"), new Set(["A"]));
   assert.deepEqual(characteristicsFor("Power of the Hive Mind"), new Set(["S", "AP"]));
+  assert.deepEqual(characteristicsFor("Admonimortis"), new Set(["S", "AP", "D"]));
   assert.deepEqual(characteristicsFor("Moritoi Ancients", allDetachmentRules), new Set(["M"]));
   assert.deepEqual(characteristicsFor("Travelling Players", allDetachmentRules), new Set(["OC"]));
   assert.deepEqual(characteristicsFor("Cyber Psalm-Programming", allDetachmentRules), new Set(["M"]));
@@ -849,6 +850,71 @@ test("11e Sword Brethren default to five models and retain specialist weapons ac
 
   assert.deepEqual(["Plasma pistol", "Pyre Pistol", "Thunder Hammer"].map(selectedCount), before);
   assert.deepEqual(validateLoadout(unit, entry), []);
+});
+
+test("11e Outrider Squads can be increased from three to six models", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const units = ruleset.units.filter(item =>
+    item.faction.startsWith("Imperium - Adeptus Astartes")
+    && item.name === "Outrider Squad"
+  );
+
+  assert.ok(units.length > 0);
+  for (const unit of units) {
+    let entry = createDefaultRosterEntry(unit);
+    assert.deepEqual(getUnitSizeState(unit, entry), {
+      current: 3, minimum: 3, maximum: 6, editable: true
+    }, unit.faction);
+    entry = setUnitSize(unit, entry, 6);
+    assert.equal(getUnitSizeState(unit, entry).current, 6, unit.faction);
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+  }
+});
+
+test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafted weapon kit", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
+  const units = ruleset.units.filter(item =>
+    item.faction.startsWith("Imperium - Adeptus Astartes")
+    && item.name === "Vanguard Veteran Squad with Jump Packs"
+  );
+
+  assert.ok(units.length > 0);
+  for (const unit of units) {
+    let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+    const state = name => getOptionStates(unit, entry).find(option => option.name === name);
+    const standardVeterans = state("Vanguard Veterans with Jump Packs");
+    const powerWeaponVeterans = state("Veteran: heavy bolt pistol + master-crafted power weapon");
+    const sergeantKit = state("Heavy bolt pistol + master-crafted power weapon");
+    assert.equal(powerWeaponVeterans.maximum, 9, unit.faction);
+    assert.equal(sergeantKit.maximum, 1, unit.faction);
+    assert.equal(unit.selectionTree.children
+      .find(node => node.name === "Vanguard Veterans with Jump Packs")
+      .children[1].id, powerWeaponVeterans.id, unit.faction);
+    assert.equal(getOptionStates(unit, entry).some(option => option.name === "Alternate weapon option"), false, unit.faction);
+    assert.equal(getConfiguredProfiles(unit, entry).weapons.some(profile =>
+      profile.name === "Heavy bolt pistol" || profile.name === "Master-crafted power weapon"
+    ), false, unit.faction);
+
+    entry = setSelection(unit, entry, powerWeaponVeterans.id, 4);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 5, unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 4, unit.faction);
+    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+
+    entry = setSelection(unit, entry, powerWeaponVeterans.id, 9);
+    entry = setSelection(unit, entry, sergeantKit.id, 1);
+
+    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 0, unit.faction);
+    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 9, unit.faction);
+    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
+    const weapons = getConfiguredProfiles(unit, entry).weapons;
+    const kitProfiles = weapons.filter(profile => String(profile.id || "").startsWith("rules-update-vanguard-"));
+    assert.equal(kitProfiles.filter(profile => profile.name === "Heavy bolt pistol").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
+    assert.equal(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
+    assert.ok(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").every(profile => profile.typeName === "Melee Weapons"), unit.faction);
+    assert.equal(weapons.some(profile => profile.name === "Vanguard Veteran Weapon"), false, unit.faction);
+  }
 });
 
 test("11e Pactbound Daemon Princes receive only the enhancement matching their selected God Blessing", () => {

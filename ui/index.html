@@ -31,12 +31,14 @@
         <button id="showLibrary">Lists</button>
         <button id="openNewRoster">New List</button>
         <button id="saveRoster">Save</button>
+        <button id="importShareCode">Import Code</button>
         <button id="importJson">Import JSON</button>
         <input id="importJsonFile" type="file" accept=".json,application/json" hidden>
         <select id="rosterSaves" aria-label="Saved rosters"></select>
         <div class="exportMenu">
           <button id="exportMenuToggle" aria-expanded="false">Export</button>
           <div id="exportMenuPanel" class="exportMenuPanel" hidden>
+            <button id="copyShareCode">Copy Share Code</button>
             <button id="exportJson">Export JSON</button>
             <button class="exportTextFormat" data-format="NR">Export NR Text</button>
             <button class="exportTextFormat" data-format="WTC-Compact">Export WTC-Compact</button>
@@ -119,6 +121,18 @@
       <div class="modalActions">
         <button id="cancelDeleteRoster">Cancel</button>
         <button id="confirmDeleteRoster" class="dangerButton">Delete List</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="shareCodeModal" class="modalBackdrop" hidden>
+    <div class="modalPanel shareCodePanel" role="dialog" aria-modal="true" aria-labelledby="shareCodeTitle">
+      <h2 id="shareCodeTitle">Import roster code</h2>
+      <p>Paste the complete AAA share code below.</p>
+      <textarea id="shareCodeInput" class="shareCodeInput" rows="6" spellcheck="false" autocomplete="off" placeholder="AAA2-…" aria-label="Roster share code"></textarea>
+      <div class="modalActions">
+        <button id="cancelShareCodeImport" type="button">Cancel</button>
+        <button id="confirmShareCodeImport" type="button">Import Roster</button>
       </div>
     </div>
   </div>
@@ -212,6 +226,7 @@
   <script defer src="engine-runtime.js?v=milestone3"></script>
   <script defer src="../src/domain/army.js?v=milestone27"></script>
   <script defer src="../src/domain/roster-document.js?v=milestone1"></script>
+  <script defer src="../src/domain/roster-share-code.js?v=pilot1"></script>
   <script defer src="../src/domain/sheets.js?v=milestone3"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
   <script defer src="onedrive-roster-sync.js?v=milestone5"></script>
