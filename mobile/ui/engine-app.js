@@ -3154,6 +3154,14 @@ function bindUnitAssignmentInputs() {
 
 function renderUnitSizeControl(rosterEntry, state) {
   if (!state.editable) return `<p><b>Unit Size:</b> ${state.current}</p>`;
+  if (state.presets?.length) return `
+    <div class="unitSizeControl">
+      <b>Unit Composition</b>
+      <div class="unitSizePresets">${state.presets.map(preset => `
+        <button class="unitSizePreset" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" data-size="${preset.size}" ${state.current === preset.size ? "disabled" : ""}>${escapeHtml(preset.label)}</button>
+      `).join("")}</div>
+    </div>
+  `;
   const presets = unitSizePresets(state);
   return `
     <div class="unitSizeControl">

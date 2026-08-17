@@ -75,7 +75,9 @@ test("Ork red-text loadout changes are selectable", () => {
   assert.ok(nodes(boyz, "Big choppa and kustom shoota").length);
   assert.ok(nodes(boyz, "Big choppa, kombi-rokkit and kombi-shoota").length);
   assert.ok(nodes(warboss, "Kustom choppa and kustom shoota").length);
-  assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count || item.max)), [[10, 1], [20, 2]]);
+  assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count)), [[10, 0], [10, 1], [20, 0], [20, 1], [20, 2]]);
+  assert.deepEqual(gretchin.unitSizePresets.map(item => item.size), [10, 11, 20, 21, 22]);
+  assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === "Gretchin (Armageddon)"), false);
   assert.equal(boyz.rosterRules.allowsMultipleLeadersAsBodyguard, false);
 });
 

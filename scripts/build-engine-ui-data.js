@@ -80,6 +80,7 @@ function compactDefinition(definition) {
     rosterRules: definition.rosterRules,
     composition: definition.composition,
     compositionConstraints: definition.compositionConstraints,
+    unitSizePresets: definition.unitSizePresets,
     pricing: definition.pricing,
     selectionTree: definition.selectionTree
   };

@@ -837,7 +837,11 @@
     minimum = Math.max(minimum, compositionBounds.minimum);
     maximum = Math.min(maximum, compositionBounds.maximum);
     const current = records.reduce((sum, record) => sum + record.current, 0);
-    return { current, minimum, maximum, editable: records.length > 0 && Number.isFinite(maximum) && maximum > minimum };
+    const state = { current, minimum, maximum, editable: records.length > 0 && Number.isFinite(maximum) && maximum > minimum };
+    if (Array.isArray(unitDefinition.unitSizePresets) && unitDefinition.unitSizePresets.length) {
+      state.presets = unitDefinition.unitSizePresets.map(item => ({ ...item }));
+    }
+    return state;
   }
 
   function enclosingCompositionBounds(index, records, entry, unitDefinition) {
@@ -952,6 +956,9 @@
   function setUnitSize(unitDefinition, entry, requestedSize) {
     const state = getUnitSizeState(unitDefinition, entry);
     if (!state.editable) return JSON.parse(JSON.stringify(entry));
+    if (state.presets?.length && !state.presets.some(item => Number(item.size) === Number(requestedSize))) {
+      throw new Error(`Choose one of the listed ${unitDefinition.name} compositions.`);
+    }
     const target = Math.max(state.minimum, Math.min(state.maximum, Math.round(Number(requestedSize))));
     if (!Number.isFinite(target)) throw new Error("Unit size must be a number.");
     const index = buildTreeIndex(unitDefinition);

@@ -362,6 +362,10 @@ function applyManualLoadoutCorrections(definitions) {
       return fixOrkGretchinRulesUpdate(definition);
     }
 
+    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Gretchin (Armageddon)") {
+      return { ...definition, rosterSelectable: false, sourceDisposition: "superseded-duplicate" };
+    }
+
     if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Warboss") {
       return fixOrkWarbossRulesUpdate(definition);
     }
@@ -495,16 +499,67 @@ function fixOrkGretchinRulesUpdate(definition) {
   const gretchin = (unit.composition || []).find(item => normalizeName(item.name) === "gretchin");
   const runtherd = (unit.composition || []).find(item => normalizeName(item.name) === "runtherd");
   if (gretchin && runtherd) {
+    const compositionGroup = findNodeByName(unit.selectionTree, "Unit Composition");
+    const tenWithRuntherd = (compositionGroup?.children || []).find(item => normalizeName(item.name) === "1 runtherd and 10 gretchin");
+    const twentyWithRuntherds = (compositionGroup?.children || []).find(item => normalizeName(item.name) === "2 runtherds and 20 gretchin");
+    if (tenWithRuntherd && twentyWithRuntherds) {
+      const twentyGretchin = (twentyWithRuntherds.children || []).find(item => normalizeName(item.name) === "gretchin");
+      if (twentyGretchin) twentyGretchin.definitionId = gretchin.id;
+      compositionGroup.children = [
+        cloneCompositionChoice(tenWithRuntherd, "mfm-gretchin-10", "10 Gretchin", "runtherd"),
+        tenWithRuntherd,
+        cloneCompositionChoice(twentyWithRuntherds, "mfm-gretchin-20", "20 Gretchin", "runtherd"),
+        cloneCompositionChoiceWithModelCount(twentyWithRuntherds, "mfm-gretchin-21", "1 Runtherd and 20 Gretchin", "runtherd", 1),
+        twentyWithRuntherds
+      ];
+    }
     unit.composition = [
       { ...gretchin, min: 10, max: 20, defaultCount: 10 },
-      { ...runtherd, min: 0, max: 2, defaultCount: 1 }
+      { ...runtherd, min: 0, max: 2, defaultCount: 0 }
     ];
     unit.allowedCompositions = [
-      [{ id: gretchin.id, count: 10 }, { id: runtherd.id, min: 0, max: 1 }],
-      [{ id: gretchin.id, count: 20 }, { id: runtherd.id, min: 0, max: 2 }]
+      [{ id: gretchin.id, count: 10 }, { id: runtherd.id, count: 0 }],
+      [{ id: gretchin.id, count: 10 }, { id: runtherd.id, count: 1 }],
+      [{ id: gretchin.id, count: 20 }, { id: runtherd.id, count: 0 }],
+      [{ id: gretchin.id, count: 20 }, { id: runtherd.id, count: 1 }],
+      [{ id: gretchin.id, count: 20 }, { id: runtherd.id, count: 2 }]
+    ];
+    unit.unitSizePresets = [
+      { size: 10, label: "10 Gretchin" },
+      { size: 11, label: "1 Runtherd + 10 Gretchin" },
+      { size: 20, label: "20 Gretchin" },
+      { size: 21, label: "1 Runtherd + 20 Gretchin" },
+      { size: 22, label: "2 Runtherds + 20 Gretchin" }
     ];
   }
   return unit;
+}
+
+function cloneCompositionChoice(choice, id, name, omittedModelName) {
+  const copy = clone(choice);
+  const oldRootId = copy.id;
+  copy.id = id;
+  copy.sourceId = id;
+  copy.definitionId = id;
+  copy.name = name;
+  copy.children = (copy.children || []).filter(item => normalizeName(item.name) !== normalizeName(omittedModelName));
+  rewriteNodeIds(copy, oldRootId, id);
+  return copy;
+}
+
+function cloneCompositionChoiceWithModelCount(choice, id, name, modelName, count) {
+  const copy = cloneCompositionChoice(choice, id, name, "");
+  const model = (copy.children || []).find(item => normalizeName(item.name) === normalizeName(modelName));
+  for (const constraint of model?.constraints || []) {
+    if (["min", "max"].includes(constraint.type)) constraint.value = count;
+  }
+  return copy;
+}
+
+function rewriteNodeIds(node, oldPrefix, newPrefix) {
+  if (!node) return;
+  if (typeof node.id === "string") node.id = node.id.replace(oldPrefix, newPrefix);
+  for (const child of node.children || []) rewriteNodeIds(child, oldPrefix, newPrefix);
 }
 
 function fixOrkWarbossRulesUpdate(definition) {

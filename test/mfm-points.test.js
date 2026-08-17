@@ -42,6 +42,18 @@ test("MFM v1.1 includes red increases", () => {
   assert.equal(points(morvenn, 1), 200);
 });
 
+test("Gretchin expose the five MFM compositions with working points", () => {
+  const gretchin = unit("Xenos - Orks", "Gretchin");
+  assert.deepEqual(gretchin.unitSizePresets.map(item => item.label), [
+    "10 Gretchin",
+    "1 Runtherd + 10 Gretchin",
+    "20 Gretchin",
+    "1 Runtherd + 20 Gretchin",
+    "2 Runtherds + 20 Gretchin"
+  ]);
+  assert.deepEqual([10, 11, 20, 21, 22].map(size => points(gretchin, size)), [45, 45, 80, 85, 90]);
+});
+
 test("Vertus Praetors use separate two- and three-model costs", () => {
   const vertusPraetors = unit("Imperium - Adeptus Custodes", "Vertus Praetors");
   assert.equal(points(vertusPraetors, 2), 145);
