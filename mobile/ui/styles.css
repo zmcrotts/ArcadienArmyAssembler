@@ -70,14 +70,15 @@ button:hover {
 }
 
 .builderHeader {
-  align-items: center;
+  align-items: start;
   background: #ffffff;
   border-bottom: 1px solid #b9c5ca;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
   display: grid;
-  gap: 10px 16px;
-  grid-template-columns: minmax(260px, 1fr) auto;
-  padding: 12px 16px;
+  gap: 6px 14px;
+  grid-template-columns: minmax(540px, 680px) minmax(330px, 1fr);
+  grid-template-rows: auto auto;
+  padding: 8px 12px;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -86,7 +87,11 @@ button:hover {
 .rosterTitleBlock {
   align-items: start;
   display: grid;
-  gap: 5px;
+  gap: 4px 8px;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  grid-template-columns: 94px minmax(220px, 420px) auto;
+  grid-template-rows: auto auto auto auto;
   min-width: 0;
 }
 
@@ -96,25 +101,53 @@ button:hover {
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
+  grid-column: 1 / -1;
+  grid-row: 1;
 }
 
 .rosterTitleRow {
+  display: contents;
+}
+
+.headerFactionMark {
   align-items: center;
+  background: #e7edf0;
+  border: 1px solid #aab7bc;
+  border-radius: 8px;
+  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  min-width: 0;
+  align-self: stretch;
+  grid-column: 1;
+  grid-row: 2 / 5;
+  height: auto;
+  justify-content: center;
+  min-height: 98px;
+  padding: 9px;
+  width: 94px;
+}
+
+.headerFactionMark[data-allegiance="Imperium"] { background: #eee4ca; border-color: #c8ae74; }
+.headerFactionMark[data-allegiance="Chaos"] { background: #ecd8d4; border-color: #c48c82; }
+.headerFactionMark[data-allegiance="Xenos"] { background: #d4e8e3; border-color: #83afa5; }
+
+.headerFactionMark img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
 }
 
 .rosterNameInput {
   border: 1px solid #8ea0a6;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   min-width: 220px;
-  padding: 7px 9px;
-  width: min(420px, 100%);
+  padding: 5px 9px;
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
 }
 
 .rosterPoints {
@@ -123,25 +156,33 @@ button:hover {
   border-radius: 4px;
   color: #176024;
   font-weight: 700;
-  padding: 7px 10px;
+  grid-column: 3;
+  grid-row: 2;
+  padding: 5px 10px;
   white-space: nowrap;
 }
 
-.headerActions {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: flex-end;
+.headerFileActions {
+  display: grid;
+  gap: 6px;
+  grid-column: 2;
+  grid-row: 3;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
 }
 
-.headerActions button,
-.headerActions select {
+.headerFileActions > div {
+  display: contents;
+}
+
+.headerFileActions > div > button,
+.headerFileActions > div > .exportMenu > button {
+  box-sizing: border-box;
+  font-size: 14px;
   margin-left: 0;
-}
-
-.headerActions select {
-  max-width: 300px;
+  min-height: 32px;
+  padding-block: 4px;
+  width: 100%;
 }
 
 .builderSettings {
@@ -149,7 +190,7 @@ button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  grid-column: 1 / -1;
+  margin-top: 4px;
 }
 
 .builderSettings label {
@@ -162,6 +203,59 @@ button:hover {
 .builderSettings select {
   box-sizing: border-box;
   max-width: 280px;
+}
+
+.headerRosterSelect {
+  box-sizing: border-box;
+  grid-column: 2;
+  grid-row: 4;
+  margin-left: 0;
+  margin-top: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.headerViewActions {
+  align-items: start;
+  display: flex;
+  gap: 10px;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.desktopPlayButton,
+.savedRosterActions .startPlayRoster {
+  background: #bd8426 !important;
+  border-color: #e5aa35 !important;
+  color: #151a1e !important;
+  font-weight: 800 !important;
+}
+
+.desktopPlayButton {
+  align-self: stretch;
+  font-size: 15px;
+  min-width: 118px;
+}
+
+.desktopPlayButton:hover,
+.savedRosterActions .startPlayRoster:hover {
+  background: #dca23a !important;
+}
+
+.headerDeleteRoster {
+  align-self: end;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  margin: 0;
+}
+
+@media (min-width: 861px) and (max-width: 1250px) {
+  .builderHeader { grid-template-columns: minmax(520px, 1fr) auto; }
+  .rosterTitleBlock { grid-column: 1; grid-row: 1 / 4; }
+  .headerViewActions { grid-column: 2; grid-row: 1; }
+  .headerDeleteRoster { grid-column: 2; grid-row: 3; }
 }
 
 .readonlyField {
@@ -660,22 +754,61 @@ html[data-mobile-ui="false"] .startScreen {
   margin: 0;
 }
 
+.startIntroTitleRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.startIntroTitleRow h2 { margin: 0; }
+
+.primaryAction {
+  background: #087f91;
+  border-color: #05606e;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 9px 16px;
+}
+
+.primaryAction:hover { background: #0a98ad; }
+
+.startRosterFilterPanel {
+  border: 1px solid #aebbc0;
+  margin-top: 14px;
+  max-width: 1120px;
+}
+
+.startRosterFilterPanel > summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  gap: 12px;
+  padding: 8px 10px;
+}
+
+.startRosterFilterPanel > summary span { font-weight: 400; }
+
 .startRosterFilters {
   align-items: end;
   display: grid;
   gap: 10px;
-  grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
-  margin-top: 14px;
+  grid-template-columns: minmax(260px, 460px) minmax(180px, 240px) minmax(180px, 220px) auto;
+  padding: 0 10px 10px;
 }
 
 .startRosterFilters label { margin: 0; }
 .startRosterFilters label span { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
 .startRosterFilters input, .startRosterFilters select { box-sizing: border-box; width: 100%; }
-.startRosterFilters > small { padding-bottom: 8px; white-space: nowrap; }
+.startRosterGroupToggle { align-items: center; display: flex; gap: 6px; padding-bottom: 8px; white-space: nowrap; }
+.startRosterGroupToggle input { width: auto; }
 
 .savedRosterCards {
   display: grid;
   gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   max-height: min(60vh, 720px);
   margin-top: 12px;
   overflow-y: auto;
@@ -698,6 +831,16 @@ html[data-mobile-ui="false"] .savedRosterCards {
   grid-template-columns: minmax(0, 1fr) auto;
   min-height: 58px;
   padding: 11px 14px;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+.savedRosterCard:hover,
+.savedRosterCard:focus-visible {
+  background: #eef6f7;
+  border-color: #07899b;
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .savedRosterIdentity {
@@ -750,13 +893,53 @@ html[data-mobile-ui="false"] .savedRosterCards {
 .savedRosterCard .savedRosterEdited { color: #356352; font-weight: 700; }
 
 .savedRosterActions {
+  align-items: center;
   align-self: center;
+  display: flex;
+  gap: 8px;
   white-space: nowrap;
+}
+
+.savedRosterActions .startPlayRoster { min-width: 96px; }
+
+.iconButton {
+  font-size: 16px;
+  line-height: 1;
+  min-height: 34px;
+  min-width: 36px;
+  padding: 5px;
+}
+
+.savedRosterFactionGroup { grid-column: 1 / -1; }
+
+.savedRosterFactionGroup > h3 {
+  border-bottom: 2px solid #0b8394;
+  margin: 5px 0 8px;
+  padding: 5px 2px;
+}
+
+.savedRosterFactionGroup > h3 span {
+  color: #66777d;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.savedRosterFactionCards {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1800px) {
+  .savedRosterCards,
+  .savedRosterFactionCards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
   .startRosterFilters { grid-template-columns: 1fr; }
-  .startRosterFilters > small { padding-bottom: 0; }
+  .startRosterGroupToggle { padding-bottom: 0; }
 }
 
 @media (max-width: 520px) {
@@ -2251,6 +2434,11 @@ html[data-mobile-ui="false"] .savedRosterCards {
     width: 100%;
   }
 
+  .savedRosterCards,
+  .savedRosterFactionCards {
+    grid-template-columns: 1fr;
+  }
+
   .startHeaderLead {
     display: grid;
     gap: 12px;
@@ -3147,6 +3335,25 @@ html[data-theme="dark"] .savedRosterCard {
 
 html[data-theme="dark"] .savedRosterCard .savedRosterEdited {
   color: #a9cfbd;
+}
+
+html[data-theme="dark"] .startRosterFilterPanel {
+  border-color: #42535a;
+}
+
+html[data-theme="dark"] .savedRosterCard:hover,
+html[data-theme="dark"] .savedRosterCard:focus-visible {
+  background: #27363c;
+  border-color: #22a8ba;
+}
+
+html[data-theme="dark"] .savedRosterFactionGroup > h3 span {
+  color: #89969b;
+}
+
+html[data-theme="dark"] .desktopPlayButton,
+html[data-theme="dark"] .savedRosterActions .startPlayRoster {
+  color: #17130a;
 }
 
 html[data-theme="dark"] .unitActions button,

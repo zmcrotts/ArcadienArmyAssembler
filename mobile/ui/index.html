@@ -36,34 +36,60 @@
       <div class="rosterTitleBlock">
         <div class="appBrand">Arcadien Army Assembler</div>
         <div class="rosterTitleRow">
+          <span id="headerFactionMark" class="headerFactionMark" role="img" aria-label="Faction">
+            <img id="headerFactionIcon" src="assets/factions/unknown.svg" alt="">
+          </span>
           <input id="rosterName" class="rosterNameInput" placeholder="List name" aria-label="List name">
           <div class="rosterPoints"><span id="pointsTotal">0</span> pts</div>
         </div>
+        <div class="builderSettings" hidden>
+          <label>
+            Faction
+            <span id="factionReference" class="readonlyField">-</span>
+            <select id="factionSelect" hidden aria-hidden="true" tabindex="-1"></select>
+          </label>
+
+          <label id="subfactionControl" hidden>
+            Chapter / Army
+            <span id="subfactionReference" class="readonlyField">-</span>
+            <select id="subfactionSelect" hidden aria-hidden="true" tabindex="-1"></select>
+          </label>
+
+          <label>
+            Points Limit
+            <input id="pointsLimit" type="number" value="1000">
+          </label>
+        </div>
+        <div class="headerFileActions" aria-label="Roster file actions">
+          <div>
+            <button id="showLibrary">Lists</button>
+            <button id="openNewRoster">New List</button>
+          </div>
+          <div>
+            <button id="saveRoster">Save</button>
+            <div class="exportMenu">
+              <button id="exportMenuToggle" aria-expanded="false">Export</button>
+              <div id="exportMenuPanel" class="exportMenuPanel" hidden>
+                <button id="copyShareCode">Copy Share Code</button>
+                <button id="exportJson">JSON Backup</button>
+                <button class="exportTextFormat" data-format="NR">New Recruit</button>
+                <button class="exportTextFormat" data-format="WTC-Compact">WTC Short</button>
+                <button class="exportTextFormat" data-format="WTC">WTC Long</button>
+                <button class="exportTextFormat" data-format="GW">GW Long</button>
+                <button id="openDiscordExport">Discord Text</button>
+                <label class="exportMenuToggle"><input id="includeSheetReferences" type="checkbox" checked> Rules reference</label>
+                <button id="printUnitSheets">Unit Sheets</button>
+                <button id="printCrusadeSheets">Crusade Sheets</button>
+              </div>
+            </div>
+          </div>
+          <input id="importJsonFile" type="file" accept=".json,application/json" hidden>
+        </div>
+        <select id="rosterSaves" class="headerRosterSelect" aria-label="Saved rosters"></select>
       </div>
 
-      <div class="headerActions">
-        <button id="showLibrary">Lists</button>
-        <button id="openNewRoster">New List</button>
-        <button id="saveRoster">Save</button>
-        <button id="importShareCode">Import Code</button>
-        <button id="importJson">Import JSON</button>
-        <input id="importJsonFile" type="file" accept=".json,application/json" hidden>
-        <select id="rosterSaves" aria-label="Saved rosters"></select>
-        <div class="exportMenu">
-          <button id="exportMenuToggle" aria-expanded="false">Export</button>
-          <div id="exportMenuPanel" class="exportMenuPanel" hidden>
-            <button id="copyShareCode">Copy Share Code</button>
-            <button id="exportJson">JSON Backup</button>
-            <button class="exportTextFormat" data-format="NR">New Recruit</button>
-            <button class="exportTextFormat" data-format="WTC-Compact">WTC Short</button>
-            <button class="exportTextFormat" data-format="WTC">WTC Long</button>
-            <button class="exportTextFormat" data-format="GW">GW Long</button>
-            <button id="openDiscordExport">Discord Text</button>
-            <label class="exportMenuToggle"><input id="includeSheetReferences" type="checkbox" checked> Rules reference</label>
-            <button id="printUnitSheets">Unit Sheets</button>
-            <button id="printCrusadeSheets">Crusade Sheets</button>
-          </div>
-        </div>
+      <div class="headerViewActions">
+        <button id="desktopPlayMode" class="desktopPlayButton" type="button">Play Mode</button>
         <div class="displayControls">
           <div class="segmentedControl" aria-label="Roster layout">
             <button id="standardRosterLayout" class="active" type="button">Standard</button>
@@ -74,27 +100,8 @@
             <button id="darkTheme" type="button">Dark</button>
           </div>
         </div>
-        <button id="deleteRoster" class="dangerButton">Delete List</button>
       </div>
-
-      <div class="builderSettings">
-        <label>
-          Faction
-          <span id="factionReference" class="readonlyField">-</span>
-          <select id="factionSelect" hidden aria-hidden="true" tabindex="-1"></select>
-        </label>
-
-        <label id="subfactionControl" hidden>
-          Chapter / Army
-          <span id="subfactionReference" class="readonlyField">-</span>
-          <select id="subfactionSelect" hidden aria-hidden="true" tabindex="-1"></select>
-        </label>
-
-        <label>
-          Points Limit
-          <input id="pointsLimit" type="number" value="1000">
-        </label>
-      </div>
+      <button id="deleteRoster" class="dangerButton headerDeleteRoster">Delete List</button>
     </header>
 
     <div id="builderLayout" class="layout">
@@ -183,6 +190,7 @@
       <p id="deleteRosterMessage"></p>
       <div class="modalActions">
         <button id="cancelDeleteRoster">Cancel</button>
+        <button id="backupDeleteRoster">Download JSON Backup</button>
         <button id="confirmDeleteRoster" class="dangerButton">Delete List</button>
       </div>
     </div>

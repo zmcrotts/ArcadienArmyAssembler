@@ -102,6 +102,32 @@ test("production UI does not render source-quality audit banners", () => {
   }
 });
 
+test("desktop roster navigation uses compact cards and guarded destructive actions", () => {
+  const index = read("mobile/ui/index.html");
+  const app = read("mobile/ui/engine-app.js");
+  const styles = read("mobile/ui/styles.css");
+  assert.match(index, /id="desktopPlayMode"[^>]*>Play Mode<\/button>/);
+  assert.match(index, /id="headerFactionIcon"[^>]*assets\/factions\/unknown\.svg/);
+  assert.match(index, /class="builderSettings" hidden/);
+  assert.match(index, /id="backupDeleteRoster">Download JSON Backup<\/button>/);
+  assert.match(index, /class="headerRosterSelect"/);
+  assert.match(app, /role="button" tabindex="0" data-save-id=/);
+  assert.doesNotMatch(app, /class="startLoadRoster"/);
+  assert.match(app, /function formatSavedRosterEditedAgo/);
+  assert.match(app, /savedRosterSortMode = "edited-desc"/);
+  assert.match(app, /savedRosterGroupByFaction/);
+  assert.match(app, /backupPendingRosterDelete/);
+  assert.doesNotMatch(app, />Saved Rosters<|Load an existing roster or start a new one\./);
+  assert.match(app, /headerFactionIcon\.src = `assets\/factions\/\$\{faction\.icon\}`/);
+  assert.match(app, /pt limit · roster options/);
+  assert.match(styles, /\.desktopPlayButton,[\s\S]*?background: #bd8426 !important/);
+  assert.match(styles, /\.headerFileActions > div > button,[\s\S]*?min-height: 32px/);
+  assert.match(styles, /\.headerFileActions \{[\s\S]*?grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.headerFactionMark \{[\s\S]*?grid-row: 2 \/ 5/);
+  assert.match(styles, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /@media \(min-width: 1800px\)[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+});
+
 test("every non-sheet export opens the shared text preview", () => {
   const index = read("mobile/ui/index.html");
   const app = read("mobile/ui/engine-app.js");

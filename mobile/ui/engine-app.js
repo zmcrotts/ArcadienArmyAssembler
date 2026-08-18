@@ -35,6 +35,8 @@ const subfactionSelect = document.getElementById("subfactionSelect");
 const subfactionControl = document.getElementById("subfactionControl");
 const factionReference = document.getElementById("factionReference");
 const subfactionReference = document.getElementById("subfactionReference");
+const headerFactionMark = document.getElementById("headerFactionMark");
+const headerFactionIcon = document.getElementById("headerFactionIcon");
 const builderLayout = document.getElementById("builderLayout");
 const availableUnitsPanel = document.getElementById("availableUnitsPanel");
 const unitList = document.getElementById("unitList");
@@ -61,6 +63,7 @@ const mobileAddUnit = document.getElementById("mobileAddUnit");
 const mobileSaveRoster = document.getElementById("mobileSaveRoster");
 const mobileExportRoster = document.getElementById("mobileExportRoster");
 const mobilePlayMode = document.getElementById("mobilePlayMode");
+const desktopPlayMode = document.getElementById("desktopPlayMode");
 const rosterSavesSelect = document.getElementById("rosterSaves");
 const importJsonFile = document.getElementById("importJsonFile");
 const exportMenuToggle = document.getElementById("exportMenuToggle");
@@ -139,6 +142,9 @@ const unitSectionDisclosureState = {};
 let appMode = "library";
 let savedRosterSearchText = "";
 let savedRosterFactionFilter = "";
+let savedRosterSortMode = "edited-desc";
+let savedRosterGroupByFaction = false;
+let savedRosterFiltersOpen = true;
 let newRosterDraft = null;
 let compactorSkippableWargear = {};
 let lastDiscordExportText = "";
@@ -275,8 +281,10 @@ async function init() {
 
   document.getElementById("saveRoster").onclick = saveRoster;
   document.getElementById("deleteRoster").onclick = deleteRoster;
-  document.getElementById("importShareCode").onclick = openRosterShareCodeModal;
-  document.getElementById("importJson").onclick = () => importJsonFile.click();
+  const headerImportShareCode = document.getElementById("importShareCode");
+  if (headerImportShareCode) headerImportShareCode.onclick = openRosterShareCodeModal;
+  const headerImportJson = document.getElementById("importJson");
+  if (headerImportJson) headerImportJson.onclick = () => importJsonFile.click();
   importJsonFile.addEventListener("change", importRosterJsonFile);
   document.getElementById("exportJson").onclick = () => {
     setExportMenuOpen(false);
@@ -312,11 +320,13 @@ async function init() {
   }
   if (mobileSaveRoster) mobileSaveRoster.onclick = saveRoster;
   if (mobilePlayMode) mobilePlayMode.onclick = openCurrentRosterPlayMode;
+  if (desktopPlayMode) desktopPlayMode.onclick = openCurrentRosterPlayMode;
   if (mobileExportRoster) mobileExportRoster.onclick = openMobileExport;
   if (mobileOpenMenu) mobileOpenMenu.onclick = openNewRosterModal;
   if (closeMobileDetails) closeMobileDetails.onclick = closeMobileSheets;
   if (mobileSheetBackdrop) mobileSheetBackdrop.onclick = closeMobileSheets;
   document.getElementById("cancelDeleteRoster").onclick = closeDeleteRosterModal;
+  document.getElementById("backupDeleteRoster").onclick = backupPendingRosterDelete;
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
   document.getElementById("cancelShareCodeImport").onclick = closeRosterShareCodeModal;
   document.getElementById("confirmShareCodeImport").onclick = submitRosterShareCode;
@@ -474,6 +484,13 @@ function renderSubfactionControl() {
   const modes = record?.modes || [];
   if (factionReference) factionReference.textContent = factionLabelFor(currentFaction);
   if (subfactionReference) subfactionReference.textContent = subfactionLabelFor(currentSubfaction);
+  const faction = savedRosterFaction({ document: { faction: currentFaction, subfaction: currentSubfaction } });
+  if (headerFactionMark) {
+    headerFactionMark.dataset.allegiance = faction.allegiance;
+    headerFactionMark.setAttribute("aria-label", faction.label);
+    headerFactionMark.title = faction.label;
+  }
+  if (headerFactionIcon) headerFactionIcon.src = `assets/factions/${faction.icon}`;
   subfactionControl.hidden = !shouldShowSubfactionReference(record);
   subfactionSelect.innerHTML = modes.map(mode =>
     `<option value="${escapeHtml(mode.id)}">${escapeHtml(mode.label)}</option>`
@@ -874,6 +891,9 @@ function showBuilder() {
 function render() {
   setRosterLayoutModeButtons();
   renderRosterSaveBrowser();
+  const currentPlayLabel = currentRosterSaveId && window.ArcadienPlayMode?.hasActive?.(currentRosterSaveId) ? "Resume" : "Play Mode";
+  if (desktopPlayMode) desktopPlayMode.textContent = currentPlayLabel;
+  if (mobilePlayMode) mobilePlayMode.textContent = currentPlayLabel;
   if (appMode === "library") {
     closeMobileSheets();
     if (mobileShell) mobileShell.hidden = true;
@@ -1184,8 +1204,49 @@ function handleMobileRosterAction(button) {
   openMobileDetailsSheet();
 }
 
+function renderSavedRosterCard(save) {
+  const faction = savedRosterFaction(save);
+  const playLabel = window.ArcadienPlayMode?.hasActive?.(save.id) ? "Resume" : "Play Mode";
+  return `
+    <article class="savedRosterCard" role="button" tabindex="0" data-save-id="${escapeHtml(save.id)}" data-roster-name="${escapeHtml(normalizedRosterName(save))}" data-faction-id="${escapeHtml(faction.id)}" aria-label="Load ${escapeHtml(save.document?.name || "Unnamed roster")}">
+      <div class="savedRosterIdentity">
+        <span class="savedRosterFactionMark" data-allegiance="${escapeHtml(faction.allegiance)}" aria-hidden="true">
+          <img src="assets/factions/${escapeHtml(faction.icon)}" alt="">
+        </span>
+        <div class="savedRosterText">
+          <b>${escapeHtml(save.document?.name || "Unnamed roster")}</b>
+          <small>${escapeHtml(savedRosterMetadata(save.document || {}, faction))}</small>
+          <small class="savedRosterEdited"><time datetime="${escapeHtml(savedRosterEditedIso(save))}">Edited ${escapeHtml(formatSavedRosterEditedAgo(save))}</time></small>
+        </div>
+      </div>
+      <div class="savedRosterActions">
+        <button class="startPlayRoster" data-save-id="${escapeHtml(save.id)}">${playLabel}</button>
+        <button class="startDeleteRoster iconButton" data-save-id="${escapeHtml(save.id)}" aria-label="Delete ${escapeHtml(save.document?.name || "Unnamed roster")}" title="Delete roster"><span aria-hidden="true">🗑</span></button>
+      </div>
+    </article>
+  `;
+}
+
+function renderSavedRosterCollection(saves) {
+  if (!savedRosterGroupByFaction) return saves.map(renderSavedRosterCard).join("");
+  const groups = new Map();
+  for (const save of saves) {
+    const faction = savedRosterFaction(save);
+    if (!groups.has(faction.id)) groups.set(faction.id, { faction, saves: [] });
+    groups.get(faction.id).saves.push(save);
+  }
+  return [...groups.values()]
+    .sort((left, right) => Math.max(...right.saves.map(savedRosterEditedTime)) - Math.max(...left.saves.map(savedRosterEditedTime)) || left.faction.label.localeCompare(right.faction.label))
+    .map(group => `
+      <section class="savedRosterFactionGroup" data-faction-group="${escapeHtml(group.faction.id)}">
+        <h3>${escapeHtml(group.faction.label)} <span>${group.saves.length}</span></h3>
+        <div class="savedRosterFactionCards">${group.saves.map(renderSavedRosterCard).join("")}</div>
+      </section>
+    `).join("");
+}
+
 function renderStartScreen() {
-  const saves = sortedSavedRosterLibrary();
+  const saves = sortedSavedRosterLibrary(savedRosterLibrary(), savedRosterSortMode);
   const factionOptions = savedRosterFactionOptions(saves);
   const syncProvider = syncStatus?.available === false
     ? null
@@ -1199,8 +1260,7 @@ function renderStartScreen() {
           <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
         </div>
         <div class="startIntro">
-          <h2>Saved Rosters</h2>
-          <p class="muted">Load an existing roster or start a new one.</p>
+          <button class="startNewRoster primaryAction" id="startNewRoster">+ New Roster</button>
         </div>
       </div>
       <div class="startHeaderActions${syncStatus?.connected ? " hasDisconnect" : ""}">
@@ -1209,47 +1269,37 @@ function renderStartScreen() {
         ${syncProvider && syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
         <button id="startImportShareCode" title="Paste a roster share code">Import Code</button>
         <button id="startImportJson" title="Import a roster JSON file">Import File</button>
-        <button class="startNewRoster" id="startNewRoster">New Roster</button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
-    <div class="startRosterFilters">
-      <label class="startRosterSearch">
-        <span>Search lists</span>
-        <input id="startRosterSearch" type="search" placeholder="Search list names" value="${escapeHtml(savedRosterSearchText)}">
-      </label>
-      <label class="startRosterFactionFilter">
-        <span>Faction</span>
-        <select id="startRosterFactionFilter">
-          <option value="">All factions</option>
-          ${factionOptions.map(option => `<option value="${escapeHtml(option.id)}" ${option.id === savedRosterFactionFilter ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
-        </select>
-      </label>
-      <small id="savedRosterFilterSummary" class="muted"></small>
-    </div>
+    <details id="startRosterFilterPanel" class="startRosterFilterPanel" ${savedRosterFiltersOpen ? "open" : ""}>
+      <summary>Search, filter &amp; sort <span id="savedRosterFilterSummary" class="muted"></span></summary>
+      <div class="startRosterFilters">
+        <label class="startRosterSearch">
+          <span>Search lists</span>
+          <input id="startRosterSearch" type="search" placeholder="Search list names" value="${escapeHtml(savedRosterSearchText)}">
+        </label>
+        <label class="startRosterFactionFilter">
+          <span>Faction</span>
+          <select id="startRosterFactionFilter">
+            <option value="">All factions</option>
+            ${factionOptions.map(option => `<option value="${escapeHtml(option.id)}" ${option.id === savedRosterFactionFilter ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="startRosterSort">
+          <span>Sort</span>
+          <select id="startRosterSort">
+            <option value="edited-desc" ${savedRosterSortMode === "edited-desc" ? "selected" : ""}>Recently edited</option>
+            <option value="name-asc" ${savedRosterSortMode === "name-asc" ? "selected" : ""}>Name A–Z</option>
+            <option value="points-desc" ${savedRosterSortMode === "points-desc" ? "selected" : ""}>Points high–low</option>
+            <option value="points-asc" ${savedRosterSortMode === "points-asc" ? "selected" : ""}>Points low–high</option>
+          </select>
+        </label>
+        <label class="startRosterGroupToggle"><input id="startRosterGroupByFaction" type="checkbox" ${savedRosterGroupByFaction ? "checked" : ""}> Group by faction</label>
+      </div>
+    </details>
     <div class="savedRosterCards">
-      ${saves.length ? saves.map(save => {
-        const faction = savedRosterFaction(save);
-        return `
-        <div class="savedRosterCard" data-roster-name="${escapeHtml(normalizedRosterName(save))}" data-faction-id="${escapeHtml(faction.id)}">
-          <div class="savedRosterIdentity">
-            <span class="savedRosterFactionMark" data-allegiance="${escapeHtml(faction.allegiance)}" aria-hidden="true">
-              <img src="assets/factions/${escapeHtml(faction.icon)}" alt="">
-            </span>
-            <div class="savedRosterText">
-              <b>${escapeHtml(save.document?.name || "Unnamed roster")}</b>
-              <small>${escapeHtml(savedRosterMetadata(save.document || {}, faction))}</small>
-            <small class="savedRosterEdited"><time datetime="${escapeHtml(savedRosterEditedIso(save))}">Last edited ${escapeHtml(formatSavedRosterEditedAt(save))}</time></small>
-            </div>
-          </div>
-          <div class="savedRosterActions">
-            <button class="startPlayRoster" data-save-id="${escapeHtml(save.id)}">${window.ArcadienPlayMode?.hasActive?.(save.id) ? "Resume" : "Play Mode"}</button>
-            <button class="startLoadRoster" data-save-id="${escapeHtml(save.id)}">Load</button>
-            <button class="startDeleteRoster" data-save-id="${escapeHtml(save.id)}">Delete</button>
-          </div>
-        </div>
-      `;
-      }).join("") : `<p class="muted">No saved rosters yet.</p>`}
+      ${saves.length ? renderSavedRosterCollection(saves) : `<p class="muted">No saved rosters yet.</p>`}
       <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
     </div>
   `;
@@ -1272,14 +1322,40 @@ function renderStartScreen() {
     savedRosterFactionFilter = event.target.value;
     applySavedRosterFilters();
   };
-  for (const button of startScreen.querySelectorAll(".startLoadRoster")) {
-    button.onclick = () => loadRosterById(button.dataset.saveId);
+  const filterPanel = document.getElementById("startRosterFilterPanel");
+  if (filterPanel) filterPanel.ontoggle = () => { savedRosterFiltersOpen = filterPanel.open; };
+  const rosterSort = document.getElementById("startRosterSort");
+  if (rosterSort) rosterSort.onchange = event => {
+    savedRosterSortMode = event.target.value;
+    renderStartScreen();
+  };
+  const groupByFaction = document.getElementById("startRosterGroupByFaction");
+  if (groupByFaction) groupByFaction.onchange = event => {
+    savedRosterGroupByFaction = event.target.checked;
+    renderStartScreen();
+  };
+  for (const card of startScreen.querySelectorAll(".savedRosterCard")) {
+    card.onclick = event => {
+      if (event.target.closest("button")) return;
+      loadRosterById(card.dataset.saveId);
+    };
+    card.onkeydown = event => {
+      if (!['Enter', ' '].includes(event.key) || event.target.closest("button")) return;
+      event.preventDefault();
+      loadRosterById(card.dataset.saveId);
+    };
   }
   for (const button of startScreen.querySelectorAll(".startPlayRoster")) {
-    button.onclick = () => openSavedRosterPlayMode(button.dataset.saveId);
+    button.onclick = event => {
+      event.stopPropagation();
+      openSavedRosterPlayMode(button.dataset.saveId);
+    };
   }
   for (const button of startScreen.querySelectorAll(".startDeleteRoster")) {
-    button.onclick = () => requestDeleteRoster(button.dataset.saveId);
+    button.onclick = event => {
+      event.stopPropagation();
+      requestDeleteRoster(button.dataset.saveId);
+    };
   }
   applySavedRosterFilters();
 }
@@ -1301,6 +1377,9 @@ function applySavedRosterFilters() {
     : `${cards.length} saved roster${cards.length === 1 ? "" : "s"} · newest first`;
   const noMatches = document.getElementById("savedRosterNoMatches");
   if (noMatches) noMatches.hidden = cards.length === 0 || visibleCount > 0;
+  for (const group of startScreen.querySelectorAll(".savedRosterFactionGroup")) {
+    group.hidden = ![...group.querySelectorAll(".savedRosterCard")].some(card => !card.hidden);
+  }
 }
 
 function openNewRosterModal() {
@@ -2105,7 +2184,7 @@ function renderRoster() {
   const warningCount = validateRoster().filter(item => !item.ok).length;
   configuration.innerHTML = `
     <div><b>Configuration</b>${warningCount ? `<span class="warningBadge">⚠ ${warningCount}</span>` : ""}</div>
-    <small>${escapeHtml(detachments.length ? `${detachments.length} detachment${detachments.length === 1 ? "" : "s"}` : "Choose detachments")} · roster options</small>
+    <small>${escapeHtml(detachments.length ? `${detachments.length} detachment${detachments.length === 1 ? "" : "s"}` : "Choose detachments")} · ${Number(pointsLimitInput.value || 0).toLocaleString()} pt limit · roster options</small>
   `;
   configuration.onclick = () => {
     selectedPanel = "configuration";
@@ -4435,17 +4514,35 @@ function savedRosterEditedTime(record) {
   return iso ? Date.parse(iso) : 0;
 }
 
-function formatSavedRosterEditedAt(record) {
+function formatSavedRosterEditedAgo(record) {
   const iso = savedRosterEditedIso(record);
-  if (!iso) return "date unavailable";
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+  if (!iso) return "at an unknown time";
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 1000));
+  if (elapsedSeconds < 45) return "just now";
+  const intervals = [
+    ["year", 31536000],
+    ["month", 2592000],
+    ["week", 604800],
+    ["day", 86400],
+    ["hour", 3600],
+    ["minute", 60]
+  ];
+  for (const [label, seconds] of intervals) {
+    const count = Math.floor(elapsedSeconds / seconds);
+    if (count > 0) return `${count} ${label}${count === 1 ? "" : "s"} ago`;
+  }
+  return "just now";
 }
 
-function sortedSavedRosterLibrary(saves = savedRosterLibrary()) {
-  return [...saves].sort((left, right) =>
-    savedRosterEditedTime(right) - savedRosterEditedTime(left)
-    || normalizedRosterName(left).localeCompare(normalizedRosterName(right))
-  );
+function sortedSavedRosterLibrary(saves = savedRosterLibrary(), mode = "edited-desc") {
+  return [...saves].sort((left, right) => {
+    const editedFallback = savedRosterEditedTime(right) - savedRosterEditedTime(left)
+      || normalizedRosterName(left).localeCompare(normalizedRosterName(right));
+    if (mode === "name-asc") return normalizedRosterName(left).localeCompare(normalizedRosterName(right)) || editedFallback;
+    if (mode === "points-desc") return Number(right.document?.totalPoints || 0) - Number(left.document?.totalPoints || 0) || editedFallback;
+    if (mode === "points-asc") return Number(left.document?.totalPoints || 0) - Number(right.document?.totalPoints || 0) || editedFallback;
+    return editedFallback;
+  });
 }
 
 function savedRosterFaction(record) {
@@ -4899,6 +4996,14 @@ function closeDeleteRosterModal() {
   pendingDeleteRosterId = null;
   deleteRosterModal.hidden = true;
   deleteRosterMessage.textContent = "";
+}
+
+function backupPendingRosterDelete() {
+  if (!pendingDeleteRosterId) return;
+  const target = savedRosterLibrary().find(save => save.id === pendingDeleteRosterId);
+  if (!target?.document) return;
+  downloadFile(`${fileSafeRosterName(target.document)}-backup.json`, JSON.stringify(target.document, null, 2));
+  showTransientMessage(`Downloaded a backup of “${target.document.name || "Unnamed roster"}”.`);
 }
 
 async function confirmPendingRosterDelete() {

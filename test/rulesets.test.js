@@ -217,6 +217,18 @@ test("11e ruleset gap-fills incomplete army rules", () => {
   assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
 });
 
+test("Custodes expose Martial Ka'tah as an army rule", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID, { fresh: true });
+  const custodes = ruleset.armies.find(army => army.faction === "Imperium - Adeptus Custodes");
+  const martialKatah = custodes?.armyRules.filter(rule => rule.name === "Martial Ka'tah") || [];
+
+  assert.equal(martialKatah.length, 1);
+  assert.match(martialKatah[0].description, /selected to fight/i);
+  assert.match(martialKatah[0].description, /Dacatarai Stance/i);
+  assert.match(martialKatah[0].description, /Rendax Stance/i);
+  assert.equal(martialKatah[0].source.name, "Local 11e Army Rule Gap-fill");
+});
+
 test("Imperial Knights inherit Code Chivalric from their native library catalogue", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const knights = ruleset.armies.find(item => item.faction === "Imperium - Imperial Knights");
