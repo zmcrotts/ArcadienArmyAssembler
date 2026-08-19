@@ -8,6 +8,7 @@ try {
     document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=860, initial-scale=1, viewport-fit=cover");
   }
   document.documentElement.dataset.mobileUi = mobileUi ? "true" : "false";
+  document.documentElement.dataset.nativeShell = androidApp ? "android" : "web";
   document.documentElement.dataset.theme = mobileUi || localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
 } catch {
   document.documentElement.dataset.theme = "dark";

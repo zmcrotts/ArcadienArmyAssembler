@@ -862,11 +862,13 @@
     if (!group) return;
     const models = groupModels(group);
     const weapons = group.members.flatMap(member => member.configured?.weapons || []);
+    const rangedWeapons = weapons.filter(weapon => !isMeleeWeapon(weapon));
+    const meleeWeapons = weapons.filter(isMeleeWeapon);
     const rules = unitRules(group);
     const stratagems = eligibleStratagems(group);
     const battleShocked = isGroupBattleShocked(group.id);
     modal.hidden = false;
-    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.map(weapon => renderWeapon(weapon, models)).join("") || `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
+    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
     modal.querySelector("[data-close]").onclick = closeModal;
     for (const button of modal.querySelectorAll("[data-model-delta]")) button.onclick = () => changeModelWounds(button.dataset.modelId, Number(button.dataset.modelDelta));
     for (const button of modal.querySelectorAll("[data-model-toggle]")) button.onclick = () => toggleModel(button.dataset.modelToggle, Number(button.dataset.maxWounds));
@@ -1203,6 +1205,16 @@
     modal.querySelector("[data-close]").onclick = closeModal;
     modal.querySelector("[data-save-gallery]").onclick = () => saveScorecardToGallery(canvas);
     modal.querySelector("[data-return-lists]").onclick = returnToListsAfterGame;
+  }
+
+  function isMeleeWeapon(weapon) {
+    const range = Object.entries(weapon?.characteristics || {})
+      .find(([key]) => normalize(key) === "range")?.[1];
+    return normalize(range) === "melee";
+  }
+
+  function renderWeaponGroup(title, weapons, models, type) {
+    return `<div class="playWeaponGroup ${type}"><h4>${escapeHtml(title)}</h4>${weapons.length ? weapons.map(weapon => renderWeapon(weapon, models)).join("") : `<p>No ${type} weapons.</p>`}</div>`;
   }
 
   async function saveScorecardToGallery(canvas) {

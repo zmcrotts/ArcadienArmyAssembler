@@ -291,3 +291,16 @@ test("Play Mode loads before the roster UI so active and completed match actions
   assert.ok(html.indexOf("play-mode.js") < html.indexOf("engine-app.js"));
   assert.match(html, /id="mobilePlayMode"/);
 });
+
+test("mobile battle controls fit narrow screens and weapons are split by range", () => {
+  const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(source, /const rangedWeapons = weapons\.filter\(weapon => !isMeleeWeapon\(weapon\)\)/);
+  assert.match(source, /const meleeWeapons = weapons\.filter\(isMeleeWeapon\)/);
+  assert.match(source, /renderWeaponGroup\("Ranged Weapons"/);
+  assert.match(source, /renderWeaponGroup\("Melee Weapons"/);
+  assert.match(source, /return normalize\(range\) === "melee"/);
+  assert.match(css, /\.playWeaponGroup\.ranged\{/);
+  assert.match(css, /\.playWeaponGroup\.melee\{/);
+  assert.match(css, /@media\(max-width:520px\)\{[\s\S]*?\.playCpControl\{box-sizing:border-box;grid-template-columns:36px minmax\(0,1fr\) 36px/);
+  assert.match(css, /html\[data-native-shell="android"\] \.playModeHeader\{padding-top:12px\}/);
+});

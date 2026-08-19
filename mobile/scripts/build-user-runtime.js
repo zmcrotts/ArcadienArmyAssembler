@@ -53,6 +53,8 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/army\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/army.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-document\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-document.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-share-code\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-share-code.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/node_modules\/qrcode-generator\/qrcode\.js\?v=([^"]+)"><\/script>/, '<script defer src="vendor/qrcode-generator.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-qr\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-qr.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/sheets\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/sheets.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=([^"]+)"><\/script>/, '<script defer src="catalogue-sections.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');

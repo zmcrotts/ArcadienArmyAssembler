@@ -12,7 +12,7 @@
   <link rel="manifest" href="app.webmanifest">
   <link rel="apple-touch-icon" href="app-icon-192.png">
   <script defer src="bootstrap-app.js"></script>
-  <link rel="stylesheet" href="styles.css?v=mobile27">
+  <link rel="stylesheet" href="styles.css?v=mobile29">
 </head>
 <body>
   <aside id="offlinePanel" class="offlinePanel" data-state="loading" hidden aria-live="polite" role="status">
@@ -70,6 +70,7 @@
             <div class="exportMenu">
               <button id="exportMenuToggle" aria-expanded="false">Export</button>
               <div id="exportMenuPanel" class="exportMenuPanel" hidden>
+                <button id="openQrShare">Share QR</button>
                 <button id="copyShareCode">Copy Share Code</button>
                 <button id="exportJson">JSON Backup</button>
                 <button class="exportTextFormat" data-format="NR">New Recruit</button>
@@ -198,12 +199,37 @@
 
   <div id="shareCodeModal" class="modalBackdrop" hidden>
     <div class="modalPanel shareCodePanel" role="dialog" aria-modal="true" aria-labelledby="shareCodeTitle">
-      <h2 id="shareCodeTitle">Import roster code</h2>
-      <p>Paste the complete AAA share code below.</p>
+      <h2 id="shareCodeTitle">Import roster</h2>
+      <p>Paste a complete AAA share code, or choose a JSON backup file.</p>
       <textarea id="shareCodeInput" class="shareCodeInput" rows="6" spellcheck="false" autocomplete="off" placeholder="AAA2-…" aria-label="Roster share code"></textarea>
+      <button id="chooseRosterImportFile" class="wideButton" type="button">Choose JSON File</button>
       <div class="modalActions">
         <button id="cancelShareCodeImport" type="button">Cancel</button>
-        <button id="confirmShareCodeImport" type="button">Import Roster</button>
+        <button id="confirmShareCodeImport" type="button">Import Code</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="qrShareModal" class="modalBackdrop" hidden>
+    <div class="modalPanel qrSharePanel" role="dialog" aria-modal="true" aria-labelledby="qrShareTitle">
+      <h2 id="qrShareTitle">Share roster</h2>
+      <p id="qrShareRosterName" class="qrRosterName"></p>
+      <div id="qrShareImage" class="qrShareImage" role="img" aria-label="Scannable roster QR code"></div>
+      <p class="qrShareHelp">Scan with a camera to open this exact roster in Arcadien Army Assembler.</p>
+      <div class="modalActions">
+        <button id="sendQrShare" type="button">Send</button>
+        <button id="closeQrShare" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="qrImportModal" class="modalBackdrop" hidden>
+    <div class="modalPanel confirmPanel" role="dialog" aria-modal="true" aria-labelledby="qrImportTitle">
+      <h2 id="qrImportTitle">Import roster?</h2>
+      <p id="qrImportMessage"></p>
+      <div class="modalActions">
+        <button id="rejectQrImport" type="button">No</button>
+        <button id="confirmQrImport" type="button">Yes</button>
       </div>
     </div>
   </div>
@@ -306,12 +332,14 @@
   <script defer src="../../src/domain/army.js?v=milestone28"></script>
   <script defer src="../../src/domain/roster-document.js?v=milestone1"></script>
   <script defer src="../../src/domain/roster-share-code.js?v=pilot1"></script>
+  <script defer src="../../node_modules/qrcode-generator/qrcode.js?v=1.4.4"></script>
+  <script defer src="../../src/domain/roster-qr.js?v=pilot1"></script>
   <script defer src="../../src/domain/sheets.js?v=milestone5"></script>
   <script defer src="catalogue-sections.js?v=milestone2"></script>
   <script defer src="onedrive-roster-sync.js?v=sync7"></script>
   <script defer src="offline-app.js?v=offline2"></script>
-  <script defer src="play-mode.js?v=play1"></script>
+  <script defer src="play-mode.js?v=play2"></script>
   <script defer src="roster-storage.js?v=idb1"></script>
-  <script defer src="engine-app.js?v=mobile28"></script>
+  <script defer src="engine-app.js?v=mobile31"></script>
 </body>
 </html>

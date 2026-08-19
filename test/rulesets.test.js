@@ -654,6 +654,42 @@ test("11e specialist models replace baseline members without increasing unit siz
   }
 });
 
+test("11e Khorne Berzerker special weapons scale at one per five models", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - World Eaters" && item.name === "Khorne Berzerkers"
+  );
+  const maximumFor = (entry, name) => getOptionStates(unit, entry).find(option => option.name === name)?.maximum;
+  const plasmaName = "Khorne Berzerker w/ chainblade and plasma pistol";
+  const evisceratorName = "Khorne Berzerker w/ eviscerator and bolt pistol";
+
+  assert.deepEqual(unit.unitSizePresets, [
+    { size: 10, label: "10 models" },
+    { size: 20, label: "20 models" }
+  ]);
+  let entry = createDefaultRosterEntry(unit);
+  assert.equal(maximumFor(entry, plasmaName), 2);
+  assert.equal(maximumFor(entry, evisceratorName), 2);
+  assert.throws(() => setUnitSize(unit, entry, 15), /Choose one of the listed Khorne Berzerkers compositions/);
+
+  entry = setUnitSize(unit, entry, 20);
+  assert.equal(maximumFor(entry, plasmaName), 4);
+  assert.equal(maximumFor(entry, evisceratorName), 4);
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const plasma = getOptionStates(unit, entry).find(option => option.name === plasmaName);
+  const eviscerator = getOptionStates(unit, entry).find(option => option.name === evisceratorName);
+  entry = setSelection(unit, entry, plasma.id, 4);
+  entry = setSelection(unit, entry, eviscerator.id, 4);
+  const errors = validateLoadout(unit, entry);
+  assert.ok(errors.some(error =>
+    error.name === "Plasma pistols" && error.actual === 4 && error.limit === 2
+  ));
+  assert.ok(errors.some(error =>
+    error.name === "Khornate eviscerators" && error.actual === 4 && error.limit === 2
+  ));
+});
+
 test("11e Lions of the Emperor enhancements display their confirmed bearer restrictions", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const army = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Custodes");

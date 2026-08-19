@@ -22,8 +22,41 @@ const TEST_PROFILE_LABEL = TEST_PROFILE
   : "";
 const APP_NAME = TEST_PROFILE ? `${BASE_APP_NAME} TEST — ${TEST_PROFILE_LABEL}` : BASE_APP_NAME;
 let mainWindow = null;
+let pendingRosterImportUrl = null;
 
 app.setName(APP_NAME);
+
+function rosterImportUrlFrom(value) {
+  try {
+    const url = new URL(String(value || ""));
+    if (url.protocol !== "arcadien:" || url.hostname.toLowerCase() !== "import" || (url.pathname && url.pathname !== "/")) return null;
+    const code = String(url.searchParams.get("code") || "");
+    return code && code.length <= 2800 ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function rosterImportUrlFromArguments(argumentsList) {
+  for (const argument of argumentsList || []) {
+    const url = rosterImportUrlFrom(argument);
+    if (url) return url;
+  }
+  return null;
+}
+
+function deliverRosterImportUrl(value) {
+  const url = rosterImportUrlFrom(value);
+  if (!url) return false;
+  pendingRosterImportUrl = url;
+  if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.webContents.isLoading()) {
+    mainWindow.webContents.send("roster-import-url", pendingRosterImportUrl);
+    pendingRosterImportUrl = null;
+  }
+  return true;
+}
+
+pendingRosterImportUrl = rosterImportUrlFromArguments(process.argv);
 
 function userDataRoot() {
   if (TEST_PROFILE) {
@@ -323,6 +356,12 @@ function createWindow() {
 
   mainWindow.removeMenu();
 
+  mainWindow.webContents.on("did-finish-load", () => {
+    if (!pendingRosterImportUrl) return;
+    mainWindow.webContents.send("roster-import-url", pendingRosterImportUrl);
+    pendingRosterImportUrl = null;
+  });
+
   if (TEST_PROFILE) {
     mainWindow.on("page-title-updated", event => {
       event.preventDefault();
@@ -358,7 +397,8 @@ function createWindow() {
 }
 
 if (hasSingleInstanceLock) {
-  app.on("second-instance", () => {
+  app.on("second-instance", (_event, argv) => {
+    deliverRosterImportUrl(rosterImportUrlFromArguments(argv));
     if (!mainWindow || mainWindow.isDestroyed()) {
       if (app.isReady()) createWindow();
       return;
@@ -369,6 +409,7 @@ if (hasSingleInstanceLock) {
   });
 
   app.whenReady().then(() => {
+    if (app.isPackaged) app.setAsDefaultProtocolClient("arcadien");
     registerRosterSyncHandlers();
     createWindow();
 
@@ -379,5 +420,10 @@ if (hasSingleInstanceLock) {
 
   app.on("window-all-closed", () => {
     app.quit();
+  });
+
+  app.on("open-url", (event, url) => {
+    event.preventDefault();
+    deliverRosterImportUrl(url);
   });
 }

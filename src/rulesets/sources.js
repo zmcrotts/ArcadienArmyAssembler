@@ -384,6 +384,14 @@ function applyManualLoadoutCorrections(definitions) {
 
     if (
       definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Chaos - World Eaters"
+      && definition.name === "Khorne Berzerkers"
+    ) {
+      return fixKhorneBerzerkersLoadout(definition);
+    }
+
+    if (
+      definition.rulesetId === "wh40k-11e-vflam"
       && definition.faction === "Imperium - Adeptus Astartes - Black Templars"
       && definition.name === "Sword Brethren Squad"
     ) {
@@ -692,6 +700,15 @@ function fixEinhyrHearthguardLoadout(definition) {
       option.constraints = [manualSelectionConstraint(`${option.sourceId || option.id}-max`, "max", "parent", 1)];
     }
   }
+  return unit;
+}
+
+function fixKhorneBerzerkersLoadout(definition) {
+  const unit = clone(definition);
+  unit.unitSizePresets = [
+    { size: 10, label: "10 models" },
+    { size: 20, label: "20 models" }
+  ];
   return unit;
 }
 

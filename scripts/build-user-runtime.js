@@ -39,10 +39,12 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/army\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/army.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-document\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-document.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-share-code\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-share-code.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}node_modules\/qrcode-generator\/qrcode\.js\?v=[^"]+"><\/script>/, '<script defer src="vendor/qrcode-generator.js"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-qr\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/roster-qr.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/sheets\.js\?v=[^"]+"><\/script>/, '<script defer src="domain/sheets.js"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=[^"]+"><\/script>/, '<script defer src="catalogue-sections.js"></script>')
     .replace(/<script(?:\s+defer)? src="onedrive-roster-sync\.js\?v=[^"]+"><\/script>/, '<script defer src="onedrive-roster-sync.js"></script>')
-    .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-app.js"></script>');
+    .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');
 
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), html, "utf8");
 }

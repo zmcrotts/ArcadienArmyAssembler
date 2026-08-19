@@ -241,6 +241,31 @@ function constraintActualCount(node, entry, index, unitDefinition) {
   }, 0);
 }
 
+function validateKnownUnitRules(unitDefinition, entry, index) {
+  if (unitDefinition?.name !== "Khorne Berzerkers") return [];
+
+  const modelCount = selectionCount(entry, index, "model");
+  const limit = Math.floor(modelCount / 5);
+  const rules = [
+    { label: "Plasma pistols", pattern: /Khorne Berzerker w\/.*plasma pistol/i },
+    { label: "Khornate eviscerators", pattern: /Khorne Berzerker w\/ eviscerator/i }
+  ];
+
+  return rules.flatMap(rule => {
+    const models = index.all.filter(node => node.kind === "model" && rule.pattern.test(String(node.name || "")));
+    const actual = models.reduce((sum, node) => sum + actualCount(node, entry), 0);
+    if (actual <= limit) return [];
+    return [{
+      nodeId: models.find(node => actualCount(node, entry) > 0)?.id || models[0]?.id,
+      name: rule.label,
+      type: "max",
+      actual,
+      limit,
+      constraintId: `arcadien-khorne-berzerkers-${rule.label.toLowerCase().replace(/[^a-z]+/g, "-")}`
+    }];
+  });
+}
+
 function validateLoadout(unitDefinition, entry) {
   const index = buildTreeIndex(unitDefinition);
   const errors = [];
@@ -264,7 +289,7 @@ function validateLoadout(unitDefinition, entry) {
     }
   }
 
-  return errors;
+  return [...errors, ...validateKnownUnitRules(unitDefinition, entry, index)];
 }
 
 function constraintValue(node, type, scope = null) {

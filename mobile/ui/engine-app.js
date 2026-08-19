@@ -5,6 +5,7 @@ const engine = window.RosterEngine;
 const armyEngine = window.ArmyEngine;
 const rosterDocument = window.RosterDocument;
 const rosterShareCode = window.RosterShareCode;
+const rosterQr = window.RosterQr;
 const rosterSheets = window.RosterSheets;
 const catalogueSections = window.CatalogueSections;
 const activeTestProfile = new URLSearchParams(window.location.search).get("aaaTestProfile") || "";
@@ -17,6 +18,12 @@ const deleteRosterModal = document.getElementById("deleteRosterModal");
 const deleteRosterMessage = document.getElementById("deleteRosterMessage");
 const shareCodeModal = document.getElementById("shareCodeModal");
 const shareCodeInput = document.getElementById("shareCodeInput");
+const chooseRosterImportFile = document.getElementById("chooseRosterImportFile");
+const qrShareModal = document.getElementById("qrShareModal");
+const qrShareImage = document.getElementById("qrShareImage");
+const qrShareRosterName = document.getElementById("qrShareRosterName");
+const qrImportModal = document.getElementById("qrImportModal");
+const qrImportMessage = document.getElementById("qrImportMessage");
 const discordExportModal = document.getElementById("discordExportModal");
 const discordExportPreview = document.getElementById("discordExportPreview");
 const discordListStyle = document.getElementById("discordListStyle");
@@ -144,7 +151,7 @@ let savedRosterSearchText = "";
 let savedRosterFactionFilter = "";
 let savedRosterSortMode = "edited-desc";
 let savedRosterGroupByFaction = false;
-let savedRosterFiltersOpen = true;
+let savedRosterFiltersOpen = false;
 let newRosterDraft = null;
 let compactorSkippableWargear = {};
 let lastDiscordExportText = "";
@@ -163,6 +170,9 @@ let mobileAddKeywordFilter = "";
 const mobileRosterSectionDisclosureState = {};
 const mobileAddSectionDisclosureState = {};
 let rosterAutosaveTimer = null;
+let currentQrImportUrl = "";
+let currentQrRosterName = "";
+let pendingQrImport = null;
 
 async function init() {
   try {
@@ -291,6 +301,7 @@ async function init() {
     openRosterExport("json");
   };
   document.getElementById("copyShareCode").onclick = copyCurrentRosterShareCode;
+  document.getElementById("openQrShare").onclick = openCurrentRosterQr;
   document.getElementById("openDiscordExport").onclick = () => {
     setExportMenuOpen(false);
     openRosterExport("discord-extended");
@@ -330,6 +341,11 @@ async function init() {
   document.getElementById("confirmDeleteRoster").onclick = confirmPendingRosterDelete;
   document.getElementById("cancelShareCodeImport").onclick = closeRosterShareCodeModal;
   document.getElementById("confirmShareCodeImport").onclick = submitRosterShareCode;
+  if (chooseRosterImportFile) chooseRosterImportFile.onclick = () => importJsonFile.click();
+  document.getElementById("sendQrShare").onclick = sendCurrentRosterQr;
+  document.getElementById("closeQrShare").onclick = closeCurrentRosterQr;
+  document.getElementById("rejectQrImport").onclick = rejectPendingQrImport;
+  document.getElementById("confirmQrImport").onclick = confirmPendingQrImport;
   shareCodeInput.addEventListener("keydown", event => {
     if (event.key === "Escape") closeRosterShareCodeModal();
     if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) submitRosterShareCode();
@@ -384,9 +400,17 @@ async function init() {
   deleteRosterModal.addEventListener("click", event => {
     if (event.target === deleteRosterModal) closeDeleteRosterModal();
   });
+  qrShareModal.addEventListener("click", event => {
+    if (event.target === qrShareModal) closeCurrentRosterQr();
+  });
+  qrImportModal.addEventListener("click", event => {
+    if (event.target === qrImportModal) rejectPendingQrImport();
+  });
   discordExportModal.addEventListener("click", event => {
     if (event.target === discordExportModal) closeDiscordExportModal();
   });
+
+  connectRosterImportLinks();
 
   (async () => {
     try {
@@ -829,7 +853,6 @@ function autosaveCurrentRoster(options = {}) {
 
   try {
     const document = currentRosterDocument();
-    document.name = document.name || `${currentSubfaction || currentFaction} roster`;
     const saves = savedRosterLibrary();
     const active = saves.find(save => save.id === currentRosterSaveId);
     const id = active?.id || currentRosterSaveId || newRosterSaveId();
@@ -848,8 +871,6 @@ function autosaveCurrentRoster(options = {}) {
       showTransientMessage(rosterStorageWarning);
     });
     currentRosterSaveId = id;
-    rosterNameInput.value = document.name;
-    if (mobileRosterName) mobileRosterName.value = document.name;
     markRosterClean();
     renderRosterSaveBrowser();
     return true;
@@ -942,6 +963,14 @@ function handleNativeBack() {
     closeOpenWeaponPreview();
     return true;
   }
+  if (qrShareModal && !qrShareModal.hidden) {
+    closeCurrentRosterQr();
+    return true;
+  }
+  if (qrImportModal && !qrImportModal.hidden) {
+    rejectPendingQrImport();
+    return true;
+  }
   if (discordExportModal && !discordExportModal.hidden) {
     closeDiscordExportModal();
     return true;
@@ -964,7 +993,8 @@ function handleNativeBack() {
 window.ArcadienApp = {
   ...(window.ArcadienApp || {}),
   handleNativeBack,
-  hasUnsavedChanges: hasUnsavedRosterChanges
+  hasUnsavedChanges: hasUnsavedRosterChanges,
+  receiveRosterImportUrl
 };
 
 function applyMobileSheetState() {
@@ -1267,8 +1297,7 @@ function renderStartScreen() {
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider?.cleanDuplicates ? `<button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>` : ""}
         ${syncProvider && syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
-        <button id="startImportShareCode" title="Paste a roster share code">Import Code</button>
-        <button id="startImportJson" title="Import a roster JSON file">Import File</button>
+        <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
@@ -1303,8 +1332,7 @@ function renderStartScreen() {
       <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
     </div>
   `;
-  document.getElementById("startImportShareCode").onclick = openRosterShareCodeModal;
-  document.getElementById("startImportJson").onclick = () => importJsonFile.click();
+  document.getElementById("startImportRoster").onclick = openRosterShareCodeModal;
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const cleanSyncButton = document.getElementById("startCleanSync");
@@ -4866,6 +4894,56 @@ async function copyCurrentRosterShareCode() {
   }
 }
 
+async function openCurrentRosterQr() {
+  setExportMenuOpen(false);
+  closeDiscordExportModal();
+  try {
+    await openRosterQr(currentRosterDocument());
+  } catch (error) {
+    alert(`QR share failed: ${error.message}`);
+  }
+}
+
+async function openRosterQr(document) {
+  const context = await shareContextForIdentity(document.faction, document.subfaction);
+  const code = rosterShareCode.encodeRoster(document, context);
+  currentQrImportUrl = rosterQr.buildImportUrl(code);
+  currentQrRosterName = document.name || "Unnamed roster";
+  qrShareRosterName.textContent = currentQrRosterName;
+  qrShareImage.innerHTML = rosterQr.createQrSvg(currentQrImportUrl, { errorCorrection: "M", cellSize: 5, margin: 4 });
+  qrShareModal.hidden = false;
+}
+
+function closeCurrentRosterQr() {
+  qrShareModal.hidden = true;
+  qrShareImage.innerHTML = "";
+  currentQrImportUrl = "";
+  currentQrRosterName = "";
+}
+
+async function sendCurrentRosterQr() {
+  if (!currentQrImportUrl) return;
+  const rosterName = currentQrRosterName || "Unnamed roster";
+  const text = `Open “${rosterName}” in Arcadien Army Assembler:\n${currentQrImportUrl}`;
+  try {
+    if (window.AndroidFiles?.shareText) {
+      window.AndroidFiles.shareText(`Arcadien roster: ${rosterName}`, text);
+      return;
+    }
+    if (navigator.share) {
+      await navigator.share({ title: `Arcadien roster: ${rosterName}`, text });
+      return;
+    }
+    if (await copyTextToClipboard(currentQrImportUrl)) {
+      showTransientMessage("Roster link copied. Paste it into any messaging app.");
+      return;
+    }
+    window.prompt("Copy this roster link:", currentQrImportUrl);
+  } catch (error) {
+    if (error?.name !== "AbortError") showTransientMessage(`Could not send automatically: ${error.message}`);
+  }
+}
+
 function openRosterShareCodeModal() {
   shareCodeInput.value = "";
   shareCodeModal.hidden = false;
@@ -4885,29 +4963,79 @@ function submitRosterShareCode() {
 async function importRosterShareCode(code) {
   if (!String(code || "").trim()) return;
   try {
-    const identity = rosterShareCode.inspectRosterIdentity(code, { factionIds: rosterShareCode.playableFactionIds(engineData) });
-    const context = await shareContextForIdentity(identity.faction, identity.subfaction);
-    const imported = rosterShareCode.decodeRoster(code, context);
-    await validateImportedRosterHydration({ document: imported }, 0);
-    if (!preserveCurrentRosterBeforeLeaving()) return;
-    await loadRosterDocument(imported);
-    const normalizedDocument = currentRosterDocument();
-    const now = new Date().toISOString();
-    const record = { id: newRosterSaveId(), savedAt: now, lastEditedAt: now, document: normalizedDocument };
-    await mergeRosterSaves([record]);
-    currentRosterSaveId = record.id;
-    markRosterClean();
-    render();
+    const imported = await decodeRosterShareCode(code);
+    if (!await commitImportedRoster(imported)) return;
     showTransientMessage(`Imported “${imported.name}” from a share code.`);
   } catch (error) {
     alert(`Share code import failed: ${error.message}`);
   }
 }
 
+async function decodeRosterShareCode(code) {
+  const identity = rosterShareCode.inspectRosterIdentity(code, { factionIds: rosterShareCode.playableFactionIds(engineData) });
+  const context = await shareContextForIdentity(identity.faction, identity.subfaction);
+  const imported = rosterShareCode.decodeRoster(code, context);
+  await validateImportedRosterHydration({ document: imported }, 0);
+  return imported;
+}
+
+async function commitImportedRoster(imported) {
+  if (!preserveCurrentRosterBeforeLeaving()) return false;
+  await loadRosterDocument(imported);
+  const normalizedDocument = currentRosterDocument();
+  const now = new Date().toISOString();
+  const record = { id: newRosterSaveId(), savedAt: now, lastEditedAt: now, document: normalizedDocument };
+  await mergeRosterSaves([record]);
+  currentRosterSaveId = record.id;
+  markRosterClean();
+  render();
+  return true;
+}
+
+async function receiveRosterImportUrl(importUrl) {
+  try {
+    const code = rosterQr.parseImportUrl(importUrl);
+    const imported = await decodeRosterShareCode(code);
+    pendingQrImport = imported;
+    qrImportMessage.textContent = `Do you want to import “${imported.name || "Unnamed roster"}”?`;
+    qrImportModal.hidden = false;
+  } catch (error) {
+    alert(`Roster link failed: ${error.message}`);
+  }
+}
+
+function rejectPendingQrImport() {
+  pendingQrImport = null;
+  qrImportModal.hidden = true;
+}
+
+async function confirmPendingQrImport() {
+  const imported = pendingQrImport;
+  rejectPendingQrImport();
+  if (!imported) return;
+  try {
+    if (!await commitImportedRoster(imported)) return;
+    showTransientMessage(`Imported “${imported.name}” from a QR code.`);
+  } catch (error) {
+    alert(`QR roster import failed: ${error.message}`);
+  }
+}
+
+function connectRosterImportLinks() {
+  if (connectRosterImportLinks.connected) return;
+  connectRosterImportLinks.connected = true;
+  if (window.desktopRosterLinks?.onImportUrl) {
+    window.desktopRosterLinks.onImportUrl(url => void receiveRosterImportUrl(url));
+  }
+  const testImport = new URLSearchParams(window.location.search).get("aaaImport");
+  if (testImport) void receiveRosterImportUrl(testImport);
+}
+
 async function importRosterJsonFile(event) {
   const file = event.target.files?.[0];
   event.target.value = "";
   if (!file) return;
+  closeRosterShareCodeModal();
 
   try {
     if (Number(file.size || 0) > MAX_IMPORT_BYTES) throw new Error("The JSON file is larger than the 10 MB import limit.");
@@ -5057,11 +5185,15 @@ function openRosterExport(style = "wtc-compact", resetOptions = false) {
 function renderExportFormatButtons() {
   if (!exportFormatButtons || !discordListStyle) return;
   const current = discordListStyle.value;
-  exportFormatButtons.innerHTML = Array.from(discordListStyle.options).map(option => `
+  exportFormatButtons.innerHTML = `
+    <button type="button" class="exportQrShare">Share QR</button>
+    <button type="button" class="exportCopyShareCode">Copy Share Code</button>` + Array.from(discordListStyle.options).map(option => `
     <button type="button" class="${option.value === current ? "selected" : ""}" data-export-style="${escapeHtml(option.value)}">
       ${escapeHtml(option.textContent || option.value)}
     </button>
   `).join("");
+  exportFormatButtons.querySelector(".exportQrShare").onclick = openCurrentRosterQr;
+  exportFormatButtons.querySelector(".exportCopyShareCode").onclick = copyCurrentRosterShareCode;
   for (const button of exportFormatButtons.querySelectorAll("[data-export-style]")) {
     button.onclick = () => {
       discordListStyle.value = button.dataset.exportStyle || "wtc-compact";

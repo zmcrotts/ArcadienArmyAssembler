@@ -9,6 +9,8 @@ const SHARED_RUNTIME_FILES = Object.freeze([
   ["src/domain/army.js", "domain/army.js"],
   ["src/domain/roster-document.js", "domain/roster-document.js"],
   ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
+  ["node_modules/qrcode-generator/qrcode.js", "vendor/qrcode-generator.js"],
+  ["src/domain/roster-qr.js", "domain/roster-qr.js"],
   ["src/domain/sheets.js", "domain/sheets.js"],
   ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
 ]);

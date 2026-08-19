@@ -70,6 +70,7 @@ public final class MainActivity extends Activity {
     private volatile boolean oneDriveSignInCancelled;
     private volatile Thread oneDriveSignInThread;
     private boolean forceExit;
+    private String pendingRosterImportUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,10 +133,36 @@ public final class MainActivity extends Activity {
         webView.setWebViewClient(new LocalWebViewClient());
         webView.setWebChromeClient(new LocalWebChromeClient());
 
+        handleRosterImportIntent(getIntent());
+
         webView.clearCache(true);
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             webView.loadUrl("file:///android_asset/www/index.html?v=" + BuildConfig.VERSION_CODE);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleRosterImportIntent(intent);
+        deliverPendingRosterImport();
+    }
+
+    private void handleRosterImportIntent(Intent intent) {
+        Uri uri = intent == null ? null : intent.getData();
+        if (uri == null || !"arcadien".equalsIgnoreCase(uri.getScheme()) || !"import".equalsIgnoreCase(uri.getHost())) return;
+        String code = uri.getQueryParameter("code");
+        if (code == null || code.isEmpty() || code.length() > 2800) return;
+        pendingRosterImportUrl = uri.toString();
+    }
+
+    private void deliverPendingRosterImport() {
+        if (webView == null || pendingRosterImportUrl == null || webView.getProgress() < 100) return;
+        String url = pendingRosterImportUrl;
+        pendingRosterImportUrl = null;
+        String script = "window.ArcadienApp && window.ArcadienApp.receiveRosterImportUrl(" + JSONObject.quote(url) + ");";
+        webView.post(() -> webView.evaluateJavascript(script, null));
     }
 
     @Override
@@ -244,6 +271,12 @@ public final class MainActivity extends Activity {
 
     private final class LocalWebViewClient extends WebViewClient {
         @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            deliverPendingRosterImport();
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             Uri uri = request.getUrl();
             if ("blob".equalsIgnoreCase(uri.getScheme())) return false;
@@ -282,6 +315,21 @@ public final class MainActivity extends Activity {
             } catch (Exception error) {
                 return false;
             }
+        }
+
+        @JavascriptInterface
+        public void shareText(String title, String text) {
+            runOnUiThread(() -> {
+                Intent send = new Intent(Intent.ACTION_SEND);
+                send.setType("text/plain");
+                send.putExtra(Intent.EXTRA_SUBJECT, title == null ? "Arcadien roster" : title);
+                send.putExtra(Intent.EXTRA_TEXT, text == null ? "" : text);
+                try {
+                    startActivity(Intent.createChooser(send, "Send roster"));
+                } catch (Exception error) {
+                    Toast.makeText(MainActivity.this, "No sharing app is available.", Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         @JavascriptInterface

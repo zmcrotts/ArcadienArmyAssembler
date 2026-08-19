@@ -1432,6 +1432,37 @@ html[data-mobile-ui="false"] .savedRosterCards {
   width: min(620px, calc(100vw - 32px));
 }
 
+.qrSharePanel {
+  width: min(520px, calc(100vw - 32px));
+  text-align: center;
+}
+
+.qrRosterName {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.qrShareImage {
+  width: min(72vw, 390px);
+  margin: 16px auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  line-height: 0;
+}
+
+.qrShareImage svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.qrShareHelp {
+  max-width: 34rem;
+  margin-inline: auto;
+  color: var(--muted);
+}
+
 .shareCodeInput {
   box-sizing: border-box;
   width: 100%;
@@ -3541,3 +3572,24 @@ html[data-theme="dark"] svg {
 .playOpponentHand .playPlayerTabs button.active{background:#67343b!important}
 .playOpponentHand .playMissionModeBadge{background:#2b1c20;border-left-color:#b95860}
 .playOpponentHand .playDeckControls>div button,.playOpponentHand .playEmptyHand,.playOpponentHand .playMissionCard{border-color:#654047;background-color:#281a1e}
+
+/* The Android wrapper already applies system-bar insets around the WebView. */
+html[data-native-shell="android"] .mobileRosterHeader{padding-top:8px}
+html[data-native-shell="android"] .playModeHeader{padding-top:12px}
+
+.playWeaponGroup{display:grid;gap:8px;padding:11px;border:1px solid #35434e;border-left-width:4px;border-radius:11px;background:#172129}
+.playWeaponGroup>h4{margin:0;padding-bottom:9px;border-bottom:1px solid #35434e;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.playWeaponGroup>p{margin:2px 0;color:#919da5}
+.playWeaponGroup.ranged{border-left-color:#13a1b6;background:#12252c}
+.playWeaponGroup.ranged>h4{color:#7dd9e6}
+.playWeaponGroup.melee{border-left-color:#d39a31;background:#282115}
+.playWeaponGroup.melee>h4{color:#f1c35b}
+
+@media(max-width:520px){
+  .playScoreboard{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:2px;padding:14px 6px;overflow:hidden}
+  .playPlayerScore{min-width:0}
+  .playScoreDivider{padding:3px}
+  .playCpControl{box-sizing:border-box;grid-template-columns:36px minmax(0,1fr) 36px;gap:4px;width:100%}
+  .playCpControl button{box-sizing:border-box;min-width:0;width:36px;padding:0}
+  .playCpControl b{box-sizing:border-box;min-width:0;width:100%;padding:8px 3px;font-size:13px}
+}
