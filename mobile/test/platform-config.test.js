@@ -59,6 +59,11 @@ test("Android WebView keeps credentials native and restricts file-origin privile
   assert.match(activity, /setPadding\(left, top, right, bottom\)/);
 });
 
+test("Android OneDrive bridge permits the roster and game sync folders", () => {
+  const activity = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/MainActivity.java");
+  assert.ok(activity.includes('^/me/drive/items/[^/?#:]+:/(?:rosters|games)(?:\\\\?.*)?$'));
+});
+
 test("desktop closes directly while retaining navigation protections", () => {
   const main = read("electron/main.js");
   const preload = read("electron/preload.js");

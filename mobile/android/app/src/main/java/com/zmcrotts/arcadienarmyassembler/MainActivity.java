@@ -813,7 +813,7 @@ public final class MainActivity extends Activity {
         String decoded = Uri.decode(rawPath);
         if (decoded.contains("..") || decoded.contains("//")) return false;
         return path.matches("^/me/drive/special/approot(?:\\?.*)?$")
-            || path.matches("^/me/drive/items/[^/?#:]+:/rosters(?:\\?.*)?$")
+            || path.matches("^/me/drive/items/[^/?#:]+:/(?:rosters|games)(?:\\?.*)?$")
             || path.matches("^/me/drive/items/[^/?#]+(?:/children|/content|:/[^?#]+:/content)?(?:\\?.*)?$");
     }
 
