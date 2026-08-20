@@ -113,10 +113,10 @@ test("updates use the published manifest and verified native installer handoff",
   const androidProvider = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/UpdateFileProvider.java");
   const builder = read("mobile/scripts/build-user-runtime.js");
 
-  assert.match(app, /id="startCheckUpdates"[^>]*>Check for Updates<\/button>/);
+  assert.match(app, /id="startCheckUpdates"[^>]*>[\s\S]*?updateButtonWide[^>]*>Check for Updates<\/span>[\s\S]*?updateButtonNarrow[^>]*>Updates<\/span>/);
   assert.match(index, /id="updateModal"/);
   assert.match(index, /connect-src[^;]*https:\/\/zmcrotts\.github\.io/);
-  assert.match(styles, /\.startHeaderActions \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /@media \(max-width: 520px\) \{[\s\S]*?\.startHeaderActions \{[\s\S]*?grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(preload, /desktopUpdates/);
   assert.match(desktopMain, /app-update:download-install/);
   assert.match(desktopMain, /createHash\("sha256"\)/);

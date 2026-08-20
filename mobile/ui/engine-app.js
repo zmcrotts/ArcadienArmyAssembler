@@ -1557,7 +1557,7 @@ function renderStartScreen() {
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
-        <button id="startCheckUpdates" title="Check for a newer app release">Check for Updates</button>
+        <button id="startCheckUpdates" title="Check for a newer app release"><span class="updateButtonWide">Check for Updates</span><span class="updateButtonNarrow">Updates</span></button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}

@@ -747,6 +747,10 @@ html[data-mobile-ui="false"] .startScreen {
   width: 100%;
 }
 
+.updateButtonNarrow {
+  display: none;
+}
+
 .startIntro {
   margin-top: 18px;
 }
@@ -2609,7 +2613,15 @@ html[data-mobile-ui="false"] .savedRosterCards {
 
 @media (max-width: 520px) {
   .startHeaderActions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .updateButtonWide {
+    display: none;
+  }
+
+  .updateButtonNarrow {
+    display: inline;
   }
 }
 
