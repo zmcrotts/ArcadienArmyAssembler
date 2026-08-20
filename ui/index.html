@@ -58,6 +58,7 @@
           <div class="segmentedControl themeToggle" aria-label="Color theme">
             <button id="lightTheme" class="active" type="button">Light</button>
             <button id="darkTheme" type="button">Dark</button>
+            <button id="customTheme" type="button">Custom</button>
           </div>
         </div>
         <button id="deleteRoster" class="dangerButton">Delete List</button>
@@ -121,6 +122,35 @@
       <div class="modalActions">
         <button id="cancelDeleteRoster">Cancel</button>
         <button id="confirmDeleteRoster" class="dangerButton">Delete List</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="customThemeModal" class="modalBackdrop" hidden>
+    <div class="modalPanel customThemePanel" role="dialog" aria-modal="true" aria-labelledby="customThemeTitle">
+      <div class="modalTitleRow">
+        <div>
+          <h2 id="customThemeTitle">Custom color palette</h2>
+          <p>Choose the five core colors. Borders, hover states, and contrast are generated automatically.</p>
+        </div>
+      </div>
+      <div class="customThemePreview" aria-hidden="true">
+        <span data-custom-preview="canvas">Canvas</span>
+        <span data-custom-preview="surface">Panel</span>
+        <span data-custom-preview="raised">Control</span>
+        <span data-custom-preview="accent">Accent</span>
+      </div>
+      <div class="customThemeGrid">
+        <label>Canvas <input id="customThemeCanvas" type="color" value="#101417"></label>
+        <label>Panels <input id="customThemeSurface" type="color" value="#171d21"></label>
+        <label>Cards &amp; controls <input id="customThemeRaised" type="color" value="#20282d"></label>
+        <label>Text <input id="customThemeText" type="color" value="#cbd5d9"></label>
+        <label>Accent <input id="customThemeAccent" type="color" value="#0f8290"></label>
+      </div>
+      <div class="modalActions">
+        <button id="cancelCustomTheme" type="button">Cancel</button>
+        <button id="resetCustomTheme" type="button">Reset</button>
+        <button id="applyCustomTheme" type="button">Apply Palette</button>
       </div>
     </div>
   </div>

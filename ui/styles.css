@@ -5,6 +5,207 @@ body {
   color: #182124;
 }
 
+/* Custom palette: five user-owned channels drive the shared UI surfaces. */
+.customThemePanel {
+  max-width: 560px;
+}
+
+.customThemePanel p {
+  line-height: 1.45;
+  margin: 6px 0 0;
+}
+
+.customThemePreview {
+  background: var(--custom-canvas, #101417);
+  border: 1px solid var(--custom-border, #42535a);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 18px 0;
+  padding: 10px;
+}
+
+.customThemePreview span {
+  align-items: center;
+  border: 1px solid var(--custom-border, #42535a);
+  border-radius: 6px;
+  color: var(--custom-text, #cbd5d9);
+  display: flex;
+  font-size: 12px;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 56px;
+}
+
+.customThemePreview [data-custom-preview="canvas"] { background: var(--custom-canvas, #101417); }
+.customThemePreview [data-custom-preview="surface"] { background: var(--custom-surface, #171d21); }
+.customThemePreview [data-custom-preview="raised"] { background: var(--custom-raised, #20282d); }
+.customThemePreview [data-custom-preview="accent"] {
+  background: var(--custom-accent, #0f8290);
+  color: var(--custom-accent-ink, #ffffff);
+}
+
+.customThemeGrid {
+  display: grid;
+  gap: 10px 18px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.customThemeGrid label {
+  align-items: center;
+  border-bottom: 1px solid var(--custom-border, #d8e0e3);
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.customThemeGrid input[type="color"] {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  height: 38px;
+  padding: 0;
+  width: 58px;
+}
+
+html[data-theme="dark"][data-custom-theme="true"] {
+  --custom-border: color-mix(in srgb, var(--custom-text) 30%, var(--custom-surface));
+  --custom-muted: color-mix(in srgb, var(--custom-text) 68%, var(--custom-surface));
+  --custom-hover: color-mix(in srgb, var(--custom-accent) 18%, var(--custom-raised));
+}
+
+html[data-theme="dark"][data-custom-theme="true"] body {
+  background: var(--custom-canvas);
+  color: var(--custom-text);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .builderHeader,
+html[data-theme="dark"][data-custom-theme="true"] section,
+html[data-theme="dark"][data-custom-theme="true"] .modalPanel,
+html[data-theme="dark"][data-custom-theme="true"] .exportMenuPanel,
+html[data-theme="dark"][data-custom-theme="true"] .rulePopover,
+html[data-theme="dark"][data-custom-theme="true"] .weaponPreviewPopover {
+  background: var(--custom-surface);
+  border-color: var(--custom-border);
+  color: var(--custom-text);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] input,
+html[data-theme="dark"][data-custom-theme="true"] select,
+html[data-theme="dark"][data-custom-theme="true"] textarea,
+html[data-theme="dark"][data-custom-theme="true"] button,
+html[data-theme="dark"][data-custom-theme="true"] .readonlyField,
+html[data-theme="dark"][data-custom-theme="true"] .rosterConfiguration,
+html[data-theme="dark"][data-custom-theme="true"] .unitSizeControl,
+html[data-theme="dark"][data-custom-theme="true"] .discordOptionsPanel,
+html[data-theme="dark"][data-custom-theme="true"] .discordPreviewPanel,
+html[data-theme="dark"][data-custom-theme="true"] .unit,
+html[data-theme="dark"][data-custom-theme="true"] .savedRosterCard,
+html[data-theme="dark"][data-custom-theme="true"] .gameHistoryCard,
+html[data-theme="dark"][data-custom-theme="true"] .attachedMember,
+html[data-theme="dark"][data-custom-theme="true"] .card,
+html[data-theme="dark"][data-custom-theme="true"] pre,
+html[data-theme="dark"][data-custom-theme="true"] .optionGroup,
+html[data-theme="dark"][data-custom-theme="true"] .previewItem,
+html[data-theme="dark"][data-custom-theme="true"] .stratagemItem,
+html[data-theme="dark"][data-custom-theme="true"] .chips span {
+  background: var(--custom-raised);
+  border-color: var(--custom-border);
+  color: var(--custom-text);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .appBrand,
+html[data-theme="dark"][data-custom-theme="true"] .startBrand,
+html[data-theme="dark"][data-custom-theme="true"] .muted,
+html[data-theme="dark"][data-custom-theme="true"] .unit small,
+html[data-theme="dark"][data-custom-theme="true"] .savedRosterCard small,
+html[data-theme="dark"][data-custom-theme="true"] .attachedMember small,
+html[data-theme="dark"][data-custom-theme="true"] .modelRow small,
+html[data-theme="dark"][data-custom-theme="true"] .optionLimits,
+html[data-theme="dark"][data-custom-theme="true"] .lockedOption,
+html[data-theme="dark"][data-custom-theme="true"] .assignmentRow small,
+html[data-theme="dark"][data-custom-theme="true"] .assignmentSelect small,
+html[data-theme="dark"][data-custom-theme="true"] .stratagemLegend,
+html[data-theme="dark"][data-custom-theme="true"] .rulePopover small,
+html[data-theme="dark"][data-custom-theme="true"] .savedRosterFactionGroup > h3 span {
+  color: var(--custom-muted);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] h1,
+html[data-theme="dark"][data-custom-theme="true"] h2,
+html[data-theme="dark"][data-custom-theme="true"] h3,
+html[data-theme="dark"][data-custom-theme="true"] h4,
+html[data-theme="dark"][data-custom-theme="true"] b,
+html[data-theme="dark"][data-custom-theme="true"] strong,
+html[data-theme="dark"][data-custom-theme="true"] svg {
+  color: var(--custom-text);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .segmentedControl,
+html[data-theme="dark"][data-custom-theme="true"] .rosterLayoutToggle,
+html[data-theme="dark"][data-custom-theme="true"] .discordColorOptions,
+html[data-theme="dark"][data-custom-theme="true"] .discordCustomColors,
+html[data-theme="dark"][data-custom-theme="true"] table,
+html[data-theme="dark"][data-custom-theme="true"] th,
+html[data-theme="dark"][data-custom-theme="true"] td,
+html[data-theme="dark"][data-custom-theme="true"] .previewMaster,
+html[data-theme="dark"][data-custom-theme="true"] .previewDetachment,
+html[data-theme="dark"][data-custom-theme="true"] .previewSection,
+html[data-theme="dark"][data-custom-theme="true"] .sidebarGroup {
+  border-color: var(--custom-border);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .segmentedControl button + button,
+html[data-theme="dark"][data-custom-theme="true"] .rosterLayoutToggle button + button {
+  border-left-color: var(--custom-border);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] button:hover,
+html[data-theme="dark"][data-custom-theme="true"] .unit:hover,
+html[data-theme="dark"][data-custom-theme="true"] .rosterConfiguration:hover,
+html[data-theme="dark"][data-custom-theme="true"] .savedRosterCard:hover,
+html[data-theme="dark"][data-custom-theme="true"] .savedRosterCard:focus-visible,
+html[data-theme="dark"][data-custom-theme="true"] .gameHistoryCard:hover,
+html[data-theme="dark"][data-custom-theme="true"] .gameHistoryCard:focus-visible {
+  background: var(--custom-hover);
+  border-color: var(--custom-accent);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .segmentedControl button.active,
+html[data-theme="dark"][data-custom-theme="true"] .rosterLayoutToggle button.active,
+html[data-theme="dark"][data-custom-theme="true"] .layout.availableUnitsCollapsed .panelCollapseButton,
+html[data-theme="dark"][data-custom-theme="true"] .unitSection > summary,
+html[data-theme="dark"][data-custom-theme="true"] .sidebarGroup > summary,
+html[data-theme="dark"][data-custom-theme="true"] .previewMaster > summary,
+html[data-theme="dark"][data-custom-theme="true"] .categoryHeader,
+html[data-theme="dark"][data-custom-theme="true"] .layout.availableUnitsCollapsed .availablePanel::after {
+  background: var(--custom-accent);
+  border-color: var(--custom-accent);
+  color: var(--custom-accent-ink);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .unit.selected,
+html[data-theme="dark"][data-custom-theme="true"] .rosterConfiguration.selected {
+  border-color: var(--custom-accent);
+  box-shadow: inset 4px 0 var(--custom-accent);
+}
+
+html[data-theme="dark"][data-custom-theme="true"] .panelCollapseButton,
+html[data-theme="dark"][data-custom-theme="true"] .ruleToken {
+  background: color-mix(in srgb, var(--custom-accent) 18%, var(--custom-surface));
+  border-color: var(--custom-accent);
+  color: color-mix(in srgb, var(--custom-accent) 55%, var(--custom-text));
+}
+
+@media (max-width: 520px) {
+  .customThemePreview { grid-template-columns: 1fr 1fr; }
+  .customThemeGrid { grid-template-columns: 1fr; }
+}
+
+
 .testEnvironmentBanner {
   background: #8b0000;
   box-sizing: border-box;
@@ -243,6 +444,7 @@ button:hover {
 .segmentedControl button {
   border: 0;
   border-radius: 0;
+  flex: 1 1 0;
   margin-left: 0;
 }
 

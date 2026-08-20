@@ -4,6 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const crypto = require("crypto");
+const { Readable, Transform } = require("stream");
+const { pipeline } = require("stream/promises");
+const { spawn } = require("child_process");
 const { app, BrowserWindow, ipcMain, safeStorage, shell } = require("electron");
 const { CLIENT_ID, SCOPE, createOneDriveRosterSync } = require("./onedrive-roster-sync");
 
@@ -23,6 +26,10 @@ const TEST_PROFILE_LABEL = TEST_PROFILE
 const APP_NAME = TEST_PROFILE ? `${BASE_APP_NAME} TEST — ${TEST_PROFILE_LABEL}` : BASE_APP_NAME;
 let mainWindow = null;
 let pendingRosterImportUrl = null;
+const UPDATE_MANIFEST_URL = "https://zmcrotts.github.io/ArcadienArmyAssembler/public-release.json";
+const UPDATE_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
+const UPDATE_ASSET_BASE = "https://github.com/zmcrotts/ArcadienArmyAssembler/releases/latest/download/";
+const MAX_UPDATE_BYTES = 350 * 1024 * 1024;
 
 app.setName(APP_NAME);
 
@@ -105,8 +112,97 @@ if (!hasSingleInstanceLock) {
 const EXTERNAL_HOSTS = new Set([
   "ko-fi.com",
   "www.ko-fi.com",
-  "login.microsoftonline.com"
+  "login.microsoftonline.com",
+  "zmcrotts.github.io"
 ]);
+
+function compareVersions(left, right) {
+  const a = String(left || "").split(".").map(value => Number.parseInt(value, 10) || 0);
+  const b = String(right || "").split(".").map(value => Number.parseInt(value, 10) || 0);
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    if ((a[index] || 0) !== (b[index] || 0)) return (a[index] || 0) > (b[index] || 0) ? 1 : -1;
+  }
+  return 0;
+}
+
+function validateWindowsUpdate(manifest) {
+  const update = manifest?.windows;
+  if (!update || !/^\d+(?:\.\d+){1,3}$/.test(String(update.version || ""))) throw new Error("The release page returned an invalid Windows version.");
+  if (!/^[A-Za-z0-9][A-Za-z0-9._ -]*\.exe$/.test(String(update.asset || "")) || String(update.asset).length > 160) throw new Error("The release page returned an invalid Windows installer name.");
+  if (!/^[a-f0-9]{64}$/i.test(String(update.sha256 || ""))) throw new Error("The release page returned an invalid Windows installer checksum.");
+  return { version: String(update.version), asset: String(update.asset), sha256: String(update.sha256).toLowerCase() };
+}
+
+async function fetchWindowsUpdate() {
+  const response = await fetch(UPDATE_MANIFEST_URL, { cache: "no-store", redirect: "follow", signal: AbortSignal.timeout(15000) });
+  if (response.ok) return validateWindowsUpdate(await response.json());
+  const releaseResponse = await fetch(UPDATE_RELEASE_API, { cache: "no-store", redirect: "follow", signal: AbortSignal.timeout(15000), headers: { Accept: "application/vnd.github+json" } });
+  if (!releaseResponse.ok) throw new Error(`The update server returned ${releaseResponse.status}.`);
+  const release = await releaseResponse.json();
+  const versions = /^v(\d+(?:\.\d+){1,3})-mobile-(\d+(?:\.\d+){1,3})$/.exec(String(release?.tag_name || ""));
+  const asset = release?.assets?.find(entry => entry?.name === "Arcadien-Army-Assembler-Windows.exe");
+  const digest = /^sha256:([a-f0-9]{64})$/i.exec(String(asset?.digest || ""));
+  if (!versions || !asset || !digest) throw new Error("GitHub returned incomplete Windows release metadata.");
+  return validateWindowsUpdate({ version: versions[1], asset: asset.name, sha256: digest[1] });
+}
+
+function updateResult(update) {
+  const currentVersion = app.getVersion();
+  return { state: compareVersions(update.version, currentVersion) > 0 ? "available" : "current", currentVersion, ...update };
+}
+
+function trustedUpdateDownload(value) {
+  const url = new URL(value);
+  const host = url.hostname.toLowerCase();
+  if (url.protocol !== "https:" || !["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"].includes(host)) {
+    throw new Error("The installer download was redirected to an untrusted server.");
+  }
+  return url;
+}
+
+async function downloadWindowsUpdate(event) {
+  if (TEST_PROFILE || !app.isPackaged) throw new Error("Installer launch is disabled in test builds.");
+  const update = await fetchWindowsUpdate();
+  const result = updateResult(update);
+  if (result.state !== "available") return result;
+  const response = await fetch(new URL(encodeURIComponent(update.asset), UPDATE_ASSET_BASE), { redirect: "follow", signal: AbortSignal.timeout(180000) });
+  trustedUpdateDownload(response.url);
+  if (!response.ok || !response.body) throw new Error(`The installer download returned ${response.status}.`);
+  const declaredBytes = Number(response.headers.get("content-length") || 0);
+  if (declaredBytes > MAX_UPDATE_BYTES) throw new Error("The installer is larger than the 350 MB safety limit.");
+  const updateDir = path.join(app.getPath("temp"), "arcadien-army-assembler-update");
+  fs.mkdirSync(updateDir, { recursive: true });
+  const target = path.join(updateDir, `Arcadien-Army-Assembler-${update.version}.exe`);
+  const partial = `${target}.partial`;
+  const hash = crypto.createHash("sha256");
+  let received = 0;
+  const meter = new Transform({
+    transform(chunk, _encoding, callback) {
+      received += chunk.length;
+      if (received > MAX_UPDATE_BYTES) return callback(new Error("The installer exceeded the 350 MB safety limit."));
+      hash.update(chunk);
+      event.sender.send("app-update:progress", { received, total: declaredBytes });
+      callback(null, chunk);
+    }
+  });
+  try {
+    await pipeline(Readable.fromWeb(response.body), meter, fs.createWriteStream(partial, { flags: "w" }));
+    if (hash.digest("hex") !== update.sha256) throw new Error("The installer checksum did not match the published release. Nothing was opened.");
+    try { fs.unlinkSync(target); } catch (error) { if (error?.code !== "ENOENT") throw error; }
+    fs.renameSync(partial, target);
+  } catch (error) {
+    try { fs.unlinkSync(partial); } catch {}
+    throw error;
+  }
+  spawn(target, [], { detached: true, stdio: "ignore" }).unref();
+  setTimeout(() => app.quit(), 500);
+  return { ...result, state: "installing" };
+}
+
+function registerUpdateHandlers() {
+  ipcMain.handle("app-update:check", async () => updateResult(await fetchWindowsUpdate()));
+  ipcMain.handle("app-update:download-install", event => downloadWindowsUpdate(event));
+}
 
 function trustedExternalUrl(value) {
   try {
@@ -411,6 +507,7 @@ if (hasSingleInstanceLock) {
   app.whenReady().then(() => {
     if (app.isPackaged) app.setAsDefaultProtocolClient("arcadien");
     registerRosterSyncHandlers();
+    registerUpdateHandlers();
     createWindow();
 
     app.on("activate", () => {

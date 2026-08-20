@@ -21,6 +21,7 @@ const FILES = [
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
   ["ui/download.css", "download.css"],
+  ["public-release.json", "public-release.json"],
   ["android/app/src/main/res/drawable/crosshair.png", "app-icon.png"]
 ];
 
@@ -46,7 +47,9 @@ function buildIndex() {
   const source = path.join(ROOT, "ui", "index.html");
   let html = fs.readFileSync(source, "utf8");
 
+  const appVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
   html = html
+    .replaceAll("{{APP_VERSION}}", appVersion)
     .replace(/<script(?:\s+defer)? src="engine-data-milestone15\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/\.\.\/ui\/)?engine-runtime\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-runtime.js?v=$1"></script>')

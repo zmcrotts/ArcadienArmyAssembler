@@ -12,6 +12,7 @@ import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.webkit.JavascriptInterface;
 import android.webkit.MimeTypeMap;
 import android.webkit.ValueCallback;
@@ -30,6 +31,8 @@ import org.json.JSONObject;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -38,6 +41,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -59,6 +64,10 @@ public final class MainActivity extends Activity {
     private static final String ONEDRIVE_PREFS = "arcadien-onedrive";
     private static final String ONEDRIVE_REFRESH_TOKEN = "refresh-token";
     private static final int MAX_ONEDRIVE_RESPONSE_BYTES = 10 * 1024 * 1024;
+    private static final int MAX_UPDATE_BYTES = 150 * 1024 * 1024;
+    private static final String UPDATE_MANIFEST_URL = "https://zmcrotts.github.io/ArcadienArmyAssembler/public-release.json";
+    private static final String UPDATE_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
+    private static final String UPDATE_ASSET_BASE = "https://github.com/zmcrotts/ArcadienArmyAssembler/releases/latest/download/";
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
     private byte[] pendingExportBytes;
@@ -71,6 +80,8 @@ public final class MainActivity extends Activity {
     private volatile Thread oneDriveSignInThread;
     private boolean forceExit;
     private String pendingRosterImportUrl;
+    private volatile JSONObject availableUpdate;
+    private boolean waitingForUnknownSourcesPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +141,7 @@ public final class MainActivity extends Activity {
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
         webView.addJavascriptInterface(new AndroidFiles(), "AndroidFiles");
         webView.addJavascriptInterface(new AndroidOneDrive(), "AndroidOneDrive");
+        webView.addJavascriptInterface(new AndroidUpdates(), "AndroidUpdates");
         webView.setWebViewClient(new LocalWebViewClient());
         webView.setWebChromeClient(new LocalWebChromeClient());
 
@@ -147,6 +159,15 @@ public final class MainActivity extends Activity {
         setIntent(intent);
         handleRosterImportIntent(intent);
         deliverPendingRosterImport();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (waitingForUnknownSourcesPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().canRequestPackageInstalls()) {
+            waitingForUnknownSourcesPermission = false;
+            openVerifiedUpdate();
+        }
     }
 
     private void handleRosterImportIntent(Intent intent) {
@@ -221,6 +242,7 @@ public final class MainActivity extends Activity {
         if (webView != null) {
             webView.removeJavascriptInterface("AndroidFiles");
             webView.removeJavascriptInterface("AndroidOneDrive");
+            webView.removeJavascriptInterface("AndroidUpdates");
             webView.destroy();
         }
         super.onDestroy();
@@ -302,7 +324,222 @@ public final class MainActivity extends Activity {
     private boolean isTrustedExternal(Uri uri) {
         if (!"https".equalsIgnoreCase(uri.getScheme())) return false;
         String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase();
-        return "ko-fi.com".equals(host) || "www.ko-fi.com".equals(host) || "login.microsoftonline.com".equals(host);
+        return "ko-fi.com".equals(host) || "www.ko-fi.com".equals(host) || "login.microsoftonline.com".equals(host) || "zmcrotts.github.io".equals(host);
+    }
+
+    public final class AndroidUpdates {
+        @JavascriptInterface
+        public void checkForUpdates() {
+            new Thread(() -> {
+                try {
+                    JSONObject update = fetchAndroidUpdate();
+                    availableUpdate = update;
+                    String current = BuildConfig.VERSION_NAME;
+                    update.put("currentVersion", current);
+                    update.put("state", compareVersions(update.getString("version"), current) > 0 ? "available" : "current");
+                    notifyUpdate(update);
+                } catch (Exception error) {
+                    notifyUpdateError(error);
+                }
+            }, "arcadien-update-check").start();
+        }
+
+        @JavascriptInterface
+        public void installAvailableUpdate() {
+            new Thread(() -> {
+                try {
+                    JSONObject update = fetchAndroidUpdate();
+                    if (compareVersions(update.getString("version"), BuildConfig.VERSION_NAME) <= 0) {
+                        update.put("currentVersion", BuildConfig.VERSION_NAME);
+                        update.put("state", "current");
+                        notifyUpdate(update);
+                        return;
+                    }
+                    downloadAndroidUpdate(update);
+                    runOnUiThread(() -> requestUpdateInstallPermission());
+                } catch (Exception error) {
+                    notifyUpdateError(error);
+                }
+            }, "arcadien-update-download").start();
+        }
+    }
+
+    private JSONObject fetchAndroidUpdate() throws Exception {
+        HttpURLConnection connection = openUpdateConnection(UPDATE_MANIFEST_URL, 15000);
+        int status = connection.getResponseCode();
+        String body = status == 200 ? readLimitedBody(connection.getInputStream(), 256 * 1024) : null;
+        connection.disconnect();
+        JSONObject update;
+        if (body != null) {
+            update = new JSONObject(body).getJSONObject("android");
+        } else {
+            connection = openUpdateConnection(UPDATE_RELEASE_API, 15000);
+            status = connection.getResponseCode();
+            if (status != 200) throw new IOException("The update server returned " + status + ".");
+            JSONObject release = new JSONObject(readLimitedBody(connection.getInputStream(), 512 * 1024));
+            connection.disconnect();
+            java.util.regex.Matcher versions = java.util.regex.Pattern.compile("^v(\\d+(?:\\.\\d+){1,3})-mobile-(\\d+(?:\\.\\d+){1,3})$").matcher(release.optString("tag_name", ""));
+            if (!versions.matches()) throw new IOException("GitHub returned an invalid release tag.");
+            JSONObject releaseAsset = null;
+            org.json.JSONArray assets = release.optJSONArray("assets");
+            for (int index = 0; assets != null && index < assets.length(); index++) {
+                JSONObject candidate = assets.optJSONObject(index);
+                if ("Arcadien-Army-Assembler-Android.apk".equals(candidate == null ? "" : candidate.optString("name", ""))) releaseAsset = candidate;
+            }
+            String digest = releaseAsset == null ? "" : releaseAsset.optString("digest", "");
+            if (!digest.matches("(?i)^sha256:[a-f0-9]{64}$")) throw new IOException("GitHub returned incomplete Android release metadata.");
+            update = new JSONObject();
+            update.put("version", versions.group(2));
+            update.put("asset", releaseAsset.getString("name"));
+            update.put("sha256", digest.substring(7));
+        }
+        String version = update.optString("version", "");
+        String asset = update.optString("asset", "");
+        String sha256 = update.optString("sha256", "").toLowerCase(Locale.ROOT);
+        if (!version.matches("^\\d+(?:\\.\\d+){1,3}$") || !asset.matches("^[A-Za-z0-9][A-Za-z0-9._ -]*\\.apk$") || asset.length() > 160 || !sha256.matches("^[a-f0-9]{64}$")) {
+            throw new IOException("The release page returned invalid Android update details.");
+        }
+        JSONObject clean = new JSONObject();
+        clean.put("version", version);
+        clean.put("asset", asset);
+        clean.put("sha256", sha256);
+        return clean;
+    }
+
+    private HttpURLConnection openUpdateConnection(String value, int timeout) throws Exception {
+        URL url = new URL(value);
+        if (!"https".equalsIgnoreCase(url.getProtocol())) throw new IOException("The update URL was not secure.");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(timeout);
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestProperty("Accept", "application/json, application/octet-stream");
+        return connection;
+    }
+
+    private void downloadAndroidUpdate(JSONObject update) throws Exception {
+        String assetUrl = UPDATE_ASSET_BASE + java.net.URLEncoder.encode(update.getString("asset"), "UTF-8").replace("+", "%20");
+        HttpURLConnection connection = openUpdateConnection(assetUrl, 180000);
+        int status = connection.getResponseCode();
+        URL finalUrl = connection.getURL();
+        String host = finalUrl.getHost().toLowerCase(Locale.ROOT);
+        if (!"https".equalsIgnoreCase(finalUrl.getProtocol()) || !("github.com".equals(host) || "objects.githubusercontent.com".equals(host) || "release-assets.githubusercontent.com".equals(host))) {
+            connection.disconnect();
+            throw new IOException("The APK download was redirected to an untrusted server.");
+        }
+        if (status != 200) throw new IOException("The APK download returned " + status + ".");
+        long total = connection.getContentLengthLong();
+        if (total > MAX_UPDATE_BYTES) throw new IOException("The APK is larger than the 150 MB safety limit.");
+        File target = UpdateFileProvider.updateFile(this);
+        File directory = target.getParentFile();
+        if (directory == null || (!directory.isDirectory() && !directory.mkdirs())) throw new IOException("Could not prepare the update download folder.");
+        File partial = new File(directory, UpdateFileProvider.FILE_NAME + ".partial");
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        long received = 0;
+        try (InputStream input = connection.getInputStream(); FileOutputStream output = new FileOutputStream(partial, false)) {
+            byte[] buffer = new byte[32768];
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                received += read;
+                if (received > MAX_UPDATE_BYTES) throw new IOException("The APK exceeded the 150 MB safety limit.");
+                digest.update(buffer, 0, read);
+                output.write(buffer, 0, read);
+                notifyUpdateProgress(received, total);
+            }
+        } catch (Exception error) {
+            partial.delete();
+            throw error;
+        } finally {
+            connection.disconnect();
+        }
+        String actual = bytesToHex(digest.digest());
+        if (!actual.equals(update.getString("sha256"))) {
+            partial.delete();
+            throw new IOException("The APK checksum did not match the published release. Nothing was opened.");
+        }
+        if (target.exists() && !target.delete()) throw new IOException("Could not replace the previous verified update.");
+        if (!partial.renameTo(target)) throw new IOException("Could not finish the verified APK download.");
+        availableUpdate = update;
+    }
+
+    private void requestUpdateInstallPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
+            waitingForUnknownSourcesPermission = true;
+            notifyUpdateState("installing", "Android needs permission to install updates from this app. Allow it, then return here.");
+            startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName())));
+            return;
+        }
+        openVerifiedUpdate();
+    }
+
+    private void openVerifiedUpdate() {
+        File file = UpdateFileProvider.updateFile(this);
+        if (!file.isFile()) {
+            notifyUpdateState("error", "The verified APK is no longer available. Download it again.");
+            return;
+        }
+        Uri uri = Uri.parse("content://" + getPackageName() + ".updates/" + UpdateFileProvider.FILE_NAME);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri)
+            .setDataAndType(uri, "application/vnd.android.package-archive")
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            notifyUpdateState("installing", "Follow Android's normal installation prompts.");
+            startActivity(intent);
+        } catch (Exception error) {
+            notifyUpdateState("error", "Android could not open the package installer.");
+        }
+    }
+
+    private static int compareVersions(String left, String right) {
+        String[] a = left.split("\\.");
+        String[] b = right.split("\\.");
+        for (int index = 0; index < Math.max(a.length, b.length); index++) {
+            int av = index < a.length ? Integer.parseInt(a[index]) : 0;
+            int bv = index < b.length ? Integer.parseInt(b[index]) : 0;
+            if (av != bv) return av > bv ? 1 : -1;
+        }
+        return 0;
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder result = new StringBuilder(bytes.length * 2);
+        for (byte value : bytes) result.append(String.format(Locale.ROOT, "%02x", value & 0xff));
+        return result.toString();
+    }
+
+    private String readLimitedBody(InputStream stream, int maxBytes) throws IOException {
+        try (InputStream input = stream; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[8192];
+            int total = 0;
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                total += read;
+                if (total > maxBytes) throw new IOException("The update server response was too large.");
+                output.write(buffer, 0, read);
+            }
+            return output.toString(StandardCharsets.UTF_8.name());
+        }
+    }
+
+    private void notifyUpdate(JSONObject result) {
+        String script = "window.ArcadienApp && window.ArcadienApp.receiveUpdateEvent(" + result.toString() + ");";
+        webView.post(() -> webView.evaluateJavascript(script, null));
+    }
+
+    private void notifyUpdateError(Exception error) {
+        notifyUpdateState("error", error.getMessage() == null ? "The update could not be completed." : error.getMessage());
+    }
+
+    private void notifyUpdateState(String state, String message) {
+        JSONObject result = new JSONObject();
+        try { result.put("state", state); result.put("message", message); } catch (Exception ignored) {}
+        notifyUpdate(result);
+    }
+
+    private void notifyUpdateProgress(long received, long total) {
+        JSONObject result = new JSONObject();
+        try { result.put("state", "downloading"); result.put("received", received); result.put("total", total); } catch (Exception ignored) {}
+        notifyUpdate(result);
     }
 
     public final class AndroidFiles {

@@ -28,7 +28,7 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(index, /name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/);
   assert.match(index, /name="apple-mobile-web-app-capable" content="yes"/);
   assert.match(index, /name="apple-mobile-web-app-status-bar-style" content="black-translucent"/);
-  assert.match(index, /src="bootstrap-app\.js"/);
+  assert.match(index, /src="bootstrap-app\.js(?:\?[^\"]+)?"/);
   assert.match(downloadPage, /New version\. Who dis\?/);
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Windows\.exe/);
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Android\.apk/);

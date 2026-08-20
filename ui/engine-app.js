@@ -53,6 +53,24 @@ const standardRosterLayout = document.getElementById("standardRosterLayout");
 const customRosterLayout = document.getElementById("customRosterLayout");
 const lightTheme = document.getElementById("lightTheme");
 const darkTheme = document.getElementById("darkTheme");
+const customTheme = document.getElementById("customTheme");
+const customThemeModal = document.getElementById("customThemeModal");
+const customThemeInputs = Object.freeze({
+  canvas: document.getElementById("customThemeCanvas"),
+  surface: document.getElementById("customThemeSurface"),
+  raised: document.getElementById("customThemeRaised"),
+  text: document.getElementById("customThemeText"),
+  accent: document.getElementById("customThemeAccent")
+});
+
+const CUSTOM_THEME_STORAGE_KEY = "engineCustomThemeV1";
+const DEFAULT_CUSTOM_THEME = Object.freeze({
+  canvas: "#101417",
+  surface: "#171d21",
+  raised: "#20282d",
+  text: "#cbd5d9",
+  accent: "#0f8290"
+});
 
 const DEFAULT_CATALOGUE_PREFERENCES = {
   agents: true,
@@ -135,6 +153,7 @@ let syncActionInFlight = false;
 let rosterStorageWarning = null;
 let rosterStorageReadFailed = false;
 let rosterAutosaveTimer = null;
+let customThemeEditorPrevious = null;
 
 function init() {
   applyTestProfileIdentity();
@@ -216,6 +235,19 @@ function init() {
 
   if (lightTheme) lightTheme.onclick = () => setTheme("light");
   if (darkTheme) darkTheme.onclick = () => setTheme("dark");
+  if (customTheme) customTheme.onclick = openCustomThemeEditor;
+  for (const input of Object.values(customThemeInputs)) {
+    if (input) input.addEventListener("input", previewCustomThemeEditor);
+  }
+  document.getElementById("cancelCustomTheme")?.addEventListener("click", cancelCustomThemeEditor);
+  document.getElementById("resetCustomTheme")?.addEventListener("click", () => {
+    writeCustomThemeForm(DEFAULT_CUSTOM_THEME);
+    previewCustomThemeEditor();
+  });
+  document.getElementById("applyCustomTheme")?.addEventListener("click", saveCustomThemeEditor);
+  customThemeModal?.addEventListener("click", event => {
+    if (event.target === customThemeModal) cancelCustomThemeEditor();
+  });
   if (toggleAvailableUnits) {
     toggleAvailableUnits.onclick = event => {
       event.stopPropagation();
@@ -684,7 +716,8 @@ function setRosterLayoutModeButtons() {
 function applySavedTheme() {
   let theme = "light";
   try {
-    theme = localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
+    const storedTheme = localStorage.getItem("engineTheme");
+    theme = ["light", "dark", "custom"].includes(storedTheme) ? storedTheme : "light";
   } catch {
     theme = "light";
   }
@@ -692,7 +725,7 @@ function applySavedTheme() {
 }
 
 function setTheme(theme) {
-  const nextTheme = theme === "dark" ? "dark" : "light";
+  const nextTheme = ["light", "dark", "custom"].includes(theme) ? theme : "light";
   try {
     localStorage.setItem("engineTheme", nextTheme);
   } catch {
@@ -702,10 +735,106 @@ function setTheme(theme) {
 }
 
 function applyTheme(theme) {
-  const nextTheme = theme === "dark" ? "dark" : "light";
-  document.documentElement.dataset.theme = nextTheme;
+  const nextTheme = ["light", "dark", "custom"].includes(theme) ? theme : "light";
+  document.documentElement.dataset.theme = nextTheme === "custom" ? "dark" : nextTheme;
+  document.documentElement.dataset.customTheme = nextTheme === "custom" ? "true" : "false";
+  if (nextTheme === "custom") applyCustomThemePalette(loadCustomThemePalette());
   if (lightTheme) lightTheme.classList.toggle("active", nextTheme === "light");
   if (darkTheme) darkTheme.classList.toggle("active", nextTheme === "dark");
+  if (customTheme) customTheme.classList.toggle("active", nextTheme === "custom");
+}
+
+function loadCustomThemePalette() {
+  try {
+    return normalizeCustomThemePalette(JSON.parse(localStorage.getItem(CUSTOM_THEME_STORAGE_KEY) || "null"));
+  } catch {
+    return { ...DEFAULT_CUSTOM_THEME };
+  }
+}
+
+function normalizeCustomThemePalette(value) {
+  const palette = {};
+  for (const [channel, fallback] of Object.entries(DEFAULT_CUSTOM_THEME)) {
+    const candidate = value && typeof value[channel] === "string" ? value[channel] : "";
+    palette[channel] = /^#[0-9a-f]{6}$/i.test(candidate) ? candidate.toLowerCase() : fallback;
+  }
+  return palette;
+}
+
+function applyCustomThemePalette(palette) {
+  const rootStyle = document.documentElement.style;
+  for (const [channel, color] of Object.entries(normalizeCustomThemePalette(palette))) {
+    rootStyle.setProperty(`--custom-${channel}`, color);
+  }
+  rootStyle.setProperty("--custom-accent-ink", readableTextColor(palette.accent));
+}
+
+function readableTextColor(background) {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(background || "");
+  if (!match) return "#ffffff";
+  const channels = match.slice(1).map(value => {
+    const component = parseInt(value, 16) / 255;
+    return component <= 0.04045 ? component / 12.92 : ((component + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2] > 0.179 ? "#101417" : "#ffffff";
+}
+
+function activeThemeName() {
+  if (document.documentElement.dataset.customTheme === "true") return "custom";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function writeCustomThemeForm(palette) {
+  const normalized = normalizeCustomThemePalette(palette);
+  for (const [channel, input] of Object.entries(customThemeInputs)) {
+    if (input) input.value = normalized[channel];
+  }
+}
+
+function readCustomThemeForm() {
+  return normalizeCustomThemePalette(Object.fromEntries(
+    Object.entries(customThemeInputs).map(([channel, input]) => [channel, input?.value])
+  ));
+}
+
+function openCustomThemeEditor() {
+  customThemeEditorPrevious = {
+    theme: activeThemeName(),
+    palette: loadCustomThemePalette()
+  };
+  writeCustomThemeForm(customThemeEditorPrevious.palette);
+  previewCustomThemeEditor();
+  customThemeModal.hidden = false;
+  customThemeInputs.canvas?.focus();
+}
+
+function previewCustomThemeEditor() {
+  const palette = readCustomThemeForm();
+  applyTheme("custom");
+  applyCustomThemePalette(palette);
+}
+
+function cancelCustomThemeEditor() {
+  if (!customThemeEditorPrevious) return;
+  applyCustomThemePalette(customThemeEditorPrevious.palette);
+  applyTheme(customThemeEditorPrevious.theme);
+  customThemeEditorPrevious = null;
+  customThemeModal.hidden = true;
+  customTheme?.focus();
+}
+
+function saveCustomThemeEditor() {
+  const palette = readCustomThemeForm();
+  try {
+    localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify(palette));
+  } catch {
+    // Palette persistence is optional; still apply it for this session.
+  }
+  applyCustomThemePalette(palette);
+  setTheme("custom");
+  customThemeEditorPrevious = null;
+  customThemeModal.hidden = true;
+  customTheme?.focus();
 }
 
 function setExportMenuOpen(open) {

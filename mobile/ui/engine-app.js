@@ -80,6 +80,29 @@ const standardRosterLayout = document.getElementById("standardRosterLayout");
 const customRosterLayout = document.getElementById("customRosterLayout");
 const lightTheme = document.getElementById("lightTheme");
 const darkTheme = document.getElementById("darkTheme");
+const customTheme = document.getElementById("customTheme");
+const customThemeModal = document.getElementById("customThemeModal");
+const updateModal = document.getElementById("updateModal");
+const updateMessage = document.getElementById("updateMessage");
+const updateDetail = document.getElementById("updateDetail");
+const updateProgress = document.getElementById("updateProgress");
+const installUpdate = document.getElementById("installUpdate");
+const customThemeInputs = Object.freeze({
+  canvas: document.getElementById("customThemeCanvas"),
+  surface: document.getElementById("customThemeSurface"),
+  raised: document.getElementById("customThemeRaised"),
+  text: document.getElementById("customThemeText"),
+  accent: document.getElementById("customThemeAccent")
+});
+
+const CUSTOM_THEME_STORAGE_KEY = "engineCustomThemeV1";
+const DEFAULT_CUSTOM_THEME = Object.freeze({
+  canvas: "#101417",
+  surface: "#171d21",
+  raised: "#20282d",
+  text: "#cbd5d9",
+  accent: "#0f8290"
+});
 
 const DEFAULT_CATALOGUE_PREFERENCES = {
   agents: true,
@@ -175,6 +198,118 @@ let rosterAutosaveTimer = null;
 let currentQrImportUrl = "";
 let currentQrRosterName = "";
 let pendingQrImport = null;
+let customThemeEditorPrevious = null;
+let availableAppUpdate = null;
+
+const PUBLIC_RELEASE_MANIFEST = "https://zmcrotts.github.io/ArcadienArmyAssembler/public-release.json";
+const PUBLIC_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
+const PUBLIC_DOWNLOAD_PAGE = "https://zmcrotts.github.io/ArcadienArmyAssembler/download.html";
+
+function compareAppVersions(left, right) {
+  const a = String(left || "").split(".").map(value => Number.parseInt(value, 10) || 0);
+  const b = String(right || "").split(".").map(value => Number.parseInt(value, 10) || 0);
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    if ((a[index] || 0) !== (b[index] || 0)) return (a[index] || 0) > (b[index] || 0) ? 1 : -1;
+  }
+  return 0;
+}
+
+function setUpdateProgress(received, total) {
+  updateProgress.hidden = false;
+  if (Number(total) > 0) {
+    updateProgress.max = Number(total);
+    updateProgress.value = Math.min(Number(received) || 0, Number(total));
+    updateDetail.textContent = `Downloaded ${Math.round((Number(received) || 0) / 1024 / 1024)} of ${Math.round(Number(total) / 1024 / 1024)} MB`;
+  } else {
+    updateProgress.removeAttribute("value");
+    updateDetail.textContent = `Downloaded ${Math.round((Number(received) || 0) / 1024 / 1024)} MB`;
+  }
+}
+
+function closeUpdateModal() {
+  updateModal.hidden = true;
+}
+
+function showUpdateResult(result) {
+  availableAppUpdate = result?.state === "available" ? result : null;
+  updateProgress.hidden = true;
+  updateProgress.removeAttribute("value");
+  installUpdate.hidden = !availableAppUpdate;
+  if (availableAppUpdate) {
+    updateMessage.textContent = `Version ${result.version} is available. You have ${result.currentVersion}.`;
+    updateDetail.textContent = "The download will be verified, then your device's normal installer will open.";
+    installUpdate.textContent = result.browserOnly ? "Open Download Page" : "Download and Install";
+  } else {
+    updateMessage.textContent = `You're up to date${result?.currentVersion ? ` (version ${result.currentVersion})` : ""}.`;
+    updateDetail.textContent = "";
+  }
+}
+
+function receiveUpdateEvent(result) {
+  if (!result || typeof result !== "object") return;
+  if (result.state === "downloading") {
+    updateMessage.textContent = "Downloading update…";
+    installUpdate.hidden = true;
+    setUpdateProgress(result.received, result.total);
+  } else if (result.state === "error") {
+    updateMessage.textContent = "The update could not be completed.";
+    updateDetail.textContent = result.message || "Please try again.";
+    updateProgress.hidden = true;
+    installUpdate.hidden = !availableAppUpdate;
+  } else if (result.state === "installing") {
+    updateMessage.textContent = "The installer is opening.";
+    updateDetail.textContent = "Follow your device's normal installation prompts.";
+    updateProgress.hidden = true;
+  } else {
+    showUpdateResult(result);
+  }
+}
+
+async function checkForAppUpdate() {
+  updateModal.hidden = false;
+  updateMessage.textContent = "Checking for the latest release…";
+  updateDetail.textContent = "";
+  updateProgress.hidden = true;
+  installUpdate.hidden = true;
+  availableAppUpdate = null;
+  try {
+    if (window.desktopUpdates?.check) return receiveUpdateEvent(await window.desktopUpdates.check());
+    if (window.AndroidUpdates?.checkForUpdates) return window.AndroidUpdates.checkForUpdates();
+    const response = await fetch(PUBLIC_RELEASE_MANIFEST, { cache: "no-store" });
+    let update = null;
+    if (response.ok) {
+      update = (await response.json())?.ios;
+    } else {
+      const releaseResponse = await fetch(PUBLIC_RELEASE_API, { cache: "no-store", headers: { Accept: "application/vnd.github+json" } });
+      if (!releaseResponse.ok) throw new Error(`The update server returned ${releaseResponse.status}.`);
+      const release = await releaseResponse.json();
+      const versions = /^v(\d+(?:\.\d+){1,3})-mobile-(\d+(?:\.\d+){1,3})$/.exec(String(release?.tag_name || ""));
+      const asset = release?.assets?.find(entry => entry?.name === "Arcadien-Army-Assembler-iOS-Web-App.zip");
+      const digest = /^sha256:([a-f0-9]{64})$/i.exec(String(asset?.digest || ""));
+      if (!versions || !asset || !digest) throw new Error("GitHub returned incomplete web release metadata.");
+      update = { version: versions[2], asset: asset.name, sha256: digest[1] };
+    }
+    const currentVersion = document.querySelector('meta[name="arcadien-app-version"]')?.content || "";
+    if (!update?.version || !/^\d+(?:\.\d+){1,3}$/.test(currentVersion)) throw new Error("This build does not report a valid version.");
+    receiveUpdateEvent({ ...update, currentVersion, browserOnly: true, state: compareAppVersions(update.version, currentVersion) > 0 ? "available" : "current" });
+  } catch (error) {
+    receiveUpdateEvent({ state: "error", message: error?.message || "Could not reach the update server." });
+  }
+}
+
+async function installAvailableAppUpdate() {
+  if (!availableAppUpdate) return;
+  if (availableAppUpdate.browserOnly) return window.open(PUBLIC_DOWNLOAD_PAGE, "_blank", "noopener,noreferrer");
+  updateMessage.textContent = "Preparing download…";
+  updateDetail.textContent = "The installer will only open after its checksum matches the published release.";
+  installUpdate.hidden = true;
+  try {
+    if (window.desktopUpdates?.install) receiveUpdateEvent(await window.desktopUpdates.install());
+    else if (window.AndroidUpdates?.installAvailableUpdate) window.AndroidUpdates.installAvailableUpdate();
+  } catch (error) {
+    receiveUpdateEvent({ state: "error", message: error?.message || "The update could not be installed." });
+  }
+}
 
 async function init() {
   try {
@@ -262,6 +397,25 @@ async function init() {
 
   if (lightTheme) lightTheme.onclick = () => setTheme("light");
   if (darkTheme) darkTheme.onclick = () => setTheme("dark");
+  if (customTheme) customTheme.onclick = openCustomThemeEditor;
+  for (const input of Object.values(customThemeInputs)) {
+    if (input) input.addEventListener("input", previewCustomThemeEditor);
+  }
+  document.getElementById("cancelCustomTheme")?.addEventListener("click", cancelCustomThemeEditor);
+  document.getElementById("resetCustomTheme")?.addEventListener("click", () => {
+    writeCustomThemeForm(DEFAULT_CUSTOM_THEME);
+    previewCustomThemeEditor();
+  });
+  document.getElementById("applyCustomTheme")?.addEventListener("click", saveCustomThemeEditor);
+  customThemeModal?.addEventListener("click", event => {
+    if (event.target === customThemeModal) cancelCustomThemeEditor();
+  });
+  document.getElementById("closeUpdate")?.addEventListener("click", closeUpdateModal);
+  installUpdate?.addEventListener("click", installAvailableAppUpdate);
+  updateModal?.addEventListener("click", event => {
+    if (event.target === updateModal) closeUpdateModal();
+  });
+  window.desktopUpdates?.onProgress?.(progress => receiveUpdateEvent({ state: "downloading", ...progress }));
   if (toggleAvailableUnits) {
     toggleAvailableUnits.onclick = event => {
       event.stopPropagation();
@@ -803,7 +957,8 @@ function applySavedTheme() {
   }
   let theme = "light";
   try {
-    theme = localStorage.getItem("engineTheme") === "dark" ? "dark" : "light";
+    const storedTheme = localStorage.getItem("engineTheme");
+    theme = ["light", "dark", "custom"].includes(storedTheme) ? storedTheme : "light";
   } catch {
     theme = "light";
   }
@@ -811,7 +966,7 @@ function applySavedTheme() {
 }
 
 function setTheme(theme) {
-  const nextTheme = theme === "dark" ? "dark" : "light";
+  const nextTheme = ["light", "dark", "custom"].includes(theme) ? theme : "light";
   try {
     localStorage.setItem("engineTheme", nextTheme);
   } catch {
@@ -821,10 +976,106 @@ function setTheme(theme) {
 }
 
 function applyTheme(theme) {
-  const nextTheme = theme === "dark" ? "dark" : "light";
-  document.documentElement.dataset.theme = nextTheme;
+  const nextTheme = ["light", "dark", "custom"].includes(theme) ? theme : "light";
+  document.documentElement.dataset.theme = nextTheme === "custom" ? "dark" : nextTheme;
+  document.documentElement.dataset.customTheme = nextTheme === "custom" ? "true" : "false";
+  if (nextTheme === "custom") applyCustomThemePalette(loadCustomThemePalette());
   if (lightTheme) lightTheme.classList.toggle("active", nextTheme === "light");
   if (darkTheme) darkTheme.classList.toggle("active", nextTheme === "dark");
+  if (customTheme) customTheme.classList.toggle("active", nextTheme === "custom");
+}
+
+function loadCustomThemePalette() {
+  try {
+    return normalizeCustomThemePalette(JSON.parse(localStorage.getItem(CUSTOM_THEME_STORAGE_KEY) || "null"));
+  } catch {
+    return { ...DEFAULT_CUSTOM_THEME };
+  }
+}
+
+function normalizeCustomThemePalette(value) {
+  const palette = {};
+  for (const [channel, fallback] of Object.entries(DEFAULT_CUSTOM_THEME)) {
+    const candidate = value && typeof value[channel] === "string" ? value[channel] : "";
+    palette[channel] = /^#[0-9a-f]{6}$/i.test(candidate) ? candidate.toLowerCase() : fallback;
+  }
+  return palette;
+}
+
+function applyCustomThemePalette(palette) {
+  const rootStyle = document.documentElement.style;
+  for (const [channel, color] of Object.entries(normalizeCustomThemePalette(palette))) {
+    rootStyle.setProperty(`--custom-${channel}`, color);
+  }
+  rootStyle.setProperty("--custom-accent-ink", readableTextColor(palette.accent));
+}
+
+function readableTextColor(background) {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(background || "");
+  if (!match) return "#ffffff";
+  const channels = match.slice(1).map(value => {
+    const component = parseInt(value, 16) / 255;
+    return component <= 0.04045 ? component / 12.92 : ((component + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2] > 0.179 ? "#101417" : "#ffffff";
+}
+
+function activeThemeName() {
+  if (document.documentElement.dataset.customTheme === "true") return "custom";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function writeCustomThemeForm(palette) {
+  const normalized = normalizeCustomThemePalette(palette);
+  for (const [channel, input] of Object.entries(customThemeInputs)) {
+    if (input) input.value = normalized[channel];
+  }
+}
+
+function readCustomThemeForm() {
+  return normalizeCustomThemePalette(Object.fromEntries(
+    Object.entries(customThemeInputs).map(([channel, input]) => [channel, input?.value])
+  ));
+}
+
+function openCustomThemeEditor() {
+  customThemeEditorPrevious = {
+    theme: activeThemeName(),
+    palette: loadCustomThemePalette()
+  };
+  writeCustomThemeForm(customThemeEditorPrevious.palette);
+  previewCustomThemeEditor();
+  customThemeModal.hidden = false;
+  customThemeInputs.canvas?.focus();
+}
+
+function previewCustomThemeEditor() {
+  const palette = readCustomThemeForm();
+  applyTheme("custom");
+  applyCustomThemePalette(palette);
+}
+
+function cancelCustomThemeEditor() {
+  if (!customThemeEditorPrevious) return;
+  applyCustomThemePalette(customThemeEditorPrevious.palette);
+  applyTheme(customThemeEditorPrevious.theme);
+  customThemeEditorPrevious = null;
+  customThemeModal.hidden = true;
+  customTheme?.focus();
+}
+
+function saveCustomThemeEditor() {
+  const palette = readCustomThemeForm();
+  try {
+    localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify(palette));
+  } catch {
+    // Palette persistence is optional; still apply it for this session.
+  }
+  applyCustomThemePalette(palette);
+  setTheme("custom");
+  customThemeEditorPrevious = null;
+  customThemeModal.hidden = true;
+  customTheme?.focus();
 }
 
 function setExportMenuOpen(open) {
@@ -982,6 +1233,10 @@ function handleNativeBack() {
     closeDeleteRosterModal();
     return true;
   }
+  if (updateModal && !updateModal.hidden) {
+    closeUpdateModal();
+    return true;
+  }
   if (newRosterModal && !newRosterModal.hidden) {
     closeNewRosterModal();
     return true;
@@ -997,7 +1252,8 @@ window.ArcadienApp = {
   ...(window.ArcadienApp || {}),
   handleNativeBack,
   hasUnsavedChanges: hasUnsavedRosterChanges,
-  receiveRosterImportUrl
+  receiveRosterImportUrl,
+  receiveUpdateEvent
 };
 
 function applyMobileSheetState() {
@@ -1301,6 +1557,7 @@ function renderStartScreen() {
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
+        <button id="startCheckUpdates" title="Check for a newer app release">Check for Updates</button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
@@ -1340,6 +1597,7 @@ function renderStartScreen() {
     </div>` : renderGameHistory(games)}
   `;
   document.getElementById("startImportRoster").onclick = openRosterShareCodeModal;
+  document.getElementById("startCheckUpdates").onclick = checkForAppUpdate;
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const manageSyncButton = document.getElementById("startManageSync");

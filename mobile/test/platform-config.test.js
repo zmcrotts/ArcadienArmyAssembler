@@ -102,6 +102,54 @@ test("production UI does not render source-quality audit banners", () => {
   }
 });
 
+test("updates use the published manifest and verified native installer handoff", () => {
+  const index = read("mobile/ui/index.html");
+  const app = read("mobile/ui/engine-app.js");
+  const styles = read("mobile/ui/styles.css");
+  const desktopMain = read("electron/main.js");
+  const preload = read("electron/preload.js");
+  const androidManifest = read("mobile/android/app/src/main/AndroidManifest.xml");
+  const androidActivity = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/MainActivity.java");
+  const androidProvider = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/UpdateFileProvider.java");
+  const builder = read("mobile/scripts/build-user-runtime.js");
+
+  assert.match(app, /id="startCheckUpdates"[^>]*>Check for Updates<\/button>/);
+  assert.match(index, /id="updateModal"/);
+  assert.match(index, /connect-src[^;]*https:\/\/zmcrotts\.github\.io/);
+  assert.match(styles, /\.startHeaderActions \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(preload, /desktopUpdates/);
+  assert.match(desktopMain, /app-update:download-install/);
+  assert.match(desktopMain, /createHash\("sha256"\)/);
+  assert.match(desktopMain, /checksum did not match/);
+  assert.match(androidManifest, /REQUEST_INSTALL_PACKAGES/);
+  assert.match(androidManifest, /\.UpdateFileProvider/);
+  assert.match(androidActivity, /class AndroidUpdates/);
+  assert.match(androidActivity, /MessageDigest\.getInstance\("SHA-256"\)/);
+  assert.match(androidActivity, /canRequestPackageInstalls\(\)/);
+  assert.match(androidProvider, /MODE_READ_ONLY/);
+  assert.match(builder, /public-release\.json/);
+});
+
+test("custom theme uses persisted semantic color channels on both runtimes", () => {
+  for (const root of ["ui", "mobile/ui"]) {
+    const index = read(`${root}/index.html`);
+    const app = read(`${root}/engine-app.js`);
+    const bootstrap = read(`${root}/bootstrap-app.js`);
+    const styles = read(`${root}/styles.css`);
+
+    assert.match(index, /id="customTheme"[^>]*>Custom<\/button>/);
+    for (const channel of ["Canvas", "Surface", "Raised", "Text", "Accent"]) {
+      assert.match(app, new RegExp(`${channel.toLowerCase()}: \\\"#[0-9a-f]{6}\\\"`, "i"));
+      assert.match(styles, new RegExp(`--custom-${channel.toLowerCase()}`));
+    }
+    assert.match(app, /engineCustomThemeV1/);
+    assert.match(app, /function readableTextColor/);
+    assert.match(bootstrap, /activeTheme === "custom"|theme === "custom"/);
+    assert.match(styles, /data-theme="dark"\]\[data-custom-theme="true"\]/);
+    assert.match(styles, /\.segmentedControl button \{[\s\S]*?flex: 1 1 0;/);
+  }
+});
+
 test("desktop roster navigation uses compact cards and guarded destructive actions", () => {
   const index = read("mobile/ui/index.html");
   const app = read("mobile/ui/engine-app.js");

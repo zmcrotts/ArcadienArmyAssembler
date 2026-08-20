@@ -17,3 +17,14 @@ contextBridge.exposeInMainWorld("desktopRosterLinks", {
     return () => ipcRenderer.removeListener("roster-import-url", listener);
   }
 });
+
+contextBridge.exposeInMainWorld("desktopUpdates", {
+  check: () => ipcRenderer.invoke("app-update:check"),
+  install: () => ipcRenderer.invoke("app-update:download-install"),
+  onProgress: callback => {
+    if (typeof callback !== "function") return () => {};
+    const listener = (_event, progress) => callback(progress);
+    ipcRenderer.on("app-update:progress", listener);
+    return () => ipcRenderer.removeListener("app-update:progress", listener);
+  }
+});
