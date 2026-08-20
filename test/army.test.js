@@ -136,6 +136,75 @@ test("repeatable upgrades can be assigned to more than one eligible unit", () =>
   assert.deepEqual(state.enhancements, [{ enhancementId: "synaptoprescience", bearerInstanceId: "norn-2" }]);
 });
 
+test("2K rosters allow four Enhancement slots and repeated Upgrades share one slot", () => {
+  const enhancements = [{
+    id: "cleave",
+    name: "Cleave 2",
+    kind: "upgrade",
+    maxSelections: 1,
+    detachmentIds: ["brazen"],
+    eligibleSelectionKeys: ["maulerfiend"]
+  }, ...[1, 2, 3, 4].map(number => ({
+    id: `enhancement-${number}`,
+    name: `Enhancement ${number}`,
+    kind: "enhancement",
+    detachmentIds: ["brazen"],
+    eligibleSelectionKeys: ["character"]
+  }))];
+  const army = {
+    id: "army",
+    allowedSelectionKeys: ["maulerfiend", "character"],
+    detachments: [{ id: "brazen", name: "Brazen Engines", points: 0 }],
+    enhancements
+  };
+  const roster = [
+    ...[1, 2, 3].map(number => ({
+      instanceId: `maulerfiend-${number}`,
+      selectionKey: "maulerfiend",
+      name: "Maulerfiend",
+      roles: {}
+    })),
+    ...[1, 2, 3, 4].map(number => ({
+      instanceId: `character-${number}`,
+      selectionKey: "character",
+      name: `Character ${number}`,
+      roles: { character: true }
+    }))
+  ];
+  const state = {
+    ...selectDetachment(army, createArmyState(army), "brazen"),
+    warlordInstanceId: "character-1",
+    enhancements: [
+      ...[1, 2, 3].map(number => ({ enhancementId: "cleave", bearerInstanceId: `maulerfiend-${number}` })),
+      ...[1, 2, 3].map(number => ({ enhancementId: `enhancement-${number}`, bearerInstanceId: `character-${number}` }))
+    ]
+  };
+
+  const at2K = validateRosterLegality(army, state, roster, { pointsLimit: 2000 });
+  assert.equal(at2K.warnings.some(item => item.code === "ENHANCEMENT_LIMIT_EXCEEDED"), false);
+  assert.equal(at2K.warnings.some(item => item.code === "ENHANCEMENT_DUPLICATE"), false);
+
+  const at1K = validateRosterLegality(army, state, roster, { pointsLimit: 1000 });
+  assert.equal(at1K.warnings.find(item => item.code === "ENHANCEMENT_LIMIT_EXCEEDED")?.details.enhancementSlots, 4);
+
+  const overLimit = {
+    ...state,
+    enhancements: [...state.enhancements, { enhancementId: "enhancement-4", bearerInstanceId: "character-4" }]
+  };
+  const at2KOverLimit = validateRosterLegality(army, overLimit, roster, { pointsLimit: 2000 });
+  assert.equal(at2KOverLimit.warnings.find(item => item.code === "ENHANCEMENT_LIMIT_EXCEEDED")?.details.enhancementSlots, 5);
+
+  const fourthUpgrade = {
+    ...state,
+    enhancements: [...state.enhancements, { enhancementId: "cleave", bearerInstanceId: "character-4" }]
+  };
+  assert.equal(
+    validateRosterLegality(army, fourthUpgrade, roster, { pointsLimit: 2000 }).warnings
+      .some(item => item.code === "ENHANCEMENT_DUPLICATE"),
+    true
+  );
+});
+
 test("unit assignments show selected-detachment upgrades without offering character enhancements to vehicles", () => {
   const army = {
     id: "army",

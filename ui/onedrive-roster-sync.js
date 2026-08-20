@@ -7,6 +7,8 @@ const ONEDRIVE_TOKEN_KEY = "arcadienOneDriveTokens";
 const ONEDRIVE_PKCE_KEY = "arcadienOneDrivePkce";
 const GRAPH_ROOT = "https://graph.microsoft.com/v1.0";
 const RECORD_KIND = "arcadien-roster-sync-record";
+const ROSTER_TOMBSTONE_KIND = "arcadien-roster-sync-tombstone";
+const GAME_RECORD_KIND = "arcadien-game-sync-record";
 const ANDROID_NATIVE = Boolean(window.AndroidOneDrive);
 let pendingAndroidToken = null;
 let nativeGraphRequestCounter = 0;
@@ -207,6 +209,18 @@ async function rosterFolder() {
   return created.json();
 }
 
+async function gameFolder() {
+  const root = await (await graph("/me/drive/special/approot")).json();
+  const existing = await graph(`/me/drive/items/${root.id}:/games`, { allowStatuses: [404] });
+  if (existing.status !== 404) return existing.json();
+  const created = await graph(`/me/drive/items/${root.id}/children`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "games", folder: {}, "@microsoft.graph.conflictBehavior": "fail" })
+  });
+  return created.json();
+}
+
 function cloudDownloadError(message) {
   const error = new Error(message);
   error.code = "ONEDRIVE_DOWNLOAD_FAILED";
@@ -285,10 +299,120 @@ async function uploadRecord(folder, record) {
   });
 }
 
-async function reconcileByName(saves) {
+function validRosterTombstone(value) {
+  return value && typeof value.id === "string" && value.id.length > 0 && Number.isFinite(Date.parse(value.deletedAt || ""));
+}
+
+async function remoteRosterTombstones(folder) {
+  const listing = await (await graph(`/me/drive/items/${folder.id}/children?$select=id,name,file`)).json();
+  const tombstones = [];
+  for (const item of listing.value || []) {
+    if (!item.file || !item.name.endsWith(".json")) continue;
+    try {
+      const response = await downloadCloudItem(item);
+      const parsed = JSON.parse(await response.text());
+      if (parsed?.kind === ROSTER_TOMBSTONE_KIND && validRosterTombstone(parsed.tombstone)) tombstones.push(parsed.tombstone);
+    } catch (error) {
+      if (error.code === "ONEDRIVE_DOWNLOAD_FAILED") throw error;
+    }
+  }
+  return tombstones;
+}
+
+async function uploadRosterTombstone(folder, tombstone) {
+  await graph(`/me/drive/items/${folder.id}:/${await fileName(tombstone.id)}:/content`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind: ROSTER_TOMBSTONE_KIND, version: 1, tombstone }, null, 2)
+  });
+}
+
+function validGameSyncEntry(entry) {
+  if (!entry || typeof entry.resultId !== "string" || !entry.resultId.startsWith("game-")) return false;
+  if (entry.type === "tombstone") return Number.isFinite(Date.parse(entry.deletedAt || ""));
+  return entry.type === "game" && entry.game?.status === "final" && entry.game.resultId === entry.resultId && entry.game.gameHash && `game-${entry.game.gameHash}` === entry.resultId;
+}
+
+function localGameEntries(state = {}) {
+  const entries = [];
+  for (const game of Array.isArray(state.games) ? state.games : []) {
+    const entry = { type: "game", resultId: game?.resultId, game };
+    if (validGameSyncEntry(entry)) entries.push(structuredClone(entry));
+  }
+  for (const tombstone of Array.isArray(state.tombstones) ? state.tombstones : []) {
+    const entry = { type: "tombstone", ...tombstone };
+    if (validGameSyncEntry(entry)) entries.push(structuredClone(entry));
+  }
+  return entries;
+}
+
+async function remoteGameEntries(folder) {
+  const listing = await (await graph(`/me/drive/items/${folder.id}/children?$select=id,name,file`)).json();
+  const entries = [];
+  for (const item of listing.value || []) {
+    if (!item.file || !item.name.endsWith(".json")) continue;
+    try {
+      const response = await downloadCloudItem(item);
+      const parsed = JSON.parse(await response.text());
+      if (parsed?.kind === GAME_RECORD_KIND && validGameSyncEntry(parsed.entry)) entries.push(parsed.entry);
+    } catch (error) {
+      if (error.code === "ONEDRIVE_DOWNLOAD_FAILED") throw error;
+    }
+  }
+  return entries;
+}
+
+async function uploadGameEntry(folder, entry) {
+  await graph(`/me/drive/items/${folder.id}:/${await fileName(entry.resultId)}:/content`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind: GAME_RECORD_KIND, version: 1, entry }, null, 2)
+  });
+}
+
+async function reconcileGames(state = {}) {
+  const folder = await gameFolder();
+  const local = new Map(localGameEntries(state).map(entry => [entry.resultId, entry]));
+  const remote = new Map((await remoteGameEntries(folder)).map(entry => [entry.resultId, entry]));
+  const games = [], tombstones = [];
+  const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
+  for (const id of new Set([...local.keys(), ...remote.keys()])) {
+    const localEntry = local.get(id) || null;
+    const remoteEntry = remote.get(id) || null;
+    let winner = localEntry || remoteEntry;
+    if (localEntry?.type === "tombstone" || remoteEntry?.type === "tombstone") {
+      winner = localEntry?.type === "tombstone" ? localEntry : remoteEntry;
+    } else if (localEntry && remoteEntry && JSON.stringify(localEntry) !== JSON.stringify(remoteEntry)) {
+      winner = localEntry;
+      summary.conflicts += 1;
+    }
+    if (!remoteEntry || JSON.stringify(remoteEntry) !== JSON.stringify(winner)) {
+      await uploadGameEntry(folder, winner);
+      summary.uploaded += 1;
+    }
+    if (!localEntry && remoteEntry) summary.downloaded += 1;
+    if (winner.type === "tombstone") tombstones.push({ resultId: winner.resultId, gameHash: winner.gameHash, deletedAt: winner.deletedAt });
+    else games.push(structuredClone(winner.game));
+  }
+  return { games, tombstones, summary };
+}
+
+async function reconcileByName(saves, rosterTombstones = []) {
   const folder = await rosterFolder();
-  const local = Array.isArray(saves) ? saves.filter(validRecord).map(record => structuredClone(record)) : [];
-  const remote = await remoteEntries(folder);
+  const localTombstones = (Array.isArray(rosterTombstones) ? rosterTombstones : []).filter(validRosterTombstone);
+  const remoteTombstones = await remoteRosterTombstones(folder);
+  const tombstonesById = new Map([...remoteTombstones, ...localTombstones].map(item => [item.id, item]));
+  const deletedIds = new Set(tombstonesById.keys());
+  const local = Array.isArray(saves) ? saves.filter(validRecord).filter(record => !deletedIds.has(record.id)).map(record => structuredClone(record)) : [];
+  const remote = (await remoteEntries(folder)).filter(entry => !deletedIds.has(entry.record.id));
+  const remoteTombstoneIds = new Set(remoteTombstones.map(item => item.id));
+  const summary = { uploaded: 0, downloaded: 0, conflicts: 0, deletionsUploaded: 0 };
+  for (const tombstone of localTombstones) {
+    if (!remoteTombstoneIds.has(tombstone.id)) {
+      await uploadRosterTombstone(folder, tombstone);
+      summary.deletionsUploaded += 1;
+    }
+  }
   const localByKey = new Map();
   for (const record of local) {
     const key = syncKey(record);
@@ -301,7 +425,6 @@ async function reconcileByName(saves) {
     if (!remoteByKey.has(key)) remoteByKey.set(key, []);
     remoteByKey.get(key).push(entry);
   }
-  const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
   const cleanup = { localRemoved: local.length - localByKey.size, remoteRemoved: 0 };
   const result = [];
   const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
@@ -327,11 +450,28 @@ async function reconcileByName(saves) {
     }
     result.push(structuredClone(winner));
   }
-  return { saves: result, summary, cleanup };
+  return { saves: result, rosterTombstones: [...tombstonesById.values()].map(item => structuredClone(item)), summary, cleanup };
 }
 
-async function sync(saves) { return reconcileByName(saves); }
-async function cleanDuplicates(saves) { return reconcileByName(saves); }
+async function sync(saves, syncState = null) {
+  const rosters = await reconcileByName(saves, syncState?.rosterTombstones);
+  if (!syncState) return rosters;
+  const games = await reconcileGames(syncState.games);
+  return {
+    ...rosters,
+    games: games.games,
+    gameTombstones: games.tombstones,
+    summary: {
+      ...rosters.summary,
+      uploaded: Number(rosters.summary?.uploaded || 0) + games.summary.uploaded,
+      downloaded: Number(rosters.summary?.downloaded || 0) + games.summary.downloaded,
+      conflicts: Number(rosters.summary?.conflicts || 0) + games.summary.conflicts,
+      gamesUploaded: games.summary.uploaded,
+      gamesDownloaded: games.summary.downloaded
+    }
+  };
+}
+async function cleanDuplicates(saves, syncState) { return sync(saves, syncState); }
 
 async function beginSignIn() {
   if (ANDROID_NATIVE) {

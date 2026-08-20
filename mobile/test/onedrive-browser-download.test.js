@@ -130,6 +130,53 @@ test("an expired browser refresh token clears the stale connection and marks rec
   assert.equal((await service.getStatus()).connected, false);
 });
 
+test("manual Sync uploads hash-identified games and roster deletion tombstones", async () => {
+  const requests = [];
+  const fetch = async (url, options = {}) => {
+    const target = String(url);
+    requests.push({ url: target, options });
+    if (target.endsWith("/me/drive/special/approot")) return response(200, { id: "app-root" });
+    if (target.includes("/items/app-root:/rosters")) return response(200, { id: "rosters" });
+    if (target.includes("/items/app-root:/games")) return response(200, { id: "games" });
+    if (target.includes("/items/rosters/children") || target.includes("/items/games/children")) return response(200, { value: [] });
+    if (options.method === "PUT") return response(200, { id: "uploaded" });
+    throw new Error(`Unexpected request: ${target}`);
+  };
+  const gameHash = "hash-value";
+  const game = { status: "final", resultId: `game-${gameHash}`, gameHash, endedAt: "2026-08-19T12:00:00.000Z" };
+  const result = await browserSync(fetch).sync([], {
+    rosterTombstones: [{ id: "deleted-roster", name: "Old list", deletedAt: "2026-08-19T13:00:00.000Z" }],
+    games: { games: [game], tombstones: [] }
+  });
+
+  assert.equal(result.games.length, 1);
+  assert.equal(result.summary.gamesUploaded, 1);
+  const uploads = requests.filter(request => request.options.method === "PUT").map(request => JSON.parse(request.options.body));
+  assert.equal(uploads.some(item => item.kind === "arcadien-roster-sync-tombstone" && item.tombstone.id === "deleted-roster"), true);
+  assert.equal(uploads.some(item => item.kind === "arcadien-game-sync-record" && item.entry.resultId === `game-${gameHash}`), true);
+});
+
+test("a synced roster deletion tombstone prevents another device from resurrecting the list", async () => {
+  const deletedAt = "2026-08-19T13:00:00.000Z";
+  const downloadUrl = "https://public.dm.files.1drv.com/deleted-roster";
+  const fetch = async url => {
+    const target = String(url);
+    if (target.endsWith("/me/drive/special/approot")) return response(200, { id: "app-root" });
+    if (target.includes("/items/app-root:/rosters")) return response(200, { id: "rosters" });
+    if (target.includes("/items/app-root:/games")) return response(200, { id: "games" });
+    if (target.includes("/items/rosters/children")) return response(200, { value: [{ id: "deleted-item", name: "deleted.json", file: {} }] });
+    if (target.includes("/items/games/children")) return response(200, { value: [] });
+    if (target.includes("/items/deleted-item?select=id,@microsoft.graph.downloadUrl")) return response(200, { id: "deleted-item", "@microsoft.graph.downloadUrl": downloadUrl });
+    if (target === downloadUrl) return response(200, { kind: "arcadien-roster-sync-tombstone", version: 1, tombstone: { id: "deleted-roster", name: "Deleted list", deletedAt } });
+    throw new Error(`Unexpected request: ${target}`);
+  };
+  const local = { id: "deleted-roster", savedAt: "2026-08-18T12:00:00.000Z", document: { name: "Deleted list", rosterEntries: [] } };
+  const result = await browserSync(fetch).sync([local], { rosterTombstones: [], games: { games: [], tombstones: [] } });
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result.saves)), []);
+  assert.equal(result.rosterTombstones[0].id, "deleted-roster");
+});
+
 test("Android sync uses the current native connection and Graph bridge", async () => {
   const requests = [];
   const record = {

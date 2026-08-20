@@ -624,7 +624,8 @@ function duplicateRosterEntry(sourceEntry) {
     if (!enhancement) continue;
     const repeatable = enhancement.kind === "upgrade" || Number(enhancement.maxSelections || 1) > 1;
     const selectedCount = (armyState.enhancements || []).filter(item => item.enhancementId === enhancement.id).length;
-    if (repeatable && selectedCount < Number(enhancement.maxSelections || Number.MAX_SAFE_INTEGER)) {
+    const maxSelections = enhancement.kind === "upgrade" ? 3 : Number(enhancement.maxSelections || Number.MAX_SAFE_INTEGER);
+    if (repeatable && selectedCount < maxSelections) {
       armyState = armyEngine.setEnhancement(army, armyState, roster, enhancement.id, duplicate.instanceId, true);
     }
   }

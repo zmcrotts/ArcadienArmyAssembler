@@ -763,6 +763,47 @@ html[data-mobile-ui="false"] .startScreen {
 
 .startIntroTitleRow h2 { margin: 0; }
 
+.startLibraryTabs {
+  border-bottom: 1px solid #aebbc0;
+  display: flex;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+.startLibraryTabs button {
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: #59676c;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 9px 18px;
+}
+
+.startLibraryTabs button.active { border-bottom-color: #087f91; color: #075f6c; }
+.startLibraryTabs button span { background: #dfe8eb; border-radius: 999px; font-size: 11px; margin-left: 4px; padding: 2px 7px; }
+.gameHistorySummary { color: #59676c; margin: 8px 0 0; }
+
+.gameHistoryCards { display: grid; gap: 9px; margin-top: 14px; overflow-y: auto; padding-right: 4px; }
+html[data-mobile-ui="false"] .gameHistoryCards { flex: 1 1 auto; min-height: 0; }
+.gameHistoryCard { align-items: center; background: #f8f8f8; border: 1px solid #999; cursor: pointer; display: grid; gap: 14px; grid-template-columns: 112px minmax(0, 1fr) auto; padding: 12px 14px; transition: border-color 120ms ease, background 120ms ease, transform 120ms ease; }
+.gameHistoryCard:hover,.gameHistoryCard:focus-visible { background: #eef6f7; border-color: #07899b; outline: none; transform: translateY(-1px); }
+.gameHistoryOutcome { border-left: 4px solid #718087; display: grid; padding-left: 10px; }
+.gameHistoryOutcome.victory { border-left-color: #2a8b5e; }.gameHistoryOutcome.defeat { border-left-color: #b65555; }.gameHistoryOutcome.draw { border-left-color: #b17c24; }
+.gameHistoryOutcome span { color: #66777d; font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.gameHistoryOutcome strong { font-size: 27px; }.gameHistoryOutcome i { color: #8c989d; font-style: normal; padding: 0 5px; }
+.gameHistoryDetails { display: grid; gap: 3px; min-width: 0; }.gameHistoryDetails b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.gameHistoryDetails b span { color: #77858a; font-size: 11px; text-transform: uppercase; }.gameHistoryDetails small { color: #59676c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gameHistoryDelete { min-width: 72px; }
+.gameHistoryEmpty { border: 1px dashed #aebbc0; margin-top: 14px; padding: 36px 20px; text-align: center; }.gameHistoryEmpty p { color: #66777d; margin-bottom: 0; }
+.playLedgerActions.final { grid-template-columns: 1fr; }
+.syncDataPanel { box-sizing: border-box; max-height: min(90vh, 900px); overflow-y: auto; padding: 0 20px 20px; width: min(760px, calc(100vw - 28px)); }
+.syncDataPanel > header { align-items: center; background: inherit; border-bottom: 1px solid #aebbc0; display: flex; justify-content: space-between; margin: 0 -20px 14px; padding: 16px 20px; position: sticky; top: 0; z-index: 2; }
+.syncDataPanel > header h2 { margin: 2px 0 0; }.syncDataPanel > header small { color: #087f91; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
+.syncDataPanel > p { color: #59676c; line-height: 1.45; }.syncDataPanel section { background: transparent; border: 0; padding: 0; }.syncDataPanel section > h3 { border-bottom: 1px solid #aebbc0; display: flex; justify-content: space-between; padding-bottom: 7px; }.syncDataPanel section > h3 span { color: #66777d; font-size: 13px; }
+.syncDataRows { display: grid; gap: 7px; }.syncDataRows > div { align-items: center; border: 1px solid #bac5ca; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr) auto; padding: 10px 12px; }.syncDataRows > div > span { display: grid; min-width: 0; }.syncDataRows small { color: #66777d; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.syncDeletionMarkers { display: grid; gap: 5px; }.syncDeletionMarkers span { color: #7d5555; font-size: 12px; }
+.syncDataAccountActions { border-top: 1px solid #aebbc0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 14px; }
+
 .primaryAction {
   background: #087f91;
   border-color: #05606e;
@@ -947,6 +988,9 @@ html[data-mobile-ui="false"] .savedRosterCards {
   .savedRosterIdentity { gap: 10px; grid-template-columns: 50px minmax(0, 1fr); }
   .savedRosterFactionMark { height: 50px; padding: 6px; width: 50px; }
   .savedRosterActions { padding-left: 60px; }
+  .gameHistoryCard { grid-template-columns: 92px minmax(0, 1fr); }
+  .gameHistoryCard > button { grid-column: 1 / -1; justify-self: end; }
+  .gameHistoryOutcome strong { font-size: 23px; }
 }
 
 .modalBackdrop {
@@ -2509,10 +2553,6 @@ html[data-mobile-ui="false"] .savedRosterCards {
     width: 100%;
   }
 
-  .startHeaderActions.hasDisconnect {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .startHeaderActions .startNewRoster {
     grid-column: 1 / -1;
   }
@@ -3177,6 +3217,19 @@ html[data-theme="dark"] .startScreen {
   border-color: #34454c;
 }
 
+html[data-theme="dark"] .startLibraryTabs { border-bottom-color: #42535a; }
+html[data-theme="dark"] .startLibraryTabs button { color: #89969b; }
+html[data-theme="dark"] .startLibraryTabs button.active { border-bottom-color: #26b8c5; color: #9ee8f0; }
+html[data-theme="dark"] .startLibraryTabs button span { background: #263238; }
+html[data-theme="dark"] .gameHistoryCard { background: #20282d; border-color: #51646c; }
+html[data-theme="dark"] .gameHistoryCard:hover,html[data-theme="dark"] .gameHistoryCard:focus-visible { background: #27363c; border-color: #22a8ba; }
+html[data-theme="dark"] .gameHistoryDetails small,html[data-theme="dark"] .gameHistoryOutcome span,html[data-theme="dark"] .gameHistorySummary { color: #9ba8ad; }
+html[data-theme="dark"] .gameHistoryEmpty { border-color: #42535a; }
+html[data-theme="dark"] .syncDataPanel > header,html[data-theme="dark"] .syncDataPanel section > h3 { border-color: #42535a; }
+html[data-theme="dark"] .syncDataPanel > p,html[data-theme="dark"] .syncDataRows small { color: #9ba8ad; }
+html[data-theme="dark"] .syncDataRows > div { border-color: #42535a; }
+html[data-theme="dark"] .syncDeletionMarkers span { color: #e3a2a2; }
+
 html[data-theme="dark"] .startSupportLink {
   color: #809198;
 }
@@ -3576,6 +3629,8 @@ html[data-theme="dark"] svg {
 /* The Android wrapper already applies system-bar insets around the WebView. */
 html[data-native-shell="android"] .mobileRosterHeader{padding-top:8px}
 html[data-native-shell="android"] .playModeHeader{padding-top:12px}
+.playModeHeader{grid-template-columns:auto minmax(0,1fr) auto auto}
+.playModeUndoButton{color:#f3cf7c!important;padding:0 10px}.playModeUndoButton:disabled{color:#77838b!important;opacity:.55}
 
 .playWeaponGroup{display:grid;gap:8px;padding:11px;border:1px solid #35434e;border-left-width:4px;border-radius:11px;background:#172129}
 .playWeaponGroup>h4{margin:0;padding-bottom:9px;border-bottom:1px solid #35434e;font-size:13px;letter-spacing:.1em;text-transform:uppercase}

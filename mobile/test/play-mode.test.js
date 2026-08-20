@@ -36,7 +36,7 @@ test("Play Mode enforces round category caps and persists one active session per
 });
 
 test("Play Mode starts both players at 1 CP without awarding the first Command phase", () => {
-  assert.match(source, /schemaVersion: 3/);
+  assert.match(source, /schemaVersion: 4/);
   assert.match(source, /cp: \{ you: 1, opponent: 1 \}/);
   assert.match(source, /cpAwarded: \[`1:\$\{setup\.firstTurn/);
   assert.doesNotMatch(source, /session\.setup\.opponentPrimary = opponentMission;\s*awardCommandCp\(\)/);
@@ -90,6 +90,24 @@ test("army rows show defensive stats and profile-aware wound references", () => 
   assert.match(source, /<small>OC<\/small>/);
   assert.match(css, /\.playArmyStats\{display:grid!important/);
   assert.match(css, /@media\(max-width:700px\).*\.playArmyReference\{grid-column:1\/-1\}/);
+});
+
+test("Play Mode persists five round-scoped full-state Undo actions", () => {
+  const html = fs.readFileSync(path.join(root, "ui", "index.html"), "utf8");
+  assert.match(html, /id="playModeUndo"[^>]*disabled>Undo<\/button>/);
+  assert.match(source, /const MAX_UNDO_ACTIONS = 5/);
+  assert.match(source, /session\.undoHistory = session\.undoHistory\.slice\(-MAX_UNDO_ACTIONS\)/);
+  assert.match(source, /Number\(item\.round\) === round/);
+  assert.match(source, /function undoStateSnapshot\(\)/);
+  assert.match(source, /function undoLastAction\(\)/);
+  assert.match(source, /undoButton\.textContent = "Undo"/);
+  assert.doesNotMatch(source, /undoButton\.textContent = session\.undoHistory\.length/);
+  for (const field of ["cp", "ledger", "decks", "modelState", "battleShockedGroups", "abilityUses", "stratagemUses"]) {
+    assert.match(source, new RegExp(`UNDO_FIELDS = \\[.*\\"${field}\\"`));
+  }
+  for (const action of ["Advance phase", "Draw secondary", "Score primary", "Toggle model wounds"]) {
+    assert.match(source, new RegExp(`recordUndo\\(\\\"${action}`));
+  }
 });
 
 test("army summary wound controls are limited to multi-wound single-model listings", () => {
@@ -237,6 +255,28 @@ test("game setup keeps both player columns aligned without an orphan detachment 
   assert.match(css, /\.playSetupYou\{grid-column:1\}\.playSetupOpponent\{grid-column:2\}/);
 });
 
+test("completed scorecards remain available in an edition-long Games tab", () => {
+  assert.match(source, /function listResults\(\)/);
+  assert.match(source, /function openResult\(id\)/);
+  assert.match(source, /function deleteResult\(id\)/);
+  assert.match(source, /results\.unshift\(finalResult\)/);
+  assert.doesNotMatch(source, /results\.slice\(0, 50\)/);
+  assert.match(source, /crypto\.subtle\.digest\("SHA-256"/);
+  assert.match(source, /const TOMBSTONE_KEY = "arcadienPlayModeResultTombstonesV1"/);
+  assert.match(source, /function exportSyncState\(\)/);
+  assert.match(source, /function importSyncState\(value = \{\}\)/);
+  assert.match(engineSource, /id="startManageSync"/);
+  assert.match(engineSource, /function rosterSyncTombstones\(\)/);
+  assert.match(engineSource, /function openSyncDataManager\(\)/);
+  assert.match(source, /session\.status === "final" \? "" : `<button data-undo-score/);
+  assert.match(engineSource, /id="showGamesTab"/);
+  assert.match(engineSource, /function renderGameHistory\(games\)/);
+  assert.match(engineSource, /data-delete-result/);
+  assert.doesNotMatch(engineSource, /data-open-result/);
+  assert.match(source, /openedFromHistory && shell\.hidden/);
+  assert.match(source, /function reviewHistoryGame\(\)/);
+});
+
 test("the opponent secondary hand always uses its own red tint", () => {
   const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
   assert.match(source, /content\.classList\.toggle\("playOpponentHand", currentView === "missions" && missionPlayer === "opponent"\)/);
@@ -294,6 +334,8 @@ test("Play Mode loads before the roster UI so active and completed match actions
 
 test("mobile battle controls fit narrow screens and weapons are split by range", () => {
   const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
+  assert.match(css, /\.playModeShell\{position:fixed;inset:0;z-index:4000;display:grid/);
+  assert.match(css, /\.playModeHeader\{grid-template-columns:auto minmax\(0,1fr\) auto auto\}/);
   assert.match(source, /const rangedWeapons = weapons\.filter\(weapon => !isMeleeWeapon\(weapon\)\)/);
   assert.match(source, /const meleeWeapons = weapons\.filter\(isMeleeWeapon\)/);
   assert.match(source, /renderWeaponGroup\("Ranged Weapons"/);

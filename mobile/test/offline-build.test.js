@@ -52,8 +52,9 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /mobileSheetBackdrop\.onclick = closeMobileSheets/);
   assert.match(engineApp, /class="mobileRosterSectionLabel"/);
   assert.match(engineApp, /<small>— \$\{section\.groups\.length\}/);
-  assert.match(engineApp, />De-duplicate<\/button>/);
-  assert.match(engineApp, />Un-sync<\/button>/);
+  assert.doesNotMatch(engineApp, /id="startCleanSync"|id="startDisconnectSync"|>Un-sync<\/button>/);
+  assert.match(engineApp, /data-clean-sync-data>De-duplicate OneDrive files<\/button>/);
+  assert.match(engineApp, /data-disconnect-onedrive>Disconnect OneDrive<\/button>/);
   assert.match(engineApp, /class="startNewRoster primaryAction" id="startNewRoster">\+ New Roster<\/button>/);
   assert.match(engineApp, /let savedRosterFiltersOpen = false/);
   assert.match(engineApp, /id="startImportRoster"[^>]*>Import<\/button>/);
@@ -86,12 +87,12 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /detailsPanel\?\.addEventListener\("scroll", \(\) => closeOpenWeaponPreview\(\)/);
   assert.match(engineApp, /startHeaderLead/);
   assert.match(engineApp, /startIntro/);
-  assert.match(engineApp, /syncProvider\?\.cleanDuplicates \? `<button id="startCleanSync"/);
+  assert.match(engineApp, /syncProvider\?\.cleanDuplicates \? `<button type="button" data-clean-sync-data/);
   assert.match(engineApp, /if \(syncButton\) syncButton\.onclick = syncSavedRosters/);
   assert.match(styles, /\.mobileSheetBackdrop \{[\s\S]*?position: fixed;[\s\S]*?z-index: 60;/);
   assert.match(styles, /html\[data-mobile-ui="false"\] \.startScreen \{[\s\S]*?height: calc\(100vh - 32px\);[\s\S]*?overflow: hidden;/);
   assert.match(styles, /html\[data-mobile-ui="false"\] \.savedRosterCards \{[\s\S]*?flex: 1 1 auto;[\s\S]*?max-height: none;/);
-  assert.match(styles, /\.startHeaderActions\.hasDisconnect \{[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.doesNotMatch(styles, /\.startHeaderActions\.hasDisconnect/);
   assert.match(styles, /html\[data-native-shell="android"\] \.mobileRosterHeader\{padding-top:8px\}/);
   assert.match(styles, /\.startNewRoster \{[\s\S]*?box-sizing: border-box;[\s\S]*?margin-left: 0;[\s\S]*?width: 100%;/);
   assert.match(styles, /body\.mobileAddOpen \.availablePanel #availableUnitsBody \{[\s\S]*?overflow-y: auto;/);

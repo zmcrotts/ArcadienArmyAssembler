@@ -95,6 +95,7 @@ const DEFAULT_CATALOGUE_PREFERENCES = {
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
 const MAX_IMPORT_RECORDS = 500;
 const MAX_ROSTER_ENTRIES_PER_IMPORT = 2000;
+const ROSTER_TOMBSTONE_KEY = "arcadienRosterSyncTombstonesV1";
 const SAVED_ROSTER_FACTION_ICONS = Object.freeze({
   "Imperium - Adepta Sororitas": "adepta-sororitas.svg",
   "Imperium - Adeptus Custodes": "adeptus-custodes.svg",
@@ -147,6 +148,7 @@ let availableUnitsCollapsed = loadAvailableUnitsCollapsed();
 const sidebarDisclosureState = {};
 const unitSectionDisclosureState = {};
 let appMode = "library";
+let libraryTab = "lists";
 let savedRosterSearchText = "";
 let savedRosterFactionFilter = "";
 let savedRosterSortMode = "edited-desc";
@@ -736,7 +738,8 @@ function duplicateRosterEntry(sourceEntry) {
     if (!enhancement) continue;
     const repeatable = enhancement.kind === "upgrade" || Number(enhancement.maxSelections || 1) > 1;
     const selectedCount = (armyState.enhancements || []).filter(item => item.enhancementId === enhancement.id).length;
-    if (repeatable && selectedCount < Number(enhancement.maxSelections || Number.MAX_SAFE_INTEGER)) {
+    const maxSelections = enhancement.kind === "upgrade" ? 3 : Number(enhancement.maxSelections || Number.MAX_SAFE_INTEGER);
+    if (repeatable && selectedCount < maxSelections) {
       armyState = armyEngine.setEnhancement(army, armyState, roster, enhancement.id, duplicate.instanceId, true);
     }
   }
@@ -1277,6 +1280,7 @@ function renderSavedRosterCollection(saves) {
 
 function renderStartScreen() {
   const saves = sortedSavedRosterLibrary(savedRosterLibrary(), savedRosterSortMode);
+  const games = window.ArcadienPlayMode?.listResults?.() || [];
   const factionOptions = savedRosterFactionOptions(saves);
   const syncProvider = syncStatus?.available === false
     ? null
@@ -1290,18 +1294,21 @@ function renderStartScreen() {
           <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
         </div>
         <div class="startIntro">
-          <button class="startNewRoster primaryAction" id="startNewRoster">+ New Roster</button>
+          ${libraryTab === "lists" ? `<button class="startNewRoster primaryAction" id="startNewRoster">+ New Roster</button>` : `<p class="gameHistorySummary">${games.length} completed game${games.length === 1 ? "" : "s"} saved on this device</p>`}
         </div>
       </div>
-      <div class="startHeaderActions${syncStatus?.connected ? " hasDisconnect" : ""}">
+      <div class="startHeaderActions">
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
-        ${syncProvider?.cleanDuplicates ? `<button id="startCleanSync" title="De-duplicate synced rosters">De-duplicate</button>` : ""}
-        ${syncProvider && syncStatus?.connected ? `<button id="startDisconnectSync" title="Disconnect OneDrive roster sync">Un-sync</button>` : ""}
+        ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
-    <details id="startRosterFilterPanel" class="startRosterFilterPanel" ${savedRosterFiltersOpen ? "open" : ""}>
+    <nav class="startLibraryTabs" aria-label="Saved content">
+      <button id="showListsTab" type="button" class="${libraryTab === "lists" ? "active" : ""}" aria-current="${libraryTab === "lists" ? "page" : "false"}">Lists <span>${saves.length}</span></button>
+      <button id="showGamesTab" type="button" class="${libraryTab === "games" ? "active" : ""}" aria-current="${libraryTab === "games" ? "page" : "false"}">Games <span>${games.length}</span></button>
+    </nav>
+    ${libraryTab === "lists" ? `<details id="startRosterFilterPanel" class="startRosterFilterPanel" ${savedRosterFiltersOpen ? "open" : ""}>
       <summary>Search, filter &amp; sort <span id="savedRosterFilterSummary" class="muted"></span></summary>
       <div class="startRosterFilters">
         <label class="startRosterSearch">
@@ -1330,16 +1337,17 @@ function renderStartScreen() {
     <div class="savedRosterCards">
       ${saves.length ? renderSavedRosterCollection(saves) : `<p class="muted">No saved rosters yet.</p>`}
       <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
-    </div>
+    </div>` : renderGameHistory(games)}
   `;
   document.getElementById("startImportRoster").onclick = openRosterShareCodeModal;
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
-  const cleanSyncButton = document.getElementById("startCleanSync");
-  if (cleanSyncButton) cleanSyncButton.onclick = cleanSyncedDuplicates;
-  const disconnectSyncButton = document.getElementById("startDisconnectSync");
-  if (disconnectSyncButton) disconnectSyncButton.onclick = disconnectRosterSync;
-  document.getElementById("startNewRoster").onclick = openNewRosterModal;
+  const manageSyncButton = document.getElementById("startManageSync");
+  if (manageSyncButton) manageSyncButton.onclick = openSyncDataManager;
+  document.getElementById("showListsTab").onclick = () => { libraryTab = "lists"; renderStartScreen(); };
+  document.getElementById("showGamesTab").onclick = () => { libraryTab = "games"; renderStartScreen(); };
+  const newRosterButton = document.getElementById("startNewRoster");
+  if (newRosterButton) newRosterButton.onclick = openNewRosterModal;
   const rosterSearch = document.getElementById("startRosterSearch");
   if (rosterSearch) rosterSearch.oninput = event => {
     savedRosterSearchText = event.target.value;
@@ -1385,7 +1393,61 @@ function renderStartScreen() {
       requestDeleteRoster(button.dataset.saveId);
     };
   }
+  for (const card of startScreen.querySelectorAll(".gameHistoryCard")) {
+    const open = () => window.ArcadienPlayMode?.openResult?.(card.dataset.resultId);
+    card.onclick = event => {
+      if (event.target.closest("button")) return;
+      open();
+    };
+    card.onkeydown = event => {
+      if (!["Enter", " "].includes(event.key) || event.target.closest("button")) return;
+      event.preventDefault();
+      open();
+    };
+  }
+  for (const button of startScreen.querySelectorAll("[data-delete-result]")) {
+    button.onclick = async event => {
+      event.stopPropagation();
+      const game = games.find(item => item.resultId === button.dataset.deleteResult);
+      const matchup = `${game?.setup?.yourName || "You"} vs ${game?.setup?.opponentName || "Opponent"}`;
+      if (!confirm(`Delete the saved scorecard for ${matchup}? This cannot be undone.`)) return;
+      if (await window.ArcadienPlayMode?.deleteResult?.(button.dataset.deleteResult)) renderStartScreen();
+    };
+  }
   applySavedRosterFilters();
+}
+
+function renderGameHistory(games) {
+  if (!games.length) return `<div class="gameHistoryEmpty"><b>No completed games yet.</b><p>Finish a game in Play Mode and its final scorecard will appear here.</p></div>`;
+  return `<div class="gameHistoryCards">${games.map(renderGameHistoryCard).join("")}</div>`;
+}
+
+function renderGameHistoryCard(game) {
+  const yourScore = gameScoreTotal(game, "you");
+  const opponentScore = gameScoreTotal(game, "opponent");
+  const outcome = yourScore === opponentScore ? "Draw" : yourScore > opponentScore ? "Victory" : "Defeat";
+  const faction = game.setup?.yourFaction || game.roster?.subfaction || game.roster?.faction || "Unknown faction";
+  const opponentFaction = game.setup?.opponentFaction || "Unknown faction";
+  return `
+    <article class="gameHistoryCard" role="button" tabindex="0" data-result-id="${escapeHtml(game.resultId)}" aria-label="Open scorecard for ${escapeHtml(game.setup?.yourName || "You")} versus ${escapeHtml(game.setup?.opponentName || "Opponent")}">
+      <div class="gameHistoryOutcome ${outcome.toLowerCase()}"><span>${escapeHtml(outcome)}</span><strong>${yourScore}<i>–</i>${opponentScore}</strong></div>
+      <div class="gameHistoryDetails">
+        <b>${escapeHtml(game.setup?.yourName || "You")} <span>vs</span> ${escapeHtml(game.setup?.opponentName || "Opponent")}</b>
+        <small>${escapeHtml(faction)} vs ${escapeHtml(opponentFaction)}</small>
+        <small>${escapeHtml(game.roster?.name || "Match")} · ${escapeHtml(formatGameHistoryDate(game.endedAt))}</small>
+      </div>
+      <button class="dangerButton gameHistoryDelete" type="button" data-delete-result="${escapeHtml(game.resultId)}" aria-label="Delete scorecard for ${escapeHtml(game.setup?.yourName || "You")} versus ${escapeHtml(game.setup?.opponentName || "Opponent")}">Delete</button>
+    </article>`;
+}
+
+function gameScoreTotal(game, player) {
+  return (game.ledger || []).filter(item => item.player === player).reduce((total, item) => total + Number(item.amount || 0), 0);
+}
+
+function formatGameHistoryDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Date unavailable";
+  return new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "numeric" }).format(date);
 }
 
 function applySavedRosterFilters() {
@@ -1952,13 +2014,18 @@ async function syncSavedRosters() {
       await oneDrive.beginSignIn();
       syncStatus = await oneDrive.getStatus();
     }
-    const result = await service.sync(savedRosterLibrary());
+    const gameState = await window.ArcadienPlayMode?.exportSyncState?.() || { games: [], tombstones: [] };
+    const result = await service.sync(savedRosterLibrary(), { rosterTombstones: rosterSyncTombstones(), games: gameState });
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
     syncStatus = { ...(syncStatus || {}), ...result, available: true, connected: true };
     await saveRosterLibrary(syncedSaves);
+    writeRosterSyncTombstones(result.rosterTombstones || []);
+    await window.ArcadienPlayMode?.importSyncState?.({ games: result.games || [], tombstones: result.gameTombstones || [] });
     renderStartScreen();
-    const { uploaded = 0, downloaded = 0, conflicts = 0 } = result.summary || {};
-    const details = [uploaded && `${uploaded} uploaded`, downloaded && `${downloaded} added`, conflicts && `${conflicts} kept safely`].filter(Boolean);
+    const { uploaded = 0, downloaded = 0, conflicts = 0, gamesUploaded = 0, gamesDownloaded = 0, deletionsUploaded = 0 } = result.summary || {};
+    const rosterUploads = Math.max(0, uploaded - gamesUploaded);
+    const rosterDownloads = Math.max(0, downloaded - gamesDownloaded);
+    const details = [rosterUploads && `${rosterUploads} list update${rosterUploads === 1 ? "" : "s"} uploaded`, rosterDownloads && `${rosterDownloads} list${rosterDownloads === 1 ? "" : "s"} added`, gamesUploaded && `${gamesUploaded} game update${gamesUploaded === 1 ? "" : "s"} uploaded`, gamesDownloaded && `${gamesDownloaded} game update${gamesDownloaded === 1 ? "" : "s"} added`, deletionsUploaded && `${deletionsUploaded} list removal${deletionsUploaded === 1 ? "" : "s"} propagated`, conflicts && `${conflicts} kept safely`].filter(Boolean);
     const emptyCloud = !savedRosterLibrary().length && Number(result.summary?.cloudRecords || 0) === 0;
     const folderLabel = result.summary?.cloudFolder ? ` OneDrive folder ${result.summary.cloudFolder}.` : "";
     showTransientMessage(details.length
@@ -1999,10 +2066,13 @@ async function cleanSyncedDuplicates() {
   setSyncButtonsDisabled(true, "Repairing…");
   showTransientMessage("Checking OneDrive for exact duplicate roster files…");
   try {
-    const result = await service.cleanDuplicates(savedRosterLibrary());
+    const gameState = await window.ArcadienPlayMode?.exportSyncState?.() || { games: [], tombstones: [] };
+    const result = await service.cleanDuplicates(savedRosterLibrary(), { rosterTombstones: rosterSyncTombstones(), games: gameState });
     const syncedSaves = await validateSyncedRosterLibrary(result.saves);
     syncStatus = { ...(syncStatus || {}), ...result, available: true, connected: true };
     await saveRosterLibrary(syncedSaves);
+    writeRosterSyncTombstones(result.rosterTombstones || []);
+    await window.ArcadienPlayMode?.importSyncState?.({ games: result.games || [], tombstones: result.gameTombstones || [] });
     renderStartScreen();
     const cleanup = result.cleanup || {};
     const conflicts = result.summary?.conflicts || 0;
@@ -2024,13 +2094,84 @@ async function cleanSyncedDuplicates() {
 
 function setSyncButtonsDisabled(disabled, activeLabel = "") {
   const syncButton = document.getElementById("startSyncRosters");
-  const cleanButton = document.getElementById("startCleanSync");
-  const disconnectButton = document.getElementById("startDisconnectSync");
-  for (const button of [syncButton, cleanButton, disconnectButton].filter(Boolean)) button.disabled = disabled;
+  const manageButton = document.getElementById("startManageSync");
+  for (const button of [syncButton, manageButton].filter(Boolean)) button.disabled = disabled;
   if (syncButton) syncButton.textContent = disabled && activeLabel
     ? activeLabel
     : syncStatus?.connected === false ? "Reconnect" : "Sync";
-  if (cleanButton) cleanButton.textContent = "De-duplicate";
+}
+
+function rosterSyncTombstones() {
+  try {
+    const value = JSON.parse(localStorage.getItem(ROSTER_TOMBSTONE_KEY) || "[]");
+    return Array.isArray(value) ? value.filter(item => item && typeof item.id === "string" && Number.isFinite(Date.parse(item.deletedAt || ""))) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeRosterSyncTombstones(value) {
+  const tombstones = Array.isArray(value) ? value.filter(item => item && typeof item.id === "string" && Number.isFinite(Date.parse(item.deletedAt || ""))) : [];
+  localStorage.setItem(ROSTER_TOMBSTONE_KEY, JSON.stringify(tombstones));
+}
+
+function addRosterSyncTombstone(record) {
+  const tombstones = rosterSyncTombstones().filter(item => item.id !== record.id);
+  tombstones.push({ id: record.id, name: record.document?.name || "Unnamed roster", deletedAt: new Date().toISOString() });
+  writeRosterSyncTombstones(tombstones);
+}
+
+async function openSyncDataManager() {
+  const syncProvider = window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
+  let backdrop = document.getElementById("syncDataModal");
+  if (!backdrop) {
+    backdrop = document.createElement("div");
+    backdrop.id = "syncDataModal";
+    backdrop.className = "modalBackdrop";
+    document.body.appendChild(backdrop);
+  }
+  const gameState = await window.ArcadienPlayMode?.exportSyncState?.() || { games: [], tombstones: [] };
+  const games = gameState.games;
+  const rosterTombstones = rosterSyncTombstones();
+  const gameTombstones = gameState.tombstones;
+  backdrop.hidden = false;
+  backdrop.innerHTML = `<div class="modalPanel syncDataPanel" role="dialog" aria-modal="true" aria-labelledby="syncDataTitle">
+    <header><div><small>ONEDRIVE</small><h2 id="syncDataTitle">Manage Sync Data</h2></div><button type="button" data-close-sync-data>Close</button></header>
+    <p>Review the lists and completed games included in this device's synchronized set. Remove an item here, then press Sync to propagate that deletion to OneDrive and your other devices.</p>
+    <section><h3>Roster lists <span>${savedRosterLibrary().length}</span></h3><div class="syncDataRows">${savedRosterLibrary().map(save => `<div><span><b>${escapeHtml(save.document?.name || "Unnamed roster")}</b><small>${escapeHtml(savedRosterMetadata(save.document || {}, savedRosterFaction(save)))}</small></span><button class="dangerButton" type="button" data-sync-delete-roster="${escapeHtml(save.id)}">Remove</button></div>`).join("") || `<p class="muted">No roster lists in the synchronized set.</p>`}</div></section>
+    <section><h3>Completed games <span>${games.length}</span></h3><div class="syncDataRows">${games.map(game => `<div><span><b>${escapeHtml(game.setup?.yourName || "You")} vs ${escapeHtml(game.setup?.opponentName || "Opponent")}</b><small>${gameScoreTotal(game, "you")}–${gameScoreTotal(game, "opponent")} · ${escapeHtml(formatGameHistoryDate(game.endedAt))}</small></span><button class="dangerButton" type="button" data-sync-delete-game="${escapeHtml(game.resultId)}">Remove</button></div>`).join("") || `<p class="muted">No completed games in the synchronized set.</p>`}</div></section>
+    ${rosterTombstones.length ? `<section><h3>Pending/propagated list removals <span>${rosterTombstones.length}</span></h3><div class="syncDeletionMarkers">${rosterTombstones.map(item => `<span>${escapeHtml(item.name || item.id)} · ${escapeHtml(formatGameHistoryDate(item.deletedAt))}</span>`).join("")}</div></section>` : ""}
+    ${gameTombstones.length ? `<section><h3>Pending/propagated game removals <span>${gameTombstones.length}</span></h3><div class="syncDeletionMarkers">${gameTombstones.map(item => `<span>Deleted game · ${escapeHtml(formatGameHistoryDate(item.deletedAt))}</span>`).join("")}</div></section>` : ""}
+    <div class="syncDataAccountActions">
+      ${syncProvider?.cleanDuplicates ? `<button type="button" data-clean-sync-data>De-duplicate OneDrive files</button>` : ""}
+      ${syncStatus?.connected ? `<button type="button" data-disconnect-onedrive>Disconnect OneDrive</button>` : ""}
+    </div>
+  </div>`;
+  const close = () => { backdrop.hidden = true; backdrop.innerHTML = ""; };
+  backdrop.onclick = event => { if (event.target === backdrop) close(); };
+  backdrop.querySelector("[data-close-sync-data]").onclick = close;
+  const cleanButton = backdrop.querySelector("[data-clean-sync-data]");
+  if (cleanButton) cleanButton.onclick = async () => {
+    close();
+    await cleanSyncedDuplicates();
+  };
+  const disconnectButton = backdrop.querySelector("[data-disconnect-onedrive]");
+  if (disconnectButton) disconnectButton.onclick = async () => {
+    await disconnectRosterSync();
+    if (!syncStatus?.connected) close();
+  };
+  for (const button of backdrop.querySelectorAll("[data-sync-delete-roster]")) button.onclick = async () => {
+    const save = savedRosterLibrary().find(item => item.id === button.dataset.syncDeleteRoster);
+    if (!save || !confirm(`Remove “${save.document?.name || "Unnamed roster"}” from this device and OneDrive Sync?`)) return;
+    await deleteRosterById(save.id);
+    openSyncDataManager();
+  };
+  for (const button of backdrop.querySelectorAll("[data-sync-delete-game]")) button.onclick = async () => {
+    if (!confirm("Remove this completed game from this device and OneDrive Sync?")) return;
+    await window.ArcadienPlayMode?.deleteResult?.(button.dataset.syncDeleteGame);
+    renderStartScreen();
+    openSyncDataManager();
+  };
 }
 
 function applyTestProfileIdentity() {
@@ -5152,6 +5293,7 @@ async function deleteRosterById(id) {
     alert(`Delete failed: ${error.message}`);
     return;
   }
+  addRosterSyncTombstone(target);
   if (currentRosterSaveId === id) currentRosterSaveId = null;
   renderRosterSaveBrowser();
   if (appMode === "library") renderStartScreen();

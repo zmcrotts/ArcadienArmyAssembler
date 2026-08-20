@@ -481,6 +481,24 @@ function setEnhancement(armyDefinition, armyState, rosterEntries, enhancementId,
   return next;
 }
 
+function enhancementSlotLimitFor(pointsLimit) {
+  return Number(pointsLimit || 0) >= 2000 ? 4 : 3;
+}
+
+function enhancementSlotCount(armyDefinition, assignments) {
+  const countedUpgrades = new Set();
+  let count = 0;
+  for (const assignment of assignments || []) {
+    const enhancement = (armyDefinition?.enhancements || []).find(item => item.id === assignment.enhancementId);
+    if (enhancement?.kind === "upgrade") {
+      if (countedUpgrades.has(assignment.enhancementId)) continue;
+      countedUpgrades.add(assignment.enhancementId);
+    }
+    count += 1;
+  }
+  return count;
+}
+
 function warning(code, message, affectedInstanceIds = [], details = {}) {
   return { severity: "warning", code, message, affectedInstanceIds, details };
 }
@@ -751,7 +769,14 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
 
   const seenBearers = new Set();
   const assignments = armyState?.enhancements || [];
-  if (assignments.length > 3) warnings.push(warning("ENHANCEMENT_LIMIT_EXCEEDED", `${assignments.length} enhancements selected; the limit is 3.`));
+  const enhancementSlots = enhancementSlotCount(armyDefinition, assignments);
+  const enhancementSlotLimit = enhancementSlotLimitFor(pointsLimit);
+  if (enhancementSlots > enhancementSlotLimit) warnings.push(warning(
+    "ENHANCEMENT_LIMIT_EXCEEDED",
+    `${enhancementSlots} Enhancement slots used; the limit is ${enhancementSlotLimit}. Repeated copies of the same Upgrade use one slot.`,
+    [],
+    { enhancementSlots, enhancementSlotLimit }
+  ));
   const enhancementCounts = new Map();
   for (const assignment of assignments) {
     const enhancement = (armyDefinition?.enhancements || []).find(item => item.id === assignment.enhancementId);
@@ -763,7 +788,7 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
     }
     const count = (enhancementCounts.get(assignment.enhancementId) || 0) + 1;
     enhancementCounts.set(assignment.enhancementId, count);
-    const maxSelections = Number(enhancement?.maxSelections || 1);
+    const maxSelections = enhancement?.kind === "upgrade" ? 3 : Number(enhancement?.maxSelections || 1);
     if (count > maxSelections) {
       warnings.push(warning("ENHANCEMENT_DUPLICATE", `${enhancement?.name || "An enhancement"} selected ${count} times; the limit is ${maxSelections}.`));
     }
@@ -878,6 +903,8 @@ const armyApi = {
   detachmentPointLimitFor,
   availableForceDispositions,
   enhancementPointsByBearer,
+  enhancementSlotCount,
+  enhancementSlotLimitFor,
   eligibleStratagemsForEntry,
   effectiveKeywordsForEntry,
   getEnhancementStates,

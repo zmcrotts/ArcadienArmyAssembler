@@ -286,13 +286,13 @@ function registerRosterSyncHandlers() {
     clearOneDriveTokens();
     return syncStatus();
   }));
-  ipcMain.handle("roster-sync:sync", (event, saves) => runRosterSyncOperation(async () => {
+  ipcMain.handle("roster-sync:sync", (event, saves, syncState) => runRosterSyncOperation(async () => {
     await ensureOneDriveConnected();
-    return { canceled: false, ...(await syncStatus()), ...(await oneDriveClient().sync(saves)) };
+    return { canceled: false, ...(await syncStatus()), ...(await oneDriveClient().sync(saves, syncState)) };
   }));
-  ipcMain.handle("roster-sync:clean-duplicates", (event, saves) => runRosterSyncOperation(async () => {
+  ipcMain.handle("roster-sync:clean-duplicates", (event, saves, syncState) => runRosterSyncOperation(async () => {
     await ensureOneDriveConnected();
-    return { ...(await syncStatus()), ...(await oneDriveClient().cleanDuplicates(saves)) };
+    return { ...(await syncStatus()), ...(await oneDriveClient().cleanDuplicates(saves, syncState)) };
   }));
 }
 

@@ -3,6 +3,7 @@
 (() => {
   const STORAGE_KEY = "arcadienPlayModeSessionsV1";
   const RESULT_KEY = "arcadienPlayModeResultsV1";
+  const TOMBSTONE_KEY = "arcadienPlayModeResultTombstonesV1";
   const PHASES = ["Command", "Movement", "Shooting", "Charge", "Fight"];
   const PLAYERS = ["you", "opponent"];
   const CARD_ROOT = "assets/11th/secondary-missions/defender/";
@@ -72,11 +73,15 @@
   const modal = document.getElementById("playModeModal");
   const title = document.getElementById("playModeRosterName");
   const nav = document.getElementById("playModeNav");
+  const undoButton = document.getElementById("playModeUndo");
+  const MAX_UNDO_ACTIONS = 5;
+  const UNDO_FIELDS = ["round", "turn", "phase", "cp", "cpAwarded", "cpHistory", "ledger", "stratagemUses", "abilityUses", "battleShockedGroups", "decks", "modelState", "notes"];
   let session = null;
   let currentView = "battle";
   let missionPlayer = "you";
   let selectedGroupId = null;
   let previousVisibility = null;
+  let openedFromHistory = false;
 
   const FIXED_CARDS = CARDS.filter(item => item.fixedScores.length);
 
@@ -109,13 +114,85 @@
     return readStore(RESULT_KEY, []).some(item => item.rosterId === rosterId);
   }
 
-  function openLatestResult(rosterId) {
-    const result = readStore(RESULT_KEY, []).find(item => item.rosterId === rosterId);
+  function resultId(result, index = 0) {
+    return result.resultId || [result.endedAt, result.startedAt, result.rosterId, index].filter(Boolean).join(":");
+  }
+
+  function listResults() {
+    return readStore(RESULT_KEY, [])
+      .filter(item => item?.status === "final")
+      .map((item, index) => ({ ...structuredClone(item), resultId: resultId(item, index) }))
+      .sort((left, right) => String(right.endedAt || "").localeCompare(String(left.endedAt || "")));
+  }
+
+  function openResult(id) {
+    const result = listResults().find(item => item.resultId === id);
     if (!result) return;
     previousVisibility = {
       start: document.getElementById("startScreen")?.hidden,
       builder: document.getElementById("builderShell")?.hidden
     };
+    openedFromHistory = true;
+    session = result;
+    normalizeSession();
+    currentView = "ledger";
+    openFinalScorecard();
+  }
+
+  async function deleteResult(id) {
+    const results = readStore(RESULT_KEY, []);
+    const index = results.findIndex((item, itemIndex) => resultId(item, itemIndex) === id);
+    if (index < 0) return false;
+    const game = await prepareGameRecord(results[index]);
+    const next = results.filter((_item, itemIndex) => itemIndex !== index);
+    if (next.length === results.length) return false;
+    writeStore(RESULT_KEY, next);
+    const tombstones = readStore(TOMBSTONE_KEY, []);
+    const filtered = tombstones.filter(item => item?.resultId !== game.resultId);
+    filtered.push({ resultId: game.resultId, gameHash: game.gameHash, deletedAt: new Date().toISOString() });
+    writeStore(TOMBSTONE_KEY, filtered);
+    return true;
+  }
+
+  async function exportSyncState() {
+    const games = [];
+    for (const value of readStore(RESULT_KEY, [])) games.push(await prepareGameRecord(value));
+    const tombstones = readStore(TOMBSTONE_KEY, []).filter(validTombstone);
+    const deletedIds = new Set(tombstones.map(item => item.resultId));
+    const activeGames = games.filter(item => !deletedIds.has(item.resultId));
+    writeStore(RESULT_KEY, activeGames);
+    writeStore(TOMBSTONE_KEY, tombstones);
+    return { games: structuredClone(activeGames), tombstones: structuredClone(tombstones) };
+  }
+
+  async function importSyncState(value = {}) {
+    const games = [];
+    for (const item of Array.isArray(value.games) ? value.games : []) {
+      const prepared = await prepareGameRecord(item, true);
+      games.push(prepared);
+    }
+    const tombstones = (Array.isArray(value.tombstones) ? value.tombstones : []).filter(validTombstone);
+    const deletedIds = new Set(tombstones.map(item => item.resultId));
+    writeStore(RESULT_KEY, games.filter(item => !deletedIds.has(item.resultId)));
+    writeStore(TOMBSTONE_KEY, tombstones);
+  }
+
+  function validTombstone(value) {
+    return value && typeof value.gameHash === "string" && value.resultId === `game-${value.gameHash}` && Number.isFinite(Date.parse(value.deletedAt || ""));
+  }
+
+  function openLatestResult(rosterId) {
+    const result = listResults().find(item => item.rosterId === rosterId);
+    if (!result) return;
+    openStoredResult(result);
+  }
+
+  function openStoredResult(result) {
+    previousVisibility = {
+      start: document.getElementById("startScreen")?.hidden,
+      builder: document.getElementById("builderShell")?.hidden
+    };
+    openedFromHistory = false;
     hideApp();
     session = result;
     normalizeSession();
@@ -130,6 +207,7 @@
       start: document.getElementById("startScreen")?.hidden,
       builder: document.getElementById("builderShell")?.hidden
     };
+    openedFromHistory = false;
     hideApp();
     if (saved?.status === "active") {
       session = saved;
@@ -164,6 +242,7 @@
     if (start) start.hidden = previousVisibility?.start ?? false;
     if (builder) builder.hidden = previousVisibility?.builder ?? true;
     session = null;
+    openedFromHistory = false;
     document.dispatchEvent(new CustomEvent("arcadien-playmode-close"));
   }
 
@@ -258,7 +337,7 @@
     const yourDisposition = (roster.forceDispositions || []).find(item => item.id === setup.yourDisposition);
     const opponentDisposition = (roster.forceDispositions || []).find(item => item.id === setup.opponentDisposition);
     const state = {
-      schemaVersion: 3,
+      schemaVersion: 4,
       rosterId,
       status: "active",
       startedAt: new Date().toISOString(),
@@ -292,6 +371,7 @@
         opponent: createDeck(setup.opponentMissionMode, [setup.opponentFixedOne, setup.opponentFixedTwo])
       },
       modelState: createModelState(roster),
+      undoHistory: [],
       notes: ""
     };
     return state;
@@ -355,6 +435,7 @@
     session.stratagemUses ||= [];
     session.abilityUses ||= [];
     session.battleShockedGroups ||= {};
+    session.undoHistory = Array.isArray(session.undoHistory) ? session.undoHistory : [];
     session.setup.missionMode ||= { you: session.decks.you?.mode || "tactical", opponent: session.decks.opponent?.mode || "tactical" };
     for (const player of PLAYERS) {
       session.decks[player] ||= createDeck();
@@ -377,11 +458,45 @@
       if (!session.cpAwarded.includes(openingKey)) session.cpAwarded.push(openingKey);
       session.cpHistory = PLAYERS.map(player => ({ id: uid(), round: 1, turn: openingTurn, player, amount: 1, reason: "Starting CP" }));
     }
-    session.schemaVersion = 3;
+    pruneUndoHistory();
+    session.schemaVersion = 4;
+  }
+
+  function undoStateSnapshot() {
+    return Object.fromEntries(UNDO_FIELDS.map(field => [field, structuredClone(session[field])]));
+  }
+
+  function pruneUndoHistory() {
+    if (!session) return;
+    const round = Number(session.round || 1);
+    session.undoHistory = (Array.isArray(session.undoHistory) ? session.undoHistory : [])
+      .filter(item => item && Number(item.round) === round && item.state && typeof item.state === "object")
+      .slice(-MAX_UNDO_ACTIONS);
+  }
+
+  function recordUndo(label) {
+    if (!session || session.status !== "active") return;
+    pruneUndoHistory();
+    session.undoHistory.push({ id: uid(), round: session.round, label, state: undoStateSnapshot() });
+    session.undoHistory = session.undoHistory.slice(-MAX_UNDO_ACTIONS);
+  }
+
+  function undoLastAction() {
+    if (!session || session.status !== "active") return;
+    pruneUndoHistory();
+    const entry = session.undoHistory.pop();
+    if (!entry) return;
+    const remaining = session.undoHistory;
+    for (const field of UNDO_FIELDS) session[field] = structuredClone(entry.state[field]);
+    session.undoHistory = remaining;
+    persist();
+    closeModal();
+    render();
   }
 
   function persist() {
     if (!session) return;
+    pruneUndoHistory();
     const all = sessions();
     all[session.rosterId] = session;
     writeStore(STORAGE_KEY, all);
@@ -391,6 +506,13 @@
     if (!session) return;
     const endButton = document.getElementById("playModeEnd");
     if (endButton) endButton.textContent = session.status === "final" ? "Scorecard" : "End Game";
+    pruneUndoHistory();
+    if (undoButton) {
+      const latest = session.undoHistory[session.undoHistory.length - 1];
+      undoButton.disabled = session.status !== "active" || !latest;
+      undoButton.textContent = "Undo";
+      undoButton.title = latest ? `Undo: ${latest.label}` : "No actions to undo in this round";
+    }
     for (const button of nav.querySelectorAll("button")) button.classList.toggle("active", button.dataset.playView === currentView);
     content.classList.toggle("playOpponentHand", currentView === "missions" && missionPlayer === "opponent");
     if (currentView === "battle") renderBattle();
@@ -457,15 +579,19 @@
   }
 
   function setBattleState(field, value) {
-    if (field === "round") session.round = Math.max(1, Math.min(5, Number(value)));
-    if (field === "turn") session.turn = value;
-    if (field === "phase") session.phase = value;
+    const nextValue = field === "round" ? Math.max(1, Math.min(5, Number(value))) : value;
+    if (session[field] === nextValue) return;
+    recordUndo(`Change ${field}`);
+    if (field === "round") session.round = nextValue;
+    if (field === "turn") session.turn = nextValue;
+    if (field === "phase") session.phase = nextValue;
     if (session.phase === "Command") awardCommandCp();
     persist();
     render();
   }
 
   function nextPhase() {
+    recordUndo("Advance phase");
     const index = PHASES.indexOf(session.phase);
     if (index < PHASES.length - 1) session.phase = PHASES[index + 1];
     else {
@@ -492,7 +618,10 @@
   }
 
   function changeCp(player, delta) {
-    session.cp[player] = Math.max(0, Number(session.cp[player] || 0) + delta);
+    const nextCp = Math.max(0, Number(session.cp[player] || 0) + delta);
+    if (nextCp === session.cp[player]) return;
+    recordUndo(`${delta > 0 ? "Add" : "Spend"} CP`);
+    session.cp[player] = nextCp;
     session.cpHistory.push({ id: uid(), round: session.round, turn: session.turn, player, amount: delta, reason: "Manual adjustment" });
     persist();
     render();
@@ -536,13 +665,18 @@
 
   function drawCard(player) {
     const deck = session.decks[player];
-    const id = deck.draw.shift();
-    if (id) deck.hand.push(id);
+    const id = deck.draw[0];
+    if (!id) return;
+    recordUndo("Draw secondary");
+    deck.draw.shift();
+    deck.hand.push(id);
     persist(); render();
   }
 
   function discardCard(player, id) {
     const deck = session.decks[player];
+    if (!deck.hand.includes(id)) return;
+    recordUndo("Discard secondary");
     deck.hand = deck.hand.filter(item => item !== id);
     if (!deck.discard.includes(id)) deck.discard.push(id);
     persist(); render();
@@ -550,6 +684,8 @@
 
   function reshuffle(player) {
     const deck = session.decks[player];
+    if (!deck.discard.length) return;
+    recordUndo("Reshuffle secondaries");
     deck.draw.push(...shuffle(deck.discard));
     deck.discard = [];
     persist(); render();
@@ -567,6 +703,8 @@
     };
     for (const button of modal.querySelectorAll("[data-pick-card]")) button.onclick = () => {
       const id = button.dataset.pickCard;
+      if (deck.hand.includes(id)) return;
+      recordUndo("Select secondary");
       deck.draw = deck.draw.filter(item => item !== id);
       deck.discard = deck.discard.filter(item => item !== id);
       if (!deck.hand.includes(id)) deck.hand.push(id);
@@ -635,6 +773,9 @@
     let current = roundVp(player, "primary");
     let appliedTotal = 0;
     let overflow = 0;
+    const applicable = pending.some(item => Math.min(item.value, Math.max(0, 15 - current)) > 0);
+    if (!applicable) return alert("No Primary score changes can be applied.");
+    recordUndo("Score primary");
     for (const item of pending) {
       const amount = Math.min(item.value, Math.max(0, 15 - current));
       overflow += item.value - amount;
@@ -643,7 +784,7 @@
       current += amount;
       appliedTotal += amount;
     }
-    if (!appliedTotal) return alert("No Primary score changes can be applied.");
+    if (!appliedTotal) return;
     persist(); closeModal(); render();
     showScoreFeedback(player, source, appliedTotal, { overflow });
   }
@@ -655,6 +796,7 @@
     if (amount > 0) amount = Math.min(amount, Math.max(0, 15 - current));
     if (current + amount < 0) return alert(`${category} scoring cannot fall below 0 VP in a battle round.`);
     if (!amount) return alert(`${category} is already capped at 15 VP this battle round.`);
+    recordUndo(`Score ${category}`);
     const overflow = Math.max(0, requestedAmount - amount);
     session.ledger.push({ id: uid(), player, round: session.round, category, source, amount, requestedAmount, scoreOptionId: options.scoreOptionId || "", createdAt: new Date().toISOString() });
     let discarded = false;
@@ -781,6 +923,7 @@
   function toggleBattleShock(groupId) {
     const group = playRosterGroups().find(item => item.id === groupId);
     if (!group || groupStrengthState(group) === "destroyed") return;
+    recordUndo(`${isGroupBattleShocked(groupId) ? "Clear" : "Mark"} Battle-shock`);
     session.battleShockedGroups ||= {};
     if (isGroupBattleShocked(groupId)) delete session.battleShockedGroups[groupId];
     else session.battleShockedGroups[groupId] = true;
@@ -930,13 +1073,17 @@
     if (!group) return;
     const model = groupModels(group).find(item => item.id === id);
     if (!model) return;
-    session.modelState[id] = Math.max(0, Math.min(model.max, model.current + delta));
+    const nextWounds = Math.max(0, Math.min(model.max, model.current + delta));
+    if (nextWounds === model.current) return;
+    recordUndo(`${delta < 0 ? "Remove" : "Restore"} wound`);
+    session.modelState[id] = nextWounds;
     persist();
     if (currentView === "army") renderArmy();
     if (!options.summary) openUnit(groupId);
   }
 
   function toggleModel(id, max, options = {}) {
+    recordUndo("Toggle model wounds");
     session.modelState[id] = Number(session.modelState[id] ?? max) > 0 ? 0 : max;
     persist();
     if (currentView === "army") renderArmy();
@@ -1028,6 +1175,7 @@
     if (!item?.tracker) return;
     const used = abilityUseCount(group, item);
     if (item.tracker.max != null && used >= item.tracker.max) return;
+    recordUndo(`Use ${item.name}`);
     session.abilityUses.push({ id: uid(), groupId: group.id, unitName: group.title, abilityKey: item.key, abilityName: item.name, scope: item.tracker.scope, scopeKey: abilityScopeKey(item.tracker), round: session.round, turn: session.turn, phase: session.phase, createdAt: new Date().toISOString() });
     persist();
     openUnit(group.id);
@@ -1039,6 +1187,7 @@
     const scopeKey = abilityScopeKey(item.tracker);
     const index = session.abilityUses.findLastIndex(use => use.groupId === group.id && use.abilityKey === item.key && use.scopeKey === scopeKey);
     if (index < 0) return;
+    recordUndo(`Restore ${item.name}`);
     session.abilityUses.splice(index, 1);
     persist();
     openUnit(group.id);
@@ -1132,6 +1281,7 @@
     const printedCost = stratagemCost(item);
     const cost = Math.max(0, Math.min(printedCost, Number.isFinite(paidCost) ? paidCost : printedCost));
     if (isGroupBattleShocked(group.id) || stratagemUsedThisPhase(group.id, item) || session.cp.you < cost) return;
+    recordUndo(`Use ${item.name}`);
     session.cp.you -= cost;
     session.stratagemUses.push({ id: uid(), groupId: group.id, unitName: group.title, stratagemKey: stratagemKey(item), stratagemName: item.name, cost, printedCost, discount: printedCost - cost, round: session.round, turn: session.turn, phase: session.phase, createdAt: new Date().toISOString() });
     if (cost) session.cpHistory.push({ id: uid(), round: session.round, turn: session.turn, player: "you", amount: -cost, reason: `${item.name} · ${group.title}${printedCost > cost ? " · discounted" : ""}` });
@@ -1153,18 +1303,23 @@
   }
 
   function renderLedger() {
-    content.innerHTML = `<header class="playSectionHeading"><div><small>EXACT MATCH SCORE</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><span>Round ${session.round}</span></header>${[1,2,3,4,5].map(renderRoundLedger).join("")}<div class="playLedgerActions"><button data-manual-score>Manual score correction</button><button class="playPrimaryButton" data-finish>${session.status === "final" ? "View Final Scorecard" : "End Game & Scorecard"}</button></div>`;
+    const isFinal = session.status === "final";
+    content.innerHTML = `<header class="playSectionHeading"><div><small>EXACT MATCH SCORE</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><span>Round ${session.round}</span></header>${[1,2,3,4,5].map(renderRoundLedger).join("")}<div class="playLedgerActions ${isFinal ? "final" : ""}">${isFinal ? "" : `<button data-manual-score>Manual score correction</button>`}<button class="playPrimaryButton" data-finish>${isFinal ? "View Final Scorecard" : "End Game & Scorecard"}</button></div>`;
     for (const button of content.querySelectorAll("[data-undo-score]")) button.onclick = () => undoScore(button.dataset.undoScore);
-    content.querySelector("[data-manual-score]").onclick = openManualScore;
-    content.querySelector("[data-finish]").onclick = session.status === "final" ? openFinalScorecard : confirmEndGame;
+    const manualScore = content.querySelector("[data-manual-score]");
+    if (manualScore) manualScore.onclick = openManualScore;
+    content.querySelector("[data-finish]").onclick = isFinal ? openFinalScorecard : confirmEndGame;
   }
 
   function renderRoundLedger(round) {
     const entries = session.ledger.filter(item => item.round === round);
-    return `<section class="playLedgerRound"><header><b>Battle Round ${round}</b><span>${sum(entries.filter(item => item.player === "you"))} – ${sum(entries.filter(item => item.player === "opponent"))}</span></header>${entries.length ? entries.map(item => `<div><span><small>${item.player === "you" ? session.setup.yourName : session.setup.opponentName} · ${item.category}</small>${escapeHtml(item.source)}</span><b>${item.amount > 0 ? "+" : ""}${item.amount}</b><button data-undo-score="${item.id}" aria-label="Undo score">Undo</button></div>`).join("") : `<p>No scoring recorded.</p>`}</section>`;
+    const undo = item => session.status === "final" ? "" : `<button data-undo-score="${item.id}" aria-label="Undo score">Undo</button>`;
+    return `<section class="playLedgerRound"><header><b>Battle Round ${round}</b><span>${sum(entries.filter(item => item.player === "you"))} – ${sum(entries.filter(item => item.player === "opponent"))}</span></header>${entries.length ? entries.map(item => `<div><span><small>${item.player === "you" ? session.setup.yourName : session.setup.opponentName} · ${item.category}</small>${escapeHtml(item.source)}</span><b>${item.amount > 0 ? "+" : ""}${item.amount}</b>${undo(item)}</div>`).join("") : `<p>No scoring recorded.</p>`}</section>`;
   }
 
   function undoScore(id) {
+    if (!session.ledger.some(item => item.id === id)) return;
+    recordUndo("Remove score entry");
     session.ledger = session.ledger.filter(item => item.id !== id);
     persist(); render();
   }
@@ -1184,27 +1339,85 @@
     modal.querySelector("[data-confirm-end]").onclick = finalizeGame;
   }
 
-  function finalizeGame() {
+  async function finalizeGame() {
+    openedFromHistory = false;
     session.status = "final";
     session.endedAt = new Date().toISOString();
+    const finalResult = await prepareGameRecord(session);
+    session.resultId = finalResult.resultId;
+    session.gameHash = finalResult.gameHash;
     const all = sessions();
     delete all[session.rosterId];
     writeStore(STORAGE_KEY, all);
-    const results = readStore(RESULT_KEY, []);
-    results.unshift(structuredClone(session));
-    writeStore(RESULT_KEY, results.slice(0, 50));
+    const results = [];
+    for (const item of readStore(RESULT_KEY, [])) results.push(await prepareGameRecord(item));
+    results.unshift(finalResult);
+    writeStore(RESULT_KEY, results);
     openFinalScorecard();
+  }
+
+  async function prepareGameRecord(value, requireIntegrity = false) {
+    const compact = compactFinalResult(value);
+    const gameHash = await hashGameRecord(compact);
+    if (requireIntegrity && (value.gameHash !== gameHash || value.resultId !== `game-${gameHash}`)) throw new Error("A synced game failed its integrity check and was not imported.");
+    return { ...compact, resultId: `game-${gameHash}`, gameHash };
+  }
+
+  async function hashGameRecord(value) {
+    const canonical = compactFinalResult(value);
+    delete canonical.resultId;
+    delete canonical.gameHash;
+    const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(canonical)));
+    return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  }
+
+  function compactFinalResult(value) {
+    return {
+      schemaVersion: value.schemaVersion,
+      resultId: value.resultId,
+      rosterId: value.rosterId,
+      status: "final",
+      startedAt: value.startedAt,
+      endedAt: value.endedAt,
+      roster: {
+        name: value.roster?.name || "Match",
+        faction: value.roster?.faction || "",
+        subfaction: value.roster?.subfaction || "",
+        rosterEntries: []
+      },
+      setup: structuredClone(value.setup || {}),
+      round: value.round,
+      turn: value.turn,
+      phase: value.phase,
+      cp: structuredClone(value.cp || { you: 0, opponent: 0 }),
+      cpAwarded: structuredClone(value.cpAwarded || []),
+      cpHistory: structuredClone(value.cpHistory || []),
+      ledger: structuredClone(value.ledger || []),
+      notes: value.notes || ""
+    };
   }
 
   async function openFinalScorecard() {
     modal.hidden = false;
     modal.innerHTML = `<div class="playScorePanel"><small>FINAL SCORECARD</small><h2>Preparing scorecard…</h2></div>`;
     const canvas = await buildScorecardCanvas();
-    modal.innerHTML = `<div class="playFinalPanel"><header><div><small>FINAL SCORECARD</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><button data-close>Review game</button></header><div class="playScorecardPreview"></div><p class="playGalleryHint" data-gallery-status>Save exports only the scorecard image. On iPhone or iPad, choose Save Image in the share sheet.</p><div class="playModalActions playFinalActions"><button type="button" data-save-gallery>Save to Gallery</button><button class="playPrimaryButton" data-return-lists>Return to Lists</button></div></div>`;
+    modal.innerHTML = `<div class="playFinalPanel"><header><div><small>FINAL SCORECARD</small><h2>${totalVp("you")} – ${totalVp("opponent")}</h2></div><button data-close>Review game</button></header><div class="playScorecardPreview"></div><p class="playGalleryHint" data-gallery-status>Save exports only the scorecard image. On iPhone or iPad, choose Save Image in the share sheet.</p><div class="playModalActions playFinalActions"><button type="button" data-save-gallery>Save to Gallery</button><button class="playPrimaryButton" data-return-lists>${openedFromHistory ? "Return to Games" : "Return to Lists"}</button></div></div>`;
     modal.querySelector(".playScorecardPreview").appendChild(canvas);
-    modal.querySelector("[data-close]").onclick = closeModal;
+    modal.querySelector("[data-close]").onclick = openedFromHistory ? reviewHistoryGame : closeModal;
     modal.querySelector("[data-save-gallery]").onclick = () => saveScorecardToGallery(canvas);
     modal.querySelector("[data-return-lists]").onclick = returnToListsAfterGame;
+  }
+
+  function reviewHistoryGame() {
+    closeModal();
+    hideApp();
+    showShell();
+  }
+
+  function closeHistoryScorecard() {
+    closeModal();
+    session = null;
+    openedFromHistory = false;
   }
 
   function isMeleeWeapon(weapon) {
@@ -1315,6 +1528,7 @@
     if (start) start.hidden = false;
     if (builder) builder.hidden = true;
     session = null;
+    openedFromHistory = false;
     document.dispatchEvent(new CustomEvent("arcadien-playmode-close"));
   }
 
@@ -1378,11 +1592,16 @@
     render();
   });
   document.getElementById("playModeExit")?.addEventListener("click", close);
+  undoButton?.addEventListener("click", undoLastAction);
   document.getElementById("playModeEnd")?.addEventListener("click", () => {
     if (session?.status === "final") openFinalScorecard();
     else confirmEndGame();
   });
-  modal?.addEventListener("click", event => { if (event.target === modal) closeModal(); });
+  modal?.addEventListener("click", event => {
+    if (event.target !== modal) return;
+    if (openedFromHistory && shell.hidden) closeHistoryScorecard();
+    else closeModal();
+  });
 
-  window.ArcadienPlayMode = { open, close, hasActive, hasResult, openLatestResult };
+  window.ArcadienPlayMode = { open, close, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, openLatestResult };
 })();
