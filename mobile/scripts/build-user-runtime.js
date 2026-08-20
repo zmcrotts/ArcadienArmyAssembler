@@ -20,6 +20,7 @@ const FILES = [
   ["ui/roster-storage.js", "roster-storage.js"],
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
+  ["ui/download-redirect.js", "download-redirect.js"],
   ["ui/download.css", "download.css"],
   ["public-release.json", "public-release.json"],
   ["android/app/src/main/res/drawable/crosshair.png", "app-icon.png"]

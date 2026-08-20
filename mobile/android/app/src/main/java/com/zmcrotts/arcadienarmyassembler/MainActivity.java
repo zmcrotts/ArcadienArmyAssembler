@@ -65,7 +65,7 @@ public final class MainActivity extends Activity {
     private static final String ONEDRIVE_REFRESH_TOKEN = "refresh-token";
     private static final int MAX_ONEDRIVE_RESPONSE_BYTES = 10 * 1024 * 1024;
     private static final int MAX_UPDATE_BYTES = 150 * 1024 * 1024;
-    private static final String UPDATE_MANIFEST_URL = "https://zmcrotts.github.io/ArcadienArmyAssembler/public-release.json";
+    private static final String UPDATE_MANIFEST_URL = "https://arcadienarmyassembler.pages.dev/public-release.json";
     private static final String UPDATE_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
     private static final String UPDATE_ASSET_BASE = "https://github.com/zmcrotts/ArcadienArmyAssembler/releases/latest/download/";
     private WebView webView;
@@ -324,7 +324,7 @@ public final class MainActivity extends Activity {
     private boolean isTrustedExternal(Uri uri) {
         if (!"https".equalsIgnoreCase(uri.getScheme())) return false;
         String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase();
-        return "ko-fi.com".equals(host) || "www.ko-fi.com".equals(host) || "login.microsoftonline.com".equals(host) || "zmcrotts.github.io".equals(host);
+        return "ko-fi.com".equals(host) || "www.ko-fi.com".equals(host) || "login.microsoftonline.com".equals(host) || "arcadienarmyassembler.pages.dev".equals(host) || "zmcrotts.github.io".equals(host);
     }
 
     public final class AndroidUpdates {

@@ -201,9 +201,9 @@ let pendingQrImport = null;
 let customThemeEditorPrevious = null;
 let availableAppUpdate = null;
 
-const PUBLIC_RELEASE_MANIFEST = "https://zmcrotts.github.io/ArcadienArmyAssembler/public-release.json";
+const PUBLIC_RELEASE_MANIFEST = "https://arcadienarmyassembler.pages.dev/public-release.json";
 const PUBLIC_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
-const PUBLIC_DOWNLOAD_PAGE = "https://zmcrotts.github.io/ArcadienArmyAssembler/download.html";
+const PUBLIC_DOWNLOAD_PAGE = "https://arcadienarmyassembler.pages.dev/download";
 
 function compareAppVersions(left, right) {
   const a = String(left || "").split(".").map(value => Number.parseInt(value, 10) || 0);

@@ -17,6 +17,7 @@ test("mobile build produces a complete installable offline package", () => {
   const engineApp = fs.readFileSync(path.join(DIST, "engine-app.js"), "utf8");
   const styles = fs.readFileSync(path.join(DIST, "styles.css"), "utf8");
   const downloadPage = fs.readFileSync(path.join(DIST, "download.html"), "utf8");
+  const downloadRedirect = fs.readFileSync(path.join(DIST, "download-redirect.js"), "utf8");
   const downloadStyles = fs.readFileSync(path.join(DIST, "download.css"), "utf8");
   const release = JSON.parse(fs.readFileSync(path.join(MOBILE_ROOT, "public-release.json"), "utf8"));
   const desktopPackage = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, "package.json"), "utf8"));
@@ -33,6 +34,11 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Windows\.exe/);
   assert.match(downloadPage, /releases\/latest\/download\/Arcadien-Army-Assembler-Android\.apk/);
   assert.match(downloadPage, /Open the iPhone\/iPad app/);
+  assert.doesNotMatch(downloadPage, />Release notes<|releases\/latest">/);
+  assert.match(downloadPage, /src="download-redirect\.js" defer/);
+  assert.match(downloadRedirect, /window\.location\.hostname\.toLowerCase\(\) !== "zmcrotts\.github\.io"/);
+  assert.match(downloadRedirect, /https:\/\/arcadienarmyassembler\.pages\.dev\/download/);
+  assert.match(downloadRedirect, /window\.location\.replace\(destination\.href\)/);
   assert.equal(release.windows.version, desktopPackage.version, "public Windows version must match package.json");
   assert.equal(release.android.version, mobilePackage.version, "public Android version must match mobile/package.json");
   assert.equal(release.ios.version, mobilePackage.version, "public iOS version must match mobile/package.json");

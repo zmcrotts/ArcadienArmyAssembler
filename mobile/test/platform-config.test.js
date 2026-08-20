@@ -120,7 +120,10 @@ test("updates use the published manifest and verified native installer handoff",
 
   assert.match(app, /id="startCheckUpdates"[^>]*>[\s\S]*?updateButtonWide[^>]*>Check for Updates<\/span>[\s\S]*?updateButtonNarrow[^>]*>Updates<\/span>/);
   assert.match(index, /id="updateModal"/);
+  assert.match(index, /connect-src[^;]*https:\/\/arcadienarmyassembler\.pages\.dev/);
   assert.match(index, /connect-src[^;]*https:\/\/zmcrotts\.github\.io/);
+  assert.match(app, /PUBLIC_RELEASE_MANIFEST = "https:\/\/arcadienarmyassembler\.pages\.dev\/public-release\.json"/);
+  assert.match(app, /PUBLIC_DOWNLOAD_PAGE = "https:\/\/arcadienarmyassembler\.pages\.dev\/download"/);
   assert.match(styles, /@media \(max-width: 520px\) \{[\s\S]*?\.startHeaderActions \{[\s\S]*?grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(preload, /desktopUpdates/);
   assert.match(desktopMain, /app-update:download-install/);
@@ -129,6 +132,8 @@ test("updates use the published manifest and verified native installer handoff",
   assert.match(androidManifest, /REQUEST_INSTALL_PACKAGES/);
   assert.match(androidManifest, /\.UpdateFileProvider/);
   assert.match(androidActivity, /class AndroidUpdates/);
+  assert.match(androidActivity, /UPDATE_MANIFEST_URL = "https:\/\/arcadienarmyassembler\.pages\.dev\/public-release\.json"/);
+  assert.match(androidActivity, /"arcadienarmyassembler\.pages\.dev"\.equals\(host\)/);
   assert.match(androidActivity, /MessageDigest\.getInstance\("SHA-256"\)/);
   assert.match(androidActivity, /canRequestPackageInstalls\(\)/);
   assert.match(androidProvider, /MODE_READ_ONLY/);
