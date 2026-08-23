@@ -68,7 +68,7 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(index, /id="chooseRosterImportFile"[^>]*>Choose JSON File<\/button>/);
   assert.match(index, /src="vendor\/qrcode-generator\.js\?v=1\.4\.4"/);
   assert.match(index, /src="domain\/roster-qr\.js\?v=pilot1"/);
-  assert.match(index, /id="openQrShare">Share QR<\/button>/);
+  assert.match(index, /id="openQrShare">QR<\/button>/);
   assert.match(engineApp, /pendingQrImport = imported;[\s\S]*qrImportModal\.hidden = false/);
   assert.ok(fs.existsSync(path.join(DIST, "vendor", "qrcode-generator.js")));
   assert.ok(fs.existsSync(path.join(DIST, "domain", "roster-qr.js")));
