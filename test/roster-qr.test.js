@@ -40,8 +40,8 @@ test("desktop and Android builds hand roster links to the confirmation-gated UI"
   assert.match(html, /id="confirmQrImport"[^>]*>Yes</);
   assert.match(html, /id="rejectQrImport"[^>]*>No</);
   assert.match(ui, /pendingQrImport = imported;[\s\S]*qrImportModal\.hidden = false/);
-  assert.match(ui, /class="exportQrShare">Share QR<\/button>/);
-  assert.match(ui, /class="exportCopyShareCode">Copy Share Code<\/button>[\s\S]*\.exportCopyShareCode"\)\.onclick = copyCurrentRosterShareCode/);
+  assert.doesNotMatch(ui, /class="exportQrShare"|class="exportCopyShareCode"/);
+  assert.match(html, /id="copyShareCode">Share Code<\/button>[\s\S]*id="openQrShare">QR<\/button>[\s\S]*id="openDiscordExport">Text<\/button>/);
   assert.doesNotMatch(ui, /class="startShareRoster"/);
   assert.match(ui, /async function confirmPendingQrImport\(\)[\s\S]*commitImportedRoster\(imported\)/);
   assert.match(ui, /function rejectPendingQrImport\(\)[\s\S]*pendingQrImport = null/);

@@ -7,6 +7,7 @@
   const PHASES = ["Command", "Movement", "Shooting", "Charge", "Fight"];
   const PLAYERS = ["you", "opponent"];
   const CARD_ROOT = "assets/11th/secondary-missions/defender/";
+  const TERRAIN_LAYOUTS = window.ArcadienTerrainLayouts?.layouts || [];
   const FACTIONS = [
     ["Adepta Sororitas", "adepta-sororitas.svg"], ["Adeptus Custodes", "adeptus-custodes.svg"], ["Adeptus Mechanicus", "adeptus-mechanicus.svg"],
     ["Aeldari", "aeldari.svg"], ["Agents of the Imperium", "agents-of-the-imperium.svg"], ["Astra Militarum", "astra-militarum.svg"],
@@ -270,7 +271,7 @@
           <label class="playSetupFirst">First turn<select name="firstTurn"><option value="you">Your turn</option><option value="opponent">Opponent's turn</option></select></label>
         </div>
         <div id="playSetupMissions" class="playSetupMissions"></div>
-        <div class="playModalActions"><button type="button" data-close>Cancel</button><button class="playPrimaryButton" type="submit">Begin Game</button></div>
+        <div class="playModalActions"><button type="button" data-close>Cancel</button><button class="playPrimaryButton" type="submit">Start Game</button></div>
       </form>`;
     const form = modal.querySelector("form");
     const updatePreview = () => renderSetupMissions(form, roster);
@@ -295,9 +296,7 @@
       const opponentMission = missionFor(roster, session.setup.opponentDispositionId, session.setup.yourDispositionId);
       session.setup.yourPrimary = ownMission;
       session.setup.opponentPrimary = opponentMission;
-      persist();
-      closeModal();
-      showShell();
+      openLayoutPicker(rosterId, roster);
     };
     updatePreview();
     updateMissionMode();
@@ -333,11 +332,90 @@
     return (disposition.missionMap || []).find(item => normalize(item.opponentDisposition) === normalize(opponent.name)) || null;
   }
 
+  function terrainOptionsForSession() {
+    const yourDisposition = normalize(session?.setup?.yourDispositionName);
+    const opponentDisposition = normalize(session?.setup?.opponentDispositionName);
+    return TERRAIN_LAYOUTS.filter(item => {
+      const red = normalize(item.redDisposition?.name);
+      const blue = normalize(item.blueDisposition?.name);
+      return (red === yourDisposition && blue === opponentDisposition)
+        || (red === opponentDisposition && blue === yourDisposition);
+    }).sort((left, right) => left.option.localeCompare(right.option));
+  }
+
+  function terrainPlayerSides(layout) {
+    const yourDisposition = normalize(session.setup.yourDispositionName);
+    const redDisposition = normalize(layout.redDisposition?.name);
+    const sameDisposition = redDisposition === normalize(layout.blueDisposition?.name);
+    return {
+      you: sameDisposition || redDisposition === yourDisposition ? "red" : "blue",
+      opponent: sameDisposition || redDisposition === yourDisposition ? "blue" : "red"
+    };
+  }
+
+  function openLayoutPicker(rosterId, roster) {
+    const options = terrainOptionsForSession();
+    const matchup = `${session.setup.yourDispositionName} × ${session.setup.opponentDispositionName}`;
+    if (options.length !== 3) {
+      modal.innerHTML = `<div class="playScorePanel"><span class="playModeEyebrow">BATTLEFIELD LAYOUT</span><h2>Layouts unavailable</h2><p>No complete A/B/C layout set was found for ${escapeHtml(matchup)}.</p><div class="playModalActions"><button type="button" data-layout-back>Back to setup</button><button type="button" data-layout-cancel>Cancel</button></div></div>`;
+      modal.querySelector("[data-layout-back]").onclick = () => { session = null; openSetup(rosterId, roster); };
+      modal.querySelector("[data-layout-cancel]").onclick = close;
+      return;
+    }
+    const sides = terrainPlayerSides(options[0]);
+    modal.innerHTML = `
+      <form class="playLayoutPanel">
+        <header class="playLayoutHeader">
+          <div><span class="playModeEyebrow">BATTLEFIELD LAYOUT</span><h2>Choose Layout A, B, or C</h2><p>${escapeHtml(matchup)}</p></div>
+          <div class="playLayoutPlayerSides"><b>${escapeHtml(session.setup.yourName)}: ${sides.you} side</b><span>${escapeHtml(session.setup.opponentName)}: ${sides.opponent} side</span></div>
+        </header>
+        <div class="playLayoutDispositionKey">
+          <span class="red"><b>Red · ${escapeHtml(options[0].redDisposition.name)}</b><small>${escapeHtml(options[0].redDisposition.mission)}</small></span>
+          <span class="blue"><b>Blue · ${escapeHtml(options[0].blueDisposition.name)}</b><small>${escapeHtml(options[0].blueDisposition.mission)}</small></span>
+        </div>
+        <div class="playLayoutChoices">
+          ${options.map(item => `<button type="button" class="playLayoutChoice" data-layout-id="${escapeHtml(item.id)}" aria-pressed="false"><strong>Layout ${escapeHtml(item.option)}</strong><img src="${escapeHtml(item.image)}" alt="${escapeHtml(matchup)} layout ${escapeHtml(item.option)}"></button>`).join("")}
+        </div>
+        <div class="playModalActions"><button type="button" data-layout-back>Back to setup</button><button class="playPrimaryButton" type="submit" data-confirm-layout disabled>Enter Game</button></div>
+      </form>`;
+    const form = modal.querySelector("form");
+    let selectedId = "";
+    for (const button of modal.querySelectorAll("[data-layout-id]")) button.onclick = () => {
+      selectedId = button.dataset.layoutId;
+      for (const choice of modal.querySelectorAll("[data-layout-id]")) {
+        const selected = choice.dataset.layoutId === selectedId;
+        choice.classList.toggle("selected", selected);
+        choice.setAttribute("aria-pressed", String(selected));
+      }
+      modal.querySelector("[data-confirm-layout]").disabled = false;
+    };
+    modal.querySelector("[data-layout-back]").onclick = () => { session = null; openSetup(rosterId, roster); };
+    form.onsubmit = event => {
+      event.preventDefault();
+      const selected = options.find(item => item.id === selectedId);
+      if (!selected) return;
+      const selectedSides = terrainPlayerSides(selected);
+      session.setup.terrainLayout = {
+        id: selected.id,
+        option: selected.option,
+        image: selected.image,
+        sourcePage: selected.sourcePage,
+        redDisposition: structuredClone(selected.redDisposition),
+        blueDisposition: structuredClone(selected.blueDisposition),
+        yourSide: selectedSides.you,
+        opponentSide: selectedSides.opponent
+      };
+      persist();
+      closeModal();
+      showShell();
+    };
+  }
+
   function createSession(rosterId, roster, setup) {
     const yourDisposition = (roster.forceDispositions || []).find(item => item.id === setup.yourDisposition);
     const opponentDisposition = (roster.forceDispositions || []).find(item => item.id === setup.opponentDisposition);
     const state = {
-      schemaVersion: 4,
+      schemaVersion: 5,
       rosterId,
       status: "active",
       startedAt: new Date().toISOString(),
@@ -459,7 +537,7 @@
       session.cpHistory = PLAYERS.map(player => ({ id: uid(), round: 1, turn: openingTurn, player, amount: 1, reason: "Starting CP" }));
     }
     pruneUndoHistory();
-    session.schemaVersion = 4;
+    session.schemaVersion = 5;
   }
 
   function undoStateSnapshot() {
@@ -548,6 +626,7 @@
         ${primaryCard("you")}
         ${primaryCard("opponent")}
       </section>
+      ${renderTerrainLayoutShortcut()}
       <button class="playScoreShortcut" type="button" data-open-missions>Open secondary hands</button>`;
     bindBattle();
   }
@@ -569,12 +648,19 @@
     return `<article class="playPrimaryMission"><small>${player === "you" ? "YOUR PRIMARY" : "OPPONENT PRIMARY"}</small><b>${escapeHtml(mission?.name || "Primary Mission")}</b><button data-primary-score="${player}">Score</button>${mission?.cardImages?.front ? `<button class="playTextButton" data-view-image="${escapeHtml(mission.cardImages.front)}">View card</button>` : ""}</article>`;
   }
 
+  function renderTerrainLayoutShortcut() {
+    const layout = session.setup.terrainLayout;
+    if (!layout?.image) return "";
+    return `<button class="playTerrainLayoutShortcut" type="button" data-view-layout><span><small>BATTLEFIELD LAYOUT</small><b>Layout ${escapeHtml(layout.option)}</b></span><span>View map ›</span></button>`;
+  }
+
   function bindBattle() {
     content.querySelector("[data-next]").onclick = nextPhase;
     for (const select of content.querySelectorAll("[data-state]")) select.onchange = () => setBattleState(select.dataset.state, select.value);
     for (const button of content.querySelectorAll("[data-cp-player]")) button.onclick = () => changeCp(button.dataset.cpPlayer, Number(button.dataset.cpDelta));
     for (const button of content.querySelectorAll("[data-primary-score]")) button.onclick = () => openPrimaryScoreModal(button.dataset.primaryScore);
     for (const button of content.querySelectorAll("[data-view-image]")) button.onclick = () => openImage(button.dataset.viewImage);
+    content.querySelector("[data-view-layout]")?.addEventListener("click", openSelectedTerrainLayout);
     content.querySelector("[data-open-missions]").onclick = () => { currentView = "missions"; render(); };
   }
 
@@ -1551,6 +1637,14 @@
     text(ctx, `${totalVp(player)} VP`, 1010, y + 405, 38, white, "right", "700");
   }
 
+  function openSelectedTerrainLayout() {
+    const layout = session.setup.terrainLayout;
+    if (!layout?.image) return;
+    modal.hidden = false;
+    modal.innerHTML = `<div class="playTerrainLayoutViewer"><header><div><span class="playModeEyebrow">BATTLEFIELD LAYOUT</span><h2>Layout ${escapeHtml(layout.option)}</h2><p><b class="red">Red · ${escapeHtml(layout.redDisposition?.name || "")}</b> · ${escapeHtml(layout.redDisposition?.mission || "")}</p><p><b class="blue">Blue · ${escapeHtml(layout.blueDisposition?.name || "")}</b> · ${escapeHtml(layout.blueDisposition?.mission || "")}</p></div><button data-close>Close</button></header><img src="${escapeHtml(layout.image)}" alt="Selected battlefield layout ${escapeHtml(layout.option)}"></div>`;
+    modal.querySelector("[data-close]").onclick = closeModal;
+  }
+
   function openImage(src) {
     modal.hidden = false;
     modal.innerHTML = `<div class="playImagePanel"><button data-close>Close</button><img src="${escapeHtml(src)}" alt="Mission card"></div>`;
@@ -1599,6 +1693,7 @@
   });
   modal?.addEventListener("click", event => {
     if (event.target !== modal) return;
+    if (modal.querySelector(".playSetupPanel, .playLayoutPanel")) return;
     if (openedFromHistory && shell.hidden) closeHistoryScorecard();
     else closeModal();
   });

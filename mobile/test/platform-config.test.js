@@ -192,13 +192,17 @@ test("every non-sheet export opens the shared text preview", () => {
   const initStart = app.indexOf("async function init()");
   const initEnd = app.indexOf("\nfunction loadAvailableUnitsCollapsed", initStart);
   const init = app.slice(initStart, initEnd);
+  const exportMenu = index.slice(index.indexOf('id="exportMenuPanel"'), index.indexOf("</div>", index.indexOf('id="exportMenuPanel"')));
+  const formatSelect = index.slice(index.indexOf('id="discordListStyle"'), index.indexOf("</select>", index.indexOf('id="discordListStyle"')));
 
-  assert.match(index, /<option value="json">JSON Backup<\/option>/);
-  assert.match(init, /getElementById\("exportJson"\)[\s\S]*?openRosterExport\("json"\)/);
-  assert.match(init, /getElementById\("openDiscordExport"\)[\s\S]*?openRosterExport\("discord-extended"\)/);
-  assert.match(init, /querySelectorAll\("\.exportTextFormat"\)[\s\S]*?openRosterExport\(exportStyleForFormat/);
+  assert.match(index, /id="copyShareCode">Share Code<\/button>[\s\S]*id="openQrShare">QR<\/button>[\s\S]*id="openDiscordExport">Text<\/button>/);
+  assert.match(index, /<option value="discord-simple">Discord Simple<\/option>/);
+  assert.match(formatSelect, /plain-compact[\s\S]*plain-extended[\s\S]*wtc-compact[\s\S]*value="wtc"[\s\S]*gw-compact[\s\S]*value="gw"[\s\S]*discord-compact[\s\S]*discord-extended[\s\S]*discord-simple/);
+  assert.doesNotMatch(`${exportMenu}\n${formatSelect}`, /JSON Backup|New Recruit|data-format=/);
+  assert.match(init, /getElementById\("openDiscordExport"\)[\s\S]*?openRosterExport\("discord-simple"\)/);
   assert.doesNotMatch(init, /exportRosterJson\(\)|exportRosterText\(/);
-  assert.match(app, /style === "json" \? "Save \.json" : "Save \.txt"/);
+  assert.match(app, /downloadButton\.textContent = "Save \.txt"/);
+  assert.doesNotMatch(app, /exportJson|exportTextFormat|exportQrShare|exportCopyShareCode/);
 });
 
 test("Leader and Support render once as collapsed abilities", () => {

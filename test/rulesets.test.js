@@ -626,13 +626,131 @@ test("11e Scarab Occult heavy weapons replace a baseline Terminator without chan
   }
 });
 
+test("11e Chaos Terminator heavy weapons are limited to one per five models", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - Chaos Space Marines" && item.name === "Chaos Terminator Squad"
+  );
+  let entry = createDefaultRosterEntry(unit);
+  let heavy = getOptionStates(unit, entry).find(option => option.name === "Heavy weapon");
+
+  assert.equal(getUnitSizeState(unit, entry).current, 5);
+  assert.equal(heavy?.maximum, 1);
+
+  entry = setSelection(unit, entry, heavy.id, 2, false);
+  assert.equal(validateLoadout(unit, entry).find(error => error.nodeId === heavy.id)?.message,
+    "Max 1 Heavy weapon per 5 models");
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  heavy = getOptionStates(unit, entry).find(option => option.name === "Heavy weapon");
+  assert.equal(heavy?.maximum, 2);
+});
+
+test("11e Chaos Terminator melee weapon caps apply across every loadout branch", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - Chaos Space Marines" && item.name === "Chaos Terminator Squad"
+  );
+  const optionsNamed = (entry, name) => getOptionStates(unit, entry).filter(option => option.name === name);
+
+  for (const [size, name, allowed, rejected] of [
+    [5, "Power fist and combi-bolter", 3, 4],
+    [5, "Chainfist and combi-bolter", 1, 2],
+    [5, "Paired accursed weapons", 1, 2],
+    [10, "Power fist and combi-bolter", 6, 7],
+    [10, "Chainfist and combi-bolter", 2, 3],
+    [10, "Paired accursed weapons", 2, 3]
+  ]) {
+    let entry = setUnitSize(unit, createDefaultRosterEntry(unit), size);
+    const option = optionsNamed(entry, name)[0];
+    assert.ok(option, `${size} models: ${name}`);
+    entry = setSelection(unit, entry, option.id, allowed);
+    assert.deepEqual(validateLoadout(unit, entry), [], `${size} models: ${allowed} ${name}`);
+    entry = setSelection(unit, entry, option.id, rejected, false);
+    assert.ok(validateLoadout(unit, entry).some(error => error.type === "max"),
+      `${size} models: ${rejected} ${name}`);
+  }
+
+  let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const powerFistBolter = getOptionStates(unit, entry).find(option => option.name === "Power fist and combi-bolter");
+  const powerFistCombi = getOptionStates(unit, entry).find(option => option.name === "Power fist and combi-weapon");
+  entry = setSelection(unit, entry, powerFistBolter.id, 3);
+  entry = setSelection(unit, entry, powerFistCombi.id, 4);
+  assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "dc97-25d5-522e-4213")?.actual, 7);
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const chainfistBolter = getOptionStates(unit, entry).find(option => option.name === "Chainfist and combi-bolter");
+  const chainfistCombi = getOptionStates(unit, entry).find(option => option.name === "Chainfist and combi-weapon");
+  entry = setSelection(unit, entry, chainfistBolter.id, 2);
+  entry = setSelection(unit, entry, chainfistCombi.id, 1);
+  assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "55e4-7647-d0c0-5fc6")?.actual, 3);
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const pairedOptions = getOptionStates(unit, entry).filter(option => option.name === "Paired accursed weapons");
+  const pairedModel = pairedOptions.find(option => option.kind === "model");
+  const championPairedWeapons = pairedOptions.find(option => option.kind === "upgrade" && option.editable);
+  entry = setSelection(unit, entry, championPairedWeapons.id, 1);
+  entry = setSelection(unit, entry, pairedModel.id, 1);
+  assert.deepEqual(validateLoadout(unit, entry), []);
+  entry = setSelection(unit, entry, pairedModel.id, 2, false);
+  assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "3e7c-bbc0-3dc2-8ef4")?.actual, 3);
+});
+
+test("11e Legionary specialist limits scale with unit size and report their BSData error", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const unit = ruleset.units.find(item =>
+    item.faction === "Chaos - Chaos Space Marines" && item.name === "Legionaries"
+  );
+
+  let entry = createDefaultRosterEntry(unit);
+  let specialist = getOptionStates(unit, entry).find(option =>
+    option.name === "Legionary w/ other weapon" && option.kind === "model"
+  );
+  assert.equal(getUnitSizeState(unit, entry).current, 5);
+  assert.equal(specialist?.maximum, 1);
+
+  entry = setSelection(unit, entry, specialist.id, 2, false);
+  assert.equal(validateLoadout(unit, entry).find(error => error.nodeId === specialist.id)?.message,
+    "Max 1 Legionary w/ other weapon per 5 models");
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  specialist = getOptionStates(unit, entry).find(option =>
+    option.name === "Legionary w/ other weapon" && option.kind === "model"
+  );
+  assert.equal(specialist?.maximum, 2);
+  entry = setSelection(unit, entry, specialist.id, 2);
+  const lascannon = getOptionStates(unit, entry).find(option =>
+    option.name === "Lascannon" && option.id.startsWith(`${specialist.id}/`)
+  );
+  entry = setSelection(unit, entry, lascannon.id, 1);
+  assert.deepEqual(validateLoadout(unit, entry), []);
+});
+
+test("11e roster-level conditional errors stay out of unit loadout validation", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  for (const name of ["Yvraine", "The Yncarne"]) {
+    const unit = ruleset.units.find(item => item.faction === "Xenos - Aeldari" && item.name === name);
+    assert.ok(unit, name);
+    assert.deepEqual(validateLoadout(unit, createDefaultRosterEntry(unit)), [], name);
+  }
+});
+
+test("every 11e unit keeps a legal generated default after conditional loadout validation", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const invalid = ruleset.units.flatMap(unit => {
+    const errors = validateLoadout(unit, createDefaultRosterEntry(unit));
+    return errors.length ? [{ faction: unit.faction, name: unit.name, errors }] : [];
+  });
+  assert.deepEqual(invalid, []);
+});
+
 test("11e specialist models replace baseline members without increasing unit size", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const cases = [
     ["Chaos - World Eaters", "Khorne Berzerkers", "Khorne Berzerker w/ eviscerator and bolt pistol", "Khorne Berzerker", 10, 8],
     ["Chaos - Chaos Space Marines", "Raptors", "Raptor w/ meltagun", "Raptor", 5, 3],
-    ["Chaos - Chaos Space Marines", "Nemesis Claw", "Legionary w/ heavy weapon", "Legionary w/ boltgun", 5, 3],
-    ["Xenos - Aeldari", "Corsair Voidreavers", "Voidreaver with Heavy weapon", "Voidreaver with Shuriken rifle", 5, 3],
+    ["Chaos - Chaos Space Marines", "Nemesis Claw", "Legionary w/ heavy weapon", "Legionary w/ boltgun", 10, 8],
+    ["Xenos - Aeldari", "Corsair Voidreavers", "Voidreaver with Heavy weapon", "Voidreaver with Shuriken rifle", 10, 8],
     ["Xenos - Aeldari", "Corsair Skyreavers", "Skyreaver w/ blaster", "Skyreaver w/ pistol and blade", 5, 3],
     ["Xenos - Aeldari", "Corsair Voidscarred", "Shade Runner", "Voidscarred w/ pistol and sword", 5, 3],
     ["Xenos - Aeldari", "Corsair Voidscarred", "Soul Weaver", "Voidscarred w/ pistol and sword", 5, 3],
@@ -643,6 +761,7 @@ test("11e specialist models replace baseline members without increasing unit siz
     const unit = ruleset.units.find(item => item.faction === faction && item.name === unitName);
     assert.ok(unit, `${faction} / ${unitName}`);
     let entry = createDefaultRosterEntry(unit);
+    if (getUnitSizeState(unit, entry).current !== size) entry = setUnitSize(unit, entry, size);
     const specialist = getOptionStates(unit, entry).find(option => option.name === specialistName);
     assert.ok(specialist, `${unitName}: ${specialistName}`);
     entry = setSelection(unit, entry, specialist.id, 1);

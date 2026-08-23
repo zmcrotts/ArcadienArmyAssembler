@@ -7,11 +7,12 @@ const path = require("path");
 const test = require("node:test");
 const { syncRosterLibrary } = require("../electron/manual-roster-sync");
 
-function record(id, name, savedAt) {
+function record(id, name, savedAt, lastEditedAt = savedAt, marker = id) {
   return {
     id,
     savedAt,
-    document: { name, faction: "test", armyState: {}, rosterEntries: [] }
+    lastEditedAt,
+    document: { name, faction: "test", armyState: {}, rosterEntries: [], marker }
   };
 }
 
@@ -53,3 +54,32 @@ test("manual sync keeps the newest same-named roster instead of duplicating it",
   assert.equal(result.saves[0].id, "phone");
   assert.equal(fs.readdirSync(path.join(folder, "rosters")).filter(name => name.endsWith(".json")).length, 1);
 });
+
+test("an autosaved edit cannot be rolled back when the older device syncs second", t => {
+  const folder = tempSyncFolder(t);
+  const original = record("shared", "Two-device list", "2026-07-15T12:00:00.000Z", "2026-07-15T12:00:00.000Z", "original");
+  const edited = record("shared", "Two-device list", "2026-07-15T12:00:00.000Z", "2026-07-15T13:00:00.000Z", "edited on device A");
+
+  syncRosterLibrary(folder, [original]);
+  const deviceA = syncRosterLibrary(folder, [edited]);
+  const deviceB = syncRosterLibrary(folder, [original]);
+
+  assert.equal(deviceA.saves[0].document.marker, "edited on device A");
+  assert.equal(deviceB.saves[0].document.marker, "edited on device A");
+  assert.equal(deviceB.summary.downloaded, 1);
+  assert.equal(readSyncedMarker(folder), "edited on device A");
+});
+
+test("browser and native OneDrive reconciliation use lastEditedAt with savedAt fallback", () => {
+  for (const relative of ["electron/onedrive-roster-sync.js", "ui/onedrive-roster-sync.js"]) {
+    const source = fs.readFileSync(path.join(__dirname, "..", relative), "utf8");
+    assert.match(source, /Date\.parse\(record\.lastEditedAt \|\| ""\)/, relative);
+    assert.match(source, /Date\.parse\(record\.savedAt \|\| ""\)/, relative);
+  }
+});
+
+function readSyncedMarker(folder) {
+  const records = fs.readdirSync(path.join(folder, "rosters")).filter(name => name.endsWith(".json"));
+  assert.equal(records.length, 1);
+  return JSON.parse(fs.readFileSync(path.join(folder, "rosters", records[0]), "utf8")).record.document.marker;
+}

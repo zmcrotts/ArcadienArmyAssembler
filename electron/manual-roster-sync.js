@@ -29,9 +29,11 @@ function contentHash(record) {
   return crypto.createHash("sha256").update(JSON.stringify(record.document)).digest("hex");
 }
 
-function savedAtValue(record) {
-  const timestamp = Date.parse(record.savedAt || "");
-  return Number.isFinite(timestamp) ? timestamp : 0;
+function recordTime(record) {
+  const lastEditedAt = Date.parse(record.lastEditedAt || "");
+  if (Number.isFinite(lastEditedAt)) return lastEditedAt;
+  const savedAt = Date.parse(record.savedAt || "");
+  return Number.isFinite(savedAt) ? savedAt : 0;
 }
 
 function syncKey(record) {
@@ -87,12 +89,12 @@ function syncRosterLibrary(syncFolder, localSaves) {
   for (const record of local) {
     const key = syncKey(record);
     const previous = localByKey.get(key);
-    if (!previous || savedAtValue(record) >= savedAtValue(previous)) localByKey.set(key, record);
+    if (!previous || recordTime(record) >= recordTime(previous)) localByKey.set(key, record);
   }
   for (const record of remote) {
     const key = syncKey(record);
     const previous = remoteByKey.get(key);
-    if (!previous || savedAtValue(record) >= savedAtValue(previous)) remoteByKey.set(key, record);
+    if (!previous || recordTime(record) >= recordTime(previous)) remoteByKey.set(key, record);
   }
   const summary = { uploaded: 0, downloaded: 0, conflicts: 0 };
   const merged = [];
@@ -100,7 +102,7 @@ function syncRosterLibrary(syncFolder, localSaves) {
   for (const key of keys) {
     const localRecord = localByKey.get(key);
     const remoteRecord = remoteByKey.get(key);
-    const winner = !remoteRecord || (localRecord && savedAtValue(localRecord) >= savedAtValue(remoteRecord)) ? localRecord : remoteRecord;
+    const winner = !remoteRecord || (localRecord && recordTime(localRecord) >= recordTime(remoteRecord)) ? localRecord : remoteRecord;
     if (winner === localRecord && (!remoteRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.uploaded += 1;
     if (winner === remoteRecord && (!localRecord || contentHash(localRecord) !== contentHash(remoteRecord))) summary.downloaded += 1;
     merged.push(clone(winner));

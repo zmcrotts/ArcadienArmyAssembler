@@ -19,6 +19,16 @@ test("live roster panels feed selected unit profiles back through static effect 
   }
 });
 
+test("roster cards and roster-wide warnings include unit loadout errors", () => {
+  for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(require.resolve(file), "utf8");
+    assert.match(source, /function entryLoadoutErrors\(rosterEntry\)/);
+    assert.match(source, /const warningCount = entryLoadoutErrors\(rosterEntry\)\.length/);
+    assert.match(source, /for \(const error of entryLoadoutErrors\(rosterEntry\)\)/);
+    assert.match(source, /code: `loadout:\$\{rosterEntry\.instanceId\}:/);
+  }
+});
+
 test("army rule reference cards render nested D6 tables", () => {
   for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
     const source = fs.readFileSync(require.resolve(file), "utf8");
@@ -92,6 +102,70 @@ test("browser loadout states expose mandatory descendant wargear costs", () => {
 
   assert.equal(state.points, 0);
   assert.equal(state.effectivePoints, 10);
+});
+
+test("browser loadout validation applies conditional errors and logical shared counts", () => {
+  const sharedConstraint = value => ({
+    id: "shared-max",
+    type: "max",
+    field: "selections",
+    scope: "unit-definition",
+    value
+  });
+  const definition = {
+    id: "unit",
+    selectionTree: {
+      id: "unit",
+      definitionId: "unit-definition",
+      kind: "unit",
+      children: [
+        { id: "fist-a", definitionId: "power-fist", kind: "upgrade", name: "Power fist", constraints: [sharedConstraint(2)], children: [] },
+        { id: "fist-b", definitionId: "power-fist", kind: "upgrade", name: "Power fist", constraints: [sharedConstraint(2)], children: [] },
+        { id: "flamer", definitionId: "flamer", kind: "upgrade", name: "Flamer", constraints: [sharedConstraint(1)], children: [] },
+        {
+          id: "specialist",
+          definitionId: "specialist",
+          kind: "model",
+          name: "Specialist",
+          constraints: [],
+          modifiers: [{
+            type: "add",
+            field: "error",
+            value: "Max 1 {this} per 5 models",
+            conditions: [{ type: "greaterThan", field: "selections", scope: "unit", childId: "specialist", value: 1 }]
+          }],
+          children: []
+        }
+      ]
+    }
+  };
+  const errors = window.RosterEngine.validateLoadout(definition, {
+    selections: { "fist-a": 2, "fist-b": 1, flamer: 1, specialist: 2 },
+    context: {}
+  });
+
+  assert.equal(errors.find(error => error.constraintId === "shared-max")?.actual, 3);
+  assert.equal(errors.some(error => error.name === "Flamer"), false);
+  assert.equal(errors.find(error => error.nodeId === "specialist")?.message,
+    "Max 1 Specialist per 5 models");
+});
+
+test("packaged browser data flags seven Chaos Terminator power fists", () => {
+  require("../ui/engine-data/chaos-chaos-space-marines");
+  const unit = window.ROSTER_ENGINE_FACTIONS["Chaos - Chaos Space Marines"]
+    .find(item => item.name === "Chaos Terminator Squad");
+  const engine = window.RosterEngine;
+  let entry = engine.setUnitSize(unit.definition, engine.createDefaultRosterEntry(unit.definition), 10);
+  const states = engine.getOptionStates(unit.definition, entry);
+  const bolter = states.find(option => option.name === "Power fist and combi-bolter");
+  const combiWeapon = states.find(option => option.name === "Power fist and combi-weapon");
+
+  entry = engine.setSelection(unit.definition, entry, bolter.id, 6, false);
+  entry = engine.setSelection(unit.definition, entry, combiWeapon.id, 1, false);
+
+  const error = engine.validateLoadout(unit.definition, entry)
+    .find(item => item.constraintId === "dc97-25d5-522e-4213");
+  assert.deepEqual([error?.name, error?.actual, error?.limit], ["Power fist", 7, 6]);
 });
 
 test("browser configured profiles suppress fallback melee weapons after replacement", () => {

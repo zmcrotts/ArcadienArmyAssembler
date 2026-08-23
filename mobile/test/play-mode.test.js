@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -11,6 +12,7 @@ const source = fs.readFileSync(path.join(root, "ui", "play-mode.js"), "utf8");
 const engineSource = fs.readFileSync(path.join(root, "ui", "engine-app.js"), "utf8");
 const desktopBuildSource = fs.readFileSync(path.join(projectRoot, "scripts", "build-user-runtime.js"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, "ui", "assets", "11th", "secondary-missions", "manifest.json"), "utf8"));
+const terrainManifest = JSON.parse(fs.readFileSync(path.join(projectRoot, "ui", "assets", "11th", "terrain-layouts", "manifest.json"), "utf8"));
 const armyDefinitions = fs.readFileSync(path.join(projectRoot, "src", "bsdata", "army-definitions.js"), "utf8");
 
 test("Play Mode contains every Chapter Approved secondary card", () => {
@@ -19,6 +21,41 @@ test("Play Mode contains every Chapter Approved secondary card", () => {
     assert.match(source, new RegExp(`card\\(\\"${card.cardSlug}\\"`));
     assert.equal(fs.existsSync(path.join(projectRoot, "ui", card.image)), true, `${card.title} image exists`);
   }
+});
+
+test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
+  assert.equal(terrainManifest.schemaVersion, 1);
+  assert.deepEqual(terrainManifest.sourcePageRange, { first: 9, last: 53 });
+  assert.equal(terrainManifest.layouts.length, 45);
+  const pairings = new Map();
+  for (const layout of terrainManifest.layouts) {
+    const pairing = `${layout.redDisposition.slug}|${layout.blueDisposition.slug}`;
+    if (!pairings.has(pairing)) pairings.set(pairing, []);
+    pairings.get(pairing).push(layout.option);
+    const image = path.join(projectRoot, "ui", layout.image);
+    assert.equal(fs.existsSync(image), true, `${layout.id} image exists`);
+    assert.equal(layout.width, 1641);
+    assert.equal(layout.height, 1966);
+    assert.equal(crypto.createHash("sha256").update(fs.readFileSync(image)).digest("hex"), layout.sha256);
+    assert.equal(armyDefinitions.includes(`name: "${layout.redDisposition.mission}"`), true, `${layout.redDisposition.mission} is an app mission`);
+    assert.equal(armyDefinitions.includes(`name: "${layout.blueDisposition.mission}"`), true, `${layout.blueDisposition.mission} is an app mission`);
+  }
+  assert.equal(pairings.size, 15);
+  for (const options of pairings.values()) assert.deepEqual(options.sort(), ["A", "B", "C"]);
+});
+
+test("Start Game requires a terrain choice before entering the Play Mode menu", () => {
+  const html = fs.readFileSync(path.join(root, "ui", "index.html"), "utf8");
+  assert.match(html, /terrain-layouts\/manifest\.js/);
+  assert.ok(html.indexOf("terrain-layouts/manifest.js") < html.indexOf("play-mode.js"));
+  assert.match(source, />Start Game<\/button>/);
+  assert.match(source, /function openLayoutPicker\(rosterId, roster\)/);
+  assert.match(source, /data-confirm-layout disabled/);
+  assert.match(source, /session\.setup\.terrainLayout = \{/);
+  assert.match(source, /persist\(\);\s*closeModal\(\);\s*showShell\(\);/);
+  assert.match(source, /data-view-layout/);
+  assert.match(source, /function openSelectedTerrainLayout\(\)/);
+  assert.match(source, /modal\.querySelector\("\.playSetupPanel, \.playLayoutPanel"\)/);
 });
 
 test("Windows packaging uses the Play Mode UI", () => {
@@ -36,7 +73,7 @@ test("Play Mode enforces round category caps and persists one active session per
 });
 
 test("Play Mode starts both players at 1 CP without awarding the first Command phase", () => {
-  assert.match(source, /schemaVersion: 4/);
+  assert.match(source, /schemaVersion: 5/);
   assert.match(source, /cp: \{ you: 1, opponent: 1 \}/);
   assert.match(source, /cpAwarded: \[`1:\$\{setup\.firstTurn/);
   assert.doesNotMatch(source, /session\.setup\.opponentPrimary = opponentMission;\s*awardCommandCp\(\)/);

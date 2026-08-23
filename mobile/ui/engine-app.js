@@ -452,22 +452,18 @@ async function init() {
   const headerImportJson = document.getElementById("importJson");
   if (headerImportJson) headerImportJson.onclick = () => importJsonFile.click();
   importJsonFile.addEventListener("change", importRosterJsonFile);
-  document.getElementById("exportJson").onclick = () => {
+  document.getElementById("copyShareCode").onclick = () => {
     setExportMenuOpen(false);
-    openRosterExport("json");
+    copyCurrentRosterShareCode();
   };
-  document.getElementById("copyShareCode").onclick = copyCurrentRosterShareCode;
-  document.getElementById("openQrShare").onclick = openCurrentRosterQr;
+  document.getElementById("openQrShare").onclick = () => {
+    setExportMenuOpen(false);
+    openCurrentRosterQr();
+  };
   document.getElementById("openDiscordExport").onclick = () => {
     setExportMenuOpen(false);
-    openRosterExport("discord-extended");
+    openRosterExport("discord-simple");
   };
-  for (const button of document.querySelectorAll(".exportTextFormat")) {
-    button.onclick = () => {
-      setExportMenuOpen(false);
-      openRosterExport(exportStyleForFormat(button.dataset.format || "NR"));
-    };
-  }
   document.getElementById("printUnitSheets").onclick = () => {
     setExportMenuOpen(false);
     openSheetPreview("units");
@@ -2904,12 +2900,18 @@ function configuredRosterUnitName(rosterEntry) {
   );
 }
 
+function entryLoadoutErrors(rosterEntry) {
+  return engine.validateLoadout(rosterEntry.unitPackage.definition, rosterEntry.entry) || [];
+}
+
 function renderRosterUnitLabel(rosterEntry) {
   const unit = rosterEntry.unitPackage;
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
-  return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)} — ${formatEntryPoints(rosterEntry)}`;
+  const warningCount = entryLoadoutErrors(rosterEntry).length;
+  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
+  return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
 }
 
 function renderRosterGroupLabel(group, groupEntries) {
@@ -2919,7 +2921,9 @@ function renderRosterGroupLabel(group, groupEntries) {
     .filter(Boolean);
   const unitSize = engine.getUnitSizeState(bodyguard.unitPackage.definition, bodyguard.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
-  const warning = group.warnings.length ? ` <span class="warningBadge">⚠</span>` : "";
+  const warningCount = group.warnings.length
+    + groupEntries.reduce((sum, entry) => sum + entryLoadoutErrors(entry).length, 0);
+  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
   const nickname = rosterNicknameFor(bodyguard.instanceId);
   const points = formatAttachedGroupPoints(group, groupEntries);
   return `
@@ -4227,7 +4231,7 @@ function findNode(node, id) {
 
 function renderEntryValidation(loadoutErrors, pricingErrors) {
   const all = [
-    ...(loadoutErrors || []).map(error => `${error.name}: ${error.actual}/${error.limit} ${error.type}`),
+    ...(loadoutErrors || []).map(error => error.message || `${error.name}: ${error.actual}/${error.limit} ${error.type}`),
     ...(pricingErrors || [])
   ];
 
@@ -4800,6 +4804,17 @@ function validateRoster() {
     const result = armyEngine.validateRosterLegality(currentArmyDefinition(), armyState, legalityRoster, { totalPoints: total, pointsLimit: limit });
     for (const item of result.warnings) {
       messages.push({ ok: false, code: item.code, text: item.message });
+    }
+  }
+
+  for (const rosterEntry of roster) {
+    for (const error of entryLoadoutErrors(rosterEntry)) {
+      const detail = error.message || `${error.name}: ${error.actual}/${error.limit} ${error.type}`;
+      messages.push({
+        ok: false,
+        code: `loadout:${rosterEntry.instanceId}:${error.constraintId || error.nodeId}`,
+        text: `${configuredRosterUnitName(rosterEntry)} — ${detail}`
+      });
     }
   }
 
@@ -5585,15 +5600,11 @@ function openRosterExport(style = "wtc-compact", resetOptions = false) {
 function renderExportFormatButtons() {
   if (!exportFormatButtons || !discordListStyle) return;
   const current = discordListStyle.value;
-  exportFormatButtons.innerHTML = `
-    <button type="button" class="exportQrShare">Share QR</button>
-    <button type="button" class="exportCopyShareCode">Copy Share Code</button>` + Array.from(discordListStyle.options).map(option => `
+  exportFormatButtons.innerHTML = Array.from(discordListStyle.options).map(option => `
     <button type="button" class="${option.value === current ? "selected" : ""}" data-export-style="${escapeHtml(option.value)}">
       ${escapeHtml(option.textContent || option.value)}
     </button>
   `).join("");
-  exportFormatButtons.querySelector(".exportQrShare").onclick = openCurrentRosterQr;
-  exportFormatButtons.querySelector(".exportCopyShareCode").onclick = copyCurrentRosterShareCode;
   for (const button of exportFormatButtons.querySelectorAll("[data-export-style]")) {
     button.onclick = () => {
       discordListStyle.value = button.dataset.exportStyle || "wtc-compact";
@@ -5648,13 +5659,14 @@ function discordExportOptions() {
   const customColorOptions = colorMode === "custom"
     ? {
         unitAnsiCode: Number(discordUnitColor?.value || 37),
-        detailAnsiCode: Number(discordUnitColor?.value || 37),
+        detailAnsiCode: 37,
         pointsAnsiCode: Number(discordPointsColor?.value || 33)
       }
     : {};
   return {
     format: "DISCORD",
-    compact: style === "discord-compact" || style === "plain-compact",
+    compact: style === "discord-simple" || style === "discord-compact" || style === "plain-compact",
+    simple: style === "discord-simple",
     ansi: style.startsWith("discord-") && colorMode !== "none",
     multilineHeader: Boolean(discordMultilineHeader?.checked),
     combineIdentical: Boolean(discordCombineIdentical?.checked),
@@ -5669,7 +5681,6 @@ function discordExportOptions() {
 
 function discordExportSuffix() {
   const style = discordListStyle?.value || "discord-extended";
-  if (style === "json") return "backup";
   const directFormat = directExportFormatForStyle(style);
   if (directFormat) return directFormat.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   if (style.startsWith("plain-")) return style;
@@ -5682,7 +5693,6 @@ function discordExportSuffix() {
 
 function directExportFormatForStyle(style) {
   const map = {
-    nr: "NR",
     wtc: "WTC",
     "wtc-compact": "WTC-Compact",
     gw: "GW",
@@ -5691,20 +5701,8 @@ function directExportFormatForStyle(style) {
   return map[style] || "";
 }
 
-function exportStyleForFormat(format) {
-  const map = {
-    NR: "nr",
-    WTC: "wtc",
-    "WTC-Compact": "wtc-compact",
-    GW: "gw",
-    "GW-Compact": "gw-compact"
-  };
-  return map[format] || "nr";
-}
-
 function currentDiscordExportText() {
   const document = currentRosterDocument();
-  if (discordListStyle?.value === "json") return JSON.stringify(document, null, 2);
   return rosterDocument.exportRosterText(document, discordExportOptions());
 }
 
@@ -5727,7 +5725,7 @@ function renderDiscordExportPreview() {
   const style = discordListStyle?.value || "";
   const discordLike = style.startsWith("discord-");
   const downloadButton = document.getElementById("downloadDiscordExport");
-  if (downloadButton) downloadButton.textContent = style === "json" ? "Save .json" : "Save .txt";
+  if (downloadButton) downloadButton.textContent = "Save .txt";
   for (const element of [
     discordMultilineHeader?.closest("label"),
     discordCombineIdentical?.closest("label"),
@@ -5828,8 +5826,7 @@ async function copyTextToClipboard(text) {
 function downloadDiscordExport() {
   const document = currentRosterDocument();
   const text = lastDiscordExportText || currentDiscordExportText();
-  const extension = discordListStyle?.value === "json" ? "json" : "txt";
-  downloadFile(`${fileSafeRosterName(document)}-${discordExportSuffix()}.${extension}`, text);
+  downloadFile(`${fileSafeRosterName(document)}-${discordExportSuffix()}.txt`, text);
 }
 
 async function loadCompactorData() {

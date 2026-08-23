@@ -397,6 +397,69 @@ test("Discord export emits one combined record for an attached unit", () => {
   assert.doesNotMatch(text, /^\* Ghazghkull Thraka/m);
   assert.doesNotMatch(text, /^\* Painboy/m);
   assert.doesNotMatch(text, /^\* Nobz \[/m);
+
+  const simple = exportRosterText(document, { format: "DISCORD_SIMPLE", ansi: false });
+  assert.equal(simple, "* Nobz + Ghazghkull Thraka + Painboy (E: FML (+25 pts)) [550]");
+  assert.doesNotMatch(simple, /^\* Ghazghkull Thraka|^\* Painboy|^\* Nobz \[/m);
+});
+
+test("Discord Simple includes only unit counts, names, paid modifiers, and points", () => {
+  const document = {
+    name: "Compact test",
+    faction: "Imperium - Adepta Sororitas",
+    totalPoints: 110,
+    pointsLimit: 1000,
+    warlord: { instanceId: "sisters-1", name: "Battle Sisters Squad" },
+    enhancements: [
+      { name: "Saintly Example", points: 20, bearerInstanceId: "sisters-1" },
+      { name: "Free Relic", points: 0, bearerInstanceId: "sisters-1" }
+    ],
+    rosterEntries: [{
+      instanceId: "sisters-1",
+      name: "Battle Sisters Squad",
+      points: 90,
+      roles: { battleline: true },
+      unitSize: { current: 5 },
+      models: [{ name: "Battle Sister", count: 5, equipment: ["5x Boltgun", "5x Bolt pistol"] }],
+      configured: { weapons: [{ name: "Boltgun", count: 5 }], abilities: [], units: [], rules: [] }
+    }]
+  };
+
+  const text = exportRosterText(document, {
+    format: "DISCORD_SIMPLE",
+    ansi: false
+  });
+  assert.equal(text, "* 5 Battle Sisters Squad (E: SE (+20 pts)) [110]");
+  assert.doesNotMatch(text, /Warlord|Free Relic|Boltgun|Bolt pistol|Compact test/);
+
+  const withHeader = exportRosterText(document, {
+    format: "DISCORD_SIMPLE",
+    ansi: false,
+    multilineHeader: true
+  });
+  assert.match(withHeader, /^Compact test\nFaction: Imperium - Adepta Sororitas\n110 \/ 1000 pts\n\n\* 5 Battle Sisters Squad/);
+
+  const colored = exportRosterText(document, {
+    format: "DISCORD_SIMPLE",
+    unitAnsiCode: 34,
+    pointsAnsiCode: 33
+  });
+  assert.match(colored, /\u001b\[1;34m5 Battle Sisters Squad\u001b\[0m\u001b\[37m \(E: SE \(\+20 pts\)\)\u001b\[0m \u001b\[1;33m\[110\]\u001b\[0m/);
+
+  const combined = exportRosterText({
+    ...document,
+    totalPoints: 180,
+    enhancements: [],
+    rosterEntries: [
+      { ...document.rosterEntries[0], models: [{ name: "Battle Sister", count: 5, equipment: ["5x Boltgun"] }] },
+      { ...document.rosterEntries[0], instanceId: "sisters-2", models: [{ name: "Battle Sister", count: 5, equipment: ["4x Boltgun", "1x Meltagun"] }] }
+    ]
+  }, {
+    format: "DISCORD_SIMPLE",
+    ansi: false,
+    combineIdentical: true
+  });
+  assert.equal(combined, "* 2x5 Battle Sisters Squad [90]");
 });
 
 test("old saves hydrate while stale references are pruned with warnings", () => {

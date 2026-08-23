@@ -2028,12 +2028,18 @@ function configuredRosterUnitName(rosterEntry) {
   );
 }
 
+function entryLoadoutErrors(rosterEntry) {
+  return engine.validateLoadout(rosterEntry.unitPackage.definition, rosterEntry.entry) || [];
+}
+
 function renderRosterUnitLabel(rosterEntry) {
   const unit = rosterEntry.unitPackage;
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
-  return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)} — ${formatEntryPoints(rosterEntry)}`;
+  const warningCount = entryLoadoutErrors(rosterEntry).length;
+  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
+  return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
 }
 
 function renderRosterGroupLabel(group, groupEntries) {
@@ -2043,7 +2049,9 @@ function renderRosterGroupLabel(group, groupEntries) {
     .filter(Boolean);
   const unitSize = engine.getUnitSizeState(bodyguard.unitPackage.definition, bodyguard.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
-  const warning = group.warnings.length ? ` <span class="warningBadge">⚠</span>` : "";
+  const warningCount = group.warnings.length
+    + groupEntries.reduce((sum, entry) => sum + entryLoadoutErrors(entry).length, 0);
+  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
   const nickname = rosterNicknameFor(bodyguard.instanceId);
   const points = formatAttachedGroupPoints(group, groupEntries);
   return `
@@ -3218,7 +3226,7 @@ function findNode(node, id) {
 
 function renderEntryValidation(loadoutErrors, pricingErrors) {
   const all = [
-    ...(loadoutErrors || []).map(error => `${error.name}: ${error.actual}/${error.limit} ${error.type}`),
+    ...(loadoutErrors || []).map(error => error.message || `${error.name}: ${error.actual}/${error.limit} ${error.type}`),
     ...(pricingErrors || [])
   ];
 
@@ -3777,6 +3785,17 @@ function validateRoster() {
     const result = armyEngine.validateRosterLegality(currentArmyDefinition(), armyState, legalityRoster, { totalPoints: total, pointsLimit: limit });
     for (const item of result.warnings) {
       messages.push({ ok: false, code: item.code, text: item.message });
+    }
+  }
+
+  for (const rosterEntry of roster) {
+    for (const error of entryLoadoutErrors(rosterEntry)) {
+      const detail = error.message || `${error.name}: ${error.actual}/${error.limit} ${error.type}`;
+      messages.push({
+        ok: false,
+        code: `loadout:${rosterEntry.instanceId}:${error.constraintId || error.nodeId}`,
+        text: `${configuredRosterUnitName(rosterEntry)} — ${detail}`
+      });
     }
   }
 

@@ -546,6 +546,15 @@ function discordUnitSpecials(record, document, compact) {
   return specials;
 }
 
+function discordPaidSpecials(record, document, compact) {
+  return (enhancementBearerMap(document).get(record.instanceId) || [])
+    .filter(enhancement => Number(enhancement.points || 0) !== 0)
+    .map(enhancement => {
+      const name = compact ? abbreviateName(enhancement.name) : enhancement.name;
+      return `E: ${name} (+${enhancement.points} pts)`;
+    });
+}
+
 function discordExportRecordFor(document, record, options) {
   const skippableEntry = findSkippableEntry(options.skippableWargear || {}, document, record.name);
   const modelItems = modelExportItems(record, document, skippableEntry, options.compact);
@@ -556,6 +565,7 @@ function discordExportRecordFor(document, record, options) {
     count: Number(record.unitSize?.current || 1),
     points: Number(record.points || 0) + enhancementPoints,
     specials: discordUnitSpecials(record, document, options.compact),
+    paidSpecials: discordPaidSpecials(record, document, options.compact),
     flatItems: flatExportItems(record, document, skippableEntry, options.compact),
     modelItems
   };
@@ -565,7 +575,15 @@ function discordExportRecords(document, options) {
   return sortedExportRecords(document).map(record => discordExportRecordFor(document, record, options));
 }
 
-function discordSignature(record, hideSubunits) {
+function discordSignature(record, hideSubunits, simple = false) {
+  if (simple) {
+    return JSON.stringify({
+      name: record.name,
+      count: record.count,
+      points: record.points,
+      paidSpecials: record.paidSpecials || []
+    });
+  }
   return JSON.stringify({
     name: record.name,
     count: record.count,
@@ -576,11 +594,11 @@ function discordSignature(record, hideSubunits) {
   });
 }
 
-function combineDiscordRecords(records, hideSubunits) {
+function combineDiscordRecords(records, hideSubunits, simple = false) {
   const bySignature = new Map();
   const output = [];
   for (const record of records) {
-    const signature = discordSignature(record, hideSubunits);
+    const signature = discordSignature(record, hideSubunits, simple);
     const existing = bySignature.get(signature);
     if (existing) existing.copies += 1;
     else {
@@ -628,6 +646,7 @@ function discordAttachedGroupRecord(document, group, options) {
     count: 1,
     points: Number(group.totalPoints || records.reduce((sum, record) => sum + record.points, 0)),
     specials: [...new Set(records.flatMap(record => record.specials))],
+    paidSpecials: [...new Set(records.flatMap(record => record.paidSpecials || []))],
     flatItems: records.flatMap(record =>
       record.flatItems.length ? [`${record.name}: ${record.flatItems.join(", ")}`] : []
     ),
@@ -657,13 +676,15 @@ function discordRecordLine(record, options) {
   const copyPrefix = record.copies > 1 ? `${record.copies}x` : "";
   const countPrefix = record.count > 1 || record.copies > 1 ? `${record.count} ` : "";
   const displayName = `${copyPrefix}${countPrefix}${record.name}`.trim();
-  const topItems = [...record.specials, ...(options.hideSubunits ? record.flatItems : record.modelItems.length ? [] : record.flatItems)];
+  const topItems = options.simple
+    ? [...(record.paidSpecials || [])]
+    : [...record.specials, ...(options.hideSubunits ? record.flatItems : record.modelItems.length ? [] : record.flatItems)];
   const points = `[${record.points}]`;
   return `${options.noBullets ? "" : "* "}${ansi(displayName, options.unitColor, true, options.useAnsi)}${ansi(discordItemsSuffix(topItems), options.detailColor, false, options.useAnsi)}${options.hidePoints ? "" : ` ${ansi(points, options.pointsColor, true, options.useAnsi)}`}`;
 }
 
 function discordModelLines(record, options) {
-  if (options.hideSubunits) return [];
+  if (options.simple || options.hideSubunits) return [];
   return record.modelItems.map(model => {
     const modelName = `${model.count > 1 ? `${model.count} ` : ""}${model.name}`;
     return `${options.noBullets ? "" : "  + "}${ansi(modelName, options.unitColor, true, options.useAnsi)}${ansi(discordItemsSuffix(model.items.map(item => item.display)), options.detailColor, false, options.useAnsi)}`;
@@ -677,15 +698,16 @@ function exportDiscordText(document, options = {}) {
   const useAnsi = options.ansi !== false;
   const noBullets = Boolean(options.noBullets);
   const hidePoints = Boolean(options.hidePoints);
+  const simple = Boolean(options.simple);
   const unitColor = Number(options.unitAnsiCode || 37);
-  const detailColor = Number(options.detailAnsiCode || unitColor);
+  const detailColor = Number(options.detailAnsiCode || 37);
   const pointsColor = Number(options.pointsAnsiCode || 33);
-  const renderOptions = { hideSubunits, noBullets, hidePoints, unitColor, detailColor, pointsColor, useAnsi };
+  const renderOptions = { simple, hideSubunits, noBullets, hidePoints, unitColor, detailColor, pointsColor, useAnsi };
   const recordOptions = { ...options, compact };
   const grouped = Boolean(options.groupAttached !== false);
   const groups = grouped ? discordExportGroups(document, recordOptions) : [];
   const records = groups.length ? [] : combine
-    ? combineDiscordRecords(discordExportRecords(document, recordOptions), hideSubunits)
+    ? combineDiscordRecords(discordExportRecords(document, recordOptions), hideSubunits, simple)
     : discordExportRecords(document, recordOptions).map(record => ({ ...record, copies: 1 }));
   const lines = [];
   if (useAnsi) lines.push("```ansi");
@@ -696,7 +718,7 @@ function exportDiscordText(document, options = {}) {
     for (const group of groups) {
       const isAttached = group.kind === "attached";
       const groupRecords = combine
-        ? combineDiscordRecords(group.records, hideSubunits)
+        ? combineDiscordRecords(group.records, hideSubunits, simple)
         : group.records.map(record => ({ ...record, copies: 1 }));
       for (const record of groupRecords) {
         lines.push(discordRecordLine(record, renderOptions));
@@ -826,6 +848,7 @@ function exportRosterText(document, options = {}) {
   if (format === "NR") return exportNrText(document);
   if (["WTC", "WTC-Compact", "GW", "GW-Compact"].includes(format)) return exportTournamentText(document, format);
   if (format === "DISCORD") return exportDiscordText(document, exportOptions);
+  if (format === "DISCORD_SIMPLE") return exportDiscordText(document, { ...exportOptions, compact: true, simple: true });
   if (format === "DISCORD_COMPACT") return exportDiscordText(document, { ...exportOptions, compact: true });
   if (format === "DISCORD_COMPACT_FLAT") return exportDiscordText(document, { ...exportOptions, compact: true, hideSubunits: true });
   if (format === "DISCORD_COMPACT_COMBINED") return exportDiscordText(document, { ...exportOptions, compact: true, hideSubunits: true, combineIdentical: true });

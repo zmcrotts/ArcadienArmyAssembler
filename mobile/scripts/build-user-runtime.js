@@ -61,6 +61,7 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-qr\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-qr.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/sheets\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/sheets.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="catalogue-sections\.js\?v=([^"]+)"><\/script>/, '<script defer src="catalogue-sections.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/ui\/assets\/11th\/terrain-layouts\/manifest\.js\?v=([^"]+)"><\/script>/, '<script defer src="assets/11th/terrain-layouts/manifest.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="engine-app\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-app.js?v=$1"></script>');
 
   fs.writeFileSync(path.join(OUT_DIR, "index.html"), html, "utf8");

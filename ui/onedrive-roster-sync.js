@@ -184,8 +184,10 @@ function documentHash(record) {
 }
 
 function recordTime(record) {
-  const value = Date.parse(record.savedAt || "");
-  return Number.isFinite(value) ? value : 0;
+  const lastEditedAt = Date.parse(record.lastEditedAt || "");
+  if (Number.isFinite(lastEditedAt)) return lastEditedAt;
+  const savedAt = Date.parse(record.savedAt || "");
+  return Number.isFinite(savedAt) ? savedAt : 0;
 }
 
 function syncKey(record) {

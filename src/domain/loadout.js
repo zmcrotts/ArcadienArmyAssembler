@@ -82,7 +82,7 @@ function selectionCount(entry, index, reference) {
 function scopedSelectionCount(entry, index, condition) {
   const scope = condition?.scope;
   const childId = condition?.childId || null;
-  if (!childId || !scope || ["self", "parent", "force", "roster"].includes(scope)) {
+  if (!childId || !scope || ["self", "parent", "unit", "force", "roster"].includes(scope)) {
     return selectionCount(entry, index, childId || scope);
   }
 
@@ -160,6 +160,60 @@ function modifierApplies(modifier, entry, index, unitDefinition) {
     && groups.every(group => evaluateRawGroup(group, entry, index, unitDefinition));
 }
 
+function modifierConditions(modifier) {
+  const conditions = [...asArray(modifier?.conditions)];
+  function visit(group) {
+    conditions.push(...asArray(group?.conditions?.condition));
+    for (const child of asArray(group?.conditionGroups?.conditionGroup)) visit(child);
+  }
+  for (const group of asArray(modifier?.conditionGroups)) visit(group);
+  return conditions;
+}
+
+function conditionalError(node, modifier, entry, index) {
+  if (String(modifier?.field || "").toLowerCase() !== "error") return null;
+
+  const condition = modifierConditions(modifier).find(candidate =>
+    candidate?.field === "selections"
+    && nodeReferencesId(node, candidate?.childId)
+    && ["greaterThan", "atLeast", "lessThan", "atMost"].includes(candidate?.type)
+  );
+  // Error modifiers can also describe roster construction rules (for example,
+  // requiring a particular Warlord). Those belong to roster validation, not a
+  // unit's loadout panel. Only translate an error when its triggering selection
+  // condition directly counts this node inside the current unit tree.
+  if (!condition) return null;
+
+  const actual = scopedSelectionCount(entry, index, condition);
+  const expected = Number(condition?.value || 0);
+  let type = "error";
+  let limit = null;
+  if (condition?.type === "greaterThan") {
+    type = "max";
+    limit = expected;
+  } else if (condition?.type === "atLeast") {
+    type = "max";
+    limit = expected - 1;
+  } else if (condition?.type === "lessThan") {
+    type = "min";
+    limit = expected;
+  } else if (condition?.type === "atMost") {
+    type = "min";
+    limit = expected + 1;
+  }
+
+  return {
+    nodeId: node.id,
+    name: node.name,
+    type,
+    actual,
+    limit,
+    constraintId: `modifier-error:${node.id}:${modifier.value || "invalid"}`,
+    message: String(modifier.value || `${node.name} is not a valid selection`)
+      .replace(/\{this\}/gi, node.name)
+  };
+}
+
 function effectiveHidden(node, entry, index, unitDefinition) {
   if (node.forceVisible) return false;
   let hidden = Boolean(node.hidden);
@@ -229,8 +283,20 @@ function actualCount(node, entry) {
   return node.kind === "group" ? groupCount(node, entry) : Number(entry.selections[node.id] || 0);
 }
 
-function constraintActualCount(node, entry, index, unitDefinition) {
+function logicalSelectionKey(node) {
+  return node?.targetId || node?.definitionId || node?.sourceId || node?.id || "unknown";
+}
+
+function constraintActualCount(node, constraint, entry, index, unitDefinition) {
   const actual = actualCount(node, entry);
+  if (constraint?.scope && !["self", "parent", "force", "roster"].includes(constraint.scope)) {
+    const selectionKey = logicalSelectionKey(node);
+    return index.all
+      .filter(candidate => (candidate.constraints || []).some(item =>
+        item.id === constraint.id && item.scope === constraint.scope
+      ) && logicalSelectionKey(candidate) === selectionKey)
+      .reduce((sum, candidate) => sum + actualCount(candidate, entry), 0);
+  }
   if (node.kind !== "group") return actual;
   const parent = index.parentById.get(node.id);
   if (parent?.kind !== "group" || !nodeContainsReference(node, parent.defaultSelectionId)) return actual;
@@ -269,23 +335,44 @@ function validateKnownUnitRules(unitDefinition, entry, index) {
 function validateLoadout(unitDefinition, entry) {
   const index = buildTreeIndex(unitDefinition);
   const errors = [];
+  const checkedScopedConstraints = new Set();
 
   for (const node of index.all) {
     if (!nodeIsActive(node, entry, index, unitDefinition, true)) continue;
     for (const constraint of node.constraints || []) {
       if (constraint.field !== "selections" || !["min", "max"].includes(constraint.type)) continue;
       if (!isLocalConstraint(constraint)) continue;
+      if (constraint.scope && !["self", "parent", "unit"].includes(constraint.scope)
+        && !index.all.some(candidate => nodeMatchesReference(candidate, constraint.scope))) {
+        const hasResolvableAlternative = (node.constraints || []).some(other =>
+          other !== constraint
+          && other.field === constraint.field
+          && other.type === constraint.type
+          && (other.scope === "unit" || index.all.some(candidate => nodeMatchesReference(candidate, other.scope)))
+        );
+        if (hasResolvableAlternative) continue;
+      }
+      const scopedKey = constraint.scope && !["self", "parent"].includes(constraint.scope)
+        ? `${constraint.id}:${constraint.scope}:${constraint.type}:${logicalSelectionKey(node)}`
+        : null;
+      if (scopedKey && checkedScopedConstraints.has(scopedKey)) continue;
+      if (scopedKey) checkedScopedConstraints.add(scopedKey);
       const multiplier = constraint.scope === "parent"
         ? nearestSelectedParentCount(node, entry, index)
         : 1;
       const limit = effectiveConstraintValue(constraint, unitDefinition, entry, index) * multiplier;
-      const actual = constraintActualCount(node, entry, index, unitDefinition);
+      const actual = constraintActualCount(node, constraint, entry, index, unitDefinition);
       if (constraint.type === "min" && actual < limit) {
         errors.push({ nodeId: node.id, name: node.name, type: "min", actual, limit, constraintId: constraint.id });
       }
       if (constraint.type === "max" && actual > limit) {
         errors.push({ nodeId: node.id, name: node.name, type: "max", actual, limit, constraintId: constraint.id });
       }
+    }
+    for (const modifier of node.modifiers || []) {
+      if (!modifierApplies(modifier, entry, index, unitDefinition)) continue;
+      const error = conditionalError(node, modifier, entry, index);
+      if (error) errors.push(error);
     }
   }
 
@@ -490,7 +577,7 @@ function repairDefaultLoadout(unitDefinition, entry) {
     const ordered = [...errors].sort((a, b) => (a.type === "max" ? -1 : 1) - (b.type === "max" ? -1 : 1));
     for (const error of ordered) {
       const node = index.byId.get(error.nodeId);
-      if (!node) continue;
+      if (!node || !["min", "max"].includes(error.type) || !Number.isFinite(error.limit)) continue;
       if (error.type === "max") {
         const excess = error.actual - error.limit;
         if (node.kind === "group") changed = reduceGroup(node, excess, entry.selections, unitDefinition, index) > 0 || changed;
@@ -750,9 +837,33 @@ function getOptionStates(unitDefinition, entry) {
   if (validateLoadout(unitDefinition, entry).length) return states;
   return states.map(state => {
     if (!state.editable || !Number.isFinite(state.maximum) || state.maximum > 100) return state;
+    const stateNode = index.byId.get(state.id);
     for (let candidate = Math.floor(state.maximum); candidate >= state.current; candidate--) {
       const changed = setSelection(unitDefinition, entry, state.id, candidate, false);
-      if (!validateLoadout(unitDefinition, changed).length) return { ...state, maximum: candidate };
+      const blockingErrors = validateLoadout(unitDefinition, changed).filter(error => {
+        const errorNode = index.byId.get(error.nodeId);
+        // Increasing a repeated model can temporarily duplicate its default
+        // descendant weapon. That descendant can be redistributed after the
+        // model is added, so it must not hide an otherwise legal model count.
+        // Constraints on the option itself or one of its ancestors still cap
+        // the control immediately.
+        if (error.nodeId === state.id || (errorNode && nodeContains(errorNode, state.id))) return true;
+        if (!errorNode || !stateNode || !nodeContains(stateNode, errorNode.id)) return false;
+
+        let current = errorNode;
+        while (current && current.id !== state.id) {
+          const parent = index.parentById.get(current.id);
+          if (parent?.kind === "group") {
+            const alternatives = (parent.children || []).filter(child =>
+              child.kind !== "group" && nodeIsActive(child, changed, index, unitDefinition)
+            );
+            if (alternatives.length > 1) return false;
+          }
+          current = parent;
+        }
+        return true;
+      });
+      if (!blockingErrors.length) return { ...state, maximum: candidate };
     }
     return { ...state, maximum: state.current };
   });

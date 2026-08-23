@@ -69,16 +69,11 @@
           <div>
             <button id="saveRoster">Save</button>
             <div class="exportMenu">
-              <button id="exportMenuToggle" aria-expanded="false">Export</button>
+              <button id="exportMenuToggle" aria-expanded="false">Share</button>
               <div id="exportMenuPanel" class="exportMenuPanel" hidden>
-                <button id="openQrShare">Share QR</button>
-                <button id="copyShareCode">Copy Share Code</button>
-                <button id="exportJson">JSON Backup</button>
-                <button class="exportTextFormat" data-format="NR">New Recruit</button>
-                <button class="exportTextFormat" data-format="WTC-Compact">WTC Short</button>
-                <button class="exportTextFormat" data-format="WTC">WTC Long</button>
-                <button class="exportTextFormat" data-format="GW">GW Long</button>
-                <button id="openDiscordExport">Discord Text</button>
+                <button id="copyShareCode">Share Code</button>
+                <button id="openQrShare">QR</button>
+                <button id="openDiscordExport">Text</button>
                 <label class="exportMenuToggle"><input id="includeSheetReferences" type="checkbox" checked> Rules reference</label>
                 <button id="printUnitSheets">Unit Sheets</button>
                 <button id="printCrusadeSheets">Crusade Sheets</button>
@@ -292,16 +287,15 @@
           <label class="exportFormatSelectLabel">
             Format
             <select id="discordListStyle">
+              <option value="plain-compact">Plain Compact</option>
+              <option value="plain-extended">Plain Extended</option>
               <option value="wtc-compact">WTC Short</option>
               <option value="wtc">WTC Long</option>
               <option value="gw-compact">GW Short</option>
               <option value="gw">GW Long</option>
-              <option value="nr">New Recruit</option>
-              <option value="plain-compact">Plain Compact</option>
-              <option value="plain-extended">Plain Extended</option>
               <option value="discord-compact">Discord Short</option>
               <option value="discord-extended">Discord Long</option>
-              <option value="json">JSON Backup</option>
+              <option value="discord-simple">Discord Simple</option>
             </select>
           </label>
           <label class="toggleRow">
@@ -383,7 +377,8 @@
   <script defer src="catalogue-sections.js?v=milestone2"></script>
   <script defer src="onedrive-roster-sync.js?v=sync7"></script>
   <script defer src="offline-app.js?v=offline2"></script>
-  <script defer src="play-mode.js?v=play2"></script>
+  <script defer src="../../ui/assets/11th/terrain-layouts/manifest.js?v=terrain1"></script>
+  <script defer src="play-mode.js?v=play3"></script>
   <script defer src="roster-storage.js?v=idb1"></script>
   <script defer src="engine-app.js?v=mobile32"></script>
 </body>
