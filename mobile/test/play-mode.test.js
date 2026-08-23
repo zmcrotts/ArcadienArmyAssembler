@@ -128,6 +128,12 @@ test("mixed-profile squads track wounds per model and reduce weapon bearer count
   assert.match(source, /originalCount - displayedCount/);
 });
 
+test("wound changes preserve the open unit panel scroll position", () => {
+  assert.match(source, /const previousPanel = selectedGroupId === groupId \? modal\.querySelector\("\.playUnitPanel"\) : null/);
+  assert.match(source, /const previousScrollTop = previousPanel\?\.scrollTop \|\| 0/);
+  assert.match(source, /modal\.querySelector\("\.playUnitPanel"\)\.scrollTop = previousScrollTop/);
+});
+
 test("army rows show defensive stats and profile-aware wound references", () => {
   const css = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
   assert.match(source, /function groupDefenseProfiles\(group\)/);
