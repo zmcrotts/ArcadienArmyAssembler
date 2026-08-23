@@ -26,6 +26,7 @@ test("Play Mode contains every Chapter Approved secondary card", () => {
 test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
   assert.equal(terrainManifest.schemaVersion, 1);
   assert.deepEqual(terrainManifest.sourcePageRange, { first: 9, last: 53 });
+  assert.deepEqual(terrainManifest.imageEncoding, { format: "webp", quality: 85, method: 6 });
   assert.equal(terrainManifest.layouts.length, 45);
   const pairings = new Map();
   for (const layout of terrainManifest.layouts) {
@@ -33,6 +34,7 @@ test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
     if (!pairings.has(pairing)) pairings.set(pairing, []);
     pairings.get(pairing).push(layout.option);
     const image = path.join(projectRoot, "ui", layout.image);
+    assert.equal(path.extname(image), ".webp");
     assert.equal(fs.existsSync(image), true, `${layout.id} image exists`);
     assert.equal(layout.width, 1641);
     assert.equal(layout.height, 1966);
@@ -56,6 +58,15 @@ test("Start Game requires a terrain choice before entering the Play Mode menu", 
   assert.match(source, /data-view-layout/);
   assert.match(source, /function openSelectedTerrainLayout\(\)/);
   assert.match(source, /modal\.querySelector\("\.playSetupPanel, \.playLayoutPanel"\)/);
+});
+
+test("terrain layouts expand and shrink with a double tap", () => {
+  assert.match(source, /function bindDoubleTap\(target, handler\)/);
+  assert.match(source, /function openLayoutFullscreen\(layout, picker\)/);
+  assert.match(source, /data-layout-fullscreen-image/);
+  assert.match(source, /Double-tap the map to shrink/);
+  assert.match(source, /bindDoubleTap\(viewer\.querySelector\("\[data-layout-fullscreen-image\]"\), closeFullscreen\)/);
+  assert.match(source, /event\.key !== "Escape"/);
 });
 
 test("Windows packaging uses the Play Mode UI", () => {

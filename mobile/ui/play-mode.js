@@ -353,6 +353,41 @@
     };
   }
 
+  function bindDoubleTap(target, handler) {
+    let previousTap = null;
+    target.addEventListener("pointerup", event => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      const currentTap = { time: Date.now(), x: event.clientX, y: event.clientY };
+      const isDoubleTap = previousTap
+        && currentTap.time - previousTap.time < 350
+        && Math.hypot(currentTap.x - previousTap.x, currentTap.y - previousTap.y) < 36;
+      previousTap = isDoubleTap ? null : currentTap;
+      if (!isDoubleTap) return;
+      event.preventDefault();
+      handler(event);
+    });
+  }
+
+  function openLayoutFullscreen(layout, picker) {
+    const viewer = picker.querySelector("[data-layout-fullscreen]");
+    viewer.innerHTML = `
+      <div class="playLayoutFullscreenBar">
+        <strong>Layout ${escapeHtml(layout.option)}</strong>
+        <span>Double-tap the map to shrink</span>
+        <button type="button" data-layout-fullscreen-close aria-label="Close full-screen layout">Close</button>
+      </div>
+      <img src="${escapeHtml(layout.image)}" alt="Full-screen battlefield layout ${escapeHtml(layout.option)}" data-layout-fullscreen-image>`;
+    viewer.hidden = false;
+    const closeFullscreen = () => {
+      viewer.hidden = true;
+      viewer.innerHTML = "";
+    };
+    viewer.querySelector("[data-layout-fullscreen-close]").onclick = closeFullscreen;
+    viewer.onclick = event => { if (event.target === viewer) closeFullscreen(); };
+    bindDoubleTap(viewer.querySelector("[data-layout-fullscreen-image]"), closeFullscreen);
+    viewer.querySelector("[data-layout-fullscreen-close]").focus();
+  }
+
   function openLayoutPicker(rosterId, roster) {
     const options = terrainOptionsForSession();
     const matchup = `${session.setup.yourDispositionName} × ${session.setup.opponentDispositionName}`;
@@ -376,7 +411,9 @@
         <div class="playLayoutChoices">
           ${options.map(item => `<button type="button" class="playLayoutChoice" data-layout-id="${escapeHtml(item.id)}" aria-pressed="false"><strong>Layout ${escapeHtml(item.option)}</strong><img src="${escapeHtml(item.image)}" alt="${escapeHtml(matchup)} layout ${escapeHtml(item.option)}"></button>`).join("")}
         </div>
+        <p class="playLayoutZoomHint">Double-tap any map to view it full screen.</p>
         <div class="playModalActions"><button type="button" data-layout-back>Back to setup</button><button class="playPrimaryButton" type="submit" data-confirm-layout disabled>Enter Game</button></div>
+        <div class="playLayoutFullscreen" data-layout-fullscreen hidden role="dialog" aria-modal="true" aria-label="Full-screen battlefield layout"></div>
       </form>`;
     const form = modal.querySelector("form");
     let selectedId = "";
@@ -389,6 +426,10 @@
       }
       modal.querySelector("[data-confirm-layout]").disabled = false;
     };
+    for (const image of modal.querySelectorAll("[data-layout-id] img")) {
+      const layout = options.find(item => item.id === image.closest("[data-layout-id]").dataset.layoutId);
+      bindDoubleTap(image, () => openLayoutFullscreen(layout, form));
+    }
     modal.querySelector("[data-layout-back]").onclick = () => { session = null; openSetup(rosterId, roster); };
     form.onsubmit = event => {
       event.preventDefault();
@@ -1696,6 +1737,11 @@
     if (modal.querySelector(".playSetupPanel, .playLayoutPanel")) return;
     if (openedFromHistory && shell.hidden) closeHistoryScorecard();
     else closeModal();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    const fullscreenClose = modal?.querySelector("[data-layout-fullscreen-close]");
+    if (fullscreenClose) fullscreenClose.click();
   });
 
   window.ArcadienPlayMode = { open, close, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, openLatestResult };

@@ -12,6 +12,8 @@ import pypdfium2 as pdfium
 
 DPI = 300
 CROP_POINTS = (101, 273, 495, 745)
+WEBP_QUALITY = 85
+WEBP_METHOD = 6
 PAIRINGS = (
     (9, "Take and Hold", "Battlefield Dominance", "Take and Hold", "Battlefield Dominance"),
     (12, "Take and Hold", "Immovable Object", "Purge the Foe", "Unstoppable Force"),
@@ -58,12 +60,18 @@ def main() -> None:
         for option_index, option in enumerate(("a", "b", "c")):
             source_page = first_page + option_index
             file_stem = f"{slug(red_name, '_')}_x_{slug(blue_name, '_')}_option_{option}"
-            output_file = args.output / f"{file_stem}.png"
+            output_file = args.output / f"{file_stem}.webp"
             page = document[source_page - 1]
             bitmap = page.render(scale=scale, rev_byteorder=True)
             rendered = bitmap.to_pil().convert("RGB")
             image = rendered.crop(crop)
-            image.save(output_file, format="PNG", optimize=True, dpi=(DPI, DPI))
+            image.save(
+                output_file,
+                format="WEBP",
+                quality=WEBP_QUALITY,
+                method=WEBP_METHOD,
+                dpi=(DPI, DPI),
+            )
             digest = hashlib.sha256(output_file.read_bytes()).hexdigest()
             layouts.append(
                 {
@@ -88,6 +96,7 @@ def main() -> None:
         "sourceDocument": args.pdf.name,
         "sourcePageRange": {"first": 9, "last": 53},
         "crop": {"dpi": DPI, "pdfPoints": list(CROP_POINTS)},
+        "imageEncoding": {"format": "webp", "quality": WEBP_QUALITY, "method": WEBP_METHOD},
         "layouts": layouts,
     }
     json_text = json.dumps(manifest, indent=2, ensure_ascii=True) + "\n"
