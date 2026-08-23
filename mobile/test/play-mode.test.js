@@ -9,6 +9,7 @@ const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const projectRoot = path.resolve(root, "..");
 const source = fs.readFileSync(path.join(root, "ui", "play-mode.js"), "utf8");
+const styles = fs.readFileSync(path.join(root, "ui", "styles.css"), "utf8");
 const engineSource = fs.readFileSync(path.join(root, "ui", "engine-app.js"), "utf8");
 const desktopBuildSource = fs.readFileSync(path.join(projectRoot, "scripts", "build-user-runtime.js"), "utf8");
 const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, "ui", "assets", "11th", "secondary-missions", "manifest.json"), "utf8"));
@@ -67,6 +68,9 @@ test("terrain layouts expand and shrink with a double tap", () => {
   assert.match(source, /Double-tap the map to shrink/);
   assert.match(source, /bindDoubleTap\(viewer\.querySelector\("\[data-layout-fullscreen-image\]"\), closeFullscreen\)/);
   assert.match(source, /event\.key !== "Escape"/);
+  assert.match(styles, /\.playLayoutFullscreen\{grid-template-rows:auto minmax\(0,1fr\);grid-template-columns:minmax\(0,1fr\)/);
+  assert.match(styles, /\.playLayoutFullscreenBar\{position:relative;top:auto;left:auto;right:auto/);
+  assert.match(styles, /\.playLayoutFullscreen>img\{grid-row:2;width:100%;height:100%;max-width:100vw;max-height:100vh;min-width:0;min-height:0\}/);
 });
 
 test("Windows packaging uses the Play Mode UI", () => {
