@@ -957,8 +957,12 @@ function compositionModelRecords(unitDefinition, entry) {
 }
 
 function unitSizeCompositionModelRecords(unitDefinition, entry) {
+  const constrainedSelectionIds = new Set((unitDefinition.compositionConstraints || [])
+    .flatMap(constraint => constraint.selectionIds || []));
   return compositionModelRecords(unitDefinition, entry).filter(record =>
-    record.minimum > 0 || Number.isFinite(record.maximum)
+    record.minimum > 0
+    || Number.isFinite(record.maximum)
+    || constrainedSelectionIds.has(record.selection.id)
   );
 }
 
@@ -988,7 +992,8 @@ function getUnitSizeState(unitDefinition, entry) {
     maximum += group ? potentialMaximum(group, limits.maximum) : limits.maximum;
   }
 
-  for (const bundle of modelBundleRanges(index, records)) {
+  const bundleRanges = modelBundleRanges(index, records);
+  for (const bundle of bundleRanges) {
     const memberIds = new Set(bundle.selectionIds);
     if ([...memberIds].every(id => covered.has(id))) continue;
     for (const id of memberIds) covered.add(id);
@@ -1014,6 +1019,12 @@ function getUnitSizeState(unitDefinition, entry) {
   };
   if (Array.isArray(unitDefinition.unitSizePresets) && unitDefinition.unitSizePresets.length) {
     state.presets = unitDefinition.unitSizePresets.map(item => ({ ...item }));
+  } else if (bundleRanges.length === 1) {
+    const recordSelectionIds = new Set(records.map(record => record.selection.id));
+    const bundleSelectionIds = new Set(bundleRanges[0].selectionIds);
+    if ([...recordSelectionIds].every(id => bundleSelectionIds.has(id))) {
+      state.presets = bundleRanges[0].presets.map(item => ({ ...item }));
+    }
   }
   return state;
 }
@@ -1037,8 +1048,11 @@ function enclosingCompositionBounds(index, records, entry, unitDefinition) {
 
 function modelBundleRanges(index, records) {
   return modelBundleGroups(index).map(group => {
-    const choices = (group.children || []).filter(child => child.kind !== "group" && child.kind !== "model");
-    const counts = choices.map(choice => fixedModelCount(choice)).filter(count => count > 0);
+    const presets = (group.children || [])
+      .filter(child => child.kind !== "group" && child.kind !== "model")
+      .map(choice => ({ size: fixedModelCount(choice), label: choice.name }))
+      .filter(preset => preset.size > 0);
+    const counts = presets.map(preset => preset.size);
     const selectionIds = new Set();
     for (const record of records) {
       if (nodeContains(group, record.node.id)) selectionIds.add(record.selection.id);
@@ -1046,9 +1060,14 @@ function modelBundleRanges(index, records) {
     return {
       selectionIds: [...selectionIds],
       minimum: counts.length ? Math.min(...counts) : 0,
-      maximum: counts.length ? Math.max(...counts) : 0
+      maximum: counts.length ? Math.max(...counts) : 0,
+      presets
     };
   }).filter(range => range.selectionIds.length);
+}
+
+function containsModel(node) {
+  return node?.kind === "model" || (node?.children || []).some(containsModel);
 }
 
 function fixedModelCount(node) {
@@ -1059,6 +1078,11 @@ function fixedModelCount(node) {
       ?? constraintValue(node, "max", "parent")
       ?? constraintValue(node, "max")
       ?? 0;
+  }
+  if (node.kind === "group" && containsModel(node)) {
+    const minimum = constraintValue(node, "min", "parent") ?? constraintValue(node, "min");
+    const maximum = constraintValue(node, "max", "parent") ?? constraintValue(node, "max");
+    if (minimum !== null && maximum !== null && minimum === maximum) return minimum;
   }
   return (node.children || []).reduce((sum, child) => sum + fixedModelCount(child), 0);
 }

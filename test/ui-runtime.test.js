@@ -168,6 +168,54 @@ test("packaged browser data flags seven Chaos Terminator power fists", () => {
   assert.deepEqual([error?.name, error?.actual, error?.limit], ["Power fist", 7, 6]);
 });
 
+test("packaged Genestealer Cults data supports mixed squads at size 10 and six mining tools", () => {
+  require("../ui/engine-data/xenos-genestealer-cults");
+  const units = window.ROSTER_ENGINE_FACTIONS["Xenos - Genestealer Cults"];
+  const engine = window.RosterEngine;
+
+  const metamorphs = units.find(item => item.name === "Hybrid Metamorphs").definition;
+  const defaultMetamorphs = engine.createDefaultRosterEntry(metamorphs);
+  assert.equal(engine.getUnitSizeState(metamorphs, defaultMetamorphs).current, 5);
+  const tenMetamorphs = engine.setUnitSize(metamorphs, defaultMetamorphs, 10);
+  assert.equal(engine.getUnitSizeState(metamorphs, tenMetamorphs).current, 10);
+  assert.deepEqual(engine.validateLoadout(metamorphs, tenMetamorphs), []);
+
+  const flamerAcolytes = units.find(item => item.name === "Acolyte Hybrids with Hand Flamers").definition;
+  const defaultFlamerAcolytes = engine.createDefaultRosterEntry(flamerAcolytes);
+  assert.equal(engine.getUnitSizeState(flamerAcolytes, defaultFlamerAcolytes).current, 5);
+  const tenFlamerAcolytes = engine.setUnitSize(flamerAcolytes, defaultFlamerAcolytes, 10);
+  assert.equal(engine.getUnitSizeState(flamerAcolytes, tenFlamerAcolytes).current, 10);
+  assert.deepEqual(engine.validateLoadout(flamerAcolytes, tenFlamerAcolytes), []);
+
+  const acolytes = units.find(item => item.name === "Acolyte Hybrids with Autopistols").definition;
+  let tenAcolytes = engine.setUnitSize(acolytes, engine.createDefaultRosterEntry(acolytes), 10);
+  const miningTool = engine.getOptionStates(acolytes, tenAcolytes)
+    .find(option => option.name === "Acolyte Hybrid w/ Heavy Mining Tool");
+  assert.equal(miningTool.maximum, 6);
+  tenAcolytes = engine.setSelection(acolytes, tenAcolytes, miningTool.id, 6);
+  assert.deepEqual(engine.validateLoadout(acolytes, tenAcolytes), []);
+});
+
+test("packaged Brood Brothers squads expose legal 10 and 20 model compositions", () => {
+  require("../ui/engine-data/xenos-genestealer-cults");
+  const units = window.ROSTER_ENGINE_FACTIONS["Xenos - Genestealer Cults"];
+  const engine = window.RosterEngine;
+
+  for (const name of ["Cadian Shock Troops", "Death Korps of Krieg", "Catachan Jungle Fighters"]) {
+    const definition = units.find(item => item.name === name).definition;
+    const entry = engine.createDefaultRosterEntry(definition);
+    const state = engine.getUnitSizeState(definition, entry);
+
+    assert.deepEqual(state.presets.map(item => item.size), [10, 20], `${name} presets`);
+    assert.equal(state.current, 10, `${name} default size`);
+    assert.throws(() => engine.setUnitSize(definition, entry, 11), /Choose one of the listed/);
+
+    const twenty = engine.setUnitSize(definition, entry, 20);
+    assert.equal(engine.getUnitSizeState(definition, twenty).current, 20, `${name} enlarged size`);
+    assert.deepEqual(engine.validateLoadout(definition, twenty), [], `${name} enlarged loadout`);
+  }
+});
+
 test("browser configured profiles suppress fallback melee weapons after replacement", () => {
   const closeCombatProfile = id => ({
     id,

@@ -381,6 +381,49 @@ legacyTest("variable unit size can be changed without exposing model rows as war
   assert.deepEqual(validateLoadout(definition, twenty), []);
 });
 
+test("Genestealer Cults mixed composition variants count toward unit size", () => {
+  for (const name of ["Hybrid Metamorphs", "Acolyte Hybrids with Hand Flamers"]) {
+    const definition = unit11e("Xenos - Genestealer Cults", name);
+    const entry = createDefaultRosterEntry(definition);
+
+    assert.deepEqual(getUnitSizeState(definition, entry), {
+      current: 5, minimum: 5, maximum: 10, editable: true
+    }, `${name} default size`);
+
+    const ten = setUnitSize(definition, entry, 10);
+    assert.equal(getUnitSizeState(definition, ten).current, 10, `${name} enlarged size`);
+    assert.deepEqual(validateLoadout(definition, ten), [], `${name} enlarged loadout`);
+  }
+});
+
+test("ten Acolyte Hybrids can equip six heavy mining tools", () => {
+  const definition = unit11e("Xenos - Genestealer Cults", "Acolyte Hybrids with Autopistols");
+  const miningTool = option(definition, "Acolyte Hybrid w/ Heavy Mining Tool");
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+  const state = getOptionStates(definition, entry).find(item => item.id === miningTool.id);
+
+  assert.equal(state.maximum, 6);
+  entry = setSelection(definition, entry, miningTool.id, 6);
+  assert.equal(getUnitSizeState(definition, entry).current, 10);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("Brood Brothers composition bundles expose only their legal squad sizes", () => {
+  for (const name of ["Cadian Shock Troops", "Death Korps of Krieg", "Catachan Jungle Fighters"]) {
+    const definition = unit11e("Xenos - Genestealer Cults", name);
+    const entry = createDefaultRosterEntry(definition);
+    const state = getUnitSizeState(definition, entry);
+
+    assert.deepEqual(state.presets.map(item => item.size), [10, 20], `${name} presets`);
+    assert.equal(state.current, 10, `${name} default size`);
+    assert.throws(() => setUnitSize(definition, entry, 11), /Choose one of the listed/);
+
+    const twenty = setUnitSize(definition, entry, 20);
+    assert.equal(getUnitSizeState(definition, twenty).current, 20, `${name} enlarged size`);
+    assert.deepEqual(validateLoadout(definition, twenty), [], `${name} enlarged loadout`);
+  }
+});
+
 legacyTest("single-model units report a size of one", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   assert.deepEqual(getUnitSizeState(definition, createDefaultRosterEntry(definition)), {
