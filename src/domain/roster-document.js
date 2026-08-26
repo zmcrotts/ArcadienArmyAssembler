@@ -640,9 +640,14 @@ function discordGroupRecords(document, group, options) {
 
 function discordAttachedGroupRecord(document, group, options) {
   const records = discordGroupRecords(document, group, options);
+  const recordsById = new Map(records.map(record => [record.instanceId, record]));
+  const namedRecords = (group.memberInstanceIds || []).map(id => recordsById.get(id)).filter(Boolean);
+  const name = namedRecords.length
+    ? namedRecords.map(record => `${record.count > 1 ? `${record.count} ` : ""}${record.name}`).join(" + ")
+    : group.title || records.map(record => `${record.count > 1 ? `${record.count} ` : ""}${record.name}`).join(" + ") || "Attached unit";
   return {
     instanceId: group.id,
-    name: group.title || records.map(record => record.name).join(" + ") || "Attached unit",
+    name,
     count: 1,
     points: Number(group.totalPoints || records.reduce((sum, record) => sum + record.points, 0)),
     specials: [...new Set(records.flatMap(record => record.specials))],

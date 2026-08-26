@@ -413,13 +413,13 @@ test("Discord export emits one combined record for an attached unit", () => {
   };
 
   const text = exportRosterText(document, { format: "DISCORD", compact: true, ansi: false, hideSubunits: true });
-  assert.match(text, /^\* Nobz \+ Ghazghkull Thraka \+ Painboy \(Warlord, E: FML \(\+25 pts\), Painboy: 'US, Nobz: 9x PK, 9x SL, S&PK\) \[550\]$/);
+  assert.match(text, /^\* 10 Nobz \+ 2 Ghazghkull Thraka \+ Painboy \(Warlord, E: FML \(\+25 pts\), Painboy: 'US, Nobz: 9x PK, 9x SL, S&PK\) \[550\]$/);
   assert.doesNotMatch(text, /^\* Ghazghkull Thraka/m);
   assert.doesNotMatch(text, /^\* Painboy/m);
   assert.doesNotMatch(text, /^\* Nobz \[/m);
 
   const simple = exportRosterText(document, { format: "DISCORD_SIMPLE", ansi: false });
-  assert.equal(simple, "* Nobz + Ghazghkull Thraka + Painboy (E: FML (+25 pts)) [550]");
+  assert.equal(simple, "* 10 Nobz + 2 Ghazghkull Thraka + Painboy (E: FML (+25 pts)) [550]");
   assert.doesNotMatch(simple, /^\* Ghazghkull Thraka|^\* Painboy|^\* Nobz \[/m);
 });
 

@@ -229,6 +229,18 @@ test("Custodes expose Martial Ka'tah as an army rule", () => {
   assert.equal(martialKatah[0].source.name, "Local 11e Army Rule Gap-fill");
 });
 
+test("Adepta Sororitas expose Acts of Faith as an army rule", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID, { fresh: true });
+  const sisters = ruleset.armies.find(army => army.faction === "Imperium - Adepta Sororitas");
+  const actsOfFaith = sisters?.armyRules.filter(rule => rule.name === "Acts of Faith") || [];
+
+  assert.equal(actsOfFaith.length, 1);
+  assert.match(actsOfFaith[0].description, /gain 1 Miracle dice/i);
+  assert.match(actsOfFaith[0].description, /perform one Act of Faith per phase/i);
+  assert.match(actsOfFaith[0].description, /Saving throw/i);
+  assert.equal(actsOfFaith[0].source.name, "Local 11e Army Rule Gap-fill");
+});
+
 test("Imperial Knights inherit Code Chivalric from their native library catalogue", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const knights = ruleset.armies.find(item => item.faction === "Imperium - Imperial Knights");

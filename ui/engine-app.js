@@ -1734,7 +1734,7 @@ function renderRoster() {
   const detachments = currentArmyDefinition() ? (armyEngine.selectedDetachments?.(currentArmyDefinition(), armyState) || []) : [];
   const warningCount = validateRoster().filter(item => !item.ok).length;
   configuration.innerHTML = `
-    <div><b>Configuration</b>${warningCount ? `<span class="warningBadge">⚠ ${warningCount}</span>` : ""}</div>
+    <div><b>Configuration</b>${renderListErrorBadge(warningCount)}</div>
     <small>${escapeHtml(detachments.length ? `${detachments.length} detachment${detachments.length === 1 ? "" : "s"}` : "Choose detachments")} · roster options</small>
   `;
   configuration.onclick = () => {
@@ -2032,13 +2032,19 @@ function entryLoadoutErrors(rosterEntry) {
   return engine.validateLoadout(rosterEntry.unitPackage.definition, rosterEntry.entry) || [];
 }
 
+function renderListErrorBadge(errorCount) {
+  if (!errorCount) return "";
+  const label = `LIST ERROR${errorCount === 1 ? "" : "S"}`;
+  return ` <span class="warningBadge" role="status" title="${errorCount} ${label.toLowerCase()}">⚠ ${errorCount} ${label}</span>`;
+}
+
 function renderRosterUnitLabel(rosterEntry) {
   const unit = rosterEntry.unitPackage;
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
   const warningCount = entryLoadoutErrors(rosterEntry).length;
-  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
+  const warning = renderListErrorBadge(warningCount);
   return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
 }
 
@@ -2051,7 +2057,7 @@ function renderRosterGroupLabel(group, groupEntries) {
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const warningCount = group.warnings.length
     + groupEntries.reduce((sum, entry) => sum + entryLoadoutErrors(entry).length, 0);
-  const warning = warningCount ? ` <span class="warningBadge">⚠ ${warningCount}</span>` : "";
+  const warning = renderListErrorBadge(warningCount);
   const nickname = rosterNicknameFor(bodyguard.instanceId);
   const points = formatAttachedGroupPoints(group, groupEntries);
   return `
@@ -2354,6 +2360,7 @@ function renderSelectedDetails() {
 function showConfigurationPanel() {
   details.innerHTML = `
     <h3>Roster Configuration</h3>
+    <details class="sidebarGroup" open><summary>Army-level Warnings</summary><div id="validation"></div></details>
     <details class="sidebarGroup" data-disclosure-key="armyRules" ${disclosureOpenAttribute("armyRules", true)}><summary>Army Rules</summary><div id="armyRules"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachments" ${disclosureOpenAttribute("detachments", true)}><summary>Detachments</summary><div id="detachmentSelect" class="detachmentList"></div></details>
     <details class="sidebarGroup" data-disclosure-key="detachmentRules" ${disclosureOpenAttribute("detachmentRules", true)}><summary>Detachment Rules</summary><div id="detachmentRules"></div></details>
@@ -2361,7 +2368,6 @@ function showConfigurationPanel() {
     <details class="sidebarGroup stratagemsGroup" data-disclosure-key="stratagems" ${disclosureOpenAttribute("stratagems", false)}><summary>Stratagems</summary><div id="stratagems"></div></details>
     <details class="sidebarGroup"><summary>Available Enhancements & Upgrades</summary><div id="enhancements"></div></details>
     <details class="sidebarGroup"><summary>Show/Hide Options</summary><div id="catalogueOptions"></div></details>
-    <details class="sidebarGroup"><summary>Army-level Warnings</summary><div id="validation"></div></details>
   `;
   renderArmyControls();
   renderCatalogueOptions();

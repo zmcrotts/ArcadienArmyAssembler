@@ -718,7 +718,21 @@ button:hover {
 
 .rosterConfiguration:hover { background: #d5e9eb; }
 .rosterConfiguration small { display: block; margin-top: 4px; }
-.warningBadge { color: #8a4b00; float: right; }
+.warningBadge {
+  background: #a11218;
+  border: 1px solid #68070b;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px rgba(161, 18, 24, 0.2);
+  color: #fff;
+  float: right;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  margin-left: 8px;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
 
 .unitSection {
   margin-bottom: 8px;
@@ -2131,9 +2145,15 @@ html[data-theme="dark"] .dangerButton:hover {
 
 html[data-theme="dark"] .warning,
 html[data-theme="dark"] .invalid,
-html[data-theme="dark"] .warningBadge,
 html[data-theme="dark"] .requiredBadge {
   color: #f6c873;
+}
+
+html[data-theme="dark"] .warningBadge {
+  background: #b4232a;
+  border-color: #ff7b81;
+  box-shadow: 0 0 0 2px rgba(255, 123, 129, 0.25);
+  color: #fff;
 }
 
 html[data-theme="dark"] .warningSummary {
