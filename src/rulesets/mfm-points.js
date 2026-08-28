@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("fs");
+const { canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName } = require("./mfm-normalization");
 
 const FACTION_ALIASES = new Map(Object.entries({
   "adepta sororitas": "Imperium - Adepta Sororitas",
@@ -13,6 +14,7 @@ const FACTION_ALIASES = new Map(Object.entries({
   "chaos daemons": "Chaos - Chaos Daemons",
   "chaos knights": "Chaos - Chaos Knights",
   "chaos space marines": "Chaos - Chaos Space Marines",
+  "chaos titan legions": "Chaos - Titanicus Traitoris",
   "dark angels": "Imperium - Adeptus Astartes - Dark Angels",
   "death guard": "Chaos - Death Guard",
   "deathwatch": "Imperium - Adeptus Astartes - Deathwatch",
@@ -29,17 +31,43 @@ const FACTION_ALIASES = new Map(Object.entries({
   "space wolves": "Imperium - Adeptus Astartes - Space Wolves",
   "t au empire": "Xenos - T'au Empire",
   "thousand sons": "Chaos - Thousand Sons",
+  "titan legions": "Imperium - Adeptus Titanicus",
   "tyranids": "Xenos - Tyranids",
   "world eaters": "Chaos - World Eaters"
 }));
 
+const UNIT_NAME_ALIASES = new Map(Object.entries({
+  "chaos reaver titan": "reaver titan",
+  "chaos warbringer nemesis titan": "warbringer nemesis titan",
+  "chaos warhound titan": "warhound titan",
+  "chaos warlord titan": "warlord titan",
+  "myphitic blight haulers": "myphitic blight hauler",
+  "vyper": "vypers"
+}));
+
+const SPACE_MARINE_SECTION_FACTIONS = new Map(Object.entries({
+  "imperial fists": "Imperium - Adeptus Astartes - Imperial Fists",
+  "iron hands": "Imperium - Adeptus Astartes - Iron Hands",
+  "raven guard": "Imperium - Adeptus Astartes - Raven Guard",
+  "salamanders": "Imperium - Adeptus Astartes - Salamanders",
+  "ultramarines": "Imperium - Adeptus Astartes - Ultramarines",
+  "white scars": "Imperium - Adeptus Astartes - White Scars"
+}));
+
+const BORROWED_MFM_SOURCES = new Map([
+  ["Xenos - Drukhari", new Set(["Xenos - Aeldari"])],
+  ["Chaos - Chaos Daemons", new Set(["Chaos - Chaos Space Marines"])],
+  ["Chaos - Chaos Knights", new Set(["Chaos - Chaos Space Marines"])],
+  ["Chaos - Chaos Space Marines", new Set(["Chaos - Emperor's Children", "Chaos - World Eaters", "Chaos - Thousand Sons", "Chaos - Death Guard"])],
+  ["Chaos - Death Guard", new Set(["Chaos - Chaos Daemons"])],
+  ["Chaos - Thousand Sons", new Set(["Chaos - Chaos Daemons"])],
+  ["Chaos - World Eaters", new Set(["Chaos - Chaos Daemons"])],
+  ["Xenos - Genestealer Cults", new Set(["Imperium - Astra Militarum", "Xenos - Tyranids"])],
+  ["Imperium - Imperial Knights", new Set(["Imperium - Adeptus Mechanicus"])]
+]);
+
 function normalize(value) {
-  return String(value || "")
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\barmour\b/g, "armor")
-    .trim();
+  return normalizeMfmName(value);
 }
 
 function readMfmPoints(filePath) {
@@ -72,19 +100,44 @@ function canonicalFaction(mfmFaction) {
   return FACTION_ALIASES.get(normalize(mfmFaction)) || mfmFaction;
 }
 
+function canonicalChangeFaction(change) {
+  if (normalize(change.faction) === "space marines") {
+    return SPACE_MARINE_SECTION_FACTIONS.get(normalize(change.section)) || canonicalFaction(change.faction);
+  }
+  return canonicalFaction(change.faction);
+}
+
 function unitMatchesFaction(unit, change) {
-  const expected = canonicalFaction(change.faction);
+  const expected = canonicalChangeFaction(change);
   if (unit.faction === expected) return true;
   // The Space Marines MFM page also carries named Chapter units.
   return normalize(change.faction) === "space marines"
+    && expected === canonicalFaction(change.faction)
     && String(unit.faction || "").startsWith("Imperium - Adeptus Astartes - ");
 }
 
-function matchingUnits(units, change) {
-  const wantedName = normalize(change.unitName);
-  const exactFaction = units.filter(unit => unit.faction === canonicalFaction(change.faction) && normalize(unit.name) === wantedName);
-  if (exactFaction.length) return exactFaction;
-  return units.filter(unit => unitMatchesFaction(unit, change) && normalize(unit.name) === wantedName);
+function matchingUnits(units, change, directUnitKeys = new Set()) {
+  const normalizedName = normalize(change.unitName);
+  const wantedName = UNIT_NAME_ALIASES.get(normalizedName) || normalizedName;
+  const expectedFaction = canonicalChangeFaction(change);
+  const exactFaction = units.filter(unit => unit.faction === expectedFaction && normalize(unit.name) === wantedName);
+  if (normalize(change.faction) === "space marines" && expectedFaction === canonicalFaction(change.faction)) {
+    return units.filter(unit => unitMatchesFaction(unit, change) && normalize(unit.name) === wantedName);
+  }
+  const borrowed = units.filter(unit =>
+    unit.faction !== expectedFaction
+    && BORROWED_MFM_SOURCES.get(unit.faction)?.has(expectedFaction)
+    && !directUnitKeys.has(`${unit.faction}\u0000${wantedName}`)
+    && normalize(unit.name) === wantedName
+  );
+  if (exactFaction.length || borrowed.length) return [...exactFaction, ...borrowed];
+  return units.filter(unit => {
+    if (!unitMatchesFaction(unit, change)) return false;
+    const candidate = normalize(unit.name);
+    if (candidate === wantedName) return true;
+    if (candidate.replace(/s$/, "") === wantedName.replace(/s$/, "")) return true;
+    return wantedName === "soul grinder" && candidate.endsWith(" soul grinder");
+  });
 }
 
 function inferImperialAgentsContext(change, occurrence) {
@@ -112,14 +165,18 @@ function copyBand(costBand) {
   return { min: 0, max: null };
 }
 
-function scheduleRow(change, context) {
+function unitIdentity(unit) {
+  return `${unit.faction}\u0000${unit.selectionKey}`;
+}
+
+function scheduleRow(change, context, source) {
   const simple = String(change.label || "").match(/^(\d+)\s+models?$/i);
   const composition = simple ? null : String(change.label || "").split(",").map(part => {
     const match = part.trim().match(/^(\d+)\s+(.+)$/);
     return match ? { count: Number(match[1]), name: match[2].trim() } : null;
   }).filter(Boolean);
   return {
-    source: "mfm-1.1",
+    source,
     context,
     costBand: change.costBand,
     label: change.label,
@@ -134,10 +191,26 @@ function replaceTreePoints(node, wantedName, points) {
   if (!node) return { node, matches: 0 };
   let matches = 0;
   const normalizedNodeName = normalize(node.name).replace(/^per\s+/, "");
-  const updated = normalizedNodeName === wantedName ? { ...node, points } : { ...node };
-  if (normalizedNodeName === wantedName) matches += 1;
+  const nameMatches = normalizedNodeName === wantedName
+    || normalizedNodeName.replace(/s$/, "") === wantedName.replace(/s$/, "");
+  const updated = nameMatches ? { ...node, points } : { ...node };
+  if (nameMatches) matches += 1;
   updated.children = (node.children || []).map(child => {
     const result = replaceTreePoints(child, wantedName, points);
+    matches += result.matches;
+    return result.node;
+  });
+  return { node: updated, matches };
+}
+
+function replaceTreeEnhancementPoints(node, wantedName, points) {
+  if (!node) return { node, matches: 0 };
+  let matches = 0;
+  const nameMatches = node.kind === "upgrade" && canonicalEnhancementName(node.name) === wantedName;
+  const updated = nameMatches ? { ...node, points } : { ...node };
+  if (nameMatches) matches += 1;
+  updated.children = (node.children || []).map(child => {
+    const result = replaceTreeEnhancementPoints(child, wantedName, points);
     matches += result.matches;
     return result.node;
   });
@@ -150,6 +223,10 @@ function applyMfmPoints(units, armies, document) {
   const issues = [...(document?.issues || [])];
   const summary = { total: 0, unitRows: 0, conditionalUnitRows: 0, wargearRows: 0, enhancementRows: 0, unmatched: 0 };
   const imperialOccurrences = new Map();
+  const pointSource = `mfm-${document?.version || "unknown"}`;
+  const directUnitKeys = new Set((document?.changes || [])
+    .filter(change => change.kind === "unit")
+    .map(change => `${canonicalChangeFaction(change)}\u0000${UNIT_NAME_ALIASES.get(normalize(change.unitName)) || normalize(change.unitName)}`));
 
   for (const change of document?.changes || []) {
     summary.total += 1;
@@ -158,21 +235,21 @@ function applyMfmPoints(units, armies, document) {
       const occurrence = imperialOccurrences.get(key) || 0;
       imperialOccurrences.set(key, occurrence + 1);
       const context = inferImperialAgentsContext(change, occurrence);
-      const matches = matchingUnits(definitions, change);
+      const matches = matchingUnits(definitions, change, directUnitKeys);
       if (!matches.length) {
         issues.push(unmatchedIssue(change)); summary.unmatched += 1; continue;
       }
-      const matchKeys = new Set(matches.map(unit => unit.selectionKey));
-      definitions = definitions.map(unit => matchKeys.has(unit.selectionKey) ? {
+      const matchKeys = new Set(matches.map(unitIdentity));
+      definitions = definitions.map(unit => matchKeys.has(unitIdentity(unit)) ? {
         ...unit,
         pricing: {
           ...(unit.pricing || {}),
           // A Chapter's own MFM table overrides the generic Space Marines table.
           // Prepending exact-faction rows keeps that true regardless of the
           // alphabetical order in which faction pages were scraped.
-          mfmRows: unit.faction === canonicalFaction(change.faction)
-            ? [scheduleRow(change, context), ...(unit.pricing?.mfmRows || [])]
-            : [...(unit.pricing?.mfmRows || []), scheduleRow(change, context)]
+          mfmRows: unit.faction === canonicalChangeFaction(change)
+            ? [scheduleRow(change, context, pointSource), ...(unit.pricing?.mfmRows || [])]
+            : [...(unit.pricing?.mfmRows || []), scheduleRow(change, context, pointSource)]
         }
       } : unit);
       summary.unitRows += 1;
@@ -180,12 +257,12 @@ function applyMfmPoints(units, armies, document) {
     }
 
     if (change.kind === "wargear") {
-      const matches = matchingUnits(definitions, change);
+      const matches = matchingUnits(definitions, change, directUnitKeys);
       const wantedName = normalize(change.label).replace(/^(?:per\s+|\d+\s+)/, "");
       let changed = 0;
-      const matchKeys = new Set(matches.map(unit => unit.selectionKey));
+      const matchKeys = new Set(matches.map(unitIdentity));
       definitions = definitions.map(unit => {
-        if (!matchKeys.has(unit.selectionKey)) return unit;
+        if (!matchKeys.has(unitIdentity(unit))) return unit;
         const result = replaceTreePoints(unit.selectionTree, wantedName, Number(change.points));
         changed += result.matches;
         return result.matches ? { ...unit, selectionTree: result.node } : unit;
@@ -197,8 +274,8 @@ function applyMfmPoints(units, armies, document) {
 
     if (change.kind === "enhancement") {
       const faction = canonicalFaction(change.faction);
-      const wantedDetachment = normalize(change.detachmentName);
-      const wantedEnhancement = normalize(change.enhancementName).replace(/\s+upgrade$/, "");
+      const wantedDetachment = canonicalDetachmentName(change.detachmentName);
+      const wantedEnhancement = canonicalEnhancementName(change.enhancementName);
       let changed = 0;
       armyDefinitions = armyDefinitions.map(army => {
         const factionMatches = army.faction === faction || (
@@ -206,13 +283,19 @@ function applyMfmPoints(units, armies, document) {
           && String(army.faction || "").startsWith("Imperium - Adeptus Astartes - ")
         );
         if (!factionMatches) return army;
-        const detachmentIds = new Set((army.detachments || []).filter(item => normalize(item.name) === wantedDetachment).map(item => item.id));
-        const candidates = (army.enhancements || []).filter(item => normalize(item.name).replace(/\s+upgrade$/, "") === wantedEnhancement);
+        const detachmentIds = new Set((army.detachments || []).filter(item => canonicalDetachmentName(item.name) === wantedDetachment).map(item => item.id));
+        const candidates = (army.enhancements || []).filter(item => canonicalEnhancementName(item.name) === wantedEnhancement);
         const matches = candidates.filter(item => !detachmentIds.size || (item.detachmentIds || []).some(id => detachmentIds.has(id)));
         if (!matches.length) return army;
         const ids = new Set(matches.map(item => item.id));
         changed += matches.length;
-        return { ...army, enhancements: army.enhancements.map(item => ids.has(item.id) ? { ...item, points: Number(change.points), pointsSource: "mfm-1.1" } : item) };
+        return { ...army, enhancements: army.enhancements.map(item => ids.has(item.id) ? { ...item, points: Number(change.points), pointsSource: pointSource } : item) };
+      });
+      definitions = definitions.map(unit => {
+        if (!unitMatchesFaction(unit, change)) return unit;
+        const result = replaceTreeEnhancementPoints(unit.selectionTree, wantedEnhancement, Number(change.points));
+        changed += result.matches;
+        return result.matches ? { ...unit, selectionTree: result.node } : unit;
       });
       if (!changed) { issues.push(unmatchedIssue(change)); summary.unmatched += 1; }
       else summary.enhancementRows += 1;
@@ -220,7 +303,7 @@ function applyMfmPoints(units, armies, document) {
   }
 
   for (const schedule of document?.conditionalUnitSchedules || []) {
-    const matches = matchingUnits(definitions, { ...schedule, kind: "unit" });
+    const matches = matchingUnits(definitions, { ...schedule, kind: "unit" }, directUnitKeys);
     if (!matches.length) {
       issues.push(unmatchedIssue({ ...schedule, kind: "conditional-unit-schedule" }));
       summary.unmatched += 1;
@@ -230,10 +313,10 @@ function applyMfmPoints(units, armies, document) {
       costBand: row.costBand || "YOUR UNIT COSTS",
       label: row.label,
       points: row.points
-    }, row.context));
-    const matchKeys = new Set(matches.map(unit => unit.selectionKey));
+    }, row.context, pointSource));
+    const matchKeys = new Set(matches.map(unitIdentity));
     definitions = definitions.map(unit => {
-      if (!matchKeys.has(unit.selectionKey)) return unit;
+      if (!matchKeys.has(unitIdentity(unit))) return unit;
       return {
         ...unit,
         pricing: {
@@ -243,7 +326,7 @@ function applyMfmPoints(units, armies, document) {
           // dedicated allied-Imperium prices.
           mfmRows: [
             ...rows,
-            ...(unit.pricing?.mfmRows || []).filter(row => row.source !== "mfm-1.1")
+            ...(unit.pricing?.mfmRows || []).filter(row => row.source !== pointSource)
           ]
         }
       };

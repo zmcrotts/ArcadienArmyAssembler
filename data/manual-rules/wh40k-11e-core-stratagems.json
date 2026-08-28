@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "name": "Local 11e Core Stratagems",
-  "version": "codex-screenshot-2026-07-03",
-  "updatedAt": "2026-07-03",
+  "version": "faction-pack-update-2026-08-26",
+  "updatedAt": "2026-08-26",
   "notes": [
     "Recovered from Codex chat screenshots supplied by the user after installer data loss.",
     "These records are the current core stratagem set shown in those screenshots."
@@ -127,6 +127,15 @@
       "legend": "In close-quarters combat, the slightest hesitation can leave an opening for a swift foe to exploit.",
       "description": "<b>WHEN:</b> Fight step of your opponent's Fight phase, just after an enemy unit has resolved its attacks.<br><br><b>TARGET:</b> One friendly unit that is eligible to fight.<br><br><b>EFFECT:</b> Until the end of the phase, your unit has the Fights First ability and it must be the next unit you select to fight (12.04).",
       "target": { "type": "any" }
+    }
+  ],
+  "coreRules": [
+    {
+      "id": "core-move-types-for-disembarking-units",
+      "name": "Move Types for Disembarking Units",
+      "description": "If a rule allows a unit to be eligible to declare a charge after disembarking from a TRANSPORT model that made a normal move that turn, that unit makes an assault disembark move (18.06) for that disembarkation instead of a disembark move. If a rule allows a unit to disembark from a TRANSPORT model that made an advance move that turn, that unit makes a shock disembark move (18.07) for that disembarkation instead of a disembark move.",
+      "source": "Universal Rules Updates v1.1, page 1",
+      "sourceKind": "core-rule-update"
     }
   ]
 }

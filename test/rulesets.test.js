@@ -397,7 +397,7 @@ test("11e ruleset skips unpriced model shells but keeps priced Legends units", (
   assert.equal(byName("Shas'o R'alai").length, 0);
   assert.equal(byName("Shas'o R'alai [Legends]").length, 1);
   assert.equal(calculateEntryPoints(byName("Shas'o R'alai [Legends]")[0], createDefaultRosterEntry(byName("Shas'o R'alai [Legends]")[0])).points, 80);
-  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 220);
+  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 230);
 });
 
 test("11e Astartes chapter catalogues include shared Space Marine units and support leader targets", () => {
@@ -1198,7 +1198,7 @@ test("11e ruleset extracts detachment upgrades with unit eligibility", () => {
 
   assert.equal(synaptoprescience.kind, "upgrade");
   assert.equal(synaptoprescience.maxSelections, 3);
-  assert.equal(synaptoprescience.points, 25);
+  assert.equal(synaptoprescience.points, 30);
   assert.deepEqual(synaptoprescience.detachmentIds, [talons.id]);
   assert.deepEqual(synaptoprescience.eligibleSelectionKeys, [assimilator.selectionKey]);
   assert.ok(synaptoprescience.profiles[0].characteristics.Description.includes("4+"));

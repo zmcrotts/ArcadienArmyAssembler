@@ -143,12 +143,12 @@ function readWindowData(filePath) {
   }
 }
 
-function coreRulesFromSource(sourcePath) {
+function coreRulesFromSource(sourcePath, auxiliaryCorePath = null) {
   const gameSystemPath = path.join(sourcePath, "Warhammer 40,000.json");
   if (!fs.existsSync(gameSystemPath)) return [];
   const document = JSON.parse(fs.readFileSync(gameSystemPath, "utf8"));
   const rules = document?.gameSystem?.sharedRules || [];
-  return rules
+  const importedRules = rules
     .filter(rule => CORE_RULE_NAMES.has(rule?.name) && rule.description)
     .map(rule => ({
       id: rule.id,
@@ -159,6 +159,12 @@ function coreRulesFromSource(sourcePath) {
       sourceKind: "core-rule"
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  if (!auxiliaryCorePath || !fs.existsSync(auxiliaryCorePath)) return importedRules;
+  const auxiliaryDocument = JSON.parse(fs.readFileSync(auxiliaryCorePath, "utf8"));
+  const auxiliaryRules = Array.isArray(auxiliaryDocument?.coreRules) ? auxiliaryDocument.coreRules : [];
+  const byName = new Map(importedRules.map(rule => [rule.name.toLowerCase(), rule]));
+  for (const rule of auxiliaryRules) byName.set(String(rule.name || "").toLowerCase(), rule);
+  return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function main() {
@@ -168,7 +174,7 @@ function main() {
   const armyDefinitions = ruleset.armies;
   const allyDefinitions = ruleset.allies;
   const unresolved = ruleset.unresolved;
-  const coreRules = coreRulesFromSource(ruleset.source.sourcePath);
+  const coreRules = coreRulesFromSource(ruleset.source.sourcePath, ruleset.source.auxiliarySources?.coreStratagems);
 
   const factions = {};
 

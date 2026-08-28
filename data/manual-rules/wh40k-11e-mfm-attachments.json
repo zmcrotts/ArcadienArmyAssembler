@@ -428,7 +428,7 @@
         },
         {
           "unitName": "WARLOCK CONCLAVE",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "GUARDIAN DEFENDERS",
             "STORM GUARDIANS"
@@ -436,7 +436,7 @@
         },
         {
           "unitName": "WARLOCK SKYRUNNERS",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "WINDRIDERS"
           ]
@@ -450,13 +450,12 @@
         },
         {
           "unitName": "THE VISARCH",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "CORSAIR VOIDREAVERS",
             "CORSAIR VOIDSCARRED",
             "GUARDIAN DEFENDERS",
             "STORM GUARDIANS",
-            "YNNARI INCUBI",
             "YNNARI KABALITE WARRIORS",
             "YNNARI WYCHES"
           ]
@@ -1567,7 +1566,6 @@
             "CHAOS TERMINATOR SQUAD",
             "CHOSEN",
             "LEGIONARIES",
-            "MASTERS OF THE MAELSTROM",
             "RED CORSAIRS RAIDERS"
           ]
         },
@@ -1735,7 +1733,7 @@
         },
         {
           "unitName": "RAVENWING COMMAND SQUAD",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "OUTRIDER SQUAD",
             "RAVENWING BLACK KNIGHTS"

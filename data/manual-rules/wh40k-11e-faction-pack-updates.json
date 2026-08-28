@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "source": "Warhammer 40,000 Faction Packs v1.1 - Rules Updates",
-  "version": "1.1",
-  "lastUpdated": "2026-07-22",
+  "source": "Warhammer 40,000 Faction Packs updated through 26 August 2026",
+  "version": "2026-08-26",
+  "lastUpdated": "2026-08-26",
   "updates": [
     {
       "id": "custodes-frame",
@@ -173,11 +173,10 @@
     {
       "id": "chaos-knights-storm-of-darkness",
       "kind": "stratagem-replace",
-      "replaceSection": "EFFECT:",
       "target": { "faction": "Chaos - Chaos Knights" },
       "stratagemName": "Storm of Darkness",
-      "description": "EFFECT: Your unit has Stealth. Melee attacks that target your unit have -1 to hit rolls.",
-      "source": "Faction Pack - Chaos Knights v1.1, page 25"
+      "description": "WHEN: Your opponent's Shooting phase or the Fight phase, just after an enemy unit has selected its targets. TARGET: One CHAOS KNIGHTS unit from your army that was selected as the target of one or more of the attacking unit's attacks. EFFECT: Your unit has Stealth. Melee attacks that target your unit have -1 to hit rolls.",
+      "source": "Faction Pack - Chaos Knights v1.2, page 25"
     },
     {
       "id": "chaos-knights-obsessive-ruthlessness",
@@ -462,8 +461,8 @@
     {
       "id": "sororitas-divine-intervention", "kind": "stratagem-replace",
       "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Hallowed Martyrs", "stratagemName": "Divine Intervention",
-      "description": "WHEN: Any phase. TARGET: One ADEPTA SORORITAS CHARACTER unit from your army that was just destroyed. You can use this stratagem on that unit even though it was just destroyed. EFFECT: You can discard 1-3 Miracle dice. At the end of the phase, set up one destroyed CHARACTER model from your unit on the battlefield, unengaged and as close as possible to where it was destroyed. That model is not part of an attached unit and its unit has a starting strength of 1. Roll one D3, adding 1 to the result for each Miracle dice you discarded. That model has that number of wounds remaining (up to its starting number of wounds). RESTRICTION: You cannot select SAINT CELESTINE as the target of this stratagem. You cannot select the same CHARACTER as the target of this stratagem more than once per battle.",
-      "source": "Faction Pack - Adepta Sororitas v1.1, page 13"
+      "description": "WHEN: Any phase. TARGET: One ADEPTA SORORITAS CHARACTER model from your army that was just destroyed. You can use this stratagem on that model even though it was just destroyed. EFFECT: You can discard 1-3 Miracle dice. At the end of the phase, set up that model on the battlefield, unengaged and as close as possible to where it was destroyed. That model is not part of an Attached unit and its unit has a Starting Strength of 1. Roll one D3, adding 1 to the result for each Miracle die you discarded. That model has that number of wounds remaining, up to its starting number of wounds. RESTRICTION: You cannot select SAINT CELESTINE as the target of this stratagem. You cannot select the same CHARACTER model as the target of this stratagem more than once per battle.",
+      "source": "Faction Pack - Adepta Sororitas v1.2, page 13"
     },
     {
       "id": "sororitas-blinding-radiance", "kind": "stratagem-replace",
@@ -642,7 +641,7 @@
     },
     {
       "id": "dark-angels-lion-secrets", "kind": "rule-add", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Lion El'Jonson"], "ruleName": "Mist-wreathed Shadow Realms",
-      "description": "Mist-wreathed Shadow Realms: At the end of your opponent's turn, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit can make an ingress move in your next Movement phase (including in your first turn).", "source": "Faction Pack - Dark Angels v1.1, page 10"
+      "description": "In your Command phase, if this unit is unengaged, you can use this ability. If you do: place this unit in strategic reserves; this unit can make an ingress move in your next Movement phase, including in your first turn.", "source": "Faction Pack - Dark Angels v1.2, page 10"
     },
     {
       "id": "dark-angels-black-knight-weapon", "kind": "profile-patch", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Ravenwing Black Knights", "Ravenwing Command Squad"], "profileName": "Black Knight combat weapon", "typeName": "Melee Weapons",
@@ -703,7 +702,7 @@
     },
     {
       "id": "imperial-knights-dauntless", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Imperial Knights" }, "detachmentName": "Gate Warden Lance", "ruleName": "Dauntless Defenders",
-      "description": "At the start of the first battle round, select two objectives to be your foundations. Place a circular foundation marker in each one. When you draw a line from the closest part of one foundation marker to the closest part of the other, if any part of a model's base (or any part of a model's hull, for a model without a base) crosses that line, that model's unit is said to be on your defensive line.", "source": "Faction Pack - Imperial Knights v1.1, page 27"
+      "description": "At the start of the first battle round, select two objectives to be your foundations. Place a circular 40mm foundation marker in each one. When you draw a line from any part of one of your foundation markers to any part of the other, if any part of a model's base (or any part of a model's hull, for a model without a base) crosses that line, that model's unit is said to be on your defensive line.", "source": "Faction Pack - Imperial Knights v1.2, page 27"
     },
     {
       "id": "votann-secure-positions", "kind": "stratagem-replace", "target": { "faction": "Xenos - Leagues of Votann" }, "detachmentName": "Brandfast Oathband", "stratagemName": "Secure Positions", "textReplacements": [{ "from": "End of your turn", "to": "End of any of your phases" }], "source": "Faction Pack - Leagues of Votann v1.1, page 11"
@@ -802,7 +801,7 @@
       "id": "world-eaters-disciple-khorne", "kind": "enhancement-replace", "target": { "faction": "Chaos - World Eaters" }, "detachmentName": "Khorne Daemonkin", "enhancementName": "Disciple of Khorne", "description": "LORD ON JUGGERNAUT model only. The bearer has the Deep Strike ability, and it has the BLOOD LEGIONS Faction keyword instead of the WORLD EATERS Faction keyword.", "source": "Faction Pack - World Eaters v1.1, page 7"
     },
     {
-      "id": "astra-masters-camouflage", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Astra Militarum" }, "detachmentName": "Recon Element", "ruleName": "Masters of Camouflage", "description": "ASTRA MILITARUM WALKER and REGIMENT units from your army have the Benefit of Cover. While such a unit has the Benefit of Cover for any other reason, improve the Save characteristic of that unit by 1 (to a maximum of 3+).", "source": "Faction Pack - Astra Militarum v1.1, page 23"
+      "id": "astra-masters-camouflage", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Astra Militarum" }, "detachmentName": "Recon Element", "ruleName": "Masters of Camouflage", "description": "Friendly ASTRA MILITARUM units (excluding TITANIC units) have Stealth.", "source": "Faction Pack - Astra Militarum v1.2, page 23"
     },
     {
       "id": "death-guard-inflamed-reprisal", "kind": "rule-add", "target": { "faction": "Chaos - Death Guard" }, "unitNames": ["Mortarion"], "ruleName": "Inflamed Reprisal", "description": "In your opponent's Shooting phase, when a friendly DEATH GUARD unit within 6\" of this model is selected as the target of an attack, this model can use this ability. If it does, after the attacking unit has finished making its attacks, that DEATH GUARD unit can shoot as if it were your Shooting phase, but when resolving those attacks, worsen the BS characteristic of that attack by 1 and it can only target that enemy unit (and only if it is an eligible target).", "source": "Faction Pack - Death Guard v1.1, page 7"
@@ -1139,12 +1138,213 @@
       "unitNames": ["Transcendent C'tan"],
       "description": "TRANSCENDENT C'TAN model only. In your turn, when this unit makes an ingress/advance move using its Transdimensional Displacement ability, this unit can end that move more than 6 inches horizontally from all enemy units. When this unit ends that move within 8 inches of an enemy unit, this unit is not eligible to declare a charge until the end of the turn.",
       "source": "Faction Pack - Necrons v1.1, page 11; MFM v1.1"
+    },
+    {
+      "id": "aug26-sororitas-celestian-keyword", "kind": "keywords-add", "target": { "faction": "Imperium - Adepta Sororitas" }, "unitNames": ["Celestian Insidiants", "Celestian Sacresants"], "keywords": ["Celestian"],
+      "source": "Faction Pack - Adepta Sororitas v1.2, pages 1 and 14"
+    },
+    {
+      "id": "aug26-sororitas-righteous-purpose", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Champions of Faith", "ruleName": "Righteous Purpose",
+      "description": "In your Command phase, you can select up to 3 ADEPTA SORORITAS units from your army, including units embarked within TRANSPORTS. Until the start of your next Command phase, those units are Righteous. While a unit is Righteous: add 1\" to the Move characteristic of models in that unit; improve the Leadership characteristic of models in that unit by 1; improve the Weapon Skill and Ballistic Skill characteristics of weapons equipped by BATTLE SISTERS SQUAD, CELESTIAN INSIDIANTS, CELESTIAN SACRESANTS and PARAGON WARSUITS models in that unit by 1.",
+      "source": "Faction Pack - Adepta Sororitas v1.2, page 1"
+    },
+    {
+      "id": "aug26-sororitas-holy-quest", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Adepta Sororitas" }, "detachmentName": "Sacred Champions", "ruleName": "Holy Quest",
+      "description": "Friendly CELESTIAN units' attacks have +1 BS and +1 WS. This detachment has the REVEREND tag and cannot be taken with another REVEREND detachment.",
+      "source": "Faction Pack - Adepta Sororitas v1.2, page 1"
+    },
+    {
+      "id": "aug26-sororitas-healing-tears", "kind": "rule-replace", "target": { "faction": "Imperium - Adepta Sororitas" }, "unitNames": ["Saint Celestine"], "ruleName": "Healing Tears",
+      "description": "While this unit contains a Celestine model, in your Command phase, you can return 1 destroyed Geminae Superia model to this unit.",
+      "source": "Faction Pack - Adepta Sororitas v1.2, page 14"
+    },
+    {
+      "id": "aug26-admech-datasmith-infantry", "kind": "keywords-remove", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Cybernetica Datasmith"], "keywords": ["Infantry"],
+      "source": "Faction Pack - Adeptus Mechanicus v1.2, page 18"
+    },
+    {
+      "id": "aug26-admech-datasmith-vehicle", "kind": "keywords-add", "target": { "faction": "Imperium - Adeptus Mechanicus" }, "unitNames": ["Cybernetica Datasmith"], "keywords": ["Vehicle"],
+      "source": "Faction Pack - Adeptus Mechanicus v1.2, page 18"
+    },
+    {
+      "id": "aug26-aeldari-travelling-players", "kind": "detachment-rule-replace", "target": { "faction": "Xenos - Aeldari" }, "detachmentName": "Serpent's Brood", "ruleName": "Travelling Players",
+      "description": "When mustering your army, you can include HARLEQUINS units in your army even though they do not have the ASURYANI keyword. The combined points cost of such units depends on your battle size. When mustering your army, you can select a friendly HARLEQUINS CHARACTER model to be your WARLORD.",
+      "source": "Faction Pack - Aeldari v1.3, pages 1 and 30"
+    },
+    {
+      "id": "aug26-aeldari-support-roles", "kind": "role-patch", "target": { "faction": "Xenos - Aeldari" }, "unitNames": ["The Visarch", "Warlock Conclave", "Warlock Skyrunners"], "patch": { "leader": false, "support": true },
+      "source": "Faction Pack - Aeldari v1.3, page 31"
+    },
+    {
+      "id": "aug26-death-guard-nurgles-gift", "kind": "army-rule-add", "target": { "faction": "Chaos - Death Guard" }, "ruleName": "Nurgle's Gift",
+      "description": "If your Army Faction is DEATH GUARD, while an enemy unit is within Contagion Range of one or more DEATH GUARD units from your army, it is Afflicted. During Declare Battle Formations, select one Plague. While an enemy unit is Afflicted, subtract 1 from its Toughness and apply the selected Plague. Skullsquirm Blight: each time a model in this unit makes a ranged attack, enemy units have the Benefit of Cover against that attack; each time a model in this unit makes a melee attack, subtract 1 from the Hit roll. Rattlejoint Ague: worsen the Save characteristic of models in this unit by 1. Scabrous Soulrot: worsen the Move, Leadership and Objective Control characteristics of models in this unit by 1, to a minimum Objective Control of 1.",
+      "source": "Faction Pack - Death Guard v1.2, page 7"
+    },
+    {
+      "id": "aug26-death-guard-stinking-mire", "kind": "stratagem-replace", "target": { "faction": "Chaos - Death Guard" }, "detachmentName": "Mortarion's Hammer", "stratagemName": "Stinking Mire",
+      "description": "WHEN: Start of your opponent's Charge phase. TARGET: One friendly unengaged DEATH GUARD VEHICLE unit. EFFECT: Select one visible enemy unit within 12\" of your unit. When that enemy unit declares a charge, that enemy unit has -1 to Charge rolls.",
+      "source": "Faction Pack - Death Guard v1.2, page 7"
+    },
+    {
+      "id": "aug26-drukhari-aerialists", "kind": "rule-replace", "target": { "faction": "Xenos - Drukhari" }, "unitNames": ["Venom"], "ruleName": "Aerialists",
+      "description": "At the end of the Fight phase, if there are no models currently embarked within this TRANSPORT, you can select one friendly DRUKHARI INFANTRY unit that has 6 or fewer models and is wholly within 6\" of this TRANSPORT; you cannot select a unit that can FLY. Unless that unit is within Engagement Range of one or more enemy units, it can embark within this TRANSPORT. That unit can embark within this TRANSPORT in a turn it disembarked from a TRANSPORT.",
+      "source": "Faction Pack - Drukhari v1.2, page 8"
+    },
+    {
+      "id": "aug26-emperors-children-on-to-next", "kind": "stratagem-replace", "target": { "faction": "Chaos - Emperor's Children" }, "stratagemName": "Onto The Next",
+      "description": "WHEN: End of the Fight phase. TARGET: One friendly EMPEROR'S CHILDREN unit that is eligible to embark within a friendly TRANSPORT. EFFECT: Your unit can embark within that TRANSPORT. Your unit can embark within that TRANSPORT in a turn it disembarked from a TRANSPORT.",
+      "source": "Faction Pack - Emperor's Children v1.2, page 9"
+    },
+    {
+      "id": "aug26-necrons-cosmic-precision", "kind": "stratagem-replace", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Hypercrypt Legion", "stratagemName": "Cosmic Precision",
+      "description": "WHEN: Your Movement phase. TARGET: One NECRONS unit from your army, excluding MONSTER units, that is arriving using an ingress move this phase. EFFECT: Your unit can be set up anywhere on the battlefield that is more than 6\" horizontally away from all enemy models. RESTRICTION: A unit targeted with this stratagem is not eligible to declare a charge in the same turn.",
+      "source": "Faction Pack - Necrons v1.2, page 29"
+    },
+    {
+      "id": "aug26-necrons-eternity-gate", "kind": "rule-replace", "target": { "faction": "Xenos - Necrons" }, "unitNames": ["Monolith"], "ruleName": "Eternity Gate",
+      "description": "In your Movement phase, excluding the first battle round, you can select one friendly NECRONS INFANTRY unit that is either in strategic reserves or on the battlefield. If you select a unit on the battlefield, remove that unit and place it into strategic reserves. That unit can make an ingress move, and while making that ingress move it must be set up wholly within 6\" of this unit and unengaged, instead of more than 8\" horizontally from all enemy units, even if that is within your opponent's deployment zone. That unit cannot make a charge move this turn.",
+      "source": "Faction Pack - Necrons v1.2, page 30"
+    },
+    {
+      "id": "aug26-orks-careen", "kind": "stratagem-replace", "target": { "faction": "Xenos - Orks" }, "detachmentName": "War Horde", "stratagemName": "Careen!",
+      "description": "WHEN: Any phase, just after an ORKS VEHICLE unit from your army with the Deadly Demise ability is destroyed. TARGET: That destroyed ORKS VEHICLE unit, if you roll a 6 for its Deadly Demise ability. You can use this stratagem on that unit even though it was just destroyed. EFFECT: Your unit can make a Normal or Fall Back move before its Deadly Demise ability is resolved and before any embarked units perform an emergency disembark move. When making this move, your unit can move over enemy units, excluding MONSTERS and VEHICLES, as if they were not there.",
+      "source": "Faction Pack - Orks v1.2, page 24"
+    },
+    {
+      "id": "aug26-orks-rivetin-dakka", "kind": "rule-replace", "target": { "faction": "Xenos - Orks" }, "unitNames": ["Kustom Boosta-blasta"], "ruleName": "Rivetin' Dakka",
+      "description": "In your Shooting phase, after this model has shot, select one enemy unit hit by one or more of those attacks made with a rivet kannon. Until the start of your next turn, that enemy unit is suppressed. While a unit is suppressed, each time a model in that unit makes a ranged attack, subtract 1 from the Hit roll.",
+      "source": "Faction Pack - Orks v1.2, page 26"
+    },
+    {
+      "id": "aug26-orks-mob-mentality", "kind": "detachment-rule-replace", "target": { "faction": "Xenos - Orks" }, "detachmentName": "Green Tide", "ruleName": "Mob Mentality",
+      "description": "Each time an attack targets a BOYZ unit from your army, models in that unit have a 6+ invulnerable save against that attack. Each time an attack targets a BOYZ unit from your army that contains 10 or more models, models in that unit have a 5+ invulnerable save against that attack. When resolving an attacking unit's attacks, the number of models in the target unit when it was targeted determines that unit's invulnerable save until those attacks are resolved; do not change the save partway through those attacks as casualties are removed.",
+      "source": "Faction Pack - Orks v1.2, pages 26-27"
+    },
+    {
+      "id": "aug26-orks-mekanised-brutality", "kind": "stratagem-replace", "target": { "faction": "Xenos - Orks" }, "detachmentName": "Blitz Brigade", "stratagemName": "Mekanised Brutality",
+      "description": "WHEN: Your Movement phase, just after an ORKS TRANSPORT unit from your army ends a Normal move. TARGET: That TRANSPORT unit. EFFECT: Units embarked within your TRANSPORT can make an assault disembark move as described in Core Rules 18.06.",
+      "source": "Faction Pack - Orks v1.2, page 24"
+    },
+    {
+      "id": "aug26-csm-heldrake", "kind": "profile-patch", "target": { "faction": "Chaos - Chaos Space Marines" }, "unitNames": ["Heldrake"], "profileName": "Heldrake", "typeName": "Unit", "characteristics": { "OC": "0" },
+      "source": "Faction Pack - Chaos Space Marines v1.2, page 37"
+    },
+    {
+      "id": "aug26-ec-heldrake", "kind": "profile-patch", "target": { "faction": "Chaos - Emperor's Children" }, "unitNames": ["Heldrake"], "profileName": "Heldrake", "typeName": "Unit", "characteristics": { "OC": "0" },
+      "source": "Faction Pack - Emperor's Children v1.2, page 10"
+    },
+    {
+      "id": "aug26-ts-heldrake", "kind": "profile-patch", "target": { "faction": "Chaos - Thousand Sons" }, "unitNames": ["Heldrake"], "profileName": "Heldrake", "typeName": "Unit", "characteristics": { "OC": "0" },
+      "source": "Faction Pack - Thousand Sons v1.2, page 10"
+    },
+    {
+      "id": "aug26-we-heldrake", "kind": "profile-patch", "target": { "faction": "Chaos - World Eaters" }, "unitNames": ["Heldrake"], "profileName": "Heldrake", "typeName": "Unit", "characteristics": { "OC": "0" },
+      "source": "Faction Pack - World Eaters v1.2, page 7"
+    },
+    {
+      "id": "aug26-csm-masters-support", "kind": "role-patch", "target": { "faction": "Chaos - Chaos Space Marines" }, "unitNames": ["Masters of the Maelstrom"], "patch": { "leader": false, "support": true },
+      "source": "Faction Pack - Chaos Space Marines v1.2, page 37"
+    },
+    {
+      "id": "aug26-dark-angels-command-support", "kind": "role-patch", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" }, "unitNames": ["Ravenwing Command Squad"], "patch": { "leader": false, "support": true },
+      "source": "Faction Pack - Dark Angels v1.2, page 10"
+    },
+    {
+      "id": "aug26-space-marines-stoic-defender", "kind": "enhancement-replace", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Anvil Siege Force", "enhancementName": "Stoic Defender",
+      "description": "ADEPTUS ASTARTES model only. While the bearer is leading a unit, models in that unit have the Feel No Pain 6+ ability while they are within an objective you control and, while that unit is Battle-shocked, halve the Objective Control characteristic of models in that unit instead of changing it to '-'.",
+      "source": "Faction Pack - Space Marines v1.2, page 60"
+    },
+    {
+      "id": "aug26-space-marines-rapid-embarkation", "kind": "stratagem-replace", "target": { "factionPrefix": "Imperium - Adeptus Astartes" }, "detachmentName": "Firestorm Assault Force", "stratagemName": "Rapid Embarkation",
+      "description": "WHEN: End of the Fight phase. TARGET: One ADEPTUS ASTARTES TRANSPORT unit from your army that has no models embarked within it, and one ADEPTUS ASTARTES INFANTRY unit from your army wholly within 6\" of that TRANSPORT. EFFECT: Your INFANTRY unit can embark within that TRANSPORT. Your unit can embark within that TRANSPORT in a turn it disembarked from a TRANSPORT. RESTRICTION: You cannot target an INFANTRY unit that is within Engagement Range of one or more enemy units or that cannot normally embark within that TRANSPORT.",
+      "source": "Faction Pack - Space Marines v1.2"
+    },
+    {
+      "id": "aug26-space-marines-wardens-support", "kind": "role-patch", "target": { "faction": "Imperium - Adeptus Astartes - Ultramarines" }, "unitNames": ["Wardens of Ultramar"], "patch": { "leader": false, "support": true },
+      "source": "Faction Pack - Space Marines v1.2, page 61"
+    },
+    {
+      "id": "aug26-space-marines-wardens-heroes", "kind": "rule-remove", "target": { "faction": "Imperium - Adeptus Astartes - Ultramarines" }, "unitNames": ["Wardens of Ultramar"], "ruleName": "Heroes of Ultramar",
+      "source": "Faction Pack - Space Marines v1.2"
+    },
+    {
+      "id": "aug26-space-wolves-old-greymanes", "kind": "detachment-rule-replace", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" }, "detachmentName": "Veterans of the Fang", "ruleName": "Old Greymanes",
+      "description": "When a friendly GREY HUNTERS unit starts an action, that action does not prevent that unit from being eligible to shoot. During the Declare Battle Formations step, you can select one friendly GREY HUNTERS unit and split it into two units as evenly as possible. When splitting a unit in this way, record which models form each of the two new units. Your army can include SPACE WOLVES units, but it cannot include ADEPTUS ASTARTES units drawn from any other Chapter.",
+      "source": "Faction Pack - Space Wolves v1.2"
+    },
+    {
+      "id": "aug26-tyranids-synaptic-goading", "kind": "stratagem-replace", "target": { "faction": "Xenos - Tyranids" }, "detachmentName": "Unending Swarm", "stratagemName": "Synaptic Goading",
+      "description": "WHEN: Any phase, just before an ENDLESS MULTITUDE unit from your army that is within Synapse Range of your army makes a surge move. TARGET: That ENDLESS MULTITUDE unit. EFFECT: When making that surge move, you can re-roll the D6 to determine how far your unit moves, and your unit can end that move as close as possible to the closest objective marker instead of as close as possible to the closest enemy unit. All other rules for making surge moves still apply.",
+      "source": "https://wahapedia.ru/wh40k10ed/factions/tyranids/",
+      "rulesUpdateSource": "Faction Pack - Tyranids v1.2, page 19"
+    },
+    {
+      "id": "aug26-tyranids-harpooned", "kind": "rule-replace", "target": { "faction": "Xenos - Tyranids" }, "unitNames": ["Norn Assimilator"], "ruleName": "Harpooned",
+      "description": "When this unit declares a charge, if an enemy MONSTER/VEHICLE unit is within 12\" of this unit and was hit by an attack made by this weapon this turn, you can use this ability. If you do, this unit has +2 to Charge rolls until the end of the phase and this unit must end that charge move engaged with that MONSTER/VEHICLE unit.",
+      "source": "Faction Pack - Tyranids v1.2, page 20"
+    },
+    {
+      "id": "aug26-world-eaters-betrayer", "kind": "rule-replace", "target": { "faction": "Chaos - World Eaters" }, "unitNames": ["Khârn the Betrayer"], "ruleName": "The Betrayer",
+      "description": "At the end of your Charge phase, if this unit is on the battlefield, is unengaged and contains a Bodyguard model, this unit makes a Leadership roll. If that Leadership roll is failed, one Bodyguard model in this unit is destroyed.",
+      "source": "Faction Pack - World Eaters v1.2, page 8"
+    },
+    {
+      "id": "aug26-necrons-unnatural-aggression", "kind": "stratagem-replace", "target": { "faction": "Xenos - Necrons" }, "detachmentName": "Cursed Legion", "stratagemName": "Unnatural Aggression",
+      "description": "Your unit immediately declares and resolves a charge targeting only the specified enemy unit or units. Successfully completing that charge does not grant the Charge bonus.",
+      "source": "Faction Pack - Necrons v1.2"
+    },
+    {
+      "id": "aug26-aeldari-legends-frame", "kind": "keywords-remove", "target": { "faction": "Xenos - Aeldari" },
+      "unitNames": ["Autarch Skyrunner [Legends]", "Cobra [Legends]", "Corsair Cloud Dancer Band [Legends]", "Firestorm [Legends]", "Hornet [Legends]", "Lynx [Legends]", "Nightwing [Legends]", "Phoenix [Legends]", "Scorpion [Legends]", "Vampire Hunter [Legends]", "Vampire Raider [Legends]", "Warp Hunter [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - Aeldari v1.3, page 1"
+    },
+    {
+      "id": "aug26-astra-legends-frame", "kind": "keywords-remove", "target": { "faction": "Imperium - Astra Militarum" },
+      "unitNames": ["Aquila Lander [Legends]", "Arvus Lighter [Legends]", "Marauder Bomber [Legends]", "Marauder Destroyer [Legends]", "Valkyrie Sky Talon [Legends]", "Vendetta Gunship [Legends]", "Voss-pattern Lightning [Legends]", "Vulture Gunship [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - Astra Militarum v1.2, page 1"
+    },
+    {
+      "id": "aug26-csm-legends-frame", "kind": "keywords-remove", "target": { "faction": "Chaos - Chaos Space Marines" },
+      "unitNames": ["Chaos Thunderhawk [Legends]", "Hell Blade [Legends]", "Hell Talon [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - Chaos Space Marines v1.2, page 1"
+    },
+    {
+      "id": "aug26-dark-angels-legends-frame", "kind": "keywords-remove", "target": { "faction": "Imperium - Adeptus Astartes - Dark Angels" },
+      "unitNames": ["Ravenwing Talonmaster [Legends]"], "keywords": ["Frame"], "source": "Faction Pack - Dark Angels v1.2, page 1"
+    },
+    {
+      "id": "aug26-drukhari-legends-frame", "kind": "keywords-remove", "target": { "faction": "Xenos - Drukhari" },
+      "unitNames": ["Raven Strike Fighter [Legends]", "Reaper [Legends]", "Tantalus [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - Drukhari v1.2, page 1"
+    },
+    {
+      "id": "aug26-necrons-legends-frame", "kind": "keywords-remove", "target": { "faction": "Xenos - Necrons" },
+      "unitNames": ["Night Shroud [Legends]"], "keywords": ["Frame"], "source": "Faction Pack - Necrons v1.2, page 1"
+    },
+    {
+      "id": "aug26-space-marines-legends-frame", "kind": "keywords-remove", "target": { "factionPrefix": "Imperium - Adeptus Astartes" },
+      "unitNames": ["Caestus Assault Ram [Legends]", "Fire Raptor Gunship [Legends]", "Javelin Attack Speeder [Legends]", "Land Speeder Storm [Legends]", "Land Speeder Tempest [Legends]", "Land Speeder Tornado [Legends]", "Land Speeder Typhoon [Legends]", "Sokar-pattern Stormbird [Legends]", "Storm Eagle Gunship [Legends]", "Thunderhawk Transporter [Legends]", "Xiphon Interceptor [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - Space Marines v1.2, page 1"
+    },
+    {
+      "id": "aug26-space-wolves-legends-frame", "kind": "keywords-remove", "target": { "faction": "Imperium - Adeptus Astartes - Space Wolves" },
+      "unitNames": ["Stormfang Gunship [Legends]", "Stormwolf [Legends]"], "keywords": ["Frame"], "source": "Faction Pack - Space Wolves v1.2, page 1"
+    },
+    {
+      "id": "aug26-tau-legends-frame", "kind": "keywords-remove", "target": { "faction": "Xenos - T'au Empire" },
+      "unitNames": ["Barracuda [Legends]", "Longstrike [Legends]", "Orca Dropship [Legends]", "Tetras [Legends]", "TX42 Piranha [Legends]"],
+      "keywords": ["Frame"], "source": "Faction Pack - T'au Empire v1.2, page 1"
+    },
+    {
+      "id": "aug26-tyranids-legends-frame", "kind": "keywords-remove", "target": { "faction": "Xenos - Tyranids" },
+      "unitNames": ["Harridan"], "keywords": ["Frame"], "source": "Faction Pack - Tyranids v1.2, page 1"
     }
   ],
   "audit": {
     "redCharacterCount": 28626,
     "changedPageCount": 57,
-    "method": "Every red-text page extracted by character colour, then checked against the rendered page and assigned to an applied override, a verified current source item, a manual loadout correction, or a non-roster-facing item.",
+    "latestDelta": { "date": "2026-08-26", "redCharacterCount": 7322, "changedPageCount": 36 },
+    "method": "The original v1.1 red-text audit remains recorded for backwards-compatible coverage tests. The 26 August 2026 delta is recorded separately and reconciled against this cumulative overlay.",
     "manualCorrections": [
       { "id": "orks-boyz-loadout", "source": "Faction Pack - Orks v1.1, page 25" },
       { "id": "orks-gretchin-composition", "source": "Faction Pack - Orks v1.1, page 26" },
@@ -1161,7 +1361,8 @@
       { "id": "blood-angels-sanguinary-guard", "source": "Faction Pack - Blood Angels v1.1, page 9" },
       { "id": "blood-angels-sanguinary-priest-support", "source": "Faction Pack - Blood Angels v1.1, page 9" },
       { "id": "admech-legends-new-pages", "source": "Faction Pack - Adeptus Mechanicus v1.1, pages 20, 22, 24 and 26" },
-      { "id": "titanicus-force-disposition", "source": "Faction Pack - Adeptus Titanicus v1.1, page 1" }
+      { "id": "titanicus-force-disposition", "source": "Faction Pack - Adeptus Titanicus v1.1, page 1" },
+      { "id": "aug26-tyranids-synaptic-goading", "source": "Faction Pack - Tyranids v1.2, page 19" }
     ],
     "nonRosterFacing": [
       { "id": "dominatus-event-cp", "source": "Warhammer Dominatus - Event Companion, page 1" },
@@ -1174,6 +1375,10 @@
       { "id": "aeldari-faq", "source": "Faction Pack - Aeldari v1.1, page 28" },
       { "id": "drukhari-faq", "source": "Faction Pack - Drukhari v1.1, page 8" },
       { "id": "orks-faq", "source": "Faction Pack - Orks v1.1, page 27" }
+    ],
+    "unavailableSource": [
+      { "id": "aug26-aeldari-stonesinger-spit", "reason": "The active imported catalogue has no Stonesinger unit definition to patch; the current MFM reconciliation also records STONESINGER as unmatched.", "source": "Faction Pack - Aeldari v1.3, pages 1 and 14" },
+      { "id": "aug26-admech-terrax-faction", "reason": "The active imported catalogue has no Adeptus Mechanicus-faction Terrax-pattern Termite definition. Its shared Legends profile is current in other factions, but it is not selectable by Adeptus Mechanicus.", "source": "Faction Pack - Adeptus Mechanicus v1.2, page 26" }
     ]
   }
 }

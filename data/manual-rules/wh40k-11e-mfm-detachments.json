@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "https://mfm.warhammer-community.com/en",
-  "version": "1.1",
-  "generatedAt": "2026-07-22T18:37:32.552954Z",
+  "version": "1.3",
+  "generatedAt": "2026-08-26T14:54:39.247747Z",
   "detachments": [
     {
       "factionSlug": "adepta-sororitas",
@@ -19,8 +19,8 @@
       "detachmentName": "BRINGERS OF FLAME",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": true
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "adepta-sororitas",
@@ -28,9 +28,11 @@
       "detachmentName": "CHAMPIONS OF FAITH",
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
-      "uniqueTags": ["REVEREND"],
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": false,
+      "uniqueTags": [
+        "REVEREND"
+      ]
     },
     {
       "factionSlug": "adepta-sororitas",
@@ -56,7 +58,7 @@
       "detachmentName": "PENITENT HOST",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -65,9 +67,11 @@
       "detachmentName": "SACRED CHAMPIONS",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "uniqueTags": ["REVEREND"],
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": false,
+      "uniqueTags": [
+        "REVEREND"
+      ]
     },
     {
       "factionSlug": "adepta-sororitas",
@@ -75,7 +79,7 @@
       "detachmentName": "SANCTIFIED ORATORS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -91,10 +95,10 @@
       "factionSlug": "adeptus-custodes",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
       "detachmentName": "LIONS OF THE EMPEROR",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPoints": 3,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": true,
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "adeptus-custodes",
@@ -102,7 +106,7 @@
       "detachmentName": "MIGHT OF THE MORITOI",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -155,8 +159,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
       "detachmentName": "THARANATOI HAMMERBLOW",
       "detachmentPoints": 1,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -210,7 +214,7 @@
       "detachmentName": "HALOSCREED BATTLE CLADE",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -263,8 +267,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "ASPECT HOST",
       "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -291,7 +295,7 @@
       "detachmentName": "ELDRITCH RAIDERS",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -372,7 +376,7 @@
       "detachmentName": "WARHOST",
       "detachmentPoints": 3,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -418,7 +422,7 @@
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "astra-militarum",
@@ -453,17 +457,17 @@
       "detachmentName": "MECHANISED ASSAULT",
       "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
       "factionSlug": "astra-militarum",
       "sourceUrl": "https://mfm.warhammer-community.com/en/astra-militarum",
       "detachmentName": "RECON ELEMENT",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "astra-militarum",
@@ -534,7 +538,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -543,7 +547,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -561,7 +565,7 @@
       "detachmentName": "GODHAMMER ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -579,7 +583,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -615,7 +619,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -624,7 +628,7 @@
       "detachmentName": "THE LIVING MIRACLE",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -669,7 +673,7 @@
       "detachmentName": "1ST COMPANY TASK FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -732,7 +736,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -741,7 +745,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -768,7 +772,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -831,7 +835,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -902,8 +906,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-daemons",
       "detachmentName": "DAEMONIC INCURSION",
       "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -921,7 +925,7 @@
       "detachmentName": "LORDS OF THE WARP",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -966,7 +970,7 @@
       "detachmentName": "BASTIONS OF TYRANNY",
       "detachmentPoints": 1,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1011,7 +1015,7 @@
       "detachmentName": "INFERNAL LANCE",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1020,7 +1024,7 @@
       "detachmentName": "LORDS OF DREAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1109,8 +1113,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
       "detachmentName": "HURON’S MARAUDERS",
       "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1119,7 +1123,7 @@
       "detachmentName": "MURDERTALON RAIDERS",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1164,7 +1168,7 @@
       "detachmentName": "SOULFORGED WARPACK",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1191,7 +1195,7 @@
       "detachmentName": "1ST COMPANY TASK FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1263,7 +1267,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1272,7 +1276,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1308,7 +1312,7 @@
       "detachmentName": "INTERROGATION CONCLAVE",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1317,7 +1321,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1362,7 +1366,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1416,7 +1420,7 @@
       "detachmentName": "CONTAGION ENGINES",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1488,7 +1492,7 @@
       "detachmentName": "1ST COMPANY TASK FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1524,7 +1528,7 @@
       "detachmentName": "BLACK SPEAR TASK FORCE",
       "detachmentPoints": 3,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1542,7 +1546,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1551,7 +1555,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1578,7 +1582,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1614,7 +1618,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1641,7 +1645,7 @@
       "detachmentName": "COVENITE COTERIE",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1650,7 +1654,7 @@
       "detachmentName": "EXHIBITION OF SLAUGHTER",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1659,7 +1663,7 @@
       "detachmentName": "KABALITE AGONYSTS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1722,7 +1726,7 @@
       "detachmentName": "CARNIVAL OF EXCESS",
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1731,7 +1735,7 @@
       "detachmentName": "COTERIE OF THE CONCEITED",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1758,7 +1762,7 @@
       "detachmentName": "FRENZIED HOST",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1803,7 +1807,7 @@
       "detachmentName": "SPECTACLE OF SLAUGHTER",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1839,7 +1843,7 @@
       "detachmentName": "HEROES OF THE UPRISING",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1884,7 +1888,7 @@
       "detachmentName": "XENOCULT MASSES",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1893,7 +1897,7 @@
       "detachmentName": "ARGENT ASSAULT",
       "detachmentPoints": 1,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1947,7 +1951,7 @@
       "detachmentName": "IMMATERIAL INTERDICTION",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1965,7 +1969,7 @@
       "detachmentName": "WARPBANE TASK FORCE",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1974,8 +1978,8 @@
       "detachmentName": "IMPERIALIS FLEET",
       "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": true
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "imperial-agents",
@@ -1983,8 +1987,8 @@
       "detachmentName": "ORDO HERETICUS, PURGATION FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": true
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "imperial-agents",
@@ -1993,7 +1997,7 @@
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "imperial-agents",
@@ -2002,7 +2006,7 @@
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "imperial-agents",
@@ -2010,8 +2014,8 @@
       "detachmentName": "VEILED BLADE ELIMINATION FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": true
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "imperial-knights",
@@ -2019,7 +2023,7 @@
       "detachmentName": "DOMINUS FOEBREAKERS",
       "detachmentPoints": 1,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2028,7 +2032,7 @@
       "detachmentName": "FREEBLADE COMPANY",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2037,7 +2041,7 @@
       "detachmentName": "GATE WARDEN LANCE",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2253,7 +2257,7 @@
       "detachmentName": "PANTHEON OF WOE",
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2316,7 +2320,7 @@
       "detachmentName": "DREAD MOB",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2344,7 +2348,7 @@
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "orks",
@@ -2361,7 +2365,7 @@
       "detachmentName": "MORE DAKKA!",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2388,7 +2392,7 @@
       "detachmentName": "TAKTIKAL BRIGADE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2406,7 +2410,7 @@
       "detachmentName": "1ST COMPANY TASK FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2460,7 +2464,7 @@
       "detachmentName": "EMPEROR’S SHIELD",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2469,7 +2473,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2478,7 +2482,7 @@
       "detachmentName": "FORGEFATHER’S SEEKERS",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2487,7 +2491,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2505,7 +2509,7 @@
       "detachmentName": "HAMMER OF AVERNII",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2523,7 +2527,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2586,7 +2590,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2613,7 +2617,7 @@
       "detachmentName": "1ST COMPANY TASK FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2658,7 +2662,7 @@
       "detachmentName": "CHAMPIONS OF FENRIS",
       "detachmentPoints": 1,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2667,7 +2671,7 @@
       "detachmentName": "FIRESTORM ASSAULT FORCE",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2676,7 +2680,7 @@
       "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2703,7 +2707,7 @@
       "detachmentName": "IRONSTORM SPEARHEAD",
       "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2784,7 +2788,7 @@
       "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2847,7 +2851,7 @@
       "detachmentName": "KAUYON",
       "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2865,7 +2869,7 @@
       "detachmentName": "MONT’KA",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2875,7 +2879,7 @@
       "detachmentPoints": 3,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "thousand-sons",
@@ -2902,7 +2906,7 @@
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "thousand-sons",
@@ -2910,7 +2914,7 @@
       "detachmentName": "RITUAL OF REGENERATION",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2928,7 +2932,7 @@
       "detachmentName": "SEKHETAR COHORT",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2946,7 +2950,7 @@
       "detachmentName": "WARPFORGED CABAL",
       "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -3063,7 +3067,7 @@
       "detachmentName": "BRAZEN ENGINES",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -3072,7 +3076,7 @@
       "detachmentName": "BUTCHERS OF KHORNE",
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {

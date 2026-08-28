@@ -13,28 +13,34 @@ function detachment(ruleset, faction, name) {
   return result;
 }
 
-test("every current MFM v1.1 detachment schedule attaches to normalized data", () => {
+test("every current MFM v1.3 detachment schedule attaches to normalized data", () => {
   const source = extractNormalizedRuleset("wh40k-11e-vflam").mfmDetachmentSource;
+  assert.equal(source.version, "1.3");
   assert.equal(source.total, 346);
   assert.equal(source.matched, 346);
   assert.equal(source.unmatched, 0);
-  assert.equal(source.dispositionFlags, 81);
-  assert.equal(source.detachmentPointFlags, 10);
+  assert.equal(source.dispositionFlags, 5);
+  assert.equal(source.detachmentPointFlags, 2);
 });
 
-test("MFM v1.1 overrides changed force dispositions", () => {
+test("MFM v1.3 overrides changed force dispositions", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Xenos - Orks", "Dread Mob", "Priority Assets"],
     ["Xenos - Orks", "More Dakka!", "Disruption"],
     ["Xenos - Orks", "Taktikal Brigade", "Reconnaissance"],
     ["Imperium - Imperial Knights", "Dominus Foebreakers", "Priority Assets"],
-    ["Imperium - Adepta Sororitas", "Penitent Host", "Purge the Foe"]
+    ["Imperium - Adepta Sororitas", "Penitent Host", "Purge the Foe"],
+    ["Imperium - Adeptus Custodes", "Lions of the Emperor", "Take and Hold"],
+    ["Imperium - Adeptus Custodes", "Tharanatoi Hammerblow", "Disruption"],
+    ["Xenos - Aeldari", "Aspect Host", "Priority Assets"],
+    ["Chaos - Chaos Daemons", "Daemonic Incursion", "Take and Hold"],
+    ["Chaos - Chaos Space Marines", "Huron's Marauders", "Purge the Foe"]
   ];
   for (const [faction, name, disposition] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.forceDisposition.name, disposition);
-    assert.equal(result.forceDispositionSource, "mfm-1.1");
+    assert.equal(result.forceDispositionSource, "mfm-1.3");
   }
 });
 
@@ -50,7 +56,7 @@ test("MFM unique detachment tags are preserved for legality checks", () => {
   );
 });
 
-test("MFM v1.1 applies all ten flagged detachment point changes", () => {
+test("MFM v1.3 applies current detachment points, including both newly flagged changes", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Imperium - Adepta Sororitas", "Bringers of Flame", 2],
@@ -62,11 +68,13 @@ test("MFM v1.1 applies all ten flagged detachment point changes", () => {
     ["Imperium - Agents of the Imperium", "Veiled Blade Elimination Force", 1],
     ["Xenos - Orks", "Green Tide", 3],
     ["Xenos - T'au Empire", "Retaliation Cadre", 3],
-    ["Chaos - Thousand Sons", "Hexwarp Thrallband", 3]
+    ["Chaos - Thousand Sons", "Hexwarp Thrallband", 3],
+    ["Imperium - Adeptus Custodes", "Lions of the Emperor", 3],
+    ["Imperium - Astra Militarum", "Recon Element", 2]
   ];
   for (const [faction, name, points] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.detachmentPoints, points);
-    assert.equal(result.detachmentPointsSource, "mfm-1.1");
+    assert.equal(result.detachmentPointsSource, "mfm-1.3");
   }
 });
