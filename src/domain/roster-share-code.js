@@ -445,7 +445,8 @@ function legacyOptionIds(unitPackage) {
 
 function legacyDictionary(context) {
   const faction = "Imperium - Adeptus Custodes";
-  const unitPackages = (context?.unitPackages || []).filter(unit => unit.faction === faction);
+  // AAA1 predates Crucible units, so preserve its original ordered dictionary.
+  const unitPackages = (context?.unitPackages || []).filter(unit => unit.faction === faction && !/\[Crucible\]/i.test(unit.name));
   const armyDefinition = context?.armyDefinition;
   if (!unitPackages.length || !armyDefinition) throw new Error("Custodes rules data is not loaded for this legacy share code.");
   const options = unitPackages.map(legacyOptionIds);

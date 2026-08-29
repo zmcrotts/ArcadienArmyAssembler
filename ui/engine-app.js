@@ -4049,7 +4049,8 @@ async function validateImportedRosterHydration(record, index) {
   const loaded = rosterDocument.hydrateRosterDocument(record.document, {
     unitPackages,
     createArmyState: () => armyEngine.createArmyState(armyDefinition),
-    pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster
+    pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
+    normalizeRosterEntry: engine.normalizeRosterEntry
   });
   if (savedEntriesFromDocument(record.document).length && !loaded.roster.length) {
     throw new Error(`Roster ${index + 1} contains no units recognized by the installed rules data.`);
@@ -4205,7 +4206,8 @@ async function loadRosterDocument(save, options = {}) {
   const loaded = rosterDocument.hydrateRosterDocument(save, {
     unitPackages: factionUnits(hydrationArmyState),
     createArmyState: () => armyEngine.createArmyState(currentArmyDefinition()),
-    pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster
+    pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
+    normalizeRosterEntry: engine.normalizeRosterEntry
   });
   pointsLimitInput.value = loaded.pointsLimit || 1000;
   armyState = loaded.armyState;

@@ -17,6 +17,7 @@ const {
   getConfiguredProfiles,
   getOptionStates,
   getUnitSizeState,
+  normalizeRosterEntry,
   setSelection,
   setUnitSize,
   validateLoadout
@@ -383,10 +384,66 @@ test("11e ruleset recognizes alternate detachment root names", () => {
   assert.equal(leagues.detachments.some(item => /oathband/i.test(item.name)), true);
 });
 
-test("11e ruleset keeps Crucible custom characters out of the main roster pool", () => {
+test("11e ruleset exposes Crucible custom characters for catalogue preference filtering", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const crucibleUnits = ruleset.units.filter(unit => /\[Crucible\]/i.test(unit.name));
 
-  assert.equal(ruleset.units.some(unit => /\[Crucible\]/i.test(unit.name)), false);
+  assert.ok(crucibleUnits.length > 0);
+  assert.ok(crucibleUnits.some(unit => unit.faction === "Imperium - Adeptus Custodes" && unit.name === "Guardian of the Throne [Crucible]"));
+  assert.ok(crucibleUnits.some(unit => unit.faction === "Xenos - Tyranids" && unit.name === "Node Organism [Crucible]"));
+});
+
+test("Tyranid Crucible organisms default to visible equipment and unlock specialism options", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const nodeOrganism = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Tyranids" && unit.name === "Node Organism [Crucible]"
+  );
+  assert.ok(nodeOrganism);
+
+  const entry = createDefaultRosterEntry(nodeOrganism);
+  const states = getOptionStates(nodeOrganism, entry);
+  assert.deepEqual(states.filter(option => !option.active && option.current > 0), []);
+  assert.ok(states.some(option => option.active && option.current > 0));
+  assert.ok(getConfiguredProfiles(nodeOrganism, entry).weapons.length > 0);
+
+  const leaderBeast = states.find(option => option.name === "Leader-beast");
+  const leaderEntry = setSelection(nodeOrganism, entry, leaderBeast.id, 1);
+  const psychicOverload = getOptionStates(nodeOrganism, leaderEntry)
+    .find(option => option.name === "Psychic overload");
+  assert.equal(psychicOverload.active, true);
+  assert.equal(psychicOverload.editable, true);
+
+  const staleEntry = JSON.parse(JSON.stringify(entry));
+  for (const option of states.filter(item => item.current > 0)) staleEntry.selections[option.id] = 0;
+  for (const name of ["Synaptic Senses (Psychic)", "Crushing claws"]) {
+    const hiddenOption = states.find(option => option.name === name);
+    staleEntry.selections[hiddenOption.id] = 1;
+  }
+  const repairedEntry = normalizeRosterEntry(nodeOrganism, staleEntry);
+  const repairedStates = getOptionStates(nodeOrganism, repairedEntry);
+  assert.deepEqual(repairedStates.filter(option => !option.active && option.current > 0), []);
+  assert.ok(getConfiguredProfiles(nodeOrganism, repairedEntry).weapons.length > 0);
+
+  const primeOrganism = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Tyranids" && unit.name === "Prime Organism [Crucible]"
+  );
+  assert.ok(primeOrganism);
+  const primeStates = getOptionStates(primeOrganism, createDefaultRosterEntry(primeOrganism));
+  const primeRanged = primeStates.filter(option => option.active && [
+    "Barbed strangler",
+    "Deathspitter",
+    "Devourer",
+    "Thoracic bio-weapon"
+  ].includes(option.name));
+  assert.ok(primeRanged.length > 0);
+  assert.ok(primeRanged.every(option => option.maximum === 2 && option.groupMaximum === 2));
+  const primeMelee = primeStates.filter(option => option.active && [
+    "Crushing claws",
+    "Scything talons",
+    "Warrior-beast weapons"
+  ].includes(option.name));
+  assert.ok(primeMelee.length > 0);
+  assert.ok(primeMelee.every(option => option.maximum === 1 && option.groupMaximum === 2));
 });
 
 test("11e ruleset skips unpriced model shells but keeps priced Legends units", () => {

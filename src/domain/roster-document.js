@@ -321,7 +321,9 @@ function hydrateRosterDocument(document, options = {}) {
     roster.push({
       instanceId: normalized.instanceId || normalized.entry.instanceId,
       unitPackage,
-      entry: normalized.entry
+      entry: options.normalizeRosterEntry
+        ? options.normalizeRosterEntry(unitPackage.definition, normalized.entry)
+        : normalized.entry
     });
   }
 

@@ -115,6 +115,19 @@ function groupCount(group, entry) {
   }, 0);
 }
 
+function selectedCategoryIds(entry, index) {
+  const categories = new Set();
+  for (const node of index.all) {
+    if (node.kind === "group" || node.kind === "unit" || Number(entry.selections?.[node.id] || 0) <= 0) continue;
+    for (const modifier of node.modifiers || []) {
+      if (modifier.field !== "category" || !["add", "set-primary"].includes(modifier.type)) continue;
+      if (asArray(modifier.conditions).length || asArray(modifier.conditionGroups).length) continue;
+      if (modifier.value) categories.add(modifier.value);
+    }
+  }
+  return categories;
+}
+
 function evaluateRawCondition(condition, entry, index, unitDefinition) {
   const expected = Number(condition?.value || 0);
   if (condition?.type === "instanceOf" || condition?.type === "notInstanceOf") {
@@ -123,7 +136,8 @@ function evaluateRawCondition(condition, entry, index, unitDefinition) {
       unitDefinition?.source?.selectionCatalogueId,
       String(unitDefinition?.selectionKey || "").split(":")[0] || null,
       ...(unitDefinition?.categoryIds || []),
-      ...(entry.context?.instanceOf || [])
+      ...(entry.context?.instanceOf || []),
+      ...(["root-entry", "self"].includes(condition.scope) ? selectedCategoryIds(entry, index) : [])
     ].filter(Boolean));
     const present = instances.has(condition.childId);
     return condition.type === "instanceOf" ? present : !present;
@@ -409,6 +423,15 @@ function defaultChild(group) {
     || null;
 }
 
+function activeDefaultChild(group, entry, index, unitDefinition) {
+  const candidates = (group.children || []).filter(child =>
+    child.kind !== "group" && nodeIsActive(child, entry, index, unitDefinition)
+  );
+  return candidates.find(child => nodeReferencesId(child, group.defaultSelectionId))
+    || candidates[0]
+    || defaultChild(group);
+}
+
 function defaultOrderedChildGroups(group, childGroups, preferredFirst = true) {
   const preferred = (childGroups || []).find(child => nodeContainsReference(child, group.defaultSelectionId));
   if (!preferred) return childGroups || [];
@@ -455,7 +478,7 @@ function allocateAdditional(group, amount, parentCount, selections, unitDefiniti
   const entries = (group.children || []).filter(child =>
     child.kind !== "group" && nodeIsActive(child, entry, index, unitDefinition)
   );
-  const preferred = defaultChild(group);
+  const preferred = activeDefaultChild(group, entry, index, unitDefinition);
   const ordered = preferred
     ? [preferred, ...entries.filter(child => child.id !== preferred.id)]
     : entries;
@@ -619,19 +642,20 @@ function applyDefaults(node, parentCount, selections, unitDefinition, index) {
     for (const group of childGroups) applyDefaults(group, parentCount, selections, unitDefinition, index);
 
     for (const child of entryChildren) {
-      const childMinimum = constraintValue(child, "min", "parent") ?? constraintValue(child, "min") ?? 0;
+      const childMinimum = dynamicMinimum(child, parentCount, selections, unitDefinition, index);
       if (childMinimum > 0) selections[child.id] = Math.max(
         Number(selections[child.id] || 0),
-        childMinimum * Math.max(1, parentCount)
+        childMinimum
       );
     }
 
     const current = groupCount(node, { selections });
     if (current < desired) {
       let remaining = desired - current;
-      const explicit = defaultChild(node);
-      const hasExplicit = Boolean(node.defaultSelectionId);
-      const ordered = hasExplicit && explicit
+      const explicit = activeDefaultChild(node, diagnosticEntry, index, unitDefinition);
+      const hasExplicit = Boolean(node.defaultSelectionId) && explicit
+        && nodeContainsReference(explicit, node.defaultSelectionId);
+      const ordered = hasExplicit
         ? [explicit, ...entryChildren.filter(child => child.id !== explicit.id)]
         : [...entryChildren].sort((a, b) =>
           dynamicMaximum(b, parentCount, selections, unitDefinition, index)
@@ -665,9 +689,9 @@ function applyDefaults(node, parentCount, selections, unitDefinition, index) {
       applyDefaults(child, parentCount, selections, unitDefinition, index);
       continue;
     }
-    const minimum = constraintValue(child, "min", "parent") ?? constraintValue(child, "min") ?? 0;
+    const minimum = dynamicMinimum(child, parentCount, selections, unitDefinition, index);
     if (minimum > 0) {
-      selections[child.id] = minimum * Math.max(1, parentCount);
+      selections[child.id] = minimum;
       applyDefaults(child, selections[child.id], selections, unitDefinition, index);
     }
   }
@@ -703,6 +727,18 @@ function createDefaultRosterEntry(unitDefinition, instanceId = `${unitDefinition
   }
 
   return repairDefaultLoadout(unitDefinition, repaired);
+}
+
+function normalizeRosterEntry(unitDefinition, rosterEntry) {
+  const next = JSON.parse(JSON.stringify(rosterEntry || {}));
+  next.selections = next.selections || {};
+  const index = buildTreeIndex(unitDefinition);
+  for (const node of index.all) {
+    if (["unit", "group"].includes(node.kind) || Number(next.selections[node.id] || 0) <= 0) continue;
+    if (!nodeIsActive(node, next, index, unitDefinition)) clearSubtree(node, next.selections);
+  }
+  applyDefaults(unitDefinition.selectionTree, 1, next.selections, unitDefinition, index);
+  return repairDefaultLoadout(unitDefinition, next);
 }
 
 function replaceNestedCompositionModel(node, amount, entry, unitDefinition, index) {
@@ -1437,6 +1473,7 @@ module.exports = {
   getOptionStates,
   getUnitSizeState,
   listSelectableOptions,
+  normalizeRosterEntry,
   setSelection,
   setUnitSize,
   validateLoadout

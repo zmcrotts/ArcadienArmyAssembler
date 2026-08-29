@@ -417,12 +417,8 @@ function hasUnitProfile(entry) {
   );
 }
 
-function isCrucibleSelection(...nodes) {
-  return nodes.some(node => /\[crucible\]/i.test(String(node?.name || "")));
-}
-
 function isRosterUnit(entry) {
-  return !isCrucibleSelection(entry) && (entry?.type === "unit" || entry?.type === "model" || hasUnitProfile(entry));
+  return entry?.type === "unit" || entry?.type === "model" || hasUnitProfile(entry);
 }
 
 function categoryNames(...nodes) {
@@ -674,7 +670,6 @@ function extractUnitDefinitions(dataDirectory) {
       const { file, faction, link, selectionCatalogueId, sourceCatalogueId, sourceFaction } = linkContext;
       if (link.type !== "selectionEntry" || bsdataFlagIsTrue(link.hidden)) continue;
       const unit = indexes.entries.get(link.targetId);
-      if (isCrucibleSelection(link, unit)) continue;
       if (!unit) {
         unresolved.push({ faction, sourceFile: file, linkId: link.id, targetId: link.targetId, name: link.name });
         continue;
