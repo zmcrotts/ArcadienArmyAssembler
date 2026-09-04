@@ -1,0 +1,11 @@
+# Deferred rule-data and audit follow-ups
+
+Recorded 2026-09-03 for Windows 1.0.19 / mobile 0.1.58. The user explicitly requested that these findings be earmarked for later and that publication proceed. This is a release-specific deferral, not a blanket waiver for new regressions.
+
+- [ ] Review the legacy Wahapedia stratagem fallback. The importer targets `/wh40k10ed/factions/`; 756 source records have 10th-edition URLs and some reach active 11e detachments. Establish current-edition validity, replace or quarantine unsupported records, and make provenance explicit. Do not merely rewrite URLs.
+- [ ] Review the cached New Recruit stratagem source whose saved metadata contains `deleted: true`. This is a cached-source diagnostic, not a fresh live-service check.
+- [ ] Repair army-level rule-reference extraction. Twelve named factions have empty `armyRules` lists despite relevant shared rules in their catalogues/libraries: Aeldari, Drukhari, Chaos Daemons, Chaos Knights, Chaos Space Marines, Emperor's Children, Thousand Sons, World Eaters, Adeptus Mechanicus, Agents of the Imperium, Astra Militarum, and Leagues of Votann. The audit also counts Daemons Library separately, producing 13 definitions. Verify current wording separately from extraction.
+- [ ] Replace the audit's unconditional six-stratagem expectation with source-aware expectations. The current 131 flagged instances include 118 three-stratagem definitions; that alone does not establish missing rules. Investigate zero/one and other unusual counts individually, including the explicit Orks source lists for Brute Bosses, Wurrband, and Madcap Meks. Exclude library-only duplicates where appropriate.
+- [ ] Define the intended release gate clearly. The existing publication workflow runs version/hash verification, builds, and mobile tests; the optional strict readiness audit was additionally invoked during this release and was not an established workflow gate. Retain diagnostics and test genuine regressions rather than silently suppressing findings.
+
+Relevant implementation: `scripts/check-release-readiness.js`, `scripts/import-wahapedia-stratagem-gapfill.js`, `src/rulesets/newrecruit-stratagems.js`, `src/bsdata/army-definitions.js`, and `.github/workflows/mobile-pages.yml`.
