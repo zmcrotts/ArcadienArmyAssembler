@@ -371,7 +371,7 @@ function selectDetachment(armyDefinition, armyState, detachmentId) {
   const next = structuredClone(armyState);
   next.detachmentId = detachmentId || null;
   next.detachmentIds = detachmentId ? [detachmentId] : [];
-  return normalizeMissionState(armyDefinition, next);
+  return normalizeDetachmentState(armyDefinition, next);
 }
 
 function setSelectedDetachments(armyDefinition, armyState, detachmentIds) {
@@ -380,7 +380,32 @@ function setSelectedDetachments(armyDefinition, armyState, detachmentIds) {
   const next = structuredClone(armyState);
   next.detachmentIds = ids;
   next.detachmentId = ids[0] || null;
-  return normalizeMissionState(armyDefinition, next);
+  return normalizeDetachmentState(armyDefinition, next);
+}
+
+function normalizeArmyStateForDefinition(armyDefinition, armyState) {
+  const next = structuredClone(armyState || createArmyState(armyDefinition));
+  const validDetachmentIds = new Set((armyDefinition?.detachments || []).map(item => item.id));
+  const requested = selectedDetachmentIds(next);
+  let selected = requested.filter(id => validDetachmentIds.has(id));
+  if (requested.length && !selected.length && armyDefinition?.detachments?.length) {
+    selected = [armyDefinition.detachments[0].id];
+  }
+  next.detachmentIds = selected;
+  next.detachmentId = selected[0] || null;
+  return normalizeDetachmentState(armyDefinition, next);
+}
+
+function normalizeDetachmentState(armyDefinition, armyState) {
+  const next = normalizeMissionState(armyDefinition, armyState);
+  const validEnhancements = new Map((armyDefinition?.enhancements || []).map(item => [item.id, item]));
+  // Enhancements and repeatable upgrades share the same assignment list.
+  // Keep a shared option while any detachment that grants it remains selected.
+  next.enhancements = (next.enhancements || []).filter(assignment => {
+    const enhancement = validEnhancements.get(assignment.enhancementId);
+    return enhancement && enhancementAvailable(enhancement, next);
+  });
+  return next;
 }
 
 function normalizeMissionState(armyDefinition, armyState) {
@@ -911,6 +936,7 @@ const armyApi = {
   getRosterPresentation,
   getUnitAssignmentState,
   leaderCanTarget,
+  normalizeArmyStateForDefinition,
   pruneArmyStateForRoster,
   selectDetachment,
   selectedForceDisposition,

@@ -23,6 +23,7 @@ const { applyMfmDetachments, readMfmDetachments } = require("./mfm-detachments")
 const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-pack-updates");
 const { applyEnhancementEligibilityRestrictions } = require("./enhancement-eligibility");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
+const { applyOrksCodex, readOrksCodex } = require("./orks-codex");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 
@@ -54,6 +55,7 @@ const RULESET_SOURCES = {
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
       mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
+      orksCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-orks-codex-v1.json"),
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
     primary: true,
@@ -125,7 +127,16 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   );
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
   const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
-  const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
+  const orksCodex = readOrksCodex(source.auxiliarySources?.orksCodex);
+  const orksCodexResult = applyOrksCodex(mfmPointResult.units, mfmPointResult.armies, orksCodex);
+  // Codex replacement creates new definitions. Apply the current MFM last so
+  // attachment roles/targets survive replacement and resolve newly added units.
+  applyMfmAttachments(
+    orksCodexResult.units.filter(unit => unit.faction === "Xenos - Orks" && unit.sourceDisposition === "codex-current"),
+    { ...mfmAttachments, factions: mfmAttachments.factions.filter(faction => faction.name === "Orks") },
+    { authoritative: true }
+  );
+  const normalized = reconcileSelectableUnits(orksCodexResult.units, orksCodexResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -147,6 +158,12 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       version: mfmPoints.version,
       generatedAt: mfmPoints.generatedAt,
       ...mfmPointResult.summary
+    },
+    orksCodexSource: {
+      source: orksCodex.source,
+      version: orksCodex.version,
+      lastUpdated: orksCodex.lastUpdated,
+      ...orksCodexResult.summary
     },
     mfmDetachmentSource: {
       source: mfmDetachments.source,
@@ -171,7 +188,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       source: manualDetachments.source,
       ...manualDetachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(enhancementRestrictionResult.issues || []), ...(mfmPointResult.issues || [])],
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(enhancementRestrictionResult.issues || []), ...(mfmPointResult.issues || []), ...(orksCodexResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };
@@ -392,6 +409,14 @@ function applyManualLoadoutCorrections(definitions) {
 
     if (
       definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Chaos - Chaos Space Marines"
+      && definition.name === "Chaos Terminator Squad"
+    ) {
+      return fixChaosTerminatorPowerFistLoadout(definition);
+    }
+
+    if (
+      definition.rulesetId === "wh40k-11e-vflam"
       && definition.faction === "Imperium - Adeptus Astartes - Black Templars"
       && definition.name === "Sword Brethren Squad"
     ) {
@@ -460,6 +485,23 @@ function applyManualLoadoutCorrections(definitions) {
 
     return unit;
   });
+}
+
+function fixChaosTerminatorPowerFistLoadout(definition) {
+  const unit = clone(definition);
+  const powerFistCombiWeapon = findNodeByName(unit.selectionTree, "Power fist and combi-weapon");
+  const combiWeapon = findNodeByName(powerFistCombiWeapon, "Combi-weapon");
+  if (!combiWeapon) return unit;
+
+  // This paired model is governed by the shared six-power-fist constraint.
+  // The inherited combi-weapon cap otherwise limits this lane to two models.
+  combiWeapon.constraints = (combiWeapon.constraints || []).filter(constraint =>
+    constraint.id !== "d995-46ca-b85a-764"
+  );
+  combiWeapon.modifiers = (combiWeapon.modifiers || []).filter(modifier =>
+    modifier.field !== "d995-46ca-b85a-764"
+  );
+  return unit;
 }
 
 function fixOrkBoyzRulesUpdate(definition) {

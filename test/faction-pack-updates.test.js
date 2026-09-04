@@ -67,19 +67,19 @@ test("Faction Pack v1.1 red-text overrides all resolve", () => {
   }
 });
 
-test("Ork red-text loadout changes are selectable", () => {
+test("current Orks definitions do not retain obsolete faction-pack loadout nodes", () => {
   const ruleset = extractNormalizedRuleset(undefined, { fresh: true });
   const boyz = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Boyz");
   const warboss = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Warboss");
   const gretchin = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Gretchin");
-  assert.ok(nodes(boyz, "Big choppa and kustom shoota").length);
-  assert.ok(nodes(boyz, "Big choppa, kombi-rokkit and kombi-shoota").length);
-  assert.ok(nodes(warboss, "Kustom choppa and kustom shoota").length);
-  assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count)), [[10, 0], [10, 1], [20, 0], [20, 1], [20, 2]]);
-  assert.deepEqual(gretchin.unitSizePresets.map(item => item.size), [10, 11, 20, 21, 22]);
+  assert.equal(nodes(boyz, "Big choppa and kustom shoota").length, 0);
+  assert.equal(nodes(boyz, "Big choppa, kombi-rokkit and kombi-shoota").length, 0);
+  assert.equal(nodes(warboss, "Kustom choppa and kustom shoota").length, 0);
+  assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count)), [[10], [20]]);
+  assert.deepEqual(gretchin.unitSizePresets.map(item => item.size), [10, 20]);
   for (const name of ["Warboss (Armageddon)", "Boyz (Armageddon)", "Gretchin (Armageddon)"]) {
     assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === name), false, name);
-    assert.equal(ruleset.excludedUnits.find(unit => unit.faction === "Xenos - Orks" && unit.name === name)?.sourceDisposition, "not-valid-for-matched-play", name);
+    assert.ok(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === `${name} [Legends]`), name);
   }
   assert.equal(boyz.rosterRules.allowsMultipleLeadersAsBodyguard, false);
 });
@@ -102,7 +102,7 @@ test("representative army, detachment and datasheet red changes are exact", () =
   assert.equal(light.cpCost, "2");
   const necrons = ruleset.armies.find(army => army.faction === "Xenos - Necrons");
   assert.match(necrons.armyRules.find(rule => rule.name === "Reanimation Protocols").description, /heals D3 wounds/);
-  const dragsta = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Shokkjump Dragsta");
-  const shokk = ability(dragsta, "Shokk Tunnel");
-  assert.match(shokk.characteristics.Description, /more than 8" horizontally/);
+  assert.ok(ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Shokkjump Dragsta [Legends]"));
+  const warbuggies = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Warbuggies");
+  assert.match(ability(warbuggies, "Drive-by Skorchin’").characteristics.Description, /within 6"/);
 });

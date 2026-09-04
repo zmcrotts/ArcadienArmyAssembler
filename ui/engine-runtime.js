@@ -1208,7 +1208,8 @@
       if (!Number.isFinite(attacks)) return profile;
       return {
         ...profile,
-        characteristics: { ...profile.characteristics, A: String(attacks + 2) }
+        characteristics: { ...profile.characteristics, A: String(attacks + 2) },
+        modifiedCharacteristics: [...new Set([...(profile.modifiedCharacteristics || []), "A"])]
       };
     });
   }

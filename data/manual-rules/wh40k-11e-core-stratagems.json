@@ -131,6 +131,22 @@
   ],
   "coreRules": [
     {
+      "id": "core-cleave",
+      "name": "Cleave",
+      "alias": ["CLEAVE"],
+      "description": "This ability takes the form [CLEAVE X]. Each time you gather attack dice for a melee weapon with this ability, add X additional attack dice for every five models that were in the target unit in the Select Targets step (rounding down).",
+      "source": "Codex: Orks (2026)",
+      "sourceKind": "core-rule-update"
+    },
+    {
+      "id": "core-hunter",
+      "name": "Hunter",
+      "alias": ["HUNTER"],
+      "description": "Hunter profiles can only target units with the keywords specified after the colon.",
+      "source": "Codex: Orks (2026)",
+      "sourceKind": "core-rule-update"
+    },
+    {
       "id": "core-move-types-for-disembarking-units",
       "name": "Move Types for Disembarking Units",
       "description": "If a rule allows a unit to be eligible to declare a charge after disembarking from a TRANSPORT model that made a normal move that turn, that unit makes an assault disembark move (18.06) for that disembarkation instead of a disembark move. If a rule allows a unit to disembark from a TRANSPORT model that made an advance move that turn, that unit makes a shock disembark move (18.07) for that disembarkation instead of a disembark move.",

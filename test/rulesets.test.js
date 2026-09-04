@@ -78,7 +78,6 @@ test("normalized enhancements and detachments expose only their always-on charac
   assert.deepEqual(characteristicsFor("Weavers' Wail"), new Set(["S", "A"]));
   assert.deepEqual(characteristicsFor("Iron Surplice of Saint Istalela"), new Set(["SV"]));
   assert.deepEqual(characteristicsFor("Legacy Sidearm"), new Set(["A"]));
-  assert.deepEqual(characteristicsFor("Supa-burny Fuel"), new Set(["A"]));
   assert.deepEqual(characteristicsFor("Power of the Hive Mind"), new Set(["S", "AP"]));
   assert.deepEqual(characteristicsFor("Admonimortis"), new Set(["S", "AP", "D"]));
   assert.deepEqual(characteristicsFor("Moritoi Ancients", allDetachmentRules), new Set(["M"]));
@@ -213,7 +212,11 @@ test("11e ruleset gap-fills incomplete army rules", () => {
 
   assert.ok(waaagh, "Missing Waaagh! army rule");
   assert.match(waaagh.description, /eligible to declare a charge/i);
-  assert.match(waaagh.description, /Strength and Attacks characteristics/i);
+  assert.match(waaagh.description, /riled up/i);
+  assert.match(waaagh.description, /re-roll Advance rolls/i);
+  assert.match(waaagh.description, /\[ASSAULT\]/);
+  assert.match(waaagh.description, /until the end of the next turn/i);
+  assert.doesNotMatch(waaagh.description, /Strength and Attacks characteristics/i);
   assert.match(waaagh.description, /5\+ invulnerable save/i);
   assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
 });
@@ -414,12 +417,14 @@ test("Tyranid Crucible organisms default to visible equipment and unlock special
   assert.equal(psychicOverload.editable, true);
 
   const staleEntry = JSON.parse(JSON.stringify(entry));
+  staleEntry.selections["removed-selection-id"] = 1;
   for (const option of states.filter(item => item.current > 0)) staleEntry.selections[option.id] = 0;
   for (const name of ["Synaptic Senses (Psychic)", "Crushing claws"]) {
     const hiddenOption = states.find(option => option.name === name);
     staleEntry.selections[hiddenOption.id] = 1;
   }
   const repairedEntry = normalizeRosterEntry(nodeOrganism, staleEntry);
+  assert.equal(repairedEntry.selections["removed-selection-id"], undefined);
   const repairedStates = getOptionStates(nodeOrganism, repairedEntry);
   assert.deepEqual(repairedStates.filter(option => !option.active && option.current > 0), []);
   assert.ok(getConfiguredProfiles(nodeOrganism, repairedEntry).weapons.length > 0);
@@ -638,6 +643,7 @@ test("11e Helbrutes gain two melee attacks when equipped with two melee weapons"
     const fists = getConfiguredProfiles(unit, entry).weapons.filter(profile => profile.name === "Helbrute fist");
     assert.ok(fists.length > 0, `${faction} should configure Helbrute fists`);
     assert.equal(fists.every(profile => profile.characteristics.A === attacks), true, faction);
+    assert.equal(fists.every(profile => profile.modifiedCharacteristics?.includes("A")), true, faction);
   }
 });
 
@@ -743,6 +749,12 @@ test("11e Chaos Terminator melee weapon caps apply across every loadout branch",
   let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
   const powerFistBolter = getOptionStates(unit, entry).find(option => option.name === "Power fist and combi-bolter");
   const powerFistCombi = getOptionStates(unit, entry).find(option => option.name === "Power fist and combi-weapon");
+  assert.equal(powerFistBolter.maximum, 6);
+  assert.equal(powerFistCombi.maximum, 6);
+  entry = setSelection(unit, entry, powerFistCombi.id, 6);
+  assert.deepEqual(validateLoadout(unit, entry), []);
+
+  entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
   entry = setSelection(unit, entry, powerFistBolter.id, 3);
   entry = setSelection(unit, entry, powerFistCombi.id, 4);
   assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "dc97-25d5-522e-4213")?.actual, 7);
@@ -918,23 +930,19 @@ test("11e Gorkanaut keeps its Transport capacity with its sheet profiles", () =>
   assert.match(transport.characteristics.Capacity, /transport capacity of 12 ORKS INFANTRY/i);
 });
 
-test("11e Rollin' Deff exposes each detachment upgrade once", () => {
+test("11e Blitz Brigade exposes each wagon upgrade once", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const orks = ruleset.armies.find(army => army.faction === "Xenos - Orks");
-  const rollinDeff = orks.detachments.find(detachment => detachment.name === "Rollin' Deff");
-  const upgrades = orks.enhancements.filter(item => item.detachmentIds.includes(rollinDeff.id));
+  const blitzBrigade = orks.detachments.find(detachment => detachment.name === "Blitz Brigade");
+  const upgrades = orks.enhancements.filter(item => item.detachmentIds.includes(blitzBrigade.id));
 
-  assert.deepEqual(upgrades.map(item => item.name).sort(), ["Boarding Ramps", "Targetin' Gizmos"]);
+  assert.deepEqual(upgrades.map(item => item.name).sort(), ["Boss Boomer", "Targetin' Gizmos"]);
   assert.ok(upgrades.every(item => item.maxSelections === 3));
   const eligibleNames = upgrade => upgrade.eligibleSelectionKeys
     .map(selectionKey => ruleset.units.find(unit => unit.selectionKey === selectionKey)?.name)
     .filter(Boolean)
     .sort();
-  assert.ok(upgrades.every(upgrade => JSON.stringify(eligibleNames(upgrade)) === JSON.stringify(["Battlewagon", "Hunta Rig", "Kill Rig"])));
-  for (const name of ["Battlewagon", "Hunta Rig", "Kill Rig"]) {
-    const unit = ruleset.units.find(item => item.faction === "Xenos - Orks" && item.name === name);
-    assert.ok(unit.conditionalKeywords.some(grant => grant.keyword === "Wagon" && grant.detachmentIds.includes(rollinDeff.id)));
-  }
+  assert.ok(upgrades.every(upgrade => JSON.stringify(eligibleNames(upgrade)) === JSON.stringify(["Battlewagon", "Gunwagon", "Hunta Rig", "Kill Rig"])));
 });
 
 test("11e Adepta Sororitas upgrades keep their bearer limits and unit eligibility", () => {
@@ -1189,7 +1197,7 @@ test("11e Pactbound Daemon Princes receive only the enhancement matching their s
   }
 });
 
-test("11e Ork Freebooter enhancements enforce their named bearer restrictions", () => {
+test("11e Ork Blitz Brigade upgrades enforce their wagon restriction", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const army = ruleset.armies.find(item => item.faction === "Xenos - Orks");
   const namesFor = enhancementName => {
@@ -1198,12 +1206,8 @@ test("11e Ork Freebooter enhancements enforce their named bearer restrictions", 
     return ruleset.units.filter(item => keys.has(item.selectionKey)).map(item => item.name).sort();
   };
 
-  assert.equal(namesFor("Bionik Workshop").includes("Beastboss"), false);
-  assert.equal(namesFor("Git-spotter Squig").includes("Beastboss"), true);
-  assert.equal(namesFor("Git-spotter Squig").includes("Big Mek"), true);
-  assert.equal(namesFor("Git-spotter Squig").includes("Boyz"), false);
-  assert.ok(namesFor("Bionik Workshop").includes("Big Mek"));
-  assert.ok(namesFor("Bionik Workshop").includes("Painboy"));
+  assert.deepEqual(namesFor("Targetin' Gizmos"), ["Battlewagon", "Gunwagon", "Hunta Rig", "Kill Rig"]);
+  assert.deepEqual(namesFor("Boss Boomer"), ["Battlewagon", "Gunwagon", "Hunta Rig", "Kill Rig"]);
 });
 
 test("11e Sisters of Silence use stepped MFM points at every selectable size", () => {
@@ -1301,9 +1305,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   };
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 115],
-    ["Breaka Boyz", 125],
-    ["Gorkanaut", 255]
+    ["Big Mek Dakkarig", 135],
+    ["Breaka Boyz", 135],
+    ["Gorkanaut", 325]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1311,9 +1315,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 115],
-    ["Breaka Boyz", 135],
-    ["Gorkanaut", 275]
+    ["Big Mek Dakkarig", 145],
+    ["Breaka Boyz", 145],
+    ["Gorkanaut", 355]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1322,17 +1326,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   const nobz = unit("Nobz");
-  const nobzEntry = {
-    schemaVersion: 1,
-    instanceId: "nobz-test-entry",
-    unitId: nobz.id,
-    selections: Object.fromEntries(nobz.composition.map(selection => [selection.id, 0]))
-  };
-  nobzEntry.selections[nobz.composition.find(item => item.name === "Boss Nob").id] = 1;
-  nobzEntry.selections[nobz.composition.find(item => item.name !== "Boss Nob").id] = 9;
-
-  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 210);
-  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 220);
+  const nobzEntry = setUnitSize(nobz, createDefaultRosterEntry(nobz), 10);
+  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 250);
+  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 280);
 });
 
 test("11e selected wargear direct points are included in entry totals", () => {
@@ -1547,10 +1543,10 @@ test("every explicit 11e enhancement and upgrade bearer restriction is enforced"
   const result = auditEnhancementEligibility();
 
   assert.equal(result.summary.armies, 35);
-  assert.equal(result.summary.records, 1581);
-  assert.equal(result.summary.enhancements, 1469);
-  assert.equal(result.summary.upgrades, 112);
-  assert.equal(result.summary.explicitLimiters, 1262);
+  assert.equal(result.summary.records, 1575);
+  assert.equal(result.summary.enhancements, 1453);
+  assert.equal(result.summary.upgrades, 122);
+  assert.equal(result.summary.explicitLimiters, 1256);
   assert.equal(result.summary.overBroadRecords, 0);
 });
 
@@ -1575,14 +1571,8 @@ test("keyword-limited enhancements and upgrades expose only their printed bearer
     "Canoness", "Canoness with Jump Pack", "Ministorum Priest", "Palatine"
   ]);
 
-  const bionics = eligibleNames("Xenos - Orks", "Freebooter Krew", "Bionik Workshop");
-  assert.equal(bionics.has("Beastboss"), false);
-  assert.equal(bionics.has("Big Mek"), true);
-  assert.equal(bionics.has("Painboy"), true);
-
-  const dakkamek = eligibleNames("Xenos - Orks", "Speedwaaagh!", "Dakkamek");
-  assert.equal(dakkamek.has("Big Mek with Shokk Attack Gun"), true);
-  assert.equal(dakkamek.has("Beastboss"), false);
+  const targetinGizmos = eligibleNames("Xenos - Orks", "Blitz Brigade", "Targetin' Gizmos");
+  assert.deepEqual([...targetinGizmos].sort(), ["Battlewagon", "Gunwagon", "Hunta Rig", "Kill Rig"]);
 
   const benediction = eligibleNames(
     "Imperium - Adeptus Astartes - Black Templars", "Wrathful Procession", "Benediction of Fury"

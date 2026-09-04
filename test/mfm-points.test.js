@@ -43,16 +43,11 @@ test("MFM v1.3 includes red increases", () => {
   assert.equal(points(morvenn, 1), 200);
 });
 
-test("Gretchin expose the five MFM compositions with working points", () => {
+test("Gretchin and Runtherd use separate codex datasheets and MFM points", () => {
   const gretchin = unit("Xenos - Orks", "Gretchin");
-  assert.deepEqual(gretchin.unitSizePresets.map(item => item.label), [
-    "10 Gretchin",
-    "1 Runtherd + 10 Gretchin",
-    "20 Gretchin",
-    "1 Runtherd + 20 Gretchin",
-    "2 Runtherds + 20 Gretchin"
-  ]);
-  assert.deepEqual([10, 11, 20, 21, 22].map(size => points(gretchin, size)), [45, 45, 80, 85, 90]);
+  assert.deepEqual(gretchin.unitSizePresets.map(item => item.label), ["10 Gretchin", "20 Gretchin"]);
+  assert.deepEqual([10, 20].map(size => points(gretchin, size)), [45, 80]);
+  assert.equal(points(unit("Xenos - Orks", "Runtherd"), 1), 10);
 });
 
 test("Vertus Praetors use separate two- and three-model costs", () => {
@@ -243,7 +238,7 @@ test("MFM v1.3 applies changed unit schedules, wargear, and enhancements", () =>
   }
 });
 
-test("Faction Pack v1.1 adds the two flagged detachments", () => {
+test("Faction Pack v1.1 keeps the flagged Space Marine detachment", () => {
   const marines = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Astartes - Space Marines");
   const vengeful = marines.detachments.find(item => item.name === "Vengeful Hosts");
   assert.deepEqual(
@@ -253,14 +248,6 @@ test("Faction Pack v1.1 adds the two flagged detachments", () => {
   assert.equal(marines.enhancements.find(item => item.name === "Avenging Angel")?.points, 20);
   assert.equal(marines.enhancements.find(item => item.name === "Orksbane")?.points, 20);
 
-  const orks = ruleset.armies.find(item => item.faction === "Xenos - Orks");
-  const equatorial = orks.detachments.find(item => item.name === "Equatorial Hordes");
-  assert.deepEqual(
-    { points: equatorial.detachmentPoints, disposition: equatorial.forceDisposition.name, rules: equatorial.rules.length, stratagems: equatorial.stratagems.length },
-    { points: 1, disposition: "Disruption", rules: 1, stratagems: 3 }
-  );
-  assert.equal(orks.enhancements.find(item => item.name === "Kunnin’ Hunta")?.points, 25);
-  assert.equal(orks.enhancements.find(item => item.name === "Unkillable Scourge")?.points, 25);
 });
 
 test("every MFM v1.3 row attaches to normalized roster data", () => {

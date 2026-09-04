@@ -526,3 +526,35 @@ test("old saves hydrate while stale references are pruned with warnings", () => 
   assert.ok(loaded.warnings.some(item => item.code === "SAVED_UNIT_NOT_FOUND"));
   assert.equal(loaded.warnings.filter(item => item.code === "STALE_REFERENCE_PRUNED").length, 3);
 });
+
+test("stale current Orks hydrate onto the new datasheet and preserve saved size", () => {
+  const currentBoyz = {
+    id: "boyz-current", selectionKey: "orks:boyz", name: "Boyz",
+    definition: {
+      id: "boyz-current", selectionKey: "orks:boyz", name: "Boyz",
+      faction: "Xenos - Orks", sourceDisposition: "codex-current",
+      selectionTree: { id: "boyz-root", kind: "unit", children: [{ id: "new-boy", kind: "model", children: [] }] }
+    }
+  };
+  const legendsLootas = {
+    id: "lootas-old", selectionKey: "orks:lootas", name: "Lootas [Legends]",
+    definition: { id: "lootas-old", selectionKey: "orks:lootas", name: "Lootas [Legends]", sourceDisposition: "legends" }
+  };
+  const loaded = hydrateRosterDocument({
+    rosterEntries: [{
+      instanceId: "boyz-1", selectionKey: "orks:boyz", unitSize: { current: 20 },
+      entry: { instanceId: "boyz-1", selections: { "old-boy": 19, "old-nob": 1 } }
+    }, {
+      instanceId: "lootas-1", selectionKey: "orks:lootas",
+      entry: { instanceId: "lootas-1", selections: {} }
+    }]
+  }, {
+    unitPackages: [currentBoyz, legendsLootas],
+    normalizeRosterEntry: (definition, entry) => ({ ...entry, selections: { "new-boy": 9 } }),
+    setUnitSize: (definition, entry, size) => ({ ...entry, migratedSize: size })
+  });
+
+  assert.equal(loaded.roster[0].entry.migratedSize, 20);
+  assert.deepEqual(loaded.roster.map(item => item.unitPackage.name), ["Boyz", "Lootas [Legends]"]);
+  assert.ok(loaded.warnings.some(item => item.code === "SAVED_UNIT_MIGRATED"));
+});

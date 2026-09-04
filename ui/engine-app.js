@@ -938,6 +938,7 @@ function render() {
   renderRoster();
   renderTotal();
   renderSelectedDetails();
+  bindRulePopovers();
   scheduleRosterAutosave();
 }
 
@@ -2634,7 +2635,7 @@ function renderUnitAssignments(rosterEntry) {
           <input class="warlordToggle" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${assignment.isWarlord ? "checked" : ""}>
         </label>` : ""}
         ${definition.roles?.leader ? `
-          <label class="assignmentSelect"><span><b>Leads</b><small>Bodyguard unit</small></span>
+          <label class="assignmentSelect"><span><b>${definition.roles?.support ? "Supports" : "Leads"}</b><small>Bodyguard unit</small></span>
             <select class="leaderTarget" data-leader-id="${escapeHtml(rosterEntry.instanceId)}">
               <option value="">Not attached</option>
               ${renderRosterUnitOptions(assignment.leaderTargets
@@ -3559,6 +3560,7 @@ function ruleMeta(record, sourceLabel = "") {
 function normalizeRuleLookupKey(value) {
   return String(value || "")
     .replace(/\[[^\]]+\]/g, match => match.slice(1, -1))
+    .replace(/[-‐‑–—]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
@@ -3567,7 +3569,9 @@ function normalizeRuleLookupKey(value) {
 function ruleLookupCandidates(value) {
   const text = String(value || "").trim();
   const candidates = [normalizeRuleLookupKey(text)];
-  const parameterized = text.match(/^(Rapid Fire|Sustained Hits|Melta|Feel No Pain|Scouts)\b/i);
+  const qualified = text.match(/^([^:]+):\s*(.+)$/);
+  if (qualified) candidates.push(normalizeRuleLookupKey(qualified[1]));
+  const parameterized = text.match(/^(Rapid Fire|Sustained Hits|Melta|Feel No Pain|Scouts|Blast|Cleave)\b/i);
   if (parameterized) candidates.push(normalizeRuleLookupKey(parameterized[1]));
   const anti = text.match(/^Anti[-\s]/i);
   if (anti) candidates.push(normalizeRuleLookupKey("Anti"));
@@ -3577,20 +3581,51 @@ function ruleLookupCandidates(value) {
 function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
   const text = String(label || "").trim();
   if (!text) return "";
+  const qualified = text.match(/^([^:]+):\s*(.+)$/);
+  const ruleLabel = qualified ? qualified[1].trim() : text;
+  const qualifier = qualified ? qualified[2].trim() : "";
   const rule = ruleLookupCandidates(text).map(key => ruleLookup.get(key)).find(Boolean);
   if (!rule) return `<span>${escapeHtml(text)}</span>`;
   const id = `rulePopup${++rulePopupCounter}`;
-  const title = rule.alias ? `${text} -> ${rule.name}` : rule.name;
+  const title = rule.alias ? `${ruleLabel} -> ${rule.name}` : rule.name;
+  const qualifierDescription = /^non[-\s]/i.test(qualifier)
+    ? `This rule applies only while targeting a unit that is not ${qualifier.replace(/^non[-\s]*/i, "").split("/").map(item => `a ${item.trim()}`).join(" or ")}.`
+    : qualifier ? `Qualifier: ${qualifier}.` : "";
   return `
-    <span class="ruleTokenWrap">
-      <button class="ruleToken ${options.compact ? "ruleTokenCompact" : ""}" type="button" popovertarget="${id}" title="Show ${escapeHtml(rule.name)}">${escapeHtml(text)}</button>
+    <span class="ruleTokenWrap ${qualifier ? "qualifiedRuleTokenWrap" : ""}">
+      <button class="ruleToken ${options.compact ? "ruleTokenCompact" : ""} ${qualifier ? "qualifiedRuleToken" : ""}" type="button" popovertarget="${id}" title="Show ${escapeHtml(rule.name)}">${escapeHtml(ruleLabel)}</button>
+      ${qualifier ? `<span class="ruleQualifier">${escapeHtml(qualifier)}</span>` : ""}
       <div id="${id}" class="rulePopover" popover>
         <strong>${escapeHtml(title)}</strong>
         ${rule.meta ? `<small>${escapeHtml(rule.meta)}</small>` : ""}
+        ${qualifierDescription ? `<p class="ruleQualifierDescription">${escapeHtml(qualifierDescription)}</p>` : ""}
         <p>${formatRichDescription(rule.description)}</p>
       </div>
     </span>
   `;
+}
+
+function bindRulePopovers() {
+  for (const button of document.querySelectorAll(".ruleToken[popovertarget]")) {
+    const popover = document.getElementById(button.getAttribute("popovertarget"));
+    if (!popover || popover.dataset.positionBound === "true") continue;
+    popover.dataset.positionBound = "true";
+    popover.addEventListener("beforetoggle", event => {
+      if (event.newState !== "open") return;
+      const rect = button.getBoundingClientRect();
+      const margin = 8;
+      const width = Math.min(420, window.innerWidth - margin * 2);
+      popover.style.width = `${width}px`;
+      popover.style.left = `${Math.max(margin, Math.min(rect.left, window.innerWidth - width - margin))}px`;
+      popover.style.top = `${Math.min(window.innerHeight - margin, rect.bottom + margin)}px`;
+      requestAnimationFrame(() => {
+        const height = popover.getBoundingClientRect().height;
+        const below = window.innerHeight - rect.bottom - margin;
+        const top = below >= height ? rect.bottom + margin : Math.max(margin, rect.top - height - margin);
+        popover.style.top = `${top}px`;
+      });
+    });
+  }
 }
 
 function renderAbilities(abilities, definition = null) {
@@ -3598,16 +3633,18 @@ function renderAbilities(abilities, definition = null) {
   if (definition?.roles?.leader) {
     const attachmentName = definition.roles.support ? "Support" : "Leader";
     const isAttachmentProfile = ability => /^(?:Leader|Support)$/i.test(String(ability?.name || "").trim());
+    const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
     const matchingProfile = standardAbilities.find(ability =>
       String(ability?.name || "").trim().toLowerCase() === attachmentName.toLowerCase()
     );
-    standardAbilities = standardAbilities.filter(ability => !isAttachmentProfile(ability) || ability === matchingProfile);
-    const targets = [...new Set(definition.rosterRules?.leaderTargetNames || [])].filter(Boolean);
-    if (!matchingProfile && targets.length) {
+    standardAbilities = standardAbilities.filter(ability =>
+      !isAttachmentProfile(ability) || (!targets.length && ability === matchingProfile)
+    );
+    if (targets.length) {
       standardAbilities.push({
         name: attachmentName,
         characteristics: {
-          Description: `This unit can be attached to the following units:\n${targets.map(target => `■ ${target}`).join("\n")}`
+          Description: `This unit can be attached as ${attachmentName} to the following units:\n${targets.map(target => `■ ${target}`).join("\n")}`
         }
       });
     }
@@ -4050,7 +4087,8 @@ async function validateImportedRosterHydration(record, index) {
     unitPackages,
     createArmyState: () => armyEngine.createArmyState(armyDefinition),
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
-    normalizeRosterEntry: engine.normalizeRosterEntry
+    normalizeRosterEntry: engine.normalizeRosterEntry,
+    setUnitSize: engine.setUnitSize
   });
   if (savedEntriesFromDocument(record.document).length && !loaded.roster.length) {
     throw new Error(`Roster ${index + 1} contains no units recognized by the installed rules data.`);
@@ -4206,8 +4244,10 @@ async function loadRosterDocument(save, options = {}) {
   const loaded = rosterDocument.hydrateRosterDocument(save, {
     unitPackages: factionUnits(hydrationArmyState),
     createArmyState: () => armyEngine.createArmyState(currentArmyDefinition()),
+    normalizeArmyState: state => armyEngine.normalizeArmyStateForDefinition(currentArmyDefinition(), state),
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
-    normalizeRosterEntry: engine.normalizeRosterEntry
+    normalizeRosterEntry: engine.normalizeRosterEntry,
+    setUnitSize: engine.setUnitSize
   });
   pointsLimitInput.value = loaded.pointsLimit || 1000;
   armyState = loaded.armyState;

@@ -80,7 +80,8 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /function renderTransportProfiles\(profiles\)/);
   assert.match(engineApp, /function renderAbilities\(abilities, definition = null\)/);
   assert.match(engineApp, /const attachmentName = definition\.roles\.support \? "Support" : "Leader"/);
-  assert.match(engineApp, /standardAbilities\.filter\(ability => !isAttachmentProfile\(ability\) \|\| ability === matchingProfile\)/);
+  assert.match(engineApp, /standardAbilities\.filter\(ability =>\s*!isAttachmentProfile\(ability\) \|\| \(!targets\.length && ability === matchingProfile\)/);
+  assert.match(engineApp, /if \(targets\.length\) \{\s*standardAbilities\.push\(/);
   assert.doesNotMatch(engineApp, /function renderLeaderAttachmentRule/);
   assert.match(engineApp, /function renderSheetTransportProfiles\(abilities\)/);
   assert.doesNotMatch(engineApp, /sourceIssueWarning|Rules reference data reports/);

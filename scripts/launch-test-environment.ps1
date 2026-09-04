@@ -41,6 +41,14 @@ if (-not (Test-Path -LiteralPath $copyMarker)) {
 $electron = Join-Path $projectRoot "node_modules\electron\dist\electron.exe"
 if (-not (Test-Path -LiteralPath $electron)) {
   $electron = Join-Path $projectRoot "release\win-unpacked\Arcadien Army Assembler.exe"
+  $packagedApp = Join-Path $projectRoot "release\win-unpacked\resources\app.asar"
+  $builtIndex = Join-Path $projectRoot "dist-user\index.html"
+  if ((Test-Path -LiteralPath $electron) -and (
+    -not (Test-Path -LiteralPath $packagedApp) -or
+    ((Get-Item -LiteralPath $builtIndex).LastWriteTimeUtc -gt (Get-Item -LiteralPath $packagedApp).LastWriteTimeUtc)
+  )) {
+    throw "The packaged test executable is stale. Run npm run dist:dir before launching it."
+  }
 }
 if (-not (Test-Path -LiteralPath $electron)) {
   throw "The test executable is missing. Run npm run dist:dir first."

@@ -26,9 +26,6 @@ test("every current MFM v1.3 detachment schedule attaches to normalized data", (
 test("MFM v1.3 overrides changed force dispositions", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
-    ["Xenos - Orks", "Dread Mob", "Priority Assets"],
-    ["Xenos - Orks", "More Dakka!", "Disruption"],
-    ["Xenos - Orks", "Taktikal Brigade", "Reconnaissance"],
     ["Imperium - Imperial Knights", "Dominus Foebreakers", "Priority Assets"],
     ["Imperium - Adepta Sororitas", "Penitent Host", "Purge the Foe"],
     ["Imperium - Adeptus Custodes", "Lions of the Emperor", "Take and Hold"],
@@ -66,7 +63,6 @@ test("MFM v1.3 applies current detachment points, including both newly flagged c
     ["Imperium - Agents of the Imperium", "Daemon Hunters (Ordo Malleus)", 2],
     ["Imperium - Agents of the Imperium", "Alien Hunters (Ordo Xenos)", 2],
     ["Imperium - Agents of the Imperium", "Veiled Blade Elimination Force", 1],
-    ["Xenos - Orks", "Green Tide", 3],
     ["Xenos - T'au Empire", "Retaliation Cadre", 3],
     ["Chaos - Thousand Sons", "Hexwarp Thrallband", 3],
     ["Imperium - Adeptus Custodes", "Lions of the Emperor", 3],

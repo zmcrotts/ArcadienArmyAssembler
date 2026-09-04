@@ -1,8 +1,8 @@
 {
   "kind": "manual-army-rules",
   "name": "Local 11e Army Rule Gap-fill",
-  "nrversion": "army-rules-gapfill-4",
-  "lastUpdated": "2026-08-26",
+  "nrversion": "army-rules-gapfill-5",
+  "lastUpdated": "2026-09-02",
   "rules": [
     {
       "faction": "Imperium - Adepta Sororitas",
@@ -12,7 +12,17 @@
     {
       "faction": "Xenos - Orks",
       "name": "Waaagh!",
-      "description": "If your Army Faction is ORKS, once per battle, at the start of your Command phase, you can call a Waaagh!. If you do, until the start of your next Command phase, the Waaagh! is active for your army and:\n- Units from your army with this ability are eligible to declare a charge in a turn in which they Advanced.\n- Add 1 to the Strength and Attacks characteristics of melee weapons equipped by models from your army with this ability.\n- Models from your army with this ability have a 5+ invulnerable save."
+      "description": "Friendly ORKS units with this ability can re-roll Advance rolls and can become riled up as stated in other rules.\n\nRILED UP\nWhile a unit is riled up:\n- That unit has a 5+ invulnerable save.\n- That unit's ranged attacks have [ASSAULT].\n- When that unit is selected to make an Advance move, that Advance move does not prevent it from being eligible to declare a charge.\n\nWAR CRY (Once per battle, per army)\nAt the start of the Command phase, you can use this ability. If you do, friendly ORKS units with the Waaagh! ability are riled up until the end of the next turn."
+    },
+    {
+      "faction": "Xenos - Orks",
+      "name": "Da Boss",
+      "description": "At the start of the battle round, if a model with this ability is your WARLORD, gain 1CP."
+    },
+    {
+      "faction": "Xenos - Orks",
+      "name": "Unstable Energies",
+      "description": "ORKS PSYKER units with this ability have a psyker level of 1 or higher, specified in that unit's abilities. Each psychic ability has a psychic level of 1 or higher, specified in that ability's name.\n\nIn a battle round, a friendly ORKS PSYKER unit can use a number of psychic abilities whose total psychic level does not exceed that PSYKER unit's psyker level."
     },
     {
       "faction": "Imperium - Adeptus Custodes",

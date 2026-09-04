@@ -7,7 +7,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 const share = require("../src/domain/roster-share-code");
 const { calculateEntryPoints } = require("../src/domain/pricing");
-const { createArmyState, calculateArmyOptionPoints, pruneArmyStateForRoster } = require("../src/domain/army");
+const { createArmyState, calculateArmyOptionPoints, normalizeArmyStateForDefinition, pruneArmyStateForRoster } = require("../src/domain/army");
 const { hydrateRosterDocument } = require("../src/domain/roster-document");
 
 const root = path.resolve(__dirname, "..");
@@ -185,7 +185,11 @@ test("every copied valid roster round-trips decisions, relationships, nicknames,
   for (const saved of library) {
     const document = saved.document || saved;
     const context = contextFor(document.faction, document.subfaction || document.faction);
-    const code = share.encodeRoster(document, context);
+    const migrated = {
+      ...document,
+      armyState: normalizeArmyStateForDefinition(context.armyDefinition, document.armyState)
+    };
+    const code = share.encodeRoster(migrated, context);
     const decoded = share.decodeRoster(code, context);
     assert.match(code, /^AAA2-[A-Za-z0-9_-]+$/);
     assert.equal(decoded.name, document.name);
@@ -194,11 +198,11 @@ test("every copied valid roster round-trips decisions, relationships, nicknames,
     assert.equal(decoded.pointsLimit, document.pointsLimit);
     assert.deepEqual(decoded.rosterEntries.map(item => item.selectionKey), document.rosterEntries.map(item => item.selectionKey));
     decoded.rosterEntries.forEach((item, index) => assertSelectionsEqual(item.entry.selections, document.rosterEntries[index].entry.selections, document.name));
-    assert.deepEqual(comparableArmyState(decoded), comparableArmyState(document), document.name);
+    assert.deepEqual(comparableArmyState(decoded), comparableArmyState(migrated), document.name);
     const originalNicknames = Object.entries(document.rosterDisplay?.unitNicknames || {}).map(([id, nickname]) => [referenceIndex(document.rosterEntries, id), nickname]);
     const decodedNicknames = Object.entries(decoded.rosterDisplay?.unitNicknames || {}).map(([id, nickname]) => [referenceIndex(decoded.rosterEntries, id), nickname]);
     assert.deepEqual(decodedNicknames, originalNicknames, `${document.name}: nicknames`);
-    assert.equal(calculatedTotal(decoded, context), calculatedTotal(document, context), `${document.name}: points`);
+    assert.equal(calculatedTotal(decoded, context), calculatedTotal(migrated, context), `${document.name}: points`);
   }
 });
 

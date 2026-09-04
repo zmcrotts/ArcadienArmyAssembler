@@ -733,6 +733,9 @@ function normalizeRosterEntry(unitDefinition, rosterEntry) {
   const next = JSON.parse(JSON.stringify(rosterEntry || {}));
   next.selections = next.selections || {};
   const index = buildTreeIndex(unitDefinition);
+  for (const selectionId of Object.keys(next.selections)) {
+    if (!index.byId.has(selectionId)) delete next.selections[selectionId];
+  }
   for (const node of index.all) {
     if (["unit", "group"].includes(node.kind) || Number(next.selections[node.id] || 0) <= 0) continue;
     if (!nodeIsActive(node, next, index, unitDefinition)) clearSubtree(node, next.selections);
@@ -1297,7 +1300,8 @@ function applyKnownConfiguredProfileCorrections(unitDefinition, entry, index, pr
     if (!Number.isFinite(attacks)) return profile;
     return {
       ...profile,
-      characteristics: { ...profile.characteristics, A: String(attacks + 2) }
+      characteristics: { ...profile.characteristics, A: String(attacks + 2) },
+      modifiedCharacteristics: [...new Set([...(profile.modifiedCharacteristics || []), "A"])]
     };
   });
 }

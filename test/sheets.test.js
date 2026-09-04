@@ -766,7 +766,7 @@ test("printable sheets abbreviate long weapon keywords for attack rows", () => {
             S: "10",
             AP: "-2",
             D: "D6",
-            Keywords: "Anti-Monster 4+, Anti-Vehicle 4+, Devastating Wounds, Hazardous, Sustained Hits 1, Twin-linked"
+            Keywords: "Anti-Monster 4+, Anti-Vehicle 4+, Cleave 2, Devastating Wounds, Hazardous, Sustained Hits 1, Twin-linked"
           }
         }, {
           name: "Weird gun",
@@ -779,7 +779,7 @@ test("printable sheets abbreviate long weapon keywords for attack rows", () => {
             S: "6",
             AP: "0",
             D: "1",
-            Keywords: "Anti-Infantry 3+, Anti-Psyker 4+, Rapid Fire 2, Blast, Precision, Close-quarters"
+            Keywords: "Anti-Infantry 3+, Anti-Psyker 4+, Rapid Fire 2, Blast, Precision, Close-quarters, Lethal Hits: non-MONSTER/VEHICLE"
           }
         }],
         abilities: [],
@@ -789,8 +789,8 @@ test("printable sheets abbreviate long weapon keywords for attack rows", () => {
   });
 
   const sheet = sheets.combinedUnitSheets[0];
-  assert.equal(sheet.meleeWeapons[0].keywords, "AMon4+, AVeh4+, DEV, HAZ, SH1, TL");
-  assert.equal(sheet.rangedWeapons[0].keywords, "AInf3+, APsy4+, RF2, Blast, Precision, CQ");
+  assert.equal(sheet.meleeWeapons[0].keywords, "AMon4+, AVeh4+, CL2, DEV, HAZ, SH1, TL");
+  assert.equal(sheet.rangedWeapons[0].keywords, "AInf3+, APsy4+, RF2, Blast, Precision, CQ, LH: non-MONSTER/VEHICLE");
 });
 
 test("unit sheets apply detachment and attached leader weapon effects", () => {

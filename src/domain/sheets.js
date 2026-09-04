@@ -84,11 +84,13 @@ function weaponKeywordRuleNames() {
     "anti",
     "assault",
     "blast",
+    "cleave",
     "close-quarters",
     "devastating wounds",
     "extra attacks",
     "hazardous",
     "heavy",
+    "hunter",
     "ignores cover",
     "indirect fire",
     "lance",
@@ -368,6 +370,7 @@ function normalizeWeaponKeywordName(value) {
   if (/^Sustained Hits X$/i.test(keyword)) return "";
   const known = weaponKeywordRuleNames();
   const base = keyword.toLowerCase()
+    .replace(/:\s*.+$/, "")
     .replace(/\s+\d+\+?$/, "")
     .replace(/^anti-[a-z0-9\s-]+$/, "anti");
   if (!known.has(base) && !/^anti-[a-z0-9\s-]+\s+\d+\+$/i.test(keyword)) return "";
@@ -874,6 +877,15 @@ function abbreviateWeaponKeywordEntry(value) {
   const sustainedHits = keyword.match(/^Sustained\s+Hits\s+(\d+)$/i);
   if (sustainedHits) return { keyword: `SH${sustainedHits[1]}`, original: keyword };
 
+  const cleave = keyword.match(/^Cleave\s+(\d+)$/i);
+  if (cleave) return { keyword: `CL${cleave[1]}`, original: keyword };
+
+  const qualified = keyword.match(/^(.+?):\s*(non-.+)$/i);
+  if (qualified) {
+    const base = abbreviateWeaponKeywordEntry(qualified[1]).keyword;
+    return { keyword: `${base}: ${qualified[2]}`, original: keyword };
+  }
+
   const direct = new Map([
     ["close-quarters", "CQ"],
     ["devastating wounds", "DEV"],
@@ -1100,6 +1112,7 @@ function extractDeadlyDemiseValue(text) {
 function isWeaponKeywordRule(name, weaponKeywords = new Set()) {
   const normalized = normalizeText(name).toLowerCase();
   const base = normalized
+    .replace(/:\s*.+$/, "")
     .replace(/\s+\d+\+?$/, "")
     .replace(/^anti-[a-z0-9\s-]+$/, "anti");
   if (weaponKeywords.has(normalized)) return true;
@@ -1107,6 +1120,7 @@ function isWeaponKeywordRule(name, weaponKeywords = new Set()) {
   if (/^anti-[a-z0-9\s-]+\s+\d+\+$/i.test(normalized)) return true;
   if (/^rapid\s+fire\s+\d+$/i.test(normalized)) return true;
   if (/^sustained\s+hits\s+\d+$/i.test(normalized)) return true;
+  if (/^cleave\s+\d+$/i.test(normalized)) return true;
   return false;
 }
 

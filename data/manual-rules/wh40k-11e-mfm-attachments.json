@@ -3121,12 +3121,7 @@
           "role": "SUPPORT",
           "targets": [
             "BOYZ",
-            "BREAKA BOYZ",
-            "BURNA BOYZ",
-            "FLASH GITZ",
-            "LOOTAS",
-            "NOBZ",
-            "TANKBUSTAS"
+            "NOBZ"
           ]
         },
         {
@@ -3137,15 +3132,8 @@
           ]
         },
         {
-          "unitName": "BEASTBOSS ON SQUIGOSAUR",
-          "role": "LEADER",
-          "targets": [
-            "SQUIGHOG BOYZ"
-          ]
-        },
-        {
           "unitName": "BIGBOSS",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "BOYZ",
             "BREAKA BOYZ",
@@ -3158,7 +3146,7 @@
           "targets": [
             "BOYZ",
             "BREAKA BOYZ",
-            "LOOTAS",
+            "FLASH GITZ",
             "MEK GUNZ",
             "NOBZ",
             "TANKBUSTAS"
@@ -3168,7 +3156,8 @@
           "unitName": "BIG MEK IN MEGA ARMOUR",
           "role": "LEADER",
           "targets": [
-            "MEGANOBZ"
+            "MEGANOBZ",
+            "MEK GUNZ"
           ]
         },
         {
@@ -3176,8 +3165,6 @@
           "role": "LEADER",
           "targets": [
             "BOYZ",
-            "BREAKA BOYZ",
-            "LOOTAS",
             "MEK GUNZ",
             "NOBZ",
             "TANKBUSTAS"
@@ -3198,38 +3185,29 @@
           ]
         },
         {
-          "unitName": "GHAZGHKULL THRAKA",
-          "role": "LEADER",
-          "targets": [
-            "BOYZ",
-            "BREAKA BOYZ",
-            "MEGANOBZ",
-            "NOBZ"
-          ]
-        },
-        {
           "unitName": "MEK",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
             "BOYZ",
-            "LOOTAS",
+            "FLASH GITZ",
             "MEK GUNZ",
             "NOBZ",
             "TANKBUSTAS"
           ]
         },
         {
-          "unitName": "MOZROG SKRAGBAD",
+          "unitName": "NAZDREG",
           "role": "LEADER",
           "targets": [
-            "SQUIGHOG BOYZ"
+            "MEGANOBZ"
           ]
         },
         {
           "unitName": "PAINBOSS",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
-            "BEAST SNAGGA BOYZ"
+            "BEAST SNAGGA BOYZ",
+            "SQUIGHOG BOYZ"
           ]
         },
         {
@@ -3238,10 +3216,16 @@
           "targets": [
             "BOYZ",
             "BREAKA BOYZ",
-            "BURNA BOYZ",
-            "LOOTAS",
+            "FLASH GITZ",
             "NOBZ",
             "TANKBUSTAS"
+          ]
+        },
+        {
+          "unitName": "RUNTHERD",
+          "role": "SUPPORT",
+          "targets": [
+            "GRETCHIN"
           ]
         },
         {
@@ -3262,17 +3246,10 @@
         },
         {
           "unitName": "WEIRDBOY",
-          "role": "LEADER",
+          "role": "SUPPORT",
           "targets": [
-            "BOYZ",
-            "BREAKA BOYZ"
-          ]
-        },
-        {
-          "unitName": "WURRBOY",
-          "role": "LEADER",
-          "targets": [
-            "BEAST SNAGGA BOYZ"
+            "BEAST SNAGGA BOYZ",
+            "BOYZ"
           ]
         },
         {
@@ -3282,7 +3259,9 @@
             "GRETCHIN"
           ]
         }
-      ]
+      ],
+      "verifiedAt": "2026-09-02",
+      "version": "1.4"
     },
     {
       "name": "Space Marines",

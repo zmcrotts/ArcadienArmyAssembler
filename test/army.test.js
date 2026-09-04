@@ -297,7 +297,7 @@ test("roster legality is authoritative but advisory across core army rules", () 
   assert.equal(roster.length, 23, "illegal choices remain in roster state");
 });
 
-legacyTest("changing detachments preserves selections and warns about stale enhancements", () => {
+legacyTest("changing detachments removes stale enhancements", () => {
   const army = worldEaters();
   const warband = army.detachments.find(item => item.name === "Berzerker Warband");
   const vessels = army.detachments.find(item => item.name === "Vessels of Wrath");
@@ -306,8 +306,8 @@ legacyTest("changing detachments preserves selections and warns about stale enha
   let state = selectDetachment(army, createArmyState(army), warband.id);
   state = setEnhancement(army, state, [bearer], glaive.id, bearer.instanceId);
   state = selectDetachment(army, state, vessels.id);
-  assert.equal(state.enhancements.length, 1);
-  assert.equal(validateArmyState(army, state, [bearer]).some(item => item.code === "ENHANCEMENT_NOT_AVAILABLE"), true);
+  assert.equal(state.enhancements.length, 0);
+  assert.equal(validateArmyState(army, state, [bearer]).some(item => item.code === "ENHANCEMENT_NOT_AVAILABLE"), false);
 });
 
 test("multiple 11th detachments spend detachment points by battle size", () => {

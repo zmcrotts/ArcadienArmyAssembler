@@ -15,6 +15,7 @@ test("live roster panels feed selected unit profiles back through static effect 
     assert.match(source, /function configuredEffectSources[\s\S]*configured\.profiles/);
     assert.match(source, /class="modifiedCharacteristic" title="Modified from base profile"/);
     assert.match(source, /const context = \{\s*instanceId: rosterEntry\.instanceId,\s*isBodyguard:/);
+    assert.match(source, /renderConfigured\(configured, effects, models, \{ instanceId: rosterEntry\.instanceId, definition:/);
     assert.match(source, /enhancement \? \{ \.\.\.enhancement, bearerInstanceId: assignment\.bearerInstanceId \} : null/);
   }
 });
@@ -67,6 +68,36 @@ test("browser runtime adds the selected God Blessing to CSM Daemon Prince names"
     window.RosterEngine.getConfiguredUnitName({ name: "Chaos Lord", selectionTree: {} }, { selections: { nurgle: 1 } }),
     "Chaos Lord"
   );
+});
+
+test("browser runtime marks Helbrute two-melee-weapon attacks as modified", () => {
+  const definition = {
+    id: "helbrute",
+    name: "Helbrute",
+    selectionTree: {
+      id: "helbrute",
+      kind: "unit",
+      profiles: [],
+      children: ["left-fist", "right-fist"].map(id => ({
+        id,
+        kind: "upgrade",
+        profiles: [{
+          id: "helbrute-fist",
+          name: "Helbrute fist",
+          typeName: "Melee Weapons",
+          characteristics: { A: "5" }
+        }],
+        children: []
+      }))
+    }
+  };
+
+  const fist = window.RosterEngine.getConfiguredProfiles(definition, {
+    selections: { helbrute: 1, "left-fist": 1, "right-fist": 1 }
+  }).weapons[0];
+
+  assert.equal(fist.characteristics.A, "7");
+  assert.deepEqual(fist.modifiedCharacteristics, ["A"]);
 });
 
 test("browser loadout states expose mandatory descendant wargear costs", () => {
@@ -159,6 +190,8 @@ test("packaged browser data flags seven Chaos Terminator power fists", () => {
   const states = engine.getOptionStates(unit.definition, entry);
   const bolter = states.find(option => option.name === "Power fist and combi-bolter");
   const combiWeapon = states.find(option => option.name === "Power fist and combi-weapon");
+
+  assert.deepEqual([bolter.maximum, combiWeapon.maximum], [6, 6]);
 
   entry = engine.setSelection(unit.definition, entry, bolter.id, 6, false);
   entry = engine.setSelection(unit.definition, entry, combiWeapon.id, 1, false);

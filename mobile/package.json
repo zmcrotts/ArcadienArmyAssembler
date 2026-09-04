@@ -1,6 +1,6 @@
 {
   "name": "arcadien-army-assembler-mobile",
-  "version": "0.1.57",
+  "version": "0.1.58",
   "private": true,
   "description": "Mobile UI and wrappers for the shared Arcadien Army Assembler rules engine.",
   "type": "commonjs",

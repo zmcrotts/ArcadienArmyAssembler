@@ -112,7 +112,7 @@ function resolveLeaderTargetSelectionKeys(definitions) {
   return { predicateCount, unresolvedCount };
 }
 
-function applyMfmAttachments(definitions, payload) {
+function applyMfmAttachments(definitions, payload, { authoritative = false } = {}) {
   const byFaction = buildRecordLookup(payload);
   let matched = 0;
   let unmatched = 0;
@@ -123,6 +123,23 @@ function applyMfmAttachments(definitions, payload) {
       .find(Boolean);
     if (!factionRecords) continue;
 
+    if (authoritative) {
+      definition.roles = { ...definition.roles, leader: false, support: false };
+      definition.rosterRules = {
+        ...definition.rosterRules,
+        leaderTargetNames: [], leaderTargetSelectionKeys: [], leaderTargetPredicates: [],
+        allowsAdditionalLeader: false, mfmAttachmentRole: null, mfmAttachmentSource: null
+      };
+      definition.categories = (definition.categories || []).filter(name => normalizeName(name) !== "support");
+      definition.keywords = (definition.keywords || []).filter(name => normalizeName(name) !== "support");
+      const isAttachment = item => /^(leader|support)$/i.test(String(item.name || "").trim());
+      (function clearAttachments(node) {
+        if (!node) return;
+        node.profiles = (node.profiles || []).filter(item => !isAttachment(item));
+        node.rules = (node.rules || []).filter(item => !isAttachment(item));
+        for (const child of node.children || []) clearAttachments(child);
+      }(definition.selectionTree));
+    }
     const record = factionRecords.get(normalizeName(definition.name));
     if (!record) continue;
 
@@ -148,6 +165,18 @@ function applyMfmAttachments(definitions, payload) {
     if (record.role === "SUPPORT" && !categories.includes("Support")) {
       definition.categories = [...categories, "Support"];
       definition.keywords = [...keywords, "Support"];
+    }
+    if (authoritative && definition.selectionTree) {
+      const roleName = record.role === "SUPPORT" ? "Support" : "Leader";
+      definition.selectionTree.profiles.push({
+        id: `mfm-attachment-${definition.id}`,
+        name: roleName,
+        typeName: "Abilities",
+        characteristics: {
+          Description: `This unit can be attached as ${roleName} to the following units:\n${targets.map(target => `■ ${target}`).join("\n")}`
+        },
+        source: record.sourceUrl
+      });
     }
     matched += 1;
   }

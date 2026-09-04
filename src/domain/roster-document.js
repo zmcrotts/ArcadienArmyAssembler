@@ -280,6 +280,16 @@ function normalizeSavedEntry(saved) {
   };
 }
 
+function selectionIdsFor(definition) {
+  const ids = new Set();
+  (function visit(node) {
+    if (!node) return;
+    if (node.id) ids.add(node.id);
+    for (const child of node.children || []) visit(child);
+  }(definition?.selectionTree));
+  return ids;
+}
+
 function diffArmyStateReferences(before, after) {
   const removed = [];
   const beforeAttachments = before?.attachments || [];
@@ -318,12 +328,36 @@ function hydrateRosterDocument(document, options = {}) {
       });
       continue;
     }
+    const currentIds = selectionIdsFor(unitPackage.definition);
+    const staleSelectionIds = Object.entries(normalized.entry.selections || {})
+      .filter(([selectionId, count]) => Number(count) > 0 && !currentIds.has(selectionId))
+      .map(([selectionId]) => selectionId);
+    let hydratedEntry = options.normalizeRosterEntry
+      ? options.normalizeRosterEntry(unitPackage.definition, normalized.entry)
+      : normalized.entry;
+    const savedSize = Number(saved?.unitSize?.current);
+    if (unitPackage.definition?.sourceDisposition === "codex-current"
+      && unitPackage.definition?.faction === "Xenos - Orks"
+      && Number.isFinite(savedSize) && savedSize > 0 && options.setUnitSize) {
+      try {
+        hydratedEntry = options.setUnitSize(unitPackage.definition, hydratedEntry, savedSize);
+      } catch {
+        // Removed compositions intentionally fall back to the new legal default.
+      }
+    }
+    if (staleSelectionIds.length && unitPackage.definition?.sourceDisposition === "codex-current") {
+      warnings.push({
+        severity: "warning",
+        code: "SAVED_UNIT_MIGRATED",
+        message: `${unitPackage.name} was updated to its current datasheet; obsolete loadout selections were replaced with legal defaults.`,
+        affectedInstanceIds: [normalized.instanceId].filter(Boolean),
+        details: { removedSelectionIds: staleSelectionIds }
+      });
+    }
     roster.push({
       instanceId: normalized.instanceId || normalized.entry.instanceId,
       unitPackage,
-      entry: options.normalizeRosterEntry
-        ? options.normalizeRosterEntry(unitPackage.definition, normalized.entry)
-        : normalized.entry
+      entry: hydratedEntry
     });
   }
 
@@ -333,9 +367,12 @@ function hydrateRosterDocument(document, options = {}) {
     savedArmyState.detachmentIds = savedArmyState.detachmentId ? [savedArmyState.detachmentId] : [];
   }
   const mergedArmyState = { ...baseArmyState, ...savedArmyState };
-  const armyState = options.pruneArmyStateForRoster
-    ? options.pruneArmyStateForRoster(mergedArmyState, roster)
+  const normalizedArmyState = options.normalizeArmyState
+    ? options.normalizeArmyState(mergedArmyState)
     : mergedArmyState;
+  const armyState = options.pruneArmyStateForRoster
+    ? options.pruneArmyStateForRoster(normalizedArmyState, roster)
+    : normalizedArmyState;
   const prunedReferences = diffArmyStateReferences(mergedArmyState, armyState);
   for (const reference of prunedReferences) {
     warnings.push({
