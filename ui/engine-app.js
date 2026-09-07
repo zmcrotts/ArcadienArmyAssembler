@@ -266,7 +266,7 @@ function init() {
   }
 
   pointsLimitInput.addEventListener("input", render);
-  rosterNameInput.addEventListener("input", render);
+  rosterNameInput.addEventListener("input", scheduleRosterAutosave);
   rosterSavesSelect.addEventListener("change", event => {
     if (event.target.value) loadRosterById(event.target.value);
   });

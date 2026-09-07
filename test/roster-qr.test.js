@@ -60,3 +60,9 @@ test("mobile autosave preserves a blank roster name while explicit save still su
   assert.doesNotMatch(autosave, /rosterNameInput\.value = document\.name/);
   assert.match(ui, /async function saveRoster\(\) \{[\s\S]*document\.name = document\.name \|\| `\$\{currentSubfaction \|\| currentFaction\} roster`/);
 });
+test("editing the packaged PC roster name schedules autosave without rerendering the full roster", () => {
+  const ui = fs.readFileSync(require.resolve("../mobile/ui/engine-app.js"), "utf8");
+
+  assert.match(ui, /rosterNameInput\.addEventListener\("input", scheduleRosterAutosave\)/);
+  assert.doesNotMatch(ui, /rosterNameInput\.addEventListener\("input", render\)/);
+});

@@ -183,6 +183,10 @@ function documentHash(record) {
   return JSON.stringify(record.document);
 }
 
+function recordHash(record) {
+  return JSON.stringify(record);
+}
+
 function recordTime(record) {
   const lastEditedAt = Date.parse(record.lastEditedAt || "");
   if (Number.isFinite(lastEditedAt)) return lastEditedAt;
@@ -399,7 +403,7 @@ async function reconcileGames(state = {}) {
   return { games, tombstones, summary };
 }
 
-async function reconcileByName(saves, rosterTombstones = []) {
+async function reconcileByName(saves, rosterTombstones = [], options = {}) {
   const folder = await rosterFolder();
   const localTombstones = (Array.isArray(rosterTombstones) ? rosterTombstones : []).filter(validRosterTombstone);
   const remoteTombstones = await remoteRosterTombstones(folder);
@@ -408,49 +412,72 @@ async function reconcileByName(saves, rosterTombstones = []) {
   const local = Array.isArray(saves) ? saves.filter(validRecord).filter(record => !deletedIds.has(record.id)).map(record => structuredClone(record)) : [];
   const remote = (await remoteEntries(folder)).filter(entry => !deletedIds.has(entry.record.id));
   const remoteTombstoneIds = new Set(remoteTombstones.map(item => item.id));
-  const summary = { uploaded: 0, downloaded: 0, conflicts: 0, deletionsUploaded: 0 };
+  const summary = {
+    uploaded: 0,
+    downloaded: 0,
+    conflicts: 0,
+    deletionsUploaded: 0,
+    cloudRecords: remote.length,
+    cloudFolder: "OneDrive app folder/rosters",
+    cloudIdentity: (await sha256(String(folder.id || "rosters"))).slice(0, 10)
+  };
   for (const tombstone of localTombstones) {
     if (!remoteTombstoneIds.has(tombstone.id)) {
       await uploadRosterTombstone(folder, tombstone);
       summary.deletionsUploaded += 1;
     }
   }
-  const localByKey = new Map();
+  const localById = new Map();
   for (const record of local) {
-    const key = syncKey(record);
-    const previous = localByKey.get(key);
-    if (!previous || recordTime(record) >= recordTime(previous)) localByKey.set(key, record);
+    const previous = localById.get(record.id);
+    if (!previous || recordTime(record) >= recordTime(previous)) localById.set(record.id, record);
   }
-  const remoteByKey = new Map();
+  const remoteById = new Map();
   for (const entry of remote) {
-    const key = syncKey(entry.record);
-    if (!remoteByKey.has(key)) remoteByKey.set(key, []);
-    remoteByKey.get(key).push(entry);
+    if (!remoteById.has(entry.record.id)) remoteById.set(entry.record.id, []);
+    remoteById.get(entry.record.id).push(entry);
   }
-  const cleanup = { localRemoved: local.length - localByKey.size, remoteRemoved: 0 };
-  const result = [];
-  const keys = new Set([...localByKey.keys(), ...remoteByKey.keys()]);
-  for (const key of keys) {
-    const localRecord = localByKey.get(key);
-    const remoteEntriesForName = remoteByKey.get(key) || [];
-    const newestRemoteEntry = remoteEntriesForName.reduce((newest, entry) => !newest || recordTime(entry.record) >= recordTime(newest.record) ? entry : newest, null);
+  const candidatesById = new Map();
+  for (const id of new Set([...localById.keys(), ...remoteById.keys()])) {
+    const localRecord = localById.get(id) || null;
+    const remoteEntriesForId = remoteById.get(id) || [];
+    const newestRemoteEntry = remoteEntriesForId.reduce((newest, entry) => !newest || recordTime(entry.record) >= recordTime(newest.record) ? entry : newest, null);
     const remoteRecord = newestRemoteEntry?.record || null;
     const winner = !remoteRecord || (localRecord && recordTime(localRecord) >= recordTime(remoteRecord)) ? localRecord : remoteRecord;
-    const winnerIsLocal = winner === localRecord;
-    const matchingRemote = remoteEntriesForName.find(entry => entry.record.id === winner.id) || null;
-    if (winnerIsLocal && (!matchingRemote || documentHash(matchingRemote.record) !== documentHash(winner))) {
+    candidatesById.set(id, { record: winner, localRecord, remoteEntries: remoteEntriesForId });
+  }
+  const candidatesByName = new Map();
+  for (const candidate of candidatesById.values()) {
+    const key = syncKey(candidate.record);
+    const previous = candidatesByName.get(key);
+    if (!previous || recordTime(candidate.record) >= recordTime(previous.record)) candidatesByName.set(key, candidate);
+  }
+  const winners = [...candidatesByName.values()];
+  const cleanup = { localRemoved: local.length - winners.length, remoteRemoved: 0 };
+  const result = [];
+  for (const candidate of winners) {
+    const winner = candidate.record;
+    const matchingRemote = candidate.remoteEntries.find(entry => recordHash(entry.record) === recordHash(winner)) || null;
+    if (!matchingRemote) {
       await uploadRecord(folder, winner);
       summary.uploaded += 1;
     }
-    if (!winnerIsLocal && (!localRecord || localRecord.id !== winner.id || documentHash(localRecord) !== documentHash(winner))) {
+    if (!candidate.localRecord || recordHash(candidate.localRecord) !== recordHash(winner)) {
       summary.downloaded += 1;
     }
-    for (const entry of remoteEntriesForName) {
-      if (entry.record.id === winner.id) continue;
-      await graph(`/me/drive/items/${entry.itemId}`, { method: "DELETE" });
-      cleanup.remoteRemoved += 1;
-    }
     result.push(structuredClone(winner));
+  }
+  if (options.removeExactRemoteDuplicates) {
+    for (const [key, candidate] of candidatesByName) {
+      const winner = candidate.record;
+      const exactCopies = remote.filter(entry => syncKey(entry.record) === key && documentHash(entry.record) === documentHash(winner));
+      const keeper = exactCopies.find(entry => entry.record.id === winner.id) || null;
+      for (const entry of exactCopies) {
+        if (entry === keeper) continue;
+        await graph(`/me/drive/items/${entry.itemId}`, { method: "DELETE" });
+        cleanup.remoteRemoved += 1;
+      }
+    }
   }
   return { saves: result, rosterTombstones: [...tombstonesById.values()].map(item => structuredClone(item)), summary, cleanup };
 }
@@ -473,7 +500,24 @@ async function sync(saves, syncState = null) {
     }
   };
 }
-async function cleanDuplicates(saves, syncState) { return sync(saves, syncState); }
+async function cleanDuplicates(saves, syncState) {
+  const rosters = await reconcileByName(saves, syncState?.rosterTombstones, { removeExactRemoteDuplicates: true });
+  if (!syncState) return rosters;
+  const games = await reconcileGames(syncState.games);
+  return {
+    ...rosters,
+    games: games.games,
+    gameTombstones: games.tombstones,
+    summary: {
+      ...rosters.summary,
+      uploaded: Number(rosters.summary?.uploaded || 0) + games.summary.uploaded,
+      downloaded: Number(rosters.summary?.downloaded || 0) + games.summary.downloaded,
+      conflicts: Number(rosters.summary?.conflicts || 0) + games.summary.conflicts,
+      gamesUploaded: games.summary.uploaded,
+      gamesDownloaded: games.summary.downloaded
+    }
+  };
+}
 
 async function beginSignIn() {
   if (ANDROID_NATIVE) {

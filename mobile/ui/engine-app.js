@@ -434,7 +434,7 @@ async function init() {
   }
 
   pointsLimitInput.addEventListener("input", render);
-  rosterNameInput.addEventListener("input", render);
+  rosterNameInput.addEventListener("input", scheduleRosterAutosave);
   if (mobileRosterName) {
     mobileRosterName.addEventListener("input", event => {
       rosterNameInput.value = event.target.value;
@@ -2389,10 +2389,12 @@ async function openSyncDataManager() {
   const games = gameState.games;
   const rosterTombstones = rosterSyncTombstones();
   const gameTombstones = gameState.tombstones;
+  const cloudIdentity = syncStatus?.summary?.cloudIdentity || "";
   backdrop.hidden = false;
   backdrop.innerHTML = `<div class="modalPanel syncDataPanel" role="dialog" aria-modal="true" aria-labelledby="syncDataTitle">
     <header><div><small>ONEDRIVE</small><h2 id="syncDataTitle">Manage Sync Data</h2></div><button type="button" data-close-sync-data>Close</button></header>
-    <p>Review the lists and completed games included in this device's synchronized set. Remove an item here, then press Sync to propagate that deletion to OneDrive and your other devices.</p>
+    <p>This is this device's local copy of the synchronized set. Press Sync before comparing devices. ${cloudIdentity ? `Last synchronized cloud set: <b>${escapeHtml(cloudIdentity)}</b>. The ID must match on Android and PC.` : "The cloud set ID appears here after a successful Sync."}</p>
+    <p>Remove an item here, then press Sync to propagate that deletion to OneDrive and your other devices.</p>
     <section><h3>Roster lists <span>${savedRosterLibrary().length}</span></h3><div class="syncDataRows">${savedRosterLibrary().map(save => `<div><span><b>${escapeHtml(save.document?.name || "Unnamed roster")}</b><small>${escapeHtml(savedRosterMetadata(save.document || {}, savedRosterFaction(save)))}</small></span><button class="dangerButton" type="button" data-sync-delete-roster="${escapeHtml(save.id)}">Remove</button></div>`).join("") || `<p class="muted">No roster lists in the synchronized set.</p>`}</div></section>
     <section><h3>Completed games <span>${games.length}</span></h3><div class="syncDataRows">${games.map(game => `<div><span><b>${escapeHtml(game.setup?.yourName || "You")} vs ${escapeHtml(game.setup?.opponentName || "Opponent")}</b><small>${gameScoreTotal(game, "you")}–${gameScoreTotal(game, "opponent")} · ${escapeHtml(formatGameHistoryDate(game.endedAt))}</small></span><button class="dangerButton" type="button" data-sync-delete-game="${escapeHtml(game.resultId)}">Remove</button></div>`).join("") || `<p class="muted">No completed games in the synchronized set.</p>`}</div></section>
     ${rosterTombstones.length ? `<section><h3>Pending/propagated list removals <span>${rosterTombstones.length}</span></h3><div class="syncDeletionMarkers">${rosterTombstones.map(item => `<span>${escapeHtml(item.name || item.id)} · ${escapeHtml(formatGameHistoryDate(item.deletedAt))}</span>`).join("")}</div></section>` : ""}

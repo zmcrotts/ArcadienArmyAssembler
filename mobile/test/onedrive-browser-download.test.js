@@ -5,7 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { webcrypto } = require("node:crypto");
+const { createHash, webcrypto } = require("node:crypto");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const source = fs.readFileSync(path.join(ROOT, "ui", "onedrive-roster-sync.js"), "utf8");
@@ -175,6 +175,48 @@ test("a synced roster deletion tombstone prevents another device from resurrecti
 
   assert.deepEqual(JSON.parse(JSON.stringify(result.saves)), []);
   assert.equal(result.rosterTombstones[0].id, "deleted-roster");
+});
+
+test("Android and browser sync reconcile a renamed roster by stable ID without returning duplicates", async () => {
+  const makeRecord = (name, lastEditedAt) => ({
+    id: "shared-roster-id",
+    savedAt: "2026-09-01T12:00:00.000Z",
+    lastEditedAt,
+    document: { name, faction: "test", rosterEntries: [] }
+  });
+  let cloudRecord = makeRecord("Old list name", "2026-09-01T12:00:00.000Z");
+  const requests = [];
+  const downloadUrl = "https://public.dm.files.1drv.com/renamed-roster";
+  const fetch = async (url, options = {}) => {
+    const target = String(url);
+    requests.push({ target, method: options.method || "GET" });
+    if (target.endsWith("/me/drive/special/approot")) return response(200, { id: "app-root" });
+    if (target.includes("/items/app-root:/rosters")) return response(200, { id: "rosters" });
+    if (target.includes("/items/rosters/children")) return response(200, { value: [{ id: "cloud-item", name: "cloud.json", file: {} }] });
+    if (target.includes("/items/cloud-item?select=id,@microsoft.graph.downloadUrl")) return response(200, { id: "cloud-item", "@microsoft.graph.downloadUrl": downloadUrl });
+    if (target === downloadUrl) return response(200, { kind: "arcadien-roster-sync-record", version: 1, record: cloudRecord });
+    if (options.method === "PUT" && target.includes("/items/rosters:")) {
+      cloudRecord = JSON.parse(options.body).record;
+      return response(200, { id: "cloud-item" });
+    }
+    if (options.method === "DELETE") return response(204, "");
+    throw new Error(`Unexpected request: ${target}`);
+  };
+  const service = browserSync(fetch);
+  const renamed = makeRecord("New list name", "2026-09-02T12:00:00.000Z");
+
+  const first = await service.sync([renamed]);
+  assert.equal(first.saves.length, 1);
+  assert.equal(first.saves[0].document.name, "New list name");
+  assert.equal(cloudRecord.document.name, "New list name");
+  assert.equal(first.summary.cloudIdentity, createHash("sha256").update("rosters").digest("base64url").slice(0, 10));
+  assert.equal(requests.some(request => request.method === "DELETE"), false);
+
+  const second = await service.sync([makeRecord("Old list name", "2026-09-01T12:00:00.000Z")]);
+  assert.equal(second.saves.length, 1);
+  assert.equal(second.saves[0].document.name, "New list name");
+  assert.equal(second.summary.downloaded, 1);
+  assert.equal(requests.some(request => request.method === "DELETE"), false);
 });
 
 test("Android sync uses the current native connection and Graph bridge", async () => {

@@ -10,7 +10,7 @@ const {
   nativeUnitLinksFor
 } = require("./unit-definitions");
 const { bsdataFlagIsTrue } = require("./flags");
-const { nativeImportedCatalogueLinks } = require("./catalogue-aliases");
+const { sameSubject } = require("./catalogue-aliases");
 const PRIMARY_MISSION_CARD_IMAGES = require("../../ui/assets/11th/primary-missions/manifest.json");
 const { supplementalCategoryNamesFor } = require("../rulesets/detachment-keywords");
 
@@ -160,6 +160,28 @@ function rulesFor(node, indexes) {
   return rules;
 }
 
+function sharedRulesFor(node) {
+  return asArray(node?.sharedRules?.rule).map(rule => ({
+    id: rule.id || null,
+    name: rule.name || "Unnamed rule",
+    description: textValue(rule.description)
+  })).filter(rule => rule.name && rule.description);
+}
+
+function armyRuleImportMatches(catalogue, link) {
+  if (sameSubject(catalogue?.name, link?.name)) return true;
+  return /^xenos - (?:aeldari|drukhari)$/i.test(String(catalogue?.name || ""))
+    && /^aeldari - aeldari library$/i.test(String(link?.name || ""));
+}
+
+function importedSharedRuleApplies(catalogue, imported, rule) {
+  if (!/^aeldari - aeldari library$/i.test(String(imported?.name || ""))) return true;
+  const isDrukhariRule = /\bdrukhari\b/i.test(String(rule?.description || ""));
+  return /^xenos - drukhari$/i.test(String(catalogue?.name || ""))
+    ? isDrukhariRule
+    : !isDrukhariRule;
+}
+
 function armyRuleTablesFor(rule, indexes) {
   const wanted = normalizeName(rule?.name);
   if (!wanted) return [];
@@ -187,14 +209,28 @@ function armyRuleTablesFor(rule, indexes) {
   ])).values()];
 }
 
-function catalogueArmyRules(catalogue, indexes, faction = "", catalogueLookup = null) {
-  const sources = [catalogue];
-  for (const link of nativeImportedCatalogueLinks(catalogue)) {
+function catalogueArmyRules(catalogue, indexes, faction = "", catalogueLookup = null, includeSharedArmyRules = false) {
+  const sources = [{
+    catalogue,
+    imported: false,
+    includeShared: includeSharedArmyRules && rulesFor(catalogue, indexes).length === 0
+  }];
+  for (const link of asArray(catalogue?.catalogueLinks?.catalogueLink).filter(candidate =>
+    armyRuleImportMatches(catalogue, candidate)
+  )) {
     const imported = catalogueLookup?.byId.get(link.targetId) || catalogueLookup?.byName.get(link.name);
-    if (imported?.catalogue) sources.push(imported.catalogue);
+    if (imported?.catalogue) {
+      sources.push({ catalogue: imported.catalogue, imported: true, includeShared: includeSharedArmyRules });
+    }
   }
   const rules = [...new Map(sources
-    .flatMap(source => rulesFor(source, indexes))
+    .flatMap(source => [
+      ...rulesFor(source.catalogue, indexes),
+      ...sharedRulesFor(source.catalogue).filter(rule =>
+        source.includeShared
+        && (!source.imported || importedSharedRuleApplies(catalogue, source.catalogue, rule))
+      )
+    ])
     .filter(rule => !/^boarding actions$/i.test(rule.name))
     .map(rule => [`${normalizeName(rule.name)}:${normalizeName(rule.description)}`, {
       ...rule,
@@ -649,7 +685,7 @@ function extractArmyDefinitions(dataDirectory) {
       id: catalogue.id || faction,
       faction,
       source: { catalogueId: catalogue.id || null, sourceFile: file },
-      armyRules: catalogueArmyRules(catalogue, indexes, faction, catalogueLookup),
+      armyRules: catalogueArmyRules(catalogue, indexes, faction, catalogueLookup, file.endsWith(".json")),
       forceDispositions,
       allowedSelectionKeys: nativeUnitLinks
         .filter(({ link }) => link.type === "selectionEntry" && !bsdataFlagIsTrue(link.hidden) && isRosterUnit(indexes.entries.get(link.targetId)))

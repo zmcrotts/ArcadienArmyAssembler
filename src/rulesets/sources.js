@@ -129,13 +129,6 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
   const orksCodex = readOrksCodex(source.auxiliarySources?.orksCodex);
   const orksCodexResult = applyOrksCodex(mfmPointResult.units, mfmPointResult.armies, orksCodex);
-  // Codex replacement creates new definitions. Apply the current MFM last so
-  // attachment roles/targets survive replacement and resolve newly added units.
-  applyMfmAttachments(
-    orksCodexResult.units.filter(unit => unit.faction === "Xenos - Orks" && unit.sourceDisposition === "codex-current"),
-    { ...mfmAttachments, factions: mfmAttachments.factions.filter(faction => faction.name === "Orks") },
-    { authoritative: true }
-  );
   const normalized = reconcileSelectableUnits(orksCodexResult.units, orksCodexResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);

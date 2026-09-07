@@ -221,6 +221,30 @@ test("11e ruleset gap-fills incomplete army rules", () => {
   assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
 });
 
+test("11e JSON catalogues expose native shared army rules", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const expected = [
+    ["Xenos - Aeldari", "Battle Focus"],
+    ["Xenos - Drukhari", "Power from Pain"],
+    ["Chaos - Chaos Daemons", "The Shadow of Chaos"],
+    ["Chaos - Chaos Knights", "Harbingers of Dread"],
+    ["Chaos - Chaos Space Marines", "Dark Pacts"],
+    ["Chaos - Emperor's Children", "Thrill Seekers"],
+    ["Chaos - Thousand Sons", "Cabal of Sorcerers"],
+    ["Chaos - World Eaters", "Blessings of Khorne"],
+    ["Imperium - Adeptus Mechanicus", "Doctrina Imperatives"],
+    ["Imperium - Agents of the Imperium", "Assigned Agents"],
+    ["Imperium - Astra Militarum", "Voice Of Command"],
+    ["Xenos - Leagues of Votann", "Prioritised Efficiency"]
+  ];
+
+  for (const [faction, ruleName] of expected) {
+    const army = ruleset.armies.find(item => item.faction === faction);
+    assert.ok(army, `Missing army definition ${faction}`);
+    assert.ok(army.armyRules.some(rule => rule.name === ruleName), `Missing ${faction} army rule ${ruleName}`);
+  }
+});
+
 test("Custodes expose Martial Ka'tah as an army rule", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID, { fresh: true });
   const custodes = ruleset.armies.find(army => army.faction === "Imperium - Adeptus Custodes");
