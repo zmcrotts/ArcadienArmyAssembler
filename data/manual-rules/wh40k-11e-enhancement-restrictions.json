@@ -109,7 +109,7 @@
       "target": {
         "faction": "Imperium - Adeptus Mechanicus"
       },
-      "detachmentName": "Luminen Autochoir",
+      "detachmentName": "Luminen Auto-choir",
       "enhancementName": "Electromiasmic Brazier",
       "restriction": "TECH-PRIEST model only.",
       "source": "Faction Pack - Adeptus Mechanicus v1.1, page 4"
@@ -120,7 +120,7 @@
       "target": {
         "faction": "Imperium - Adeptus Mechanicus"
       },
-      "detachmentName": "Luminen Autochoir",
+      "detachmentName": "Luminen Auto-choir",
       "enhancementName": "Voltagheist Reliquary",
       "restriction": "TECH-PRIEST model only.",
       "source": "Faction Pack - Adeptus Mechanicus v1.1, page 4"
@@ -698,28 +698,6 @@
       "source": "Faction Pack - Necrons v1.1, page 4"
     },
     {
-      "id": "restriction-xenos-orks-slippery-git",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "Taktikal Brigade",
-      "enhancementName": "Slippery Git",
-      "restriction": "INFANTRY WARBOSS model only (excluding MEGA ARMOUR models).",
-      "source": "Faction Pack - Orks v1.1, page 5"
-    },
-    {
-      "id": "restriction-xenos-orks-da-gobshot-thunderbuss",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "More Dakka!",
-      "enhancementName": "Da Gobshot Thunderbuss",
-      "restriction": "ORKS INFANTRY model only.",
-      "source": "Faction Pack - Orks v1.1, page 4"
-    },
-    {
       "id": "restriction-xenos-orks-kunnin-hunta",
       "kind": "enhancement-restriction",
       "target": {
@@ -962,70 +940,59 @@
       "source": "Faction Pack - World Eaters v1.1, page 4"
     },
     {
-      "id": "restriction-xenos-orks-git-spotter-squig",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "Freebooter Krew",
-      "enhancementName": "Git-spotter Squig",
-      "restriction": "ORKS model only.",
-      "source": "Faction Pack - Orks v1.0, page 9"
-    },
-    {
-      "id": "restriction-xenos-orks-bionik-workshop",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "Freebooter Krew",
-      "enhancementName": "Bionik Workshop",
-      "restriction": "BIG MEK or PAINBOY model only.",
-      "unitKeywordsAny": [
-        "Big Mek",
-        "Painboy"
-      ],
-      "restrictEligibility": true,
-      "source": "Faction Pack - Orks v1.1"
-    },
-    {
       "id": "restriction-chaos-csm-pactbound-talisman-burning-blood",
       "kind": "enhancement-restriction",
-      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
       "detachmentName": "Pactbound Zealots",
       "enhancementName": "Talisman of Burning Blood",
       "restriction": "KHORNE model only.",
-      "unitKeywordsPotentialAny": ["Khorne"],
+      "unitKeywordsPotentialAny": [
+        "Khorne"
+      ],
       "source": "Pactbound Zealots enhancement restriction"
     },
     {
       "id": "restriction-chaos-csm-pactbound-eye-of-tzeentch",
       "kind": "enhancement-restriction",
-      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
       "detachmentName": "Pactbound Zealots",
       "enhancementName": "Eye of Tzeentch",
       "restriction": "TZEENTCH model only.",
-      "unitKeywordsPotentialAny": ["Tzeentch"],
+      "unitKeywordsPotentialAny": [
+        "Tzeentch"
+      ],
       "source": "Pactbound Zealots enhancement restriction"
     },
     {
       "id": "restriction-chaos-csm-pactbound-orbs-of-unlife",
       "kind": "enhancement-restriction",
-      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
       "detachmentName": "Pactbound Zealots",
       "enhancementName": "Orbs of Unlife",
       "restriction": "NURGLE model only.",
-      "unitKeywordsPotentialAny": ["Nurgle"],
+      "unitKeywordsPotentialAny": [
+        "Nurgle"
+      ],
       "source": "Pactbound Zealots enhancement restriction"
     },
     {
       "id": "restriction-chaos-csm-pactbound-intoxicating-elixir",
       "kind": "enhancement-restriction",
-      "target": { "faction": "Chaos - Chaos Space Marines" },
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
       "detachmentName": "Pactbound Zealots",
       "enhancementName": "Intoxicating Elixir",
       "restriction": "SLAANESH model only.",
-      "unitKeywordsPotentialAny": ["Slaanesh"],
+      "unitKeywordsPotentialAny": [
+        "Slaanesh"
+      ],
       "source": "Pactbound Zealots enhancement restriction"
     }
   ]

@@ -1,0 +1,797 @@
+{
+  "schemaVersion": 1,
+  "quarantinedAt": "2026-09-07",
+  "reason": "Targets were unresolved after the full BSData system refresh at upstream commit 377901eb77348a8da0f1527e03bcd3bb43b0869f. Retained for audit only; these records are not active inputs.",
+  "factionPackUpdates": [
+    {
+      "id": "orks-boomdakka-billowing-fumes",
+      "kind": "rule-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "unitNames": [
+        "Boomdakka Snazzwagon"
+      ],
+      "ruleName": "Billowing Fumes",
+      "description": "While an enemy unit (excluding MONSTER/VEHICLE units) is within 6\" of this unit, when that enemy unit is selected to shoot, that unit's targets have the benefit of cover until that unit has shot.",
+      "source": "Faction Pack - Orks v1.1, page 25"
+    },
+    {
+      "id": "orks-shokkjump-shokk-tunnel",
+      "kind": "rule-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "unitNames": [
+        "Shokkjump Dragsta"
+      ],
+      "ruleName": "Shokk Tunnel",
+      "description": "In your Movement phase, when this unit is selected to make an advance move, you can use this ability. If you do: that move has no maximum distance; this unit can move through all types of model (including enemy models and MONSTER/VEHICLE models); after moving, your unit must be more than 8\" horizontally from all enemy units.",
+      "source": "Faction Pack - Orks v1.1, page 26"
+    },
+    {
+      "id": "space-marines-target-elimination-remove",
+      "kind": "rule-remove",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "unitNames": [
+        "Intercessor Squad"
+      ],
+      "ruleName": "Target Elimination",
+      "source": "Faction Pack - Space Marines v1.1, page 62"
+    },
+    {
+      "id": "orks-conniving-runts",
+      "kind": "stratagem-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "stratagemName": "Conniving Runts",
+      "textReplacements": [
+        {
+          "from": "9\"",
+          "to": "8\""
+        }
+      ],
+      "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "orks-go-get-em",
+      "kind": "stratagem-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "stratagemName": "Go Get 'Em!",
+      "description": "WHEN: Your opponent's Shooting phase, when an enemy unit that targeted a friendly unengaged BOYZ unit this phase has shot. TARGET: That BOYZ unit. EFFECT: Your unit can make a surge move of up to D6\".",
+      "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "orks-krushin-impact",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "stratagemName": "Crushing Impact",
+      "newName": "Krushin' Impact",
+      "source": "Faction Pack - Orks v1.1, page 24"
+    },
+    {
+      "id": "space-marines-company-heroes-remove",
+      "kind": "rule-remove",
+      "target": {
+        "factionPrefix": "Imperium - Adeptus Astartes"
+      },
+      "unitNames": [
+        "Company Heroes"
+      ],
+      "ruleName": "Company Heroes",
+      "source": "Faction Pack - Space Marines v1.1, page 61"
+    },
+    {
+      "id": "audit-orks-dakkamek-eligibility",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Speedwaaagh!",
+      "enhancementName": "Dakkamek",
+      "unitKeywordsAll": [
+        "Faction: Orks",
+        "Mek"
+      ],
+      "restriction": "MEK model only.",
+      "source": "Faction Pack - Orks v1.1, page 6"
+    },
+    {
+      "id": "aug26-orks-careen",
+      "kind": "stratagem-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "War Horde",
+      "stratagemName": "Careen!",
+      "description": "WHEN: Any phase, just after an ORKS VEHICLE unit from your army with the Deadly Demise ability is destroyed. TARGET: That destroyed ORKS VEHICLE unit, if you roll a 6 for its Deadly Demise ability. You can use this stratagem on that unit even though it was just destroyed. EFFECT: Your unit can make a Normal or Fall Back move before its Deadly Demise ability is resolved and before any embarked units perform an emergency disembark move. When making this move, your unit can move over enemy units, excluding MONSTERS and VEHICLES, as if they were not there.",
+      "source": "Faction Pack - Orks v1.2, page 24"
+    },
+    {
+      "id": "aug26-orks-rivetin-dakka",
+      "kind": "rule-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "unitNames": [
+        "Kustom Boosta-blasta"
+      ],
+      "ruleName": "Rivetin' Dakka",
+      "description": "In your Shooting phase, after this model has shot, select one enemy unit hit by one or more of those attacks made with a rivet kannon. Until the start of your next turn, that enemy unit is suppressed. While a unit is suppressed, each time a model in that unit makes a ranged attack, subtract 1 from the Hit roll.",
+      "source": "Faction Pack - Orks v1.2, page 26"
+    },
+    {
+      "id": "aug26-orks-mob-mentality",
+      "kind": "detachment-rule-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Green Tide",
+      "ruleName": "Mob Mentality",
+      "description": "Each time an attack targets a BOYZ unit from your army, models in that unit have a 6+ invulnerable save against that attack. Each time an attack targets a BOYZ unit from your army that contains 10 or more models, models in that unit have a 5+ invulnerable save against that attack. When resolving an attacking unit's attacks, the number of models in the target unit when it was targeted determines that unit's invulnerable save until those attacks are resolved; do not change the save partway through those attacks as casualties are removed.",
+      "source": "Faction Pack - Orks v1.2, pages 26-27"
+    },
+    {
+      "id": "aug26-orks-mekanised-brutality",
+      "kind": "stratagem-replace",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Blitz Brigade",
+      "stratagemName": "Mekanised Brutality",
+      "description": "WHEN: Your Movement phase, just after an ORKS TRANSPORT unit from your army ends a Normal move. TARGET: That TRANSPORT unit. EFFECT: Units embarked within your TRANSPORT can make an assault disembark move as described in Core Rules 18.06.",
+      "source": "Faction Pack - Orks v1.2, page 24"
+    },
+    {
+      "id": "aug26-space-marines-wardens-heroes",
+      "kind": "rule-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Astartes - Ultramarines"
+      },
+      "unitNames": [
+        "Wardens of Ultramar"
+      ],
+      "ruleName": "Heroes of Ultramar",
+      "source": "Faction Pack - Space Marines v1.2"
+    }
+  ],
+  "mfmPointRows": [
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "BLITZ BRIGADE",
+      "enhancementName": "Blitzkaptin"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "BLITZ BRIGADE",
+      "enhancementName": "Runnin’ Boots"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "BLITZ BRIGADE",
+      "enhancementName": "Supercharged Squig Oil"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 5,
+      "kind": "enhancement",
+      "detachmentName": "BLITZ BRIGADE",
+      "enhancementName": "Tuff Git"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "BULLY BOYZ",
+      "enhancementName": "’Eadstompa"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "BULLY BOYZ",
+      "enhancementName": "Big Gob"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "BULLY BOYZ",
+      "enhancementName": "Da Biggest Boss"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "BULLY BOYZ",
+      "enhancementName": "Tellyporta"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "DA BIG HUNT",
+      "enhancementName": "Proper Killy"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "DA BIG HUNT",
+      "enhancementName": "Skrag Every Stash!"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "DA BIG HUNT",
+      "enhancementName": "Surly as a Squiggoth"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "DREAD MOB",
+      "enhancementName": "Gitfinder Gogglez"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 35,
+      "kind": "enhancement",
+      "detachmentName": "DREAD MOB",
+      "enhancementName": "Press It Fasta!"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "DREAD MOB",
+      "enhancementName": "Smoky Gubbinz"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "DREAD MOB",
+      "enhancementName": "Supa-glowy Fing"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "FREEBOOTER KREW",
+      "enhancementName": "Bionik Workshop"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "FREEBOOTER KREW",
+      "enhancementName": "Da Kaptin"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "FREEBOOTER KREW",
+      "enhancementName": "Git-Spotter Squig"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "FREEBOOTER KREW",
+      "enhancementName": "Razgit’s Magik Map"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "GREEN TIDE",
+      "enhancementName": "Bloodthirsty Belligerence"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "GREEN TIDE",
+      "enhancementName": "Brutal But Kunnin’"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "GREEN TIDE",
+      "enhancementName": "Raucous Warcaller"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 35,
+      "kind": "enhancement",
+      "detachmentName": "KULT OF SPEED",
+      "enhancementName": "Fasta Than Yooz"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "KULT OF SPEED",
+      "enhancementName": "Speed Makes Right"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "KULT OF SPEED",
+      "enhancementName": "Squig-hide Tyres"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "KULT OF SPEED",
+      "enhancementName": "Wazblasta"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "MORE DAKKA!",
+      "enhancementName": "Dead Shiny Shootas (Upgrade)"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "ROLLIN' DEFF",
+      "enhancementName": "Boarding Ramps (Upgrade)"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 25,
+      "kind": "enhancement",
+      "detachmentName": "SPEEDWAAAGH!",
+      "enhancementName": "Dakkamek"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 10,
+      "kind": "enhancement",
+      "detachmentName": "SPEEDWAAAGH!",
+      "enhancementName": "Kustom Shokk Box"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "SPEEDWAAAGH!",
+      "enhancementName": "Master Meknologist"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "SPEEDWAAAGH!",
+      "enhancementName": "Supa-Burny Fuel"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 20,
+      "kind": "enhancement",
+      "detachmentName": "TAKTIKAL BRIGADE",
+      "enhancementName": "Mork’s Kunnin’"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "TAKTIKAL BRIGADE",
+      "enhancementName": "Slippery Git"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": "DETACHMENTS",
+      "context": null,
+      "points": 15,
+      "kind": "enhancement",
+      "detachmentName": "WAR HORDE",
+      "enhancementName": "Supa-Cybork Body"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 70,
+      "kind": "unit",
+      "unitName": "BOOMDAKKA SNAZZWAGON",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 120,
+      "kind": "unit",
+      "unitName": "BURNA BOYZ",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "10 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 60,
+      "kind": "unit",
+      "unitName": "BURNA BOYZ",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "5 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 70,
+      "kind": "unit",
+      "unitName": "KUSTOM BOOSTA-BLASTA",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 100,
+      "kind": "unit",
+      "unitName": "LOOTAS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "10 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 50,
+      "kind": "unit",
+      "unitName": "LOOTAS",
+      "costBand": "YOUR 1ST TO 2ND UNITS COST",
+      "label": "5 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 110,
+      "kind": "unit",
+      "unitName": "LOOTAS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "10 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 60,
+      "kind": "unit",
+      "unitName": "LOOTAS",
+      "costBand": "YOUR 3RD + UNIT COSTS",
+      "label": "5 models"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 75,
+      "kind": "unit",
+      "unitName": "MEGATRAKK SCRAPJET",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 85,
+      "kind": "unit",
+      "unitName": "RUKKATRUKK SQUIGBUGGY",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 70,
+      "kind": "unit",
+      "unitName": "SHOKKJUMP DRAGSTA",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 60,
+      "kind": "unit",
+      "unitName": "WURRBOY",
+      "costBand": "YOUR UNIT COSTS",
+      "label": "1 model"
+    },
+    {
+      "faction": "Orks",
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "section": null,
+      "context": null,
+      "points": 15,
+      "kind": "wargear",
+      "unitName": "BATTLEWAGON",
+      "costBand": "WARGEAR OPTIONS",
+      "label": "per ard case"
+    }
+  ],
+  "mfmDetachmentRows": [
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "FREEBOOTER KREW",
+      "detachmentPoints": 2,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "MORE DAKKA!",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "ROLLIN' DEFF",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "SPEEDWAAAGH!",
+      "detachmentPoints": 2,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    }
+  ],
+  "enhancementRestrictionRows": [
+    {
+      "id": "restriction-xenos-orks-slippery-git",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Taktikal Brigade",
+      "enhancementName": "Slippery Git",
+      "restriction": "INFANTRY WARBOSS model only (excluding MEGA ARMOUR models).",
+      "source": "Faction Pack - Orks v1.1, page 5"
+    },
+    {
+      "id": "restriction-xenos-orks-da-gobshot-thunderbuss",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "More Dakka!",
+      "enhancementName": "Da Gobshot Thunderbuss",
+      "restriction": "ORKS INFANTRY model only.",
+      "source": "Faction Pack - Orks v1.1, page 4"
+    },
+    {
+      "id": "restriction-xenos-orks-git-spotter-squig",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Git-spotter Squig",
+      "restriction": "ORKS model only.",
+      "source": "Faction Pack - Orks v1.0, page 9"
+    },
+    {
+      "id": "restriction-xenos-orks-bionik-workshop",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "detachmentName": "Freebooter Krew",
+      "enhancementName": "Bionik Workshop",
+      "restriction": "BIG MEK or PAINBOY model only.",
+      "unitKeywordsAny": [
+        "Big Mek",
+        "Painboy"
+      ],
+      "restrictEligibility": true,
+      "source": "Faction Pack - Orks v1.1"
+    }
+  ]
+}

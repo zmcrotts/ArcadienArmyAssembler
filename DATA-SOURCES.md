@@ -43,8 +43,12 @@ data/rulesets/wh40k-11e-vflam/
 ```
 
 That directory is a local imported copy of BSData-style 11th-edition JSON
-catalogues. Treat it as replaceable imported data: update or replace the
-source, then regenerate the browser bundle.
+catalogues from `https://github.com/BSData/wh40k-11e`. Treat it as a single,
+replaceable system snapshot: update the full set together, record the upstream
+commit in `src/rulesets/sources.js`, then regenerate the browser bundle.
+
+Previous snapshots belong under `data/quarantine/` and must never be read as
+active ruleset inputs.
 
 ### Imported BSData
 

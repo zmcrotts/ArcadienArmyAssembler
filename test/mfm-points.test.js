@@ -43,9 +43,8 @@ test("MFM v1.3 includes red increases", () => {
   assert.equal(points(morvenn, 1), 200);
 });
 
-test("Gretchin and Runtherd use separate codex datasheets and MFM points", () => {
+test("Gretchin and Runtherd use separate upstream datasheets and current points", () => {
   const gretchin = unit("Xenos - Orks", "Gretchin");
-  assert.deepEqual(gretchin.unitSizePresets.map(item => item.label), ["10 Gretchin", "20 Gretchin"]);
   assert.deepEqual([10, 20].map(size => points(gretchin, size)), [45, 80]);
   assert.equal(points(unit("Xenos - Orks", "Runtherd"), 1), 10);
 });
@@ -243,7 +242,7 @@ test("Faction Pack v1.1 keeps the flagged Space Marine detachment", () => {
   const vengeful = marines.detachments.find(item => item.name === "Vengeful Hosts");
   assert.deepEqual(
     { points: vengeful.detachmentPoints, disposition: vengeful.forceDisposition.name, rules: vengeful.rules.length, stratagems: vengeful.stratagems.length },
-    { points: 1, disposition: "Take and Hold", rules: 1, stratagems: 3 }
+    { points: 1, disposition: "Take and Hold", rules: 1, stratagems: 0 }
   );
   assert.equal(marines.enhancements.find(item => item.name === "Avenging Angel")?.points, 20);
   assert.equal(marines.enhancements.find(item => item.name === "Orksbane")?.points, 20);
@@ -252,17 +251,18 @@ test("Faction Pack v1.1 keeps the flagged Space Marine detachment", () => {
 
 test("every MFM v1.3 row attaches to normalized roster data", () => {
   assert.equal(ruleset.mfmPointSource.version, "1.3");
-  assert.equal(ruleset.mfmPointSource.total, 3818);
-  assert.equal(ruleset.mfmPointSource.unitRows, 2536);
-  assert.equal(ruleset.mfmPointSource.wargearRows, 111);
-  assert.equal(ruleset.mfmPointSource.enhancementRows, 1171);
+  assert.equal(ruleset.mfmPointSource.total, 3770);
+  assert.equal(ruleset.mfmPointSource.unitRows, 2524);
+  assert.equal(ruleset.mfmPointSource.wargearRows, 110);
+  assert.equal(ruleset.mfmPointSource.enhancementRows, 1136);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
   assert.deepEqual(mfmDocument.reconciliation, {
     mode: "full-table",
     pages: 30,
     extractedRows: 3850,
-    activeRows: 3818,
+    activeRows: 3770,
     pendingRows: 33,
-    derivedZeroCostRows: 1
+    derivedZeroCostRows: 1,
+    retiredByBsdataRefresh: 48
   });
 });

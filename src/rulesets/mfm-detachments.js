@@ -34,11 +34,7 @@ const FACTION_TARGETS = new Map(Object.entries({
 
 const DETACHMENT_ALIASES = new Map(Object.entries({
   "adeptus-mechanicus|haloscreed battle clade": "haloscreed battleclade",
-  "adeptus-mechanicus|luminen auto choir": "luminen autochoir",
-  "genestealer-cults|brood brothers auxilia": "brood brother auxilia",
-  "imperial-agents|ordo hereticus purgation force": "purgation force ordo hereticus",
-  "imperial-agents|ordo malleus daemon hunters": "daemon hunters ordo malleus",
-  "imperial-agents|ordo xenos alien hunters": "alien hunters ordo xenos"
+  "genestealer-cults|brood brothers auxilia": "brood brother auxilia"
 }));
 
 function normalize(value) {

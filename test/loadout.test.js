@@ -450,8 +450,8 @@ test("nested specialist models replace outer default models and do not inflate u
   assert.deepEqual(getUnitSizeState(definition, entry), { current: 10, minimum: 10, maximum: 20, editable: true });
 
   entry = setUnitSize(definition, entry, 20);
-  const bigShoota = option(definition, "Boy w/ Big shoota and close combat weapon");
-  const rokkit = option(definition, "Boy w/ Rokkit launcha and close combat weapon");
+  const bigShoota = option(definition, "Boy w/ Big shoota");
+  const rokkit = option(definition, "Boy w/ Rokkit launcha");
   let states = getOptionStates(definition, entry);
   assert.equal(states.find(item => item.id === bigShoota.id).maximum, 2);
   assert.equal(states.find(item => item.id === rokkit.id).maximum, 2);
@@ -461,7 +461,7 @@ test("nested specialist models replace outer default models and do not inflate u
   assert.equal(getUnitSizeState(definition, entry).current, 20);
   assert.deepEqual(validateLoadout(definition, entry), []);
   assert.equal(getConfiguredProfiles(definition, entry).units.filter(profile => profile.name === "Boy").length, 1);
-  assert.ok(getConfiguredProfiles(definition, entry).units.some(profile => profile.name === "Boss Nob"));
+  assert.ok(getConfiguredProfiles(definition, entry).units.some(profile => profile.name === "Nob"));
 });
 
 test("Jakhals treat weapon bundles as loadouts instead of extra model requirements", () => {
@@ -501,7 +501,7 @@ test("11e unit profiles expose canonical save values", () => {
   const definition = unit11e("Xenos - Orks", "Boyz");
   const profiles = getConfiguredProfiles(definition, createDefaultRosterEntry(definition));
   const boy = profiles.units.find(profile => profile.name === "Boy");
-  const bossNob = profiles.units.find(profile => profile.name === "Boss Nob");
+  const bossNob = profiles.units.find(profile => profile.name === "Nob");
 
   assert.equal(boy.characteristics.SV, "5+");
   assert.equal(bossNob.characteristics.SV, "5+");

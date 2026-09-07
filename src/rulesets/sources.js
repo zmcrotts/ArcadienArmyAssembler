@@ -43,6 +43,8 @@ const RULESET_SOURCES = {
     game: "warhammer-40000",
     format: "bsdata-json",
     sourcePath: path.join(ROOT, "data", "rulesets", "wh40k-11e-vflam"),
+    upstreamRepository: "https://github.com/BSData/wh40k-11e",
+    upstreamCommit: "377901eb77348a8da0f1527e03bcd3bb43b0869f",
     auxiliarySources: {
       coreStratagems: path.join(ROOT, "data", "manual-rules", "wh40k-11e-core-stratagems.json"),
       detachmentStratagems: [
@@ -59,7 +61,7 @@ const RULESET_SOURCES = {
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
     primary: true,
-    description: "11th-edition BSData-style JSON catalogues from vflam/wh40k-11e."
+    description: "Current full 11th-edition JSON catalogue snapshot from BSData/wh40k-11e."
   }
 };
 
@@ -113,8 +115,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
     ...unit,
     rulesetId: source.id
   }))), armiesWithRules);
+  const orksCodex = readOrksCodex(source.auxiliarySources?.orksCodex);
+  const orksCodexResult = applyOrksCodex(correctedUnitDefinitions, armiesWithRules, orksCodex);
   const manualDetachments = readManualDetachments(source.auxiliarySources?.manualDetachments);
-  const manualDetachmentResult = applyManualDetachments(correctedUnitDefinitions, armiesWithRules, manualDetachments);
+  const manualDetachmentResult = applyManualDetachments(orksCodexResult.units, orksCodexResult.armies, manualDetachments);
   const mfmDetachments = readMfmDetachments(source.auxiliarySources?.mfmDetachments);
   const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
   const factionPackUpdates = readFactionPackUpdates(source.auxiliarySources?.factionPackUpdates);
@@ -127,9 +131,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   );
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
   const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
-  const orksCodex = readOrksCodex(source.auxiliarySources?.orksCodex);
-  const orksCodexResult = applyOrksCodex(mfmPointResult.units, mfmPointResult.armies, orksCodex);
-  const normalized = reconcileSelectableUnits(orksCodexResult.units, orksCodexResult.armies);
+  const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -360,22 +362,6 @@ function sameRuleName(left, right) {
 
 function applyManualLoadoutCorrections(definitions) {
   return definitions.map(definition => {
-    if (
-      definition.rulesetId === "wh40k-11e-vflam"
-      && definition.faction === "Xenos - Orks"
-      && definition.name === "Boyz"
-    ) {
-      return fixOrkBoyzRulesUpdate(definition);
-    }
-
-    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Gretchin") {
-      return fixOrkGretchinRulesUpdate(definition);
-    }
-
-    if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction === "Xenos - Orks" && definition.name === "Warboss") {
-      return fixOrkWarbossRulesUpdate(definition);
-    }
-
     if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction.startsWith("Imperium - Adeptus Astartes") && definition.name === "Chaplain with Jump Pack") {
       return fixChaplainJumpPackRulesUpdate(definition);
     }

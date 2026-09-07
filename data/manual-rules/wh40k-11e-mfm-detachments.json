@@ -2335,15 +2335,6 @@
     {
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
-      "detachmentName": "FREEBOOTER KREW",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "orks",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "GREEN TIDE",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
@@ -2356,33 +2347,6 @@
       "detachmentName": "KULT OF SPEED",
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "orks",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
-      "detachmentName": "MORE DAKKA!",
-      "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "orks",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
-      "detachmentName": "ROLLIN' DEFF",
-      "detachmentPoints": 1,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "orks",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
-      "detachmentName": "SPEEDWAAAGH!",
-      "detachmentPoints": 2,
-      "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },

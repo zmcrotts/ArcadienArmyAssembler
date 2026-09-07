@@ -951,7 +951,7 @@ test("11e Gorkanaut keeps its Transport capacity with its sheet profiles", () =>
   const transport = configured.abilities.find(profile => profile.typeName === "Transport");
 
   assert.ok(transport, "Gorkanaut should retain its Transport profile");
-  assert.match(transport.characteristics.Capacity, /transport capacity of 12 ORKS INFANTRY/i);
+  assert.match(transport.characteristics.Capacity.replace(/\*\*/g, ""), /transport capacity of 12 ORKS INFANTRY/i);
 });
 
 test("11e Blitz Brigade exposes each wagon upgrade once", () => {
@@ -1120,7 +1120,7 @@ test("11e Sword Brethren default to five models and retain specialist weapons ac
   assert.deepEqual(validateLoadout(unit, entry), []);
 });
 
-test("11e Outrider Squads can be increased from three to six models", () => {
+test("11e Outrider Squads support six riders plus an optional Invader ATV", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
   const units = ruleset.units.filter(item =>
     item.faction.startsWith("Imperium - Adeptus Astartes")
@@ -1131,7 +1131,7 @@ test("11e Outrider Squads can be increased from three to six models", () => {
   for (const unit of units) {
     let entry = createDefaultRosterEntry(unit);
     assert.deepEqual(getUnitSizeState(unit, entry), {
-      current: 3, minimum: 3, maximum: 6, editable: true
+      current: 3, minimum: 3, maximum: 7, editable: true
     }, unit.faction);
     entry = setUnitSize(unit, entry, 6);
     assert.equal(getUnitSizeState(unit, entry).current, 6, unit.faction);
@@ -1329,9 +1329,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   };
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 135],
-    ["Breaka Boyz", 135],
-    ["Gorkanaut", 325]
+    ["Big Mek Dakkarig", 115],
+    ["Breaka Boyz", 125],
+    ["Gorkanaut", 255]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1339,9 +1339,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 145],
-    ["Breaka Boyz", 145],
-    ["Gorkanaut", 355]
+    ["Big Mek Dakkarig", 115],
+    ["Breaka Boyz", 135],
+    ["Gorkanaut", 275]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1351,8 +1351,8 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
 
   const nobz = unit("Nobz");
   const nobzEntry = setUnitSize(nobz, createDefaultRosterEntry(nobz), 10);
-  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 250);
-  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 280);
+  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 210);
+  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 220);
 });
 
 test("11e selected wargear direct points are included in entry totals", () => {
@@ -1567,10 +1567,10 @@ test("every explicit 11e enhancement and upgrade bearer restriction is enforced"
   const result = auditEnhancementEligibility();
 
   assert.equal(result.summary.armies, 35);
-  assert.equal(result.summary.records, 1575);
-  assert.equal(result.summary.enhancements, 1453);
+  assert.equal(result.summary.records, 1577);
+  assert.equal(result.summary.enhancements, 1455);
   assert.equal(result.summary.upgrades, 122);
-  assert.equal(result.summary.explicitLimiters, 1256);
+  assert.equal(result.summary.explicitLimiters, 1258);
   assert.equal(result.summary.overBroadRecords, 0);
 });
 

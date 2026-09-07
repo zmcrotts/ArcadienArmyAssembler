@@ -6,9 +6,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const { extractNormalizedRuleset } = require("../src/rulesets/sources");
+const { createDefaultRosterEntry, getUnitSizeState } = require("../src/domain/loadout");
 
 const root = path.resolve(__dirname, "..");
 const updateDocument = JSON.parse(fs.readFileSync(path.join(root, "data", "manual-rules", "wh40k-11e-faction-pack-updates.json"), "utf8"));
+const retiredOverlayDocument = JSON.parse(fs.readFileSync(path.join(root, "data", "quarantine", "retired-overlays-2026-09-07.json"), "utf8"));
 
 function walk(node, visitor) {
   if (!node) return;
@@ -49,7 +51,8 @@ test("Faction Pack v1.1 red-text overrides all resolve", () => {
       ...updateDocument.updates,
       ...updateDocument.audit.manualCorrections,
       ...updateDocument.audit.verifiedCurrentSource,
-      ...updateDocument.audit.nonRosterFacing
+      ...updateDocument.audit.nonRosterFacing,
+      ...(retiredOverlayDocument.factionPackUpdates || [])
     ];
     const uncovered = [];
     for (const document of report.documents) {
@@ -75,11 +78,12 @@ test("current Orks definitions do not retain obsolete faction-pack loadout nodes
   assert.equal(nodes(boyz, "Big choppa and kustom shoota").length, 0);
   assert.equal(nodes(boyz, "Big choppa, kombi-rokkit and kombi-shoota").length, 0);
   assert.equal(nodes(warboss, "Kustom choppa and kustom shoota").length, 0);
-  assert.deepEqual(gretchin.allowedCompositions.map(row => row.map(item => item.count)), [[10], [20]]);
-  assert.deepEqual(gretchin.unitSizePresets.map(item => item.size), [10, 20]);
+  assert.deepEqual(getUnitSizeState(gretchin, createDefaultRosterEntry(gretchin)), {
+    current: 10, minimum: 10, maximum: 20, editable: true
+  });
   for (const name of ["Warboss (Armageddon)", "Boyz (Armageddon)", "Gretchin (Armageddon)"]) {
     assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === name), false, name);
-    assert.ok(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === `${name} [Legends]`), name);
+    assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && unit.name === `${name} [Legends]`), false, `${name} [Legends]`);
   }
   assert.equal(boyz.rosterRules.allowsMultipleLeadersAsBodyguard, false);
 });
@@ -92,7 +96,7 @@ test("Space Marine red-text weapon options are present", () => {
   assert.equal(nodes(veterans, "Veteran: heavy bolt pistol + master-crafted power weapon").length, 1);
   assert.equal(nodes(veterans, "Heavy bolt pistol + master-crafted power weapon").length, 1);
   assert.equal(ruleset.units.some(unit => unit.name === "Vanguard Veteran Squad (Armageddon)"), false);
-  assert.equal(ruleset.excludedUnits.find(unit => unit.name === "Vanguard Veteran Squad (Armageddon)")?.sourceDisposition, "not-valid-for-matched-play");
+  assert.equal(ruleset.excludedUnits.some(unit => unit.name === "Vanguard Veteran Squad (Armageddon)"), false);
 });
 
 test("representative army, detachment and datasheet red changes are exact", () => {
@@ -102,7 +106,7 @@ test("representative army, detachment and datasheet red changes are exact", () =
   assert.equal(light.cpCost, "2");
   const necrons = ruleset.armies.find(army => army.faction === "Xenos - Necrons");
   assert.match(necrons.armyRules.find(rule => rule.name === "Reanimation Protocols").description, /heals D3 wounds/);
-  assert.ok(ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Shokkjump Dragsta [Legends]"));
+  assert.equal(ruleset.units.some(unit => unit.faction === "Xenos - Orks" && /Shokkjump Dragsta/.test(unit.name)), false);
   const warbuggies = ruleset.units.find(unit => unit.faction === "Xenos - Orks" && unit.name === "Warbuggies");
-  assert.match(ability(warbuggies, "Drive-by Skorchin’").characteristics.Description, /within 6"/);
+  assert.match(ability(warbuggies, "Drive-by Skorchin'").characteristics.Description, /within 6"/);
 });

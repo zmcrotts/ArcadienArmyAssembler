@@ -16,8 +16,8 @@ function detachment(ruleset, faction, name) {
 test("every current MFM v1.3 detachment schedule attaches to normalized data", () => {
   const source = extractNormalizedRuleset("wh40k-11e-vflam").mfmDetachmentSource;
   assert.equal(source.version, "1.3");
-  assert.equal(source.total, 346);
-  assert.equal(source.matched, 346);
+  assert.equal(source.total, 342);
+  assert.equal(source.matched, 342);
   assert.equal(source.unmatched, 0);
   assert.equal(source.dispositionFlags, 5);
   assert.equal(source.detachmentPointFlags, 2);
@@ -59,9 +59,9 @@ test("MFM v1.3 applies current detachment points, including both newly flagged c
     ["Imperium - Adepta Sororitas", "Bringers of Flame", 2],
     ["Imperium - Astra Militarum", "Combined Arms", 2],
     ["Imperium - Agents of the Imperium", "Imperialis Fleet", 2],
-    ["Imperium - Agents of the Imperium", "Purgation Force (Ordo Hereticus)", 2],
-    ["Imperium - Agents of the Imperium", "Daemon Hunters (Ordo Malleus)", 2],
-    ["Imperium - Agents of the Imperium", "Alien Hunters (Ordo Xenos)", 2],
+    ["Imperium - Agents of the Imperium", "Ordo Hereticus, Purgation Force", 2],
+    ["Imperium - Agents of the Imperium", "Ordo Malleus, Daemon Hunters", 2],
+    ["Imperium - Agents of the Imperium", "Ordo Xenos, Alien Hunters", 2],
     ["Imperium - Agents of the Imperium", "Veiled Blade Elimination Force", 1],
     ["Xenos - T'au Empire", "Retaliation Cadre", 3],
     ["Chaos - Thousand Sons", "Hexwarp Thrallband", 3],
