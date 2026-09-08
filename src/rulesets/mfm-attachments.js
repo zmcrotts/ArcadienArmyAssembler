@@ -39,6 +39,7 @@ function readMfmAttachments(filePath) {
   const payload = JSON.parse(fs.readFileSync(filePath, "utf8"));
   return {
     source: payload.source || null,
+    version: payload.version || null,
     generatedAt: payload.generatedAt || null,
     factions: Array.isArray(payload.factions) ? payload.factions : []
   };

@@ -17,6 +17,7 @@ const ENHANCEMENT_ALIASES = new Map(Object.entries({
   "sharp eyes light fingers": "sharp eyes",
   "slaugterthirst": "slaughterthirst",
   "spy skull datalink": "spy skull data link",
+  "stormseers wisdom": "stormseer s wisdom",
   "sublime presence": "sublime prescience",
   "synaptic synergy": "synaptic strategy",
   "tl 4o9": "tl 409"

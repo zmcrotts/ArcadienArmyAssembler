@@ -23,7 +23,7 @@ function points(definition, size, context = {}, options = {}) {
   return calculateEntryPoints(definition, entry, options).points;
 }
 
-test("MFM v1.3 preserves separate model-count and copy-count bands", () => {
+test("MFM v1.4 preserves separate model-count and copy-count bands", () => {
   const faction = "Imperium - Adepta Sororitas";
   const repentia = unit(faction, "Repentia Squad");
   assert.equal(points(repentia, 5), 70);
@@ -38,7 +38,7 @@ test("MFM v1.3 preserves separate model-count and copy-count bands", () => {
   assert.equal(points(immolator, 1, { previousCopies: 3 }), 115);
 });
 
-test("MFM v1.3 includes red increases", () => {
+test("MFM v1.4 includes current increases", () => {
   const morvenn = unit("Imperium - Adepta Sororitas", "Morvenn Vahl");
   assert.equal(points(morvenn, 1), 200);
 });
@@ -61,7 +61,7 @@ test("World Eaters use the current Berzerker costs", () => {
   assert.equal(points(berzerkers, 20), 320);
 });
 
-test("MFM v1.3 keeps Chapter-specific Space Marine schedules distinct", () => {
+test("MFM v1.4 keeps Chapter-specific Space Marine schedules distinct", () => {
   const bloodAngelsJumpIntercessors = unit(
     "Imperium - Adeptus Astartes - Blood Angels",
     "Assault Intercessors with Jump Packs"
@@ -154,7 +154,7 @@ test("Imperial Knights use the complete allied-Imperium schedule for Imperial Ag
   }
 });
 
-test("MFM v1.3 applies enhancement and wargear totals", () => {
+test("MFM v1.4 applies enhancement and wargear totals", () => {
   const sisters = ruleset.armies.find(item => item.faction === "Imperium - Adepta Sororitas");
   const expected = new Map([
     ["Catechism of Divine Penitence", 15],
@@ -175,7 +175,7 @@ test("MFM v1.3 applies enhancement and wargear totals", () => {
   assert.equal(nodes.find(node => node.name === "Venatari lance")?.points, 5);
 });
 
-test("MFM v1.3 updates embedded enhancement copies and zeros unlisted paid wargear", () => {
+test("MFM v1.4 updates embedded enhancement copies and zeros unlisted paid wargear", () => {
   const expectedEmbedded = [
     ["Imperium - Agents of the Imperium", "Callidus Assassin", "Decoy Targets", 15],
     ["Imperium - Agents of the Imperium", "Culexus Assassin", "Esoteric Explosives", 10],
@@ -204,7 +204,7 @@ test("MFM v1.3 updates embedded enhancement copies and zeros unlisted paid warge
   assert.equal(nodes.find(node => node.name === "Heavy mining laser")?.points, 0);
 });
 
-test("MFM v1.3 applies changed unit schedules, wargear, and enhancements", () => {
+test("MFM v1.4 applies current unit schedules, wargear, and enhancements", () => {
   const allarus = unit("Imperium - Adeptus Custodes", "Allarus Custodians");
   assert.equal(points(allarus, 2, { previousCopies: 0 }), 110);
   assert.equal(points(allarus, 2, { previousCopies: 2 }), 140);
@@ -249,20 +249,19 @@ test("Faction Pack v1.1 keeps the flagged Space Marine detachment", () => {
 
 });
 
-test("every MFM v1.3 row attaches to normalized roster data", () => {
-  assert.equal(ruleset.mfmPointSource.version, "1.3");
-  assert.equal(ruleset.mfmPointSource.total, 3770);
-  assert.equal(ruleset.mfmPointSource.unitRows, 2524);
-  assert.equal(ruleset.mfmPointSource.wargearRows, 110);
-  assert.equal(ruleset.mfmPointSource.enhancementRows, 1136);
+test("every MFM v1.4 row attaches to normalized roster data", () => {
+  assert.equal(ruleset.mfmPointSource.version, "1.4");
+  assert.equal(ruleset.mfmPointSource.total, 3856);
+  assert.equal(ruleset.mfmPointSource.unitRows, 2549);
+  assert.equal(ruleset.mfmPointSource.wargearRows, 114);
+  assert.equal(ruleset.mfmPointSource.enhancementRows, 1193);
   assert.equal(ruleset.mfmPointSource.unmatched, 0);
   assert.deepEqual(mfmDocument.reconciliation, {
     mode: "full-table",
     pages: 30,
-    extractedRows: 3850,
-    activeRows: 3770,
-    pendingRows: 33,
-    derivedZeroCostRows: 1,
-    retiredByBsdataRefresh: 48
+    extractedRows: 3855,
+    activeRows: 3856,
+    pendingRows: 0,
+    derivedZeroCostRows: 1
   });
 });

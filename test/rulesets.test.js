@@ -1329,9 +1329,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   };
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 115],
-    ["Breaka Boyz", 125],
-    ["Gorkanaut", 255]
+    ["Big Mek Dakkarig", 135],
+    ["Breaka Boyz", 135],
+    ["Gorkanaut", 325]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1339,9 +1339,9 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 115],
-    ["Breaka Boyz", 135],
-    ["Gorkanaut", 275]
+    ["Big Mek Dakkarig", 145],
+    ["Breaka Boyz", 145],
+    ["Gorkanaut", 355]
   ]) {
     const definition = unit(name);
     const entry = createDefaultRosterEntry(definition);
@@ -1351,8 +1351,8 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
 
   const nobz = unit("Nobz");
   const nobzEntry = setUnitSize(nobz, createDefaultRosterEntry(nobz), 10);
-  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 210);
-  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 220);
+  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 250);
+  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 280);
 });
 
 test("11e selected wargear direct points are included in entry totals", () => {
@@ -1567,10 +1567,10 @@ test("every explicit 11e enhancement and upgrade bearer restriction is enforced"
   const result = auditEnhancementEligibility();
 
   assert.equal(result.summary.armies, 35);
-  assert.equal(result.summary.records, 1577);
-  assert.equal(result.summary.enhancements, 1455);
+  assert.equal(result.summary.records, 1575);
+  assert.equal(result.summary.enhancements, 1453);
   assert.equal(result.summary.upgrades, 122);
-  assert.equal(result.summary.explicitLimiters, 1258);
+  assert.equal(result.summary.explicitLimiters, 1256);
   assert.equal(result.summary.overBroadRecords, 0);
 });
 

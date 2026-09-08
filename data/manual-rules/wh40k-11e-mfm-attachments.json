@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "https://mfm.warhammer-community.com/en",
-  "generatedAt": "2026-07-22T14:04:08.835Z",
+  "version": "1.4",
+  "generatedAt": "2026-09-08T04:10:58.549863Z",
   "factions": [
     {
       "name": "Adepta Sororitas",
@@ -349,12 +350,18 @@
           ]
         },
         {
+          "unitName": "CLANBLADE",
+          "role": "LEADER",
+          "targets": [
+            "DRAGON KNIGHTS"
+          ]
+        },
+        {
           "unitName": "ELDRAD ULTHRAN",
           "role": "LEADER",
           "targets": [
             "GUARDIAN DEFENDERS",
-            "STORM GUARDIANS",
-            "WARLOCK CONCLAVE"
+            "STORM GUARDIANS"
           ]
         },
         {
@@ -362,8 +369,7 @@
           "role": "LEADER",
           "targets": [
             "GUARDIAN DEFENDERS",
-            "STORM GUARDIANS",
-            "WARLOCK CONCLAVE"
+            "STORM GUARDIANS"
           ]
         },
         {
@@ -416,6 +422,13 @@
           "targets": [
             "CORSAIR VOIDREAVERS",
             "CORSAIR VOIDSCARRED"
+          ]
+        },
+        {
+          "unitName": "STONESINGER",
+          "role": "SUPPORT",
+          "targets": [
+            "DRAGON KNIGHTS"
           ]
         },
         {
@@ -753,6 +766,7 @@
           "role": "SUPPORT",
           "targets": [
             "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
             "CRUSADER SQUAD",
             "DEATHWATCH VETERANS",
             "DECIMUS KILL TEAM",
@@ -915,6 +929,17 @@
             "STERNGUARD VETERAN SQUAD",
             "SWORD BRETHREN SQUAD",
             "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
           ]
         },
         {
@@ -1077,6 +1102,7 @@
           "role": "SUPPORT",
           "targets": [
             "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
             "CRUSADER SQUAD",
             "DEATHWATCH VETERANS",
             "DECIMUS KILL TEAM",
@@ -1239,6 +1265,17 @@
             "STERNGUARD VETERAN SQUAD",
             "SWORD BRETHREN SQUAD",
             "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
           ]
         },
         {
@@ -1783,6 +1820,7 @@
           "role": "SUPPORT",
           "targets": [
             "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
             "CRUSADER SQUAD",
             "DEATHWATCH VETERANS",
             "DECIMUS KILL TEAM",
@@ -1945,6 +1983,17 @@
             "STERNGUARD VETERAN SQUAD",
             "SWORD BRETHREN SQUAD",
             "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
           ]
         },
         {
@@ -2190,6 +2239,7 @@
           "role": "SUPPORT",
           "targets": [
             "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
             "CRUSADER SQUAD",
             "DEATHWATCH VETERANS",
             "DECIMUS KILL TEAM",
@@ -2355,6 +2405,17 @@
           ]
         },
         {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
+          ]
+        },
+        {
           "unitName": "LIBRARIAN",
           "role": "LEADER",
           "targets": [
@@ -2502,7 +2563,7 @@
       ]
     },
     {
-      "name": "Emperor’s Children",
+      "name": "Emperor's Children",
       "slug": "emperors-children",
       "url": "https://mfm.warhammer-community.com/en/emperors-children",
       "attachments": [
@@ -2725,107 +2786,6 @@
       "slug": "imperial-agents",
       "url": "https://mfm.warhammer-community.com/en/imperial-agents",
       "attachments": [
-        {
-          "unitName": "INQUISITOR",
-          "role": "LEADER",
-          "targets": [
-            "AQUILA KILL TEAM",
-            "BATTLELINE IMPERIUM INFANTRY",
-            "EXACTION SQUAD",
-            "GREY KNIGHTS TERMINATOR SQUAD",
-            "IMPERIAL NAVY BREACHERS",
-            "INQUISITORIAL AGENTS",
-            "SANCTIFIERS",
-            "SISTERS OF BATTLE SQUAD",
-            "SUBDUCTOR SQUAD",
-            "VIGILANT SQUAD"
-          ]
-        },
-        {
-          "unitName": "INQUISITOR COTEAZ",
-          "role": "LEADER",
-          "targets": [
-            "BATTLELINE IMPERIUM INFANTRY",
-            "EXACTION SQUAD",
-            "GREY KNIGHTS TERMINATOR SQUAD",
-            "IMPERIAL NAVY BREACHERS",
-            "INQUISITORIAL AGENTS",
-            "SUBDUCTOR SQUAD",
-            "VIGILANT SQUAD"
-          ]
-        },
-        {
-          "unitName": "INQUISITOR DRAXUS",
-          "role": "LEADER",
-          "targets": [
-            "AQUILA KILL TEAM",
-            "BATTLELINE IMPERIUM INFANTRY",
-            "EXACTION SQUAD",
-            "IMPERIAL NAVY BREACHERS",
-            "INQUISITORIAL AGENTS",
-            "SUBDUCTOR SQUAD",
-            "VIGILANT SQUAD"
-          ]
-        },
-        {
-          "unitName": "INQUISITOR GREYFAX",
-          "role": "LEADER",
-          "targets": [
-            "BATTLELINE IMPERIUM INFANTRY",
-            "EXACTION SQUAD",
-            "IMPERIAL NAVY BREACHERS",
-            "INQUISITORIAL AGENTS",
-            "SANCTIFIERS",
-            "SISTERS OF BATTLE SQUAD",
-            "SUBDUCTOR SQUAD",
-            "VIGILANT SQUAD"
-          ]
-        },
-        {
-          "unitName": "MINISTORUM PRIEST",
-          "role": "SUPPORT",
-          "targets": [
-            "EXACTION SQUAD",
-            "IMPERIAL NAVY BREACHERS",
-            "INQUISITORIAL AGENTS",
-            "SANCTIFIERS",
-            "SISTERS OF BATTLE SQUAD",
-            "SUBDUCTOR SQUAD",
-            "VIGILANT SQUAD"
-          ]
-        },
-        {
-          "unitName": "NAVIGATOR",
-          "role": "LEADER",
-          "targets": [
-            "IMPERIAL NAVY BREACHERS",
-            "VOIDSMEN-AT-ARMS"
-          ]
-        },
-        {
-          "unitName": "ROGUE TRADER ENTOURAGE",
-          "role": "LEADER",
-          "targets": [
-            "IMPERIAL NAVY BREACHERS",
-            "VOIDSMEN-AT-ARMS"
-          ]
-        },
-        {
-          "unitName": "WATCH CAPTAIN ARTEMIS",
-          "role": "LEADER",
-          "targets": [
-            "AQUILA KILL TEAM",
-            "DEATHWATCH KILL TEAM"
-          ]
-        },
-        {
-          "unitName": "WATCH MASTER",
-          "role": "LEADER",
-          "targets": [
-            "AQUILA KILL TEAM",
-            "DEATHWATCH KILL TEAM"
-          ]
-        },
         {
           "unitName": "INQUISITOR",
           "role": "LEADER",
@@ -3259,9 +3219,7 @@
             "GRETCHIN"
           ]
         }
-      ],
-      "verifiedAt": "2026-09-02",
-      "version": "1.4"
+      ]
     },
     {
       "name": "Space Marines",
@@ -3304,6 +3262,7 @@
           "role": "SUPPORT",
           "targets": [
             "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
             "CRUSADER SQUAD",
             "DEATHWATCH VETERANS",
             "DECIMUS KILL TEAM",
@@ -3466,6 +3425,17 @@
             "STERNGUARD VETERAN SQUAD",
             "SWORD BRETHREN SQUAD",
             "TACTICAL SQUAD"
+          ]
+        },
+        {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
           ]
         },
         {
@@ -3671,6 +3641,26 @@
           ]
         },
         {
+          "unitName": "MARNEUS CALGAR IN ARMOUR OF ANTILOCHUS",
+          "role": "LEADER",
+          "targets": [
+            "AGGRESSOR SQUAD",
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "COMPANY HEROES",
+            "ERADICATOR SQUAD",
+            "STERNGUARD VETERAN SQUAD",
+            "TERMINATOR SQUAD",
+            "HEAVY INTERCESSOR SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "TACTICAL SQUAD",
+            "TERMINATOR ASSAULT SQUAD",
+            "TERMINATOR SQUAD",
+            "VICTRIX HONOUR GUARD"
+          ]
+        },
+        {
           "unitName": "KOR’SARRO KHAN",
           "role": "LEADER",
           "targets": [
@@ -3687,25 +3677,6 @@
           "role": "LEADER",
           "targets": [
             "OUTRIDER SQUAD"
-          ]
-        },
-        {
-          "unitName": "MARNEUS CALGAR IN ARMOUR OF ANTILOCHUS",
-          "role": "LEADER",
-          "targets": [
-            "AGGRESSOR SQUAD",
-            "ASSAULT INTERCESSOR SQUAD",
-            "BLADEGUARD VETERAN SQUAD",
-            "COMPANY HEROES",
-            "ERADICATOR SQUAD",
-            "STERNGUARD VETERAN SQUAD",
-            "HEAVY INTERCESSOR SQUAD",
-            "INFERNUS SQUAD",
-            "INTERCESSOR SQUAD",
-            "TACTICAL SQUAD",
-            "TERMINATOR ASSAULT SQUAD",
-            "TERMINATOR SQUAD",
-            "VICTRIX HONOUR GUARD"
           ]
         },
         {
@@ -3976,6 +3947,17 @@
           ]
         },
         {
+          "unitName": "JUDICIAR",
+          "role": "SUPPORT",
+          "targets": [
+            "ASSAULT INTERCESSOR SQUAD",
+            "BLADEGUARD VETERAN SQUAD",
+            "INFERNUS SQUAD",
+            "INTERCESSOR SQUAD",
+            "STERNGUARD VETERAN SQUAD"
+          ]
+        },
+        {
           "unitName": "LIBRARIAN",
           "role": "LEADER",
           "targets": [
@@ -4070,7 +4052,7 @@
       ]
     },
     {
-      "name": "T’au Empire",
+      "name": "T'au Empire",
       "slug": "tau-empire",
       "url": "https://mfm.warhammer-community.com/en/tau-empire",
       "attachments": [

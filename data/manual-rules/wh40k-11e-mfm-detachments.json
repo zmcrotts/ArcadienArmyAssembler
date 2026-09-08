@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "https://mfm.warhammer-community.com/en",
-  "version": "1.3",
-  "generatedAt": "2026-08-26T14:54:39.247747Z",
+  "version": "1.4",
+  "generatedAt": "2026-09-08T04:04:28.635470Z",
   "detachments": [
     {
       "factionSlug": "adepta-sororitas",
@@ -29,10 +29,7 @@
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false,
-      "uniqueTags": [
-        "REVEREND"
-      ]
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "adepta-sororitas",
@@ -68,10 +65,7 @@
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false,
-      "uniqueTags": [
-        "REVEREND"
-      ]
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "adepta-sororitas",
@@ -97,8 +91,8 @@
       "detachmentName": "LIONS OF THE EMPEROR",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": true
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "adeptus-custodes",
@@ -160,7 +154,7 @@
       "detachmentName": "THARANATOI HAMMERBLOW",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -268,7 +262,7 @@
       "detachmentName": "ASPECT HOST",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -467,7 +461,7 @@
       "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
-      "detachmentPointsChanged": true
+      "detachmentPointsChanged": false
     },
     {
       "factionSlug": "astra-militarum",
@@ -907,7 +901,7 @@
       "detachmentName": "DAEMONIC INCURSION",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -1114,7 +1108,7 @@
       "detachmentName": "HURON’S MARAUDERS",
       "detachmentPoints": 3,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": true,
+      "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
@@ -2291,8 +2285,17 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "BLITZ BRIGADE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Reconnaissance",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "BRUTE BOSSES",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2300,7 +2303,7 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "BULLY BOYZ",
-      "detachmentPoints": 2,
+      "detachmentPoints": 1,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -2309,7 +2312,7 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "DA BIG HUNT",
-      "detachmentPoints": 2,
+      "detachmentPoints": 1,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -2318,17 +2321,17 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "DREAD MOB",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
     {
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
-      "detachmentName": "EQUATORIAL HORDES",
+      "detachmentName": "FLYBOYZ",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
+      "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2336,7 +2339,7 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "GREEN TIDE",
-      "detachmentPoints": 3,
+      "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -2345,8 +2348,35 @@
       "factionSlug": "orks",
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "KULT OF SPEED",
-      "detachmentPoints": 2,
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "MADCAP MEKS",
+      "detachmentPoints": 1,
       "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "RUNT SWARM",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "SHOOTA BOYZ",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2355,7 +2385,7 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
       "detachmentName": "TAKTIKAL BRIGADE",
       "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2365,6 +2395,24 @@
       "detachmentName": "WAR HORDE",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "WRECKAS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "orks",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/orks",
+      "detachmentName": "WURRBAND",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },

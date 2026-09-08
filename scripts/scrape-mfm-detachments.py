@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract the complete MFM v1.1 detachment DP/disposition schedule."""
+"""Extract the complete MFM detachment DP/disposition schedule."""
 
 from __future__ import annotations
 
@@ -36,13 +36,13 @@ def load_points_helpers():
     return module
 
 
-def fetch_document(url: str):
-    request = Request(url, headers={"User-Agent": "ArcadienArmyAssembler-MFM/1.1"})
+def fetch_document(url: str, version: str):
+    request = Request(url, headers={"User-Agent": f"ArcadienArmyAssembler-MFM/{version}"})
     return html.fromstring(urlopen(request, timeout=30).read())
 
 
-def faction_pages():
-    document = fetch_document(MFM_ROOT)
+def faction_pages(version: str):
+    document = fetch_document(MFM_ROOT, version)
     urls = {
         urljoin(MFM_ROOT, href)
         for href in document.xpath("//a/@href")
@@ -51,8 +51,7 @@ def faction_pages():
     return sorted(urls)
 
 
-def extract_page(url: str, helpers):
-    document = fetch_document(url)
+def extract_document(document, url: str, helpers):
     replacements = helpers.replacement_map(document)
     faction_slug = urlparse(url).path.rstrip("/").split("/")[-1]
     rows = []
@@ -81,19 +80,32 @@ def extract_page(url: str, helpers):
     return rows
 
 
+def extract_page(url: str, helpers, version: str):
+    return extract_document(fetch_document(url, version), url, helpers)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--input-dir", type=Path)
+    parser.add_argument("--version", default="1.4")
     args = parser.parse_args()
     helpers = load_points_helpers()
     rows = []
-    for url in faction_pages():
-        rows.extend(extract_page(url, helpers))
+    if args.input_dir:
+        for page_path in sorted(args.input_dir.glob("*.html")):
+            slug = page_path.stem
+            url = f"{MFM_ROOT}/{slug}"
+            document = html.fromstring(page_path.read_bytes())
+            rows.extend(extract_document(document, url, helpers))
+    else:
+        for url in faction_pages(args.version):
+            rows.extend(extract_page(url, helpers, args.version))
     rows.sort(key=lambda item: (item["factionSlug"], item["detachmentName"]))
     payload = {
         "schemaVersion": 1,
         "source": MFM_ROOT,
-        "version": "1.1",
+        "version": args.version,
         "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "detachments": rows,
     }

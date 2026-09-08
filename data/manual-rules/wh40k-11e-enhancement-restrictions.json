@@ -698,28 +698,6 @@
       "source": "Faction Pack - Necrons v1.1, page 4"
     },
     {
-      "id": "restriction-xenos-orks-kunnin-hunta",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "Equatorial Hordes",
-      "enhancementName": "Kunnin’ Hunta",
-      "restriction": "BEASTBOSS/INFANTRY WARBOSS model only.",
-      "source": "Faction Pack - Orks v1.1, page 2"
-    },
-    {
-      "id": "restriction-xenos-orks-unkillable-scourge",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Xenos - Orks"
-      },
-      "detachmentName": "Equatorial Hordes",
-      "enhancementName": "Unkillable Scourge",
-      "restriction": "BEASTBOSS/INFANTRY WARBOSS model only.",
-      "source": "Faction Pack - Orks v1.1, page 2"
-    },
-    {
       "id": "restriction-imperium-adeptus-astartes-space-marines-celerity",
       "kind": "enhancement-restriction",
       "target": {

@@ -206,7 +206,10 @@ function findWargearNodes(definition, row) {
 
 function matchingArmies(armies, row) {
   const faction = targetFaction(row);
-  return armies.filter(army => army.faction === faction);
+  return armies.filter(army => army.faction === faction || (
+    row.factionSlug === "space-marines"
+    && String(army.faction || "").startsWith("Imperium - Adeptus Astartes - ")
+  ));
 }
 
 function enhancementMatches(army, row) {
@@ -425,7 +428,7 @@ function audit(document, ruleset) {
       report.enhancement.unmatched.push(row);
       continue;
     }
-    if (matches.length > 1) {
+    if (matches.length > 1 && row.factionSlug !== "space-marines") {
       report.enhancement.ambiguous.push({ row, matches: matches.map(({ army, item }) => ({ faction: army.faction, name: item.name, id: item.id })) });
       continue;
     }
@@ -433,17 +436,17 @@ function audit(document, ruleset) {
     const sourceFaction = targetFaction(row);
     if (!expectedEnhancementNamesByFaction.has(sourceFaction)) expectedEnhancementNamesByFaction.set(sourceFaction, new Set());
     expectedEnhancementNamesByFaction.get(sourceFaction).add(canonicalEnhancementName(row.enhancementName));
-    if (matches.length) {
-      const match = matches[0];
+    for (const match of matches) {
       if (!expectedEnhancementsByArmy.has(match.army.faction)) expectedEnhancementsByArmy.set(match.army.faction, new Set());
       expectedEnhancementsByArmy.get(match.army.faction).add(`${canonicalDetachmentName(row.detachmentName)}|${canonicalEnhancementName(row.enhancementName)}`);
     }
     const wrongEmbedded = embeddedMatches.filter(match => Number(match.node.points || 0) !== Number(row.points));
-    if ((matches.length && Number(matches[0].item.points || 0) !== Number(row.points)) || wrongEmbedded.length) {
+    const wrongMatches = matches.filter(match => Number(match.item.points || 0) !== Number(row.points));
+    if (wrongMatches.length || wrongEmbedded.length) {
       report.enhancement.priceMismatches.push({
         row,
-        army: matches[0]?.army.faction || sourceFaction,
-        enhancement: matches.length ? { id: matches[0].item.id, name: matches[0].item.name, points: Number(matches[0].item.points || 0) } : null,
+        army: wrongMatches[0]?.army.faction || sourceFaction,
+        enhancement: wrongMatches.length ? { id: wrongMatches[0].item.id, name: wrongMatches[0].item.name, points: Number(wrongMatches[0].item.points || 0) } : null,
         embedded: wrongEmbedded.map(match => ({
           unit: { faction: match.unit.faction, name: match.unit.name, selectionKey: match.unit.selectionKey },
           node: { id: match.node.id, name: match.node.name, points: Number(match.node.points || 0) }

@@ -4,6 +4,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const ACTIVE_PATH = path.resolve(__dirname, "..", "data", "manual-rules", "wh40k-11e-mfm-points.json");
+
 function key(row) {
   return JSON.stringify([
     row.kind, row.factionSlug, row.section, row.context, row.detachmentName,
@@ -17,6 +19,11 @@ function sortKey(row) {
     row.enhancementName || "", row.unitName || "", row.costBand || "", row.label || "",
     String(row.points).padStart(6, "0")
   ].join("|");
+}
+
+function normalizedOptionKey(row) {
+  const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return [row.kind, normalize(row.unitName), normalize(row.label)].join("|");
 }
 
 function main() {
@@ -50,7 +57,14 @@ function main() {
     label: item.node.name,
     derivedFrom: "Absent from the complete current MFM paid-wargear table"
   }));
-  changes.push(...derivedZeroCostChanges);
+  const currentOptionKeys = new Set(full.rows.filter(row => row.kind === "wargear").map(normalizedOptionKey));
+  const previousDocument = fs.existsSync(ACTIVE_PATH) ? JSON.parse(fs.readFileSync(ACTIVE_PATH, "utf8")) : { changes: [] };
+  const carriedZeroCostChanges = (previousDocument.changes || []).filter(row =>
+    row.kind === "wargear" && row.derivedFrom && !currentOptionKeys.has(normalizedOptionKey(row))
+  );
+  const zeroCostChanges = [...new Map([...derivedZeroCostChanges, ...carriedZeroCostChanges]
+    .map(row => [normalizedOptionKey(row), row])).values()];
+  changes.push(...zeroCostChanges);
   changes.sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
   const pendingChanges = full.rows.filter(row => pendingKeys.has(key(row))).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
   const document = {
@@ -64,7 +78,7 @@ function main() {
       extractedRows: full.rows.length,
       activeRows: changes.length,
       pendingRows: pendingChanges.length,
-      derivedZeroCostRows: derivedZeroCostChanges.length
+      derivedZeroCostRows: zeroCostChanges.length
     },
     conditionalUnitSchedules: [],
     pendingChanges,

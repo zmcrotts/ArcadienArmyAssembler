@@ -13,17 +13,17 @@ function detachment(ruleset, faction, name) {
   return result;
 }
 
-test("every current MFM v1.3 detachment schedule attaches to normalized data", () => {
+test("every current MFM v1.4 detachment schedule attaches to normalized data", () => {
   const source = extractNormalizedRuleset("wh40k-11e-vflam").mfmDetachmentSource;
-  assert.equal(source.version, "1.3");
-  assert.equal(source.total, 342);
-  assert.equal(source.matched, 342);
+  assert.equal(source.version, "1.4");
+  assert.equal(source.total, 348);
+  assert.equal(source.matched, 348);
   assert.equal(source.unmatched, 0);
-  assert.equal(source.dispositionFlags, 5);
-  assert.equal(source.detachmentPointFlags, 2);
+  assert.equal(source.dispositionFlags, 0);
+  assert.equal(source.detachmentPointFlags, 0);
 });
 
-test("MFM v1.3 overrides changed force dispositions", () => {
+test("MFM v1.4 overrides current force dispositions", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Imperium - Imperial Knights", "Dominus Foebreakers", "Priority Assets"],
@@ -37,7 +37,7 @@ test("MFM v1.3 overrides changed force dispositions", () => {
   for (const [faction, name, disposition] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.forceDisposition.name, disposition);
-    assert.equal(result.forceDispositionSource, "mfm-1.3");
+    assert.equal(result.forceDispositionSource, "mfm-1.4");
   }
 });
 
@@ -53,7 +53,7 @@ test("MFM unique detachment tags are preserved for legality checks", () => {
   );
 });
 
-test("MFM v1.3 applies current detachment points, including both newly flagged changes", () => {
+test("MFM v1.4 applies current detachment points", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Imperium - Adepta Sororitas", "Bringers of Flame", 2],
@@ -71,6 +71,6 @@ test("MFM v1.3 applies current detachment points, including both newly flagged c
   for (const [faction, name, points] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.detachmentPoints, points);
-    assert.equal(result.detachmentPointsSource, "mfm-1.3");
+    assert.equal(result.detachmentPointsSource, "mfm-1.4");
   }
 });

@@ -45,9 +45,9 @@ test("Ork units remain authoritative BSData imports while army supplements are r
   assert.equal(orks.every(unit => unit.source?.catalogueId), true);
 
   const army = ruleset.armies.find(item => item.faction === "Xenos - Orks");
-  assert.equal(army.detachments.length, 16);
-  assert.equal(army.enhancements.length, 40);
-  assert.equal(army.detachments.reduce((sum, item) => sum + item.stratagems.length, 0), 43);
+  assert.equal(army.detachments.length, 15);
+  assert.equal(army.enhancements.length, 38);
+  assert.equal(army.detachments.reduce((sum, item) => sum + item.stratagems.length, 0), 40);
   assert.equal(ruleset.orksCodexSource.unitSource, "bsdata");
   assert.equal(ruleset.orksCodexSource.changedProfiles, 0);
 });

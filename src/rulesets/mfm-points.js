@@ -285,7 +285,7 @@ function applyMfmPoints(units, armies, document) {
         if (!factionMatches) return army;
         const detachmentIds = new Set((army.detachments || []).filter(item => canonicalDetachmentName(item.name) === wantedDetachment).map(item => item.id));
         const candidates = (army.enhancements || []).filter(item => canonicalEnhancementName(item.name) === wantedEnhancement);
-        const matches = candidates.filter(item => !detachmentIds.size || (item.detachmentIds || []).some(id => detachmentIds.has(id)));
+        const matches = candidates.filter(item => detachmentIds.size > 0 && (item.detachmentIds || []).some(id => detachmentIds.has(id)));
         if (!matches.length) return army;
         const ids = new Set(matches.map(item => item.id));
         changed += matches.length;
