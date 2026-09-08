@@ -891,6 +891,26 @@ test("unit sheets ignore detachment weapon glossary examples when applying effec
   assert.equal(sheet.meleeWeapons[0].keywords, "SH1");
 });
 
+test("War Horde applies the current BSData melee-attacks wording to every melee weapon", () => {
+  const configured = {
+    weapons: [
+      { name: "Slugga", typeName: "Ranged Weapons", characteristics: { Keywords: "Close-quarters" } },
+      { name: "Choppa", typeName: "Melee Weapons", characteristics: { Keywords: "-" } },
+      { name: "Power klaw", typeName: "Melee Weapons", characteristics: { Keywords: "Sustained Hits 2" } }
+    ]
+  };
+  const effects = [{
+    sourceKind: "detachment",
+    name: "Get Stuck In",
+    description: "Friendly ORKS units' melee attacks have [SUSTAINED HITS 1]."
+  }];
+
+  const effective = rosterSheets.applyWeaponEffectsToConfigured(configured, effects);
+  assert.equal(effective.weapons[0].characteristics.Keywords, "Close-quarters");
+  assert.equal(effective.weapons[1].characteristics.Keywords, "Sustained Hits 1");
+  assert.equal(effective.weapons[2].characteristics.Keywords, "Sustained Hits 2");
+});
+
 test("unit sheets ignore detachment keyword glossary rules when applying effects", () => {
   const sheets = buildRosterSheets({
     name: "Montka Glossary Test",

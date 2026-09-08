@@ -2793,10 +2793,15 @@ function bindUnitAssignmentInputs() {
 }
 
 function renderUnitSizeControl(rosterEntry, state) {
-  if (!state.editable) return `<p><b>Unit Size:</b> ${state.current}</p>`;
+  const currentComposition = configuredModelCompositionLabel(rosterEntry.unitPackage.definition, rosterEntry.entry);
+  const currentSummary = currentComposition
+    ? `<small class="unitCompositionSummary"><b>Current:</b> ${escapeHtml(currentComposition)} (${state.current} model${state.current === 1 ? "" : "s"})</small>`
+    : "";
+  if (!state.editable) return `<p><b>Unit Size:</b> ${state.current}${currentComposition ? ` — ${escapeHtml(currentComposition)}` : ""}</p>`;
   if (state.presets?.length) return `
     <div class="unitSizeControl">
       <b>Unit Composition</b>
+      ${currentSummary}
       <div class="unitSizePresets">${state.presets.map(preset => `
         <button class="unitSizePreset" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" data-size="${preset.size}" ${state.current === preset.size ? "disabled" : ""}>${escapeHtml(preset.label)}</button>
       `).join("")}</div>
@@ -2805,11 +2810,12 @@ function renderUnitSizeControl(rosterEntry, state) {
   const presets = unitSizePresets(state);
   return `
     <div class="unitSizeControl">
-      <b>Unit Size</b>
+      <b>Unit Composition</b>
+      ${currentSummary}
       <input class="unitSizeInput" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="number"
         value="${state.current}" min="${state.minimum}" max="${state.maximum}">
       ${presets.length ? `<div class="unitSizePresets">${presets.map(size => `
-        <button class="unitSizePreset" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" data-size="${size}" ${state.current === size ? "disabled" : ""}>${size}</button>
+        <button class="unitSizePreset" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" data-size="${size}" ${state.current === size ? "disabled" : ""}>${escapeHtml(compositionLabelForUnitSize(rosterEntry, size) || `${size} models`)}</button>
       `).join("")}</div>` : ""}
       <small>${state.minimum}–${state.maximum} models</small>
     </div>
@@ -3603,6 +3609,23 @@ function renderRuleToken(label, ruleLookup = new Map(), options = {}) {
       </div>
     </span>
   `;
+}
+
+function configuredModelCompositionLabel(definition, entry) {
+  const models = engine.getConfiguredModels?.(definition, entry) || [];
+  return models
+    .filter(model => Number(model.count) > 0)
+    .map(model => `${Number(model.count)}× ${model.name}`)
+    .join(" + ");
+}
+
+function compositionLabelForUnitSize(rosterEntry, size) {
+  try {
+    const entry = engine.setUnitSize(rosterEntry.unitPackage.definition, rosterEntry.entry, size);
+    return configuredModelCompositionLabel(rosterEntry.unitPackage.definition, entry);
+  } catch {
+    return "";
+  }
 }
 
 function bindRulePopovers() {

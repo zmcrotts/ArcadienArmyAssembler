@@ -351,7 +351,9 @@ function bracketedWeaponKeywordEffects(text) {
 function bracketBelongsToWeaponEffect(text, index) {
   const prefix = normalizeText(text).slice(0, index);
   const lastBoundary = Math.max(prefix.lastIndexOf("."), prefix.lastIndexOf(";"));
-  return /\bweapons?\b/i.test(prefix.slice(lastBoundary + 1));
+  const clause = prefix.slice(lastBoundary + 1);
+  return /\bweapons?\b/i.test(clause)
+    || /\b(?:melee|ranged)\s+attacks?\s+(?:have|has|gain|gains)\b/i.test(clause);
 }
 
 function scopedWeaponTypeBefore(prefix, fallbackWeaponType) {

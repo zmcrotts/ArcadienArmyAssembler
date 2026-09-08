@@ -30,6 +30,17 @@ test("roster cards and roster-wide warnings include unit loadout errors", () => 
   }
 });
 
+test("unit-size controls show the actual configured model composition", () => {
+  for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(require.resolve(file), "utf8");
+    assert.match(source, /function configuredModelCompositionLabel\(definition, entry\)/);
+    assert.match(source, /engine\.getConfiguredModels\?\.\(definition, entry\)/);
+    assert.match(source, /<b>Current:<\/b> \$\{escapeHtml\(currentComposition\)\}/);
+    assert.match(source, /compositionLabelForUnitSize\(rosterEntry, size\)/);
+    assert.match(source, /engine\.setUnitSize\(rosterEntry\.unitPackage\.definition, rosterEntry\.entry, size\)/);
+  }
+});
+
 test("army rule reference cards render nested D6 tables", () => {
   for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
     const source = fs.readFileSync(require.resolve(file), "utf8");
