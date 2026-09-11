@@ -810,7 +810,7 @@ test("unit sheets apply detachment and attached leader weapon effects", () => {
       instanceId: "bodyguard-1",
       name: "Battle Sisters Squad",
       points: 100,
-      keywords: ["Infantry"],
+      keywords: ["Infantry", "Orks"],
       configured: {
         units: [],
         weapons: [
@@ -824,7 +824,7 @@ test("unit sheets apply detachment and attached leader weapon effects", () => {
       instanceId: "leader-1",
       name: "Palatine",
       points: 50,
-      keywords: ["Character"],
+      keywords: ["Character", "Orks"],
       configured: {
         units: [],
         weapons: [{ name: "Palatine blade", typeName: "Melee Weapons", count: 1, characteristics: { A: "4", WS: "2+", S: "4", AP: "-2", D: "2" } }],
@@ -905,10 +905,40 @@ test("War Horde applies the current BSData melee-attacks wording to every melee 
     description: "Friendly ORKS units' melee attacks have [SUSTAINED HITS 1]."
   }];
 
-  const effective = rosterSheets.applyWeaponEffectsToConfigured(configured, effects);
+  const effective = rosterSheets.applyWeaponEffectsToConfigured(configured, effects, { keywords: ["Faction: Orks"] });
   assert.equal(effective.weapons[0].characteristics.Keywords, "Close-quarters");
   assert.equal(effective.weapons[1].characteristics.Keywords, "Sustained Hits 1");
   assert.equal(effective.weapons[2].characteristics.Keywords, "Sustained Hits 2");
+});
+
+test("Green Tide applies Sustained Hits by the BOYZ keyword tag, not by unit-name substring", () => {
+  const configured = {
+    weapons: [{
+      name: "Choppa",
+      typeName: "Melee Weapons",
+      characteristics: { Keywords: "-" }
+    }]
+  };
+  const effects = [{
+    sourceKind: "detachment",
+    name: "Mob-handed Brutality",
+    description: "Friendly BOYZ units' melee attacks have [SUSTAINED HITS 1]."
+  }];
+
+  const extracted = extractWeaponEffects(effects);
+  assert.deepEqual(extracted.map(effect => effect.targets), [["boyz"]]);
+
+  const taggedStormboyz = rosterSheets.applyWeaponEffectsToConfigured(configured, effects, {
+    unitName: "Stormboyz",
+    keywords: ["Infantry", "Boyz", "Faction: Orks"]
+  });
+  const untaggedBeastSnaggaBoyz = rosterSheets.applyWeaponEffectsToConfigured(configured, effects, {
+    unitName: "Beast Snagga Boyz",
+    keywords: ["Infantry", "Beast Snagga Boyz", "Faction: Orks"]
+  });
+
+  assert.equal(taggedStormboyz.weapons[0].characteristics.Keywords, "Sustained Hits 1");
+  assert.equal(untaggedBeastSnaggaBoyz.weapons[0].characteristics.Keywords, "-");
 });
 
 test("unit sheets ignore detachment keyword glossary rules when applying effects", () => {

@@ -192,7 +192,10 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
   }
   effects.push(...attackSkillEffects(normalized));
 
-  return effects;
+  const targets = unitEffectTargets(normalized);
+  return effects.map(effect => (effect.targets?.length || !targets.length)
+    ? effect
+    : { ...effect, targets });
 }
 
 function staticEffectClauses(text) {
@@ -541,14 +544,31 @@ function weaponHasKeyword(characteristics, keyword) {
 
 function effectTargetsUnit(effect, context = {}) {
   if (!(effect.targets || []).length) return true;
-  const candidates = [
-    context.unitName,
-    ...asArray(context.unitNames),
-    ...asArray(context.keywords)
-  ].map(normalizeMatchText).filter(Boolean);
-  return effect.targets.some(target => candidates.some(candidate =>
-    candidate === target || candidate.includes(target) || target.includes(candidate)
-  ));
+  const candidates = asArray(context.keywords)
+    .map(normalizeMatchText)
+    .map(keyword => keyword.replace(/^faction\s+/, ""))
+    .filter(Boolean);
+  return effect.targets.some(target => targetMatchesKeywordSet(target, candidates));
+}
+
+function targetMatchesKeywordSet(value, keywords) {
+  const target = normalizeMatchText(value);
+  if (!target) return false;
+  if (keywords.includes(target)) return true;
+
+  // Some rules express a target as multiple required keyword tags, such as
+  // "ADEPTUS ASTARTES INFANTRY". Consume only complete keyword phrases from
+  // the target; never treat a keyword as matching a substring of a unit name.
+  let remainder = target;
+  for (const keyword of [...new Set(keywords)].sort((left, right) => right.length - left.length)) {
+    const pattern = new RegExp(`(?:^|\\s)${escapeRegex(keyword).replace(/\\ /g, "\\s+")}(?=\\s|$)`, "g");
+    remainder = remainder.replace(pattern, " ");
+  }
+  return !remainder.replace(/\b(?:and|or)\b/g, " ").replace(/\s+/g, "").length;
+}
+
+function escapeRegex(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function normalizeWeaponName(value) {
@@ -726,6 +746,7 @@ function unitEffectTargets(text) {
   const patterns = [
     /\bmodels?\s+in\s+(.+?)\s+units?\s+from\s+your\s+army\b/i,
     /\bFriendly\s+(.+?)\s+units?\b/i,
+    /\b(?:melee|ranged)?\s*weapons?\s+equipped\s+by\s+(.+?)\s+models?\s+from\s+your\s+army\b/i,
     /\b(.+?)\s+models?\s+in\s+those\s+units?\b/i
   ];
   for (const pattern of patterns) {
