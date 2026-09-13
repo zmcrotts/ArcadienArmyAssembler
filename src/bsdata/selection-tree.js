@@ -26,7 +26,11 @@ function characteristics(profile) {
   const values = {};
   for (const item of asArray(profile?.characteristics?.characteristic)) {
     const key = item.name || item.typeId;
-    const value = typeof item === "object" && "#text" in item ? item["#text"] : String(item ?? "");
+    // Empty XML elements are parsed as empty objects. Stringifying those leaks
+    // "[object Object]" into datasheets (most visibly for blank weapon keywords).
+    const value = typeof item === "object"
+      ? String(item?.["#text"] ?? "")
+      : String(item ?? "");
     values[key] = value;
     const canonical = canonicalCharacteristicKey(key);
     if (canonical && values[canonical] === undefined) values[canonical] = value;

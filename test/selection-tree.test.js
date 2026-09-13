@@ -11,6 +11,32 @@ function treeIndex(entries = [], groups = []) {
   };
 }
 
+test("empty profile characteristics normalize to blank text", () => {
+  const unit = {
+    id: "forgefiend",
+    name: "Forgefiend",
+    type: "selectionEntry",
+    profiles: {
+      profile: [{
+        id: "claws",
+        name: "Forgefiend claws",
+        typeName: "Melee Weapons",
+        characteristics: {
+          characteristic: [
+            { name: "A", "#text": "3" },
+            { name: "Keywords" }
+          ]
+        }
+      }]
+    }
+  };
+
+  const tree = buildSelectionTree(unit, treeIndex());
+
+  assert.equal(tree.profiles[0].characteristics.A, "3");
+  assert.equal(tree.profiles[0].characteristics.Keywords, "");
+});
+
 test("Mark of Chaos becomes a mandatory four-choice God Blessing only for CSM Daemon Princes", () => {
   const markGroup = {
     id: "mark-group",
