@@ -4568,6 +4568,7 @@ function addRuleAlias(lookup, alias, canonical) {
 function ruleDescription(record) {
   return record.description
     || record.characteristics?.Description
+    || record.characteristics?.Descriptions
     || record.effect
     || "";
 }

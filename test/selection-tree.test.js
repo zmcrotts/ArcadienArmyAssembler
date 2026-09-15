@@ -37,6 +37,28 @@ test("empty profile characteristics normalize to blank text", () => {
   assert.equal(tree.profiles[0].characteristics.Keywords, "");
 });
 
+test("plural psychic ability descriptions normalize to the canonical Description field", () => {
+  const unit = {
+    id: "kill-rig",
+    name: "Kill Rig",
+    type: "selectionEntry",
+    profiles: {
+      profile: [{
+        id: "warpath",
+        name: "Warpath (psyker level 1)",
+        typeName: "Psychic Abilities",
+        characteristics: {
+          characteristic: [{ name: "Descriptions", "#text": "Warpath rules text." }]
+        }
+      }]
+    }
+  };
+
+  const tree = buildSelectionTree(unit, treeIndex());
+
+  assert.equal(tree.profiles[0].characteristics.Descriptions, "Warpath rules text.");
+  assert.equal(tree.profiles[0].characteristics.Description, "Warpath rules text.");
+});
 test("Mark of Chaos becomes a mandatory four-choice God Blessing only for CSM Daemon Princes", () => {
   const markGroup = {
     id: "mark-group",

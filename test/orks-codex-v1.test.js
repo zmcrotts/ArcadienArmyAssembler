@@ -40,6 +40,14 @@ test("Ork units remain authoritative BSData imports while army supplements are r
     "Nazdreg",
     "Gunwagon"
   ]) byName(name);
+
+  const killRig = byName("Kill Rig");
+  for (const abilityName of ["Warpath (psyker level 1)", "Beastscent (psyker level 1)"]) {
+    const ability = killRig.selectionTree.profiles.find(profile => profile.name === abilityName);
+    assert.ok(ability, `Missing Kill Rig psychic ability ${abilityName}`);
+    assert.ok(ability.characteristics.Description, `Missing rules text for ${abilityName}`);
+  }
+
   assert.equal(orks.some(unit => unit.sourceDisposition === "codex-current"), false);
   assert.equal(orks.every(unit => unit.source?.codex === undefined && unit.source?.kind !== "orks-codex"), true);
   assert.equal(orks.every(unit => unit.source?.catalogueId), true);

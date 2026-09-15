@@ -41,6 +41,8 @@ function characteristics(profile) {
 function canonicalCharacteristicKey(key) {
   const normalized = String(key || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   return {
+    description: "Description",
+    descriptions: "Description",
     sv: "SV",
     save: "SV",
     invulnerablesave: "Invulnerable Save",
