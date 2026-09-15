@@ -80,8 +80,16 @@ test("Windows packaging uses the Play Mode UI", () => {
   assert.match(desktopBuildSource, /mobile\/ui\/styles\.css/);
 });
 
-test("Play Mode enforces round category caps and persists one active session per roster", () => {
-  assert.match(source, /Math\.min\(amount, Math\.max\(0, 15 - current\)\)/);
+test("Play Mode enforces round and game category caps and persists one active session per roster", () => {
+  assert.match(source, /const ROUND_CATEGORY_CAP = 15/);
+  assert.match(source, /const GAME_CATEGORY_CAP = 45/);
+  assert.match(source, /function categoryVp\(player, category\)/);
+  assert.match(source, /function scoreAllowance\(player, category\)/);
+  assert.match(source, /Math\.min\(ROUND_CATEGORY_CAP - roundVp\(player, category\), GAME_CATEGORY_CAP - categoryVp\(player, category\)\)/);
+  assert.match(source, /amount = Math\.min\(amount, scoreAllowance\(player, category\)\)/);
+  assert.match(source, /Math\.min\(item\.value, scoreAllowance\(player, "primary"\)\)/);
+  assert.match(source, /\$\{primaryGame\}\/\$\{GAME_CATEGORY_CAP\} game/);
+  assert.match(source, /\$\{secondaryGame\}\/\$\{GAME_CATEGORY_CAP\} game/);
   assert.match(source, /overflow VP discarded/);
   assert.match(source, /all\[session\.rosterId\] = session/);
   assert.match(source, /delete all\[session\.rosterId\]/);

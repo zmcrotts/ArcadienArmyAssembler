@@ -6,6 +6,8 @@
   const TOMBSTONE_KEY = "arcadienPlayModeResultTombstonesV1";
   const PHASES = ["Command", "Movement", "Shooting", "Charge", "Fight"];
   const PLAYERS = ["you", "opponent"];
+  const ROUND_CATEGORY_CAP = 15;
+  const GAME_CATEGORY_CAP = 45;
   const CARD_ROOT = "assets/11th/secondary-missions/defender/";
   const TERRAIN_LAYOUTS = window.ArcadienTerrainLayouts?.layouts || [];
   const FACTIONS = [
@@ -680,8 +682,10 @@
   function roundCapCard(player) {
     const primary = roundVp(player, "primary");
     const secondary = roundVp(player, "secondary");
+    const primaryGame = categoryVp(player, "primary");
+    const secondaryGame = categoryVp(player, "secondary");
     const name = player === "you" ? session.setup.yourName : session.setup.opponentName;
-    return `<div class="playRoundCapPlayer ${player}"><header><b>${escapeHtml(name)}</b><small>ROUND ${session.round}</small></header><span><em style="--fill:${primary / 15}"><b>Primary</b><strong>${primary}/15</strong></em><em style="--fill:${secondary / 15}"><b>Secondary</b><strong>${secondary}/15</strong></em></span></div>`;
+    return `<div class="playRoundCapPlayer ${player}"><header><b>${escapeHtml(name)}</b><small>ROUND ${session.round}</small></header><span><em style="--fill:${primary / ROUND_CATEGORY_CAP}"><b>Primary</b><strong>${primary}/${ROUND_CATEGORY_CAP} round · ${primaryGame}/${GAME_CATEGORY_CAP} game</strong></em><em style="--fill:${secondary / ROUND_CATEGORY_CAP}"><b>Secondary</b><strong>${secondary}/${ROUND_CATEGORY_CAP} round · ${secondaryGame}/${GAME_CATEGORY_CAP} game</strong></em></span></div>`;
   }
 
   function primaryCard(player) {
@@ -765,7 +769,7 @@
         <div><button data-select-card>Select a card</button><button data-reshuffle>Reshuffle discards</button><small>${deck.discard.length} discarded</small></div>
       </section>`}
       <section class="playActiveHand">
-        <header><div><small>ACTIVE SECONDARIES</small><h2>${deck.hand.length} in hand</h2></div><b>${roundVp(missionPlayer, "secondary")}/15 this round</b></header>
+        <header><div><small>ACTIVE SECONDARIES</small><h2>${deck.hand.length} in hand</h2></div><b>${roundVp(missionPlayer, "secondary")}/${ROUND_CATEGORY_CAP} round · ${categoryVp(missionPlayer, "secondary")}/${GAME_CATEGORY_CAP} game</b></header>
         ${deck.hand.length ? deck.hand.map(id => renderSecondaryCard(missionPlayer, id)).join("") : `<div class="playEmptyHand">${fixed ? "No Fixed missions selected." : "Draw randomly or select a card from a physical hand."}</div>`}
       </section>`;
     for (const button of content.querySelectorAll("[data-mission-player]")) button.onclick = () => { missionPlayer = button.dataset.missionPlayer; render(); };
@@ -787,7 +791,8 @@
     if (!item) return "";
     const fixed = session.decks[player].mode === "fixed";
     const scores = fixed ? item.fixedScores : item.tacticalScores;
-    return `<article class="playMissionCard ${fixed ? "fixed" : "tactical"}"><img class="playMissionImage" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"><div><small>${fixed ? "FIXED" : "TACTICAL"} SECONDARY</small><h3>${escapeHtml(item.title)}</h3><div class="playCardScores">${scores.map(score => `<button data-score-card="${item.id}" data-score-value="${score}">+${score} VP</button>`).join("")}</div>${fixed ? `<span class="playFixedActive">Remains active when scored</span>` : `<button class="playDiscardButton" data-discard-card="${item.id}">Discard</button>`}</div></article>`;
+    const capped = scoreAllowance(player, "secondary") <= 0;
+    return `<article class="playMissionCard ${fixed ? "fixed" : "tactical"}"><img class="playMissionImage" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}"><div><small>${fixed ? "FIXED" : "TACTICAL"} SECONDARY</small><h3>${escapeHtml(item.title)}</h3><div class="playCardScores">${scores.map(score => `<button data-score-card="${item.id}" data-score-value="${score}" ${capped ? "disabled" : ""}>+${score} VP</button>`).join("")}</div>${fixed ? `<span class="playFixedActive">Remains active when scored</span>` : `<button class="playDiscardButton" data-discard-card="${item.id}">Discard</button>`}</div></article>`;
   }
 
   function drawCard(player) {
@@ -843,7 +848,8 @@
     const mission = player === "you" ? session.setup.yourPrimary : session.setup.opponentPrimary;
     const source = mission?.name || "Primary Mission";
     const scored = roundVp(player, "primary");
-    const remaining = 15 - scored;
+    const gameScored = categoryVp(player, "primary");
+    const remaining = scoreAllowance(player, "primary");
     const entries = session.ledger.filter(item => item.player === player && item.round === session.round && item.category === "primary");
     const cardImage = mission?.cardImages?.front || "";
     const cardBack = mission?.cardImages?.back || "";
@@ -854,7 +860,7 @@
       return `<button type="button" class="playPrimaryScoreHotspot ${count ? "scored" : ""}" style="--hotspot-top:${top * 100}%" data-primary-hotspot="${optionId}" data-score-value="${value}" data-base-count="${count}" aria-label="Add ${value} VP to pending score" title="Add ${value} VP" ${remaining <= 0 ? "disabled" : ""}>${count ? `<span class="playPrimaryScoreCount">${count}×</span>` : ""}</button>`;
     }).join("");
     modal.hidden = false;
-    modal.innerHTML = `<form class="playScorePanel playPrimaryScorePanel"><header><div><small>PRIMARY · ROUND ${session.round}</small><h2>${escapeHtml(source)}</h2><p>${escapeHtml(player === "you" ? session.setup.yourName : session.setup.opponentName)} · ${scored}/15 VP scored · ${remaining} remaining</p></div></header>${cardImage ? `<p class="playPrimaryScoreHint">Tap printed VP boxes to stage scoring, then confirm below.</p><div class="playPrimaryCardScorer"><img src="${escapeHtml(cardImage)}" alt="${escapeHtml(source)} mission card front">${hotspotButtons}${cardBack ? `<button type="button" class="playPrimaryFlip" data-flip-card>Flip to back</button>` : ""}</div>` : `<div class="playScoreChoices">${[1,2,3,4,5].map((value, index) => `<button type="button" data-primary-hotspot="fallback-${index}" data-score-value="${value}" data-base-count="0" ${remaining <= 0 ? "disabled" : ""}>+${value}<small>VP</small></button>`).join("")}</div>`}<div class="playPrimaryPending" data-primary-pending><b>No pending changes</b><span>Close cancels. Score confirms.</span></div><div class="playPrimaryScoreHistory"><b>This round</b>${entries.length ? entries.map(item => `<span>${escapeHtml(item.source)} <strong>${item.amount > 0 ? "+" : ""}${item.amount} VP</strong></span>`).join("") : `<span>No Primary scored yet.</span>`}</div><div class="playModalActions playPrimaryConfirmActions"><button type="button" data-close>Close</button><button type="submit" class="playPrimaryButton" data-confirm-primary disabled>Score</button></div></form>`;
+    modal.innerHTML = `<form class="playScorePanel playPrimaryScorePanel"><header><div><small>PRIMARY · ROUND ${session.round}</small><h2>${escapeHtml(source)}</h2><p>${escapeHtml(player === "you" ? session.setup.yourName : session.setup.opponentName)} · ${scored}/${ROUND_CATEGORY_CAP} this round · ${gameScored}/${GAME_CATEGORY_CAP} this game · ${remaining} available</p></div></header>${cardImage ? `<p class="playPrimaryScoreHint">Tap printed VP boxes to stage scoring, then confirm below.</p><div class="playPrimaryCardScorer"><img src="${escapeHtml(cardImage)}" alt="${escapeHtml(source)} mission card front">${hotspotButtons}${cardBack ? `<button type="button" class="playPrimaryFlip" data-flip-card>Flip to back</button>` : ""}</div>` : `<div class="playScoreChoices">${[1,2,3,4,5].map((value, index) => `<button type="button" data-primary-hotspot="fallback-${index}" data-score-value="${value}" data-base-count="0" ${remaining <= 0 ? "disabled" : ""}>+${value}<small>VP</small></button>`).join("")}</div>`}<div class="playPrimaryPending" data-primary-pending><b>No pending changes</b><span>Close cancels. Score confirms.</span></div><div class="playPrimaryScoreHistory"><b>This round</b>${entries.length ? entries.map(item => `<span>${escapeHtml(item.source)} <strong>${item.amount > 0 ? "+" : ""}${item.amount} VP</strong></span>`).join("") : `<span>No Primary scored yet.</span>`}</div><div class="playModalActions playPrimaryConfirmActions"><button type="button" data-close>Close</button><button type="submit" class="playPrimaryButton" data-confirm-primary disabled>Score</button></div></form>`;
     const form = modal.querySelector("form");
     const pending = [];
     const refreshPending = () => {
@@ -897,32 +903,32 @@
   }
 
   function commitPrimaryScoreEdits(player, source, pending) {
-    let current = roundVp(player, "primary");
     let appliedTotal = 0;
     let overflow = 0;
-    const applicable = pending.some(item => Math.min(item.value, Math.max(0, 15 - current)) > 0);
+    const capLabel = scoreCapLabel(player, "primary");
+    const applicable = pending.some(item => Math.min(item.value, scoreAllowance(player, "primary")) > 0);
     if (!applicable) return alert("No Primary score changes can be applied.");
     recordUndo("Score primary");
     for (const item of pending) {
-      const amount = Math.min(item.value, Math.max(0, 15 - current));
+      const amount = Math.min(item.value, scoreAllowance(player, "primary"));
       overflow += item.value - amount;
       if (!amount) continue;
       session.ledger.push({ id: uid(), player, round: session.round, category: "primary", source, amount, requestedAmount: item.value, scoreOptionId: item.optionId, createdAt: new Date().toISOString() });
-      current += amount;
       appliedTotal += amount;
     }
     if (!appliedTotal) return;
     persist(); closeModal(); render();
-    showScoreFeedback(player, source, appliedTotal, { overflow });
+    showScoreFeedback(player, source, appliedTotal, { overflow, capLabel });
   }
 
   function addScore(player, category, source, amount, options = {}) {
     const current = roundVp(player, category);
     if (!amount) return options.reopenPrimary ? openPrimaryScoreModal(player) : closeModal();
     const requestedAmount = amount;
-    if (amount > 0) amount = Math.min(amount, Math.max(0, 15 - current));
+    const capLabel = scoreCapLabel(player, category);
+    if (amount > 0) amount = Math.min(amount, scoreAllowance(player, category));
     if (current + amount < 0) return alert(`${category} scoring cannot fall below 0 VP in a battle round.`);
-    if (!amount) return alert(`${category} is already capped at 15 VP this battle round.`);
+    if (!amount) return alert(`${category} is already capped at ${capLabel}.`);
     recordUndo(`Score ${category}`);
     const overflow = Math.max(0, requestedAmount - amount);
     session.ledger.push({ id: uid(), player, round: session.round, category, source, amount, requestedAmount, scoreOptionId: options.scoreOptionId || "", createdAt: new Date().toISOString() });
@@ -935,7 +941,7 @@
     }
     persist(); closeModal(); render();
     if (options.reopenPrimary) openPrimaryScoreModal(player);
-    showScoreFeedback(player, source, amount, { discarded, fixed: category === "secondary" && session.decks[player]?.mode === "fixed", overflow });
+    showScoreFeedback(player, source, amount, { discarded, fixed: category === "secondary" && session.decks[player]?.mode === "fixed", overflow, capLabel });
   }
 
   function showScoreFeedback(player, source, amount, options = {}) {
@@ -944,7 +950,7 @@
     toast.className = "playScoreToast";
     toast.setAttribute("role", "status");
     const playerName = player === "you" ? session.setup.yourName : session.setup.opponentName;
-    const detail = options.overflow ? `Capped at 15 · ${options.overflow} overflow VP discarded` : options.discarded ? "Scored and discarded" : options.fixed ? "Scored · Fixed mission remains active" : "Score recorded";
+    const detail = options.overflow ? `Capped at ${options.capLabel || `${ROUND_CATEGORY_CAP} VP this round`} · ${options.overflow} overflow VP discarded` : options.discarded ? "Scored and discarded" : options.fixed ? "Scored · Fixed mission remains active" : "Score recorded";
     toast.innerHTML = `<span>✓</span><div><strong>${amount > 0 ? "+" : ""}${amount} VP · ${escapeHtml(playerName)}</strong><b>${escapeHtml(source)}</b><small>${detail}</small></div>`;
     shell.appendChild(toast);
     requestAnimationFrame(() => toast.classList.add("visible"));
@@ -1700,7 +1706,10 @@
   }
 
   function totalVp(player) { return sum(session.ledger.filter(item => item.player === player)); }
+  function categoryVp(player, category) { return sum(session.ledger.filter(item => item.player === player && item.category === category)); }
   function roundVp(player, category, round = session.round) { return sum(session.ledger.filter(item => item.player === player && item.round === round && item.category === category)); }
+  function scoreAllowance(player, category) { return Math.max(0, Math.min(ROUND_CATEGORY_CAP - roundVp(player, category), GAME_CATEGORY_CAP - categoryVp(player, category))); }
+  function scoreCapLabel(player, category) { return GAME_CATEGORY_CAP - categoryVp(player, category) <= ROUND_CATEGORY_CAP - roundVp(player, category) ? `${GAME_CATEGORY_CAP} VP per game` : `${ROUND_CATEGORY_CAP} VP this battle round`; }
   function sum(items) { return items.reduce((total, item) => total + Number(item.amount || 0), 0); }
   function primaryName(player) { return (player === "you" ? session.setup.yourPrimary : session.setup.opponentPrimary)?.name || "Primary Mission"; }
   function cpAtRound(player, round) { const rows = session.cpHistory.filter(item => item.player === player && item.round <= round); return Math.max(0, rows.reduce((total, item) => total + Number(item.amount || 0), 0)); }
