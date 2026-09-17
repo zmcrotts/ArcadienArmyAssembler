@@ -65,7 +65,7 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(engineApp, /let savedRosterFiltersOpen = false/);
   assert.match(engineApp, /id="startImportRoster"[^>]*>Import<\/button>/);
   assert.doesNotMatch(engineApp, /id="startImportShareCode"|id="startImportJson"/);
-  assert.match(index, /id="chooseRosterImportFile"[^>]*>Choose JSON File<\/button>/);
+  assert.match(index, /id="chooseRosterImportFile"[^>]*>Choose AAA or New Recruit JSON<\/button>/);
   assert.match(index, /src="vendor\/qrcode-generator\.js\?v=1\.4\.4"/);
   assert.match(index, /src="domain\/roster-qr\.js\?v=pilot1"/);
   assert.match(index, /id="openQrShare">QR<\/button>/);

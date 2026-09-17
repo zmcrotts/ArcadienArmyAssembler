@@ -240,9 +240,9 @@
   <div id="shareCodeModal" class="modalBackdrop" hidden>
     <div class="modalPanel shareCodePanel" role="dialog" aria-modal="true" aria-labelledby="shareCodeTitle">
       <h2 id="shareCodeTitle">Import roster</h2>
-      <p>Paste a complete AAA share code, or choose a JSON backup file.</p>
+      <p>Paste a complete AAA share code, or choose an AAA backup or New Recruit JSON export.</p>
       <textarea id="shareCodeInput" class="shareCodeInput" rows="6" spellcheck="false" autocomplete="off" placeholder="AAA2-…" aria-label="Roster share code"></textarea>
-      <button id="chooseRosterImportFile" class="wideButton" type="button">Choose JSON File</button>
+      <button id="chooseRosterImportFile" class="wideButton" type="button">Choose AAA or New Recruit JSON</button>
       <div class="modalActions">
         <button id="cancelShareCodeImport" type="button">Cancel</button>
         <button id="confirmShareCodeImport" type="button">Import Code</button>
@@ -369,6 +369,7 @@
   <script defer src="engine-data-manifest.js?v=milestone16"></script>
   <script defer src="../../ui/engine-runtime.js?v=milestone4"></script>
   <script defer src="../../src/domain/army.js?v=milestone28"></script>
+  <script defer src="../../src/domain/new-recruit-import.js?v=nr1"></script>
   <script defer src="../../src/domain/roster-document.js?v=milestone1"></script>
   <script defer src="../../src/domain/roster-share-code.js?v=pilot1"></script>
   <script defer src="../../node_modules/qrcode-generator/qrcode.js?v=1.4.4"></script>

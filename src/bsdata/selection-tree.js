@@ -43,6 +43,7 @@ function canonicalCharacteristicKey(key) {
   return {
     description: "Description",
     descriptions: "Description",
+    effect: "Description",
     sv: "SV",
     save: "SV",
     invulnerablesave: "Invulnerable Save",

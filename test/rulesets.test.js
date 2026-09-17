@@ -24,6 +24,7 @@ const {
 } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { createArmyState, getUnitAssignmentState, leaderCanTarget } = require("../src/domain/army");
+const { buildFactionNavigation } = require("../src/domain/factions");
 const {
   buildRosterSheets,
   extractUnitEffects,
@@ -58,6 +59,57 @@ test("normalized rulesets are memoized within a process", () => {
   assert.equal(Object.isFrozen(first.units[0]), true);
 });
 
+test("The Silent King's Triarch abilities retain their Effect text", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const silentKing = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Necrons" && unit.name === "The Silent King" && unit.rosterSelectable
+  );
+  assert.ok(silentKing);
+
+  for (const name of ["Phaeron of the Stars (Aura)", "Phaeron of the Blades (Aura)", "Relentless March (Aura)"]) {
+    const ability = silentKing.selectionTree.profiles.find(profile => profile.name === name);
+    assert.ok(ability, `Missing Triarch ability ${name}`);
+    assert.ok(ability.characteristics.Description, `Missing rules text for ${name}`);
+  }
+});
+test("every New List faction configuration renders Army Rule text in Config", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const navigation = buildFactionNavigation([...new Set(ruleset.units.map(unit => unit.faction))]);
+  const armies = new Map(ruleset.armies.map(army => [army.faction, army]));
+  const failures = [];
+  let configurationCount = 0;
+
+  for (const faction of navigation.flatMap(group => group.factions || [])) {
+    const configurations = (faction.modes || []).length > 1 && /space marines/i.test(`${faction.id} ${faction.label}`)
+      ? faction.modes
+      : [{ id: faction.defaultMode || faction.id, label: faction.label }];
+    for (const configuration of configurations) {
+      configurationCount += 1;
+      const base = armies.get(faction.id) || null;
+      const selected = armies.get(configuration.id) || base;
+      const rules = base && selected && base !== selected
+        ? [...new Map([...(base.armyRules || []), ...(selected.armyRules || [])].map(rule => [
+          `${String(rule.name || "").trim().toLowerCase()}:${String(rule.description || "").trim().toLowerCase()}`,
+          rule
+        ])).values()]
+        : selected?.armyRules || [];
+      const blankRules = rules.filter(rule => !String(rule.description || "").trim());
+
+      if (!rules.length || blankRules.length) {
+        failures.push({
+          faction: faction.label,
+          configuration: configuration.label,
+          ruleCount: rules.length,
+          blankRules: blankRules.map(rule => rule.name || "Unnamed rule")
+        });
+      }
+    }
+  }
+
+  assert.equal(navigation.flatMap(group => group.factions || []).length, 23);
+  assert.equal(configurationCount, 34);
+  assert.deepEqual(failures, []);
+});
 test("normalized enhancements and detachments expose only their always-on characteristic changes", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const allEnhancements = ruleset.armies.flatMap(army => army.enhancements || []);

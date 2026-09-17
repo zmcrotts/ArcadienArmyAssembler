@@ -59,6 +59,28 @@ test("plural psychic ability descriptions normalize to the canonical Description
   assert.equal(tree.profiles[0].characteristics.Descriptions, "Warpath rules text.");
   assert.equal(tree.profiles[0].characteristics.Description, "Warpath rules text.");
 });
+test("ability effects normalize to the canonical Description field", () => {
+  const unit = {
+    id: "silent-king",
+    name: "The Silent King",
+    type: "selectionEntry",
+    profiles: {
+      profile: [{
+        id: "phaeron-stars",
+        name: "Phaeron of the Stars (Aura)",
+        typeName: "Triarch Abilities",
+        characteristics: {
+          characteristic: [{ name: "Effect", "#text": "Re-roll Hit and Wound rolls of 1." }]
+        }
+      }]
+    }
+  };
+
+  const tree = buildSelectionTree(unit, treeIndex());
+
+  assert.equal(tree.profiles[0].characteristics.Effect, "Re-roll Hit and Wound rolls of 1.");
+  assert.equal(tree.profiles[0].characteristics.Description, "Re-roll Hit and Wound rolls of 1.");
+});
 test("Mark of Chaos becomes a mandatory four-choice God Blessing only for CSM Daemon Princes", () => {
   const markGroup = {
     id: "mark-group",

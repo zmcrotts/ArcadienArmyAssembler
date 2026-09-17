@@ -1263,7 +1263,7 @@
   function ruleDescription(item) {
     if (typeof item === "string") return item.trim();
     const characteristics = item?.characteristics || {};
-    return String(item?.description || characteristics.Description || characteristics.Descriptions || characteristics.description || item?.text || "").trim();
+    return String(item?.description || characteristics.Description || characteristics.Descriptions || characteristics.Effect || characteristics.description || item?.text || "").trim();
   }
 
   function abilityTracker(name, description) {

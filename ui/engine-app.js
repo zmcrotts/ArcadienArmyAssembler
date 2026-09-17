@@ -3,6 +3,7 @@
 const engineData = window.ROSTER_ENGINE_DATA;
 const engine = window.RosterEngine;
 const armyEngine = window.ArmyEngine;
+const newRecruitImport = window.NewRecruitImport;
 const rosterDocument = window.RosterDocument;
 const rosterShareCode = window.RosterShareCode;
 const rosterSheets = window.RosterSheets;
@@ -4073,6 +4074,44 @@ function importedRosterRecords(input) {
   return records;
 }
 
+async function normalizeImportedJsonPayload(input) {
+  if (!newRecruitImport?.isNewRecruitRoster(input)) return input;
+  const identity = newRecruitImport.identifyFaction(input, factionRecords());
+  const ownSources = [...new Set([
+    identity.faction,
+    identity.subfaction,
+    ...nativeLibraryFactionsFor(identity.faction)
+  ].filter(Boolean))];
+  const allies = ownSources.flatMap(source => engineData.allies?.[source] || []);
+  const dataSources = [...new Set([
+    ...ownSources,
+    ...allies.map(ally => ally.sourceFaction)
+  ].filter(Boolean))];
+  await Promise.all(dataSources.map(loadFactionData));
+
+  const unitPackages = [];
+  const seenKeys = new Set();
+  for (const source of dataSources) {
+    for (const unit of engineData.factions?.[source] || []) {
+      const unitKey = unit.selectionKey || unit.id || `${source}:${unit.name}`;
+      if (seenKeys.has(unitKey)) continue;
+      seenKeys.add(unitKey);
+      unitPackages.push(unit);
+    }
+  }
+
+  const armyDefinition = engineData.armies?.[identity.subfaction]
+    || engineData.armies?.[identity.faction]
+    || null;
+  return newRecruitImport.convertRoster(input, {
+    identity,
+    unitPackages,
+    armyDefinition,
+    engine,
+    armyEngine
+  });
+}
+
 function mergeRosterSaves(records) {
   const saves = savedRosterLibrary();
   for (const record of records) {
@@ -4367,7 +4406,7 @@ async function importRosterJsonFile(event) {
     if (Number(file.size || 0) > MAX_IMPORT_BYTES) throw new Error("The JSON file is larger than the 10 MB import limit.");
     const text = await file.text();
     if (text.length > MAX_IMPORT_BYTES) throw new Error("The JSON file is larger than the 10 MB import limit.");
-    const parsed = JSON.parse(text);
+    const parsed = await normalizeImportedJsonPayload(JSON.parse(text));
     const records = importedRosterRecords(parsed);
     if (!records.length) {
       alert("No roster records were found in that JSON file.");
@@ -4395,7 +4434,8 @@ async function importRosterJsonFile(event) {
     mergeRosterSaves(records);
     currentRosterSaveId = records[0].id;
     const loaded = await loadRosterDocument(records[0].document, { showWarnings: false });
-    const warningCount = hydrated.reduce((sum, item) => sum + item.warnings.length, 0);
+    const warningCount = hydrated.reduce((sum, item) => sum + item.warnings.length, 0)
+      + records.reduce((sum, item) => sum + (item.document.importWarnings?.length || 0), 0);
     const warningText = warningCount
       ? ` Validated with ${warningCount} recoverable warning${warningCount === 1 ? "" : "s"}.`
       : "";

@@ -55,6 +55,7 @@ function buildIndex() {
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/\.\.\/ui\/)?engine-runtime\.js\?v=([^"]+)"><\/script>/, '<script defer src="engine-runtime.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/army\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/army.js?v=$1"></script>')
+    .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/new-recruit-import\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/new-recruit-import.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/){1,2}src\/domain\/roster-document\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-document.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/src\/domain\/roster-share-code\.js\?v=([^"]+)"><\/script>/, '<script defer src="domain/roster-share-code.js?v=$1"></script>')
     .replace(/<script(?:\s+defer)? src="\.\.\/\.\.\/node_modules\/qrcode-generator\/qrcode\.js\?v=([^"]+)"><\/script>/, '<script defer src="vendor/qrcode-generator.js?v=$1"></script>')

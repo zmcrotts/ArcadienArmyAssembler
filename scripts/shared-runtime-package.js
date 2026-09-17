@@ -7,6 +7,7 @@ const SHARED_RUNTIME_FILES = Object.freeze([
   ["ui/engine-data-manifest.js", "engine-data-manifest.js"],
   ["ui/engine-runtime.js", "engine-runtime.js"],
   ["src/domain/army.js", "domain/army.js"],
+  ["src/domain/new-recruit-import.js", "domain/new-recruit-import.js"],
   ["src/domain/roster-document.js", "domain/roster-document.js"],
   ["src/domain/roster-share-code.js", "domain/roster-share-code.js"],
   ["node_modules/qrcode-generator/qrcode.js", "vendor/qrcode-generator.js"],
