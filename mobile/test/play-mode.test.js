@@ -247,6 +247,12 @@ test("Play Mode rebuilds complete attached-unit groups from roster entries", () 
   assert.match(source, /const groups = playRosterGroups\(\)/);
 });
 
+test("Play Mode preserves enhancement-inclusive points when rebuilding unit groups", () => {
+  assert.match(source, /savedGroup\?\.totalPoints \?\?/);
+  assert.match(source, /function enhancementPointsForMembers\(roster, memberIds\)/);
+  assert.match(source, /roster\.enhancements \|\| \[\]/);
+});
+
 test("using a stratagem spends CP once per unit and phase with visual confirmation", () => {
   assert.match(source, /session\.stratagemUses \|\|= \[\]/);
   assert.match(source, /session\.cp\.you -= cost/);

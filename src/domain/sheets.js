@@ -400,6 +400,7 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\bthe\s+bearer\s+has\s+(?:an?|their)\s+.+?\s+characteristics?\b/i.test(text)
     || /\bthe\s+bearer\s+has\b.*\bcharacteristics?\b/i.test(text)
     || /\bthis\s+model['’]s\s+.+?\s+characteristics?\b/i.test(text)
+    || /\bthis\s+model\s+has\s+[+-]\d+\s+(?:M|T|SV|W|LD|OC|Move|Movement|Toughness|Wounds?|Leadership|Objective\s+Control|Save)\b/i.test(text)
     || /\bcharacteristics?\s+of\s+this\s+model['’]s\b/i.test(text)
     || /\bcharacteristic\s+of\s+(?:the\s+)?bearer\b/i.test(text)
     || /\bmodels?\s+in\s+(?:the\s+)?bearer['’]s\s+unit\b/i.test(text)
@@ -658,8 +659,18 @@ function extractUnitEffectsFromText(text, sourceKind = "") {
 }
 
 function genericModelCharacteristicEffects(text) {
-  if (!/\bcharacteristics?\b/i.test(text) || /\bweapons?\b/i.test(text)) return [];
+  if ((!/\bcharacteristics?\b/i.test(text) && !/\bthis\s+model\s+has\s+[+-]\d+\s+/i.test(text)) || /\bweapons?\b/i.test(text)) return [];
   const effects = [];
+  for (const match of text.matchAll(/\bthis\s+model\s+has\s+([+-]\d+)\s+(.+?)(?:\s+characteristics?)?(?=[.;]|$)/ig)) {
+    for (const characteristic of characteristicNames(match[2])) {
+      effects.push({
+        kind: "unit-characteristic",
+        scope: "bearer",
+        characteristic,
+        delta: Number(match[1])
+      });
+    }
+  }
   for (const match of text.matchAll(/\b(add|adds|adding)\s+(\d+)\s*(?:"|&quot;|inches?)?\s+to\s+this\s+model['’]s\s+(.+?)\s+characteristics?\b/ig)) {
     for (const characteristic of characteristicNames(match[3])) {
       effects.push({

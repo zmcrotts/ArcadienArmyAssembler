@@ -79,6 +79,23 @@ test("sheets apply bearer Toughness additions from selected wargear", () => {
   assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.T, "12");
 });
 
+test("enhancements phrased as this model has +1 Toughness modify only their bearer", () => {
+  const profiles = [{ name: "Beastboss on Squigosaur", characteristics: { T: "9", W: "10" } }];
+  const effect = {
+    bearerInstanceId: "boss-1",
+    description: "BEASTBOSS ON SQUIGOSAUR model only. This model has +1 Toughness."
+  };
+
+  assert.equal(
+    rosterSheets.applyUnitEffectsToProfiles(profiles, [effect], { instanceId: "boss-1" })[0].characteristics.T,
+    "10"
+  );
+  assert.equal(
+    rosterSheets.applyUnitEffectsToProfiles(profiles, [effect], { instanceId: "boss-2" })[0].characteristics.T,
+    "9"
+  );
+});
+
 test("bearer-only wargear characteristics target the equipped model profile", () => {
   const document = {
     rosterEntries: [{

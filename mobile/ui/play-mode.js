@@ -1004,7 +1004,7 @@
         id: savedGroup?.id || `attached:${bodyguard.instanceId}`,
         kind: "attached",
         title: savedGroup?.title || [bodyguard.name, ...members.slice(1).map(item => item.name)].filter(Boolean).join(" + "),
-        totalPoints: members.reduce((total, item) => total + Number(item.points || 0), 0),
+        totalPoints: Number(savedGroup?.totalPoints ?? members.reduce((total, item) => total + Number(item.points || 0), 0) + enhancementPointsForMembers(roster, memberIds)),
         memberInstanceIds: memberIds,
         members
       });
@@ -1017,13 +1017,20 @@
         id: savedGroup?.id || `unit:${entry.instanceId}`,
         kind: "unit",
         title: savedGroup?.title || entry.name,
-        totalPoints: Number(entry.points || 0),
+        totalPoints: Number(savedGroup?.totalPoints ?? Number(entry.points || 0) + enhancementPointsForMembers(roster, [entry.instanceId])),
         memberInstanceIds: [entry.instanceId],
         members: [entry]
       });
       used.add(entry.instanceId);
     }
     return output;
+  }
+
+  function enhancementPointsForMembers(roster, memberIds) {
+    const ids = new Set(memberIds || []);
+    return (roster.enhancements || []).reduce((total, enhancement) =>
+      ids.has(enhancement.bearerInstanceId) ? total + Number(enhancement.points || 0) : total
+    , 0);
   }
 
   function sameMemberSet(left, right) {

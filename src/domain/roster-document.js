@@ -75,7 +75,7 @@ function summarizeUnit(item, services) {
     unitSize: services.unitSizeState ? clone(services.unitSizeState(definition, entry)) : null,
     entry: clone(entry),
     models: services.configuredModels ? clone(services.configuredModels(definition, entry)) : [],
-    configured: services.configuredProfiles ? clone(services.configuredProfiles(definition, entry)) : null
+    configured: services.configuredProfiles ? clone(services.configuredProfiles(definition, entry, item)) : null
   };
 }
 
@@ -180,6 +180,8 @@ function summarizeGroup(group, unitRecordsById) {
     kind: group.kind,
     title: group.title,
     totalPoints: asNumber(group.totalPoints),
+    basePoints: asNumber(group.basePoints, members.reduce((sum, item) => sum + asNumber(item.points), 0)),
+    enhancementPoints: asNumber(group.enhancementPoints),
     memberInstanceIds: clone(memberInstanceIds),
     bodyguardInstanceId: group.bodyguard?.instanceId || null,
     leaderInstanceIds: (group.leaders || []).map(item => item.instanceId),

@@ -3469,6 +3469,38 @@ function assignedEnhancementsForRosterEntry(rosterEntry) {
     .filter(Boolean);
 }
 
+function configuredProfilesForRosterDocument(definition, entry, rosterEntry) {
+  const configured = engine.getConfiguredProfiles(definition, entry);
+  if (!rosterEntry) return configured;
+  const attachedGroup = attachedGroupForInstance(rosterEntry.instanceId);
+  const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(rosterEntry, armyState)
+    || rosterEntry.unitPackage?.keywords
+    || definition?.keywords
+    || [];
+  const effects = [
+    ...selectedArmyAndDetachmentEffects(),
+    ...configuredEffectSources(configured),
+    ...attachedGroupEffects(attachedGroup),
+    ...(attachedGroup?.memberInstanceIds || [rosterEntry.instanceId]).flatMap(instanceId => {
+      const member = roster.find(item => item.instanceId === instanceId);
+      return member ? assignedEnhancementsForRosterEntry(member) : [];
+    })
+  ];
+  const context = {
+    instanceId: rosterEntry.instanceId,
+    isBodyguard: Boolean(attachedGroup && (attachedGroup.bodyguard?.instanceId || attachedGroup.memberInstanceIds?.[0]) === rosterEntry.instanceId),
+    unitName: rosterEntry.unitPackage?.name || definition?.name || "",
+    keywords: effectiveKeywords
+  };
+  const effectiveConfigured = rosterSheets.applyWeaponEffectsToConfigured
+    ? rosterSheets.applyWeaponEffectsToConfigured(configured, effects, context)
+    : configured;
+  return {
+    ...effectiveConfigured,
+    units: unitProfilesWithDerivedInvulnerableSaves(configured.units || [], configured, effects, context)
+  };
+}
+
 function bindAttachedGroupInputs() {
   for (const button of document.querySelectorAll(".configureMember")) {
     button.onclick = event => {
@@ -4910,7 +4942,7 @@ function currentRosterDocument() {
     validationWarnings: validateRoster().filter(item => !item.ok),
     services: {
       entryPoints,
-      configuredProfiles: engine.getConfiguredProfiles,
+      configuredProfiles: configuredProfilesForRosterDocument,
       configuredModels: engine.getConfiguredModels,
       configuredUnitName: engine.getConfiguredUnitName,
       unitSizeState: engine.getUnitSizeState,
