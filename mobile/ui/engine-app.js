@@ -203,10 +203,43 @@ let currentQrRosterName = "";
 let pendingQrImport = null;
 let customThemeEditorPrevious = null;
 let availableAppUpdate = null;
+const buttonFeedbackState = new WeakMap();
 
 const PUBLIC_RELEASE_MANIFEST = "https://arcadienarmyassembler.pages.dev/public-release.json";
 const PUBLIC_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
 const PUBLIC_DOWNLOAD_PAGE = "https://arcadienarmyassembler.pages.dev/download";
+
+function installButtonFeedback() {
+  document.addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button || button.disabled) return;
+    button.classList.remove("buttonFeedbackPulse");
+    requestAnimationFrame(() => button.classList.add("buttonFeedbackPulse"));
+    window.setTimeout(() => button.classList.remove("buttonFeedbackPulse"), 260);
+  });
+}
+
+function showButtonSuccess(button, label) {
+  if (!button) return;
+  const existing = buttonFeedbackState.get(button);
+  if (existing) window.clearTimeout(existing.timer);
+  const original = existing?.original || button.innerHTML;
+  button.classList.add("buttonFeedbackSuccess");
+  button.textContent = label;
+  const timer = window.setTimeout(() => {
+    if (button.isConnected) {
+      button.innerHTML = original;
+      button.classList.remove("buttonFeedbackSuccess");
+    }
+    buttonFeedbackState.delete(button);
+  }, 1250);
+  buttonFeedbackState.set(button, { original, timer });
+}
+
+function showSaveButtonSuccess() {
+  showButtonSuccess(document.getElementById("saveRoster"), "Saved ✓");
+  showButtonSuccess(document.getElementById("mobileSaveRoster"), "Saved ✓");
+}
 
 function compareAppVersions(left, right) {
   const a = String(left || "").split(".").map(value => Number.parseInt(value, 10) || 0);
@@ -323,6 +356,7 @@ async function init() {
   }
   applyTestProfileIdentity();
   applySavedTheme();
+  installButtonFeedback();
   applyAvailableUnitsLayoutState();
   loadCompactorData();
 
@@ -5504,6 +5538,7 @@ async function saveRoster() {
   rosterNameInput.value = document.name;
   markRosterClean();
   renderRosterSaveBrowser();
+  showSaveButtonSuccess();
   showTransientMessage(`✓ Saved “${document.name}” on this device.`);
 }
 
@@ -6089,6 +6124,7 @@ async function copyDiscordExport() {
   const text = lastDiscordExportText || currentDiscordExportText();
   const copied = await copyTextToClipboard(text);
   if (copied) {
+    showButtonSuccess(document.getElementById("copyDiscordExport"), "Copied ✓");
     showTransientMessage("Copied export.");
   } else {
     showTransientMessage("Could not copy automatically. Use Download instead.");

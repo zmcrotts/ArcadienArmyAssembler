@@ -34,6 +34,24 @@ test("Army view exposes the roster's army rules and roll tables", () => {
   assert.match(styles, /\.playArmyRuleBody/);
 });
 
+test("Army view exposes every selected detachment rule with its source", () => {
+  assert.match(source, /const detachments = session\.roster\?\.detachments\?\.length/);
+  assert.match(source, /const detachmentRules = detachments\.flatMap/);
+  assert.match(source, /<h2>Detachment Rules<\/h2>/);
+  assert.match(source, /function renderPlayDetachmentRule\(item, index\)/);
+  assert.match(source, /"DETACHMENT RULE", item\.detachmentName/);
+  assert.match(source, /class="playArmyRules playDetachmentRules"/);
+});
+
+test("Army and detachment references tuck behind one collapsed Rules control", () => {
+  assert.match(source, /let armyReferenceOpen = false/);
+  assert.match(source, /data-rules-toggle aria-expanded="\$\{armyReferenceOpen\}"/);
+  assert.match(source, /class="playRulesReference" \$\{armyReferenceOpen \? "" : "hidden"\}/);
+  assert.match(source, /armyReferenceOpen = !armyReferenceOpen/);
+  assert.doesNotMatch(source, /index === 0 \? "open"/);
+  assert.match(styles, /\.playRulesReference\[hidden\]\{display:none\}/);
+});
+
 test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
   assert.equal(terrainManifest.schemaVersion, 1);
   assert.deepEqual(terrainManifest.sourcePageRange, { first: 9, last: 53 });
@@ -144,6 +162,26 @@ test("mixed-profile squads track wounds per model and reduce weapon bearer count
   assert.match(source, /Math\.min\(max, Number\(session\.modelState\[id\] \?\? max\)\)/);
   assert.match(source, /originalCount \* livingBearers \/ bearers\.length/);
   assert.match(source, /originalCount - displayedCount/);
+});
+
+test("identical one-wound models use a compact surviving-model tally", () => {
+  assert.match(source, /function groupModelTrackers\(models\)/);
+  assert.match(source, /model\.memberInstanceId.*normalize\(model\.baseName \|\| model\.name\).*equipmentKey/);
+  assert.match(source, /tracker\.models\.length === 1/);
+  assert.match(source, /data-model-count-delta="-1"/);
+  assert.match(source, /data-model-count-delta="1"/);
+  assert.match(source, /function changeModelCount\(tracker, delta\)/);
+  assert.match(styles, /\.playModelCount \.playWoundValue/);
+});
+
+test("buttons provide tactile and successful-action feedback", () => {
+  assert.match(styles, /button:not\(:disabled\):active\{transform:translateY\(1px\) scale\(\.975\)/);
+  assert.match(styles, /@keyframes buttonFeedbackPulse/);
+  assert.match(styles, /@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(engineSource, /function installButtonFeedback\(\)/);
+  assert.match(engineSource, /function showButtonSuccess\(button, label\)/);
+  assert.match(engineSource, /showSaveButtonSuccess\(\)/);
+  assert.match(engineSource, /"Copied ✓"/);
 });
 
 test("wound changes preserve the open unit panel scroll position", () => {

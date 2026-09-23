@@ -85,6 +85,7 @@
   let selectedGroupId = null;
   let previousVisibility = null;
   let openedFromHistory = false;
+  let armyReferenceOpen = false;
 
   const FIXED_CARDS = CARDS.filter(item => item.fixedScores.length);
 
@@ -963,11 +964,27 @@
   function renderArmy() {
     const groups = playRosterGroups();
     const armyRules = session.roster?.armyRules || [];
+    const detachments = session.roster?.detachments?.length
+      ? session.roster.detachments
+      : [session.roster?.detachment].filter(Boolean);
+    const detachmentRules = detachments.flatMap(detachment =>
+      (detachment.rules || []).map(rule => ({ rule, detachmentName: detachment.name || "Detachment" }))
+    );
+    const referenceRuleCount = armyRules.length + detachmentRules.length;
     content.innerHTML = `
-      <header class="playSectionHeading"><div><small>ARMY REFERENCE</small><h2>Army Rules</h2></div><span>${armyRules.length} ${armyRules.length === 1 ? "rule" : "rules"}</span></header>
-      <section class="playArmyRules">${armyRules.length ? armyRules.map(renderPlayArmyRule).join("") : `<p class="playArmyRulesEmpty">No army rule text is available for this roster.</p>`}</section>
+      <div class="playRulesShelf"><button type="button" class="playRulesToggle ${armyReferenceOpen ? "active" : ""}" data-rules-toggle aria-expanded="${armyReferenceOpen}"><span>Rules</span><small>${referenceRuleCount}</small></button></div>
+      <section class="playRulesReference" ${armyReferenceOpen ? "" : "hidden"}>
+        <header class="playSectionHeading"><div><small>ARMY REFERENCE</small><h2>Army Rules</h2></div><span>${armyRules.length} ${armyRules.length === 1 ? "rule" : "rules"}</span></header>
+        <section class="playArmyRules">${armyRules.length ? armyRules.map(renderPlayArmyRule).join("") : `<p class="playArmyRulesEmpty">No army rule text is available for this roster.</p>`}</section>
+        <header class="playSectionHeading"><div><small>DETACHMENT REFERENCE</small><h2>Detachment Rules</h2></div><span>${detachmentRules.length} ${detachmentRules.length === 1 ? "rule" : "rules"}</span></header>
+        <section class="playArmyRules playDetachmentRules">${detachmentRules.length ? detachmentRules.map(renderPlayDetachmentRule).join("") : `<p class="playArmyRulesEmpty">No detachment rule text is available for this roster.</p>`}</section>
+      </section>
       <header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>Combined Units</h2></div><span>${groups.length} units</span></header>
       <section class="playArmyList">${groups.map(renderArmyGroup).join("")}</section>`;
+    content.querySelector("[data-rules-toggle]").onclick = () => {
+      armyReferenceOpen = !armyReferenceOpen;
+      renderArmy();
+    };
     for (const button of content.querySelectorAll("[data-group]")) button.onclick = () => openUnit(button.dataset.group);
     for (const button of content.querySelectorAll("[data-summary-model-delta]")) button.onclick = event => {
       event.stopPropagation();
@@ -984,6 +1001,14 @@
   }
 
   function renderPlayArmyRule(rule, index) {
+    return renderPlayReferenceRule(rule, index, "ARMY RULE");
+  }
+
+  function renderPlayDetachmentRule(item, index) {
+    return renderPlayReferenceRule(item.rule, index, "DETACHMENT RULE", item.detachmentName);
+  }
+
+  function renderPlayReferenceRule(rule, index, kind, source = "") {
     const tables = (rule.tables || []).map(table => `
       <section class="playArmyRuleTable">
         <h4>${escapeHtml(table.name || "Options")}</h4>
@@ -992,7 +1017,8 @@
           <tbody>${(table.rows || []).map(row => `<tr><td>${escapeHtml(row.result || "")}</td><td><b>${escapeHtml(row.name || "")}</b>${row.description ? `<p>${formatRuleDescription(row.description)}</p>` : ""}</td></tr>`).join("")}</tbody>
         </table>
       </section>`).join("");
-    return `<details class="playArmyRule" ${index === 0 ? "open" : ""}><summary><span><small>ARMY RULE</small><b>${escapeHtml(rule.name || "Army Rule")}</b></span><strong>View rule</strong></summary><div class="playArmyRuleBody">${rule.description ? `<p>${formatRuleDescription(rule.description)}</p>` : ""}${tables}</div></details>`;
+    const label = source ? `${kind} · ${source}` : kind;
+    return `<details class="playArmyRule"><summary><span><small>${escapeHtml(label)}</small><b>${escapeHtml(rule.name || kind)}</b></span><strong>View rule</strong></summary><div class="playArmyRuleBody">${rule.description ? `<p>${formatRuleDescription(rule.description)}</p>` : ""}${tables}</div></details>`;
   }
 
   function renderBattleShockReminder() {
@@ -1227,12 +1253,14 @@
     const interactiveRules = [...enhancements, ...rules];
     const stratagems = eligibleStratagems(group);
     const battleShocked = isGroupBattleShocked(group.id);
+    const modelTrackers = groupModelTrackers(models);
     modal.hidden = false;
-    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}${enhancements.length ? `<section class="playUnitEnhancements"><h3>Enhancements</h3>${enhancements.map(item => renderUnitRule(item, group)).join("")}</section>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
+    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}${enhancements.length ? `<section class="playUnitEnhancements"><h3>Enhancements</h3>${enhancements.map(item => renderUnitRule(item, group)).join("")}</section>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${modelTrackers.length ? modelTrackers.map(renderModelTracker).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
     modal.querySelector(".playUnitPanel").scrollTop = previousScrollTop;
     modal.querySelector("[data-close]").onclick = closeModal;
     for (const button of modal.querySelectorAll("[data-model-delta]")) button.onclick = () => changeModelWounds(button.dataset.modelId, Number(button.dataset.modelDelta));
     for (const button of modal.querySelectorAll("[data-model-toggle]")) button.onclick = () => toggleModel(button.dataset.modelToggle, Number(button.dataset.maxWounds));
+    for (const button of modal.querySelectorAll("[data-model-count-delta]")) button.onclick = () => changeModelCount(modelTrackers[Number(button.dataset.modelTracker)], Number(button.dataset.modelCountDelta));
     for (const button of modal.querySelectorAll("[data-use-ability]")) button.onclick = () => useAbility(group, interactiveRules.find(item => item.key === button.dataset.useAbility));
     for (const button of modal.querySelectorAll("[data-restore-ability]")) button.onclick = () => restoreAbility(group, interactiveRules.find(item => item.key === button.dataset.restoreAbility));
     for (const button of modal.querySelectorAll("[data-use-stratagem]")) button.onclick = () => {
@@ -1256,7 +1284,15 @@
         const equipmentByModel = distributeEquipment(model.equipment || [], count);
         for (let index = 0; index < count; index += 1) {
           const id = `${member.instanceId}:${model.id}:${index}`;
-          output.push({ id, name: count > 1 ? `${model.name} ${index + 1}` : model.name, equipment: equipmentByModel[index] || [], max, current: Math.max(0, Math.min(max, Number(session.modelState[id] ?? max))) });
+          output.push({
+            id,
+            name: count > 1 ? `${model.name} ${index + 1}` : model.name,
+            baseName: model.name,
+            memberInstanceId: member.instanceId,
+            equipment: equipmentByModel[index] || [],
+            max,
+            current: Math.max(0, Math.min(max, Number(session.modelState[id] ?? max)))
+          });
         }
       }
     }
@@ -1283,6 +1319,48 @@
   function renderModel(model) {
     const dead = model.current <= 0;
     return `<div class="playModel ${dead ? "dead" : ""}"><div><b>${escapeHtml(model.name)}</b><small>${escapeHtml(model.equipment.join(", ") || "Standard loadout")}</small></div>${model.max <= 1 ? `<button data-model-toggle="${escapeHtml(model.id)}" data-max-wounds="1">${dead ? "Restore" : "Alive ✓"}</button>` : `<div class="playWounds"><button data-model-delta="-1" data-model-id="${escapeHtml(model.id)}">−</button><button class="playWoundValue" data-model-toggle="${escapeHtml(model.id)}" data-max-wounds="${model.max}">${model.current}<small>/${model.max} W</small></button><button data-model-delta="1" data-model-id="${escapeHtml(model.id)}">+</button></div>`}</div>`;
+  }
+
+  function groupModelTrackers(models) {
+    const output = [];
+    const identicalOneWoundRows = new Map();
+    for (const model of models) {
+      if (model.max !== 1) {
+        output.push({ kind: "model", model });
+        continue;
+      }
+      const equipmentKey = [...model.equipment].map(normalize).sort().join("|");
+      const key = `${model.memberInstanceId}:${normalize(model.baseName || model.name)}:${equipmentKey}`;
+      let row = identicalOneWoundRows.get(key);
+      if (!row) {
+        row = { kind: "one-wound-count", name: model.baseName || model.name, equipment: model.equipment, models: [], trackerIndex: output.length };
+        identicalOneWoundRows.set(key, row);
+        output.push(row);
+      }
+      row.models.push(model);
+    }
+    return output.map((row, trackerIndex) => ({ ...row, trackerIndex }));
+  }
+
+  function renderModelTracker(tracker) {
+    if (tracker.kind === "model" || tracker.models.length === 1) return renderModel(tracker.model || tracker.models[0]);
+    const alive = tracker.models.filter(model => model.current > 0).length;
+    const total = tracker.models.length;
+    const equipment = tracker.equipment.join(", ") || "Standard loadout";
+    return `<div class="playModel playModelCount ${alive ? "" : "dead"}"><div><b>${total}× ${escapeHtml(tracker.name)}</b><small>${escapeHtml(equipment)}</small></div><div class="playWounds"><button type="button" data-model-count-delta="-1" data-model-tracker="${tracker.trackerIndex}" aria-label="Remove one ${escapeHtml(tracker.name)}" ${alive ? "" : "disabled"}>−</button><span class="playWoundValue" aria-label="${alive} of ${total} ${escapeHtml(tracker.name)} models remaining"><b>${alive}</b><small>/${total} MODELS</small></span><button type="button" data-model-count-delta="1" data-model-tracker="${tracker.trackerIndex}" aria-label="Restore one ${escapeHtml(tracker.name)}" ${alive < total ? "" : "disabled"}>+</button></div></div>`;
+  }
+
+  function changeModelCount(tracker, delta) {
+    if (!tracker || tracker.kind !== "one-wound-count" || !delta) return;
+    const target = delta < 0
+      ? [...tracker.models].reverse().find(model => model.current > 0)
+      : tracker.models.find(model => model.current <= 0);
+    if (!target) return;
+    recordUndo(`${delta < 0 ? "Remove" : "Restore"} model`);
+    session.modelState[target.id] = delta < 0 ? 0 : 1;
+    persist();
+    if (currentView === "army") renderArmy();
+    openUnit(selectedGroupId);
   }
 
   function changeModelWounds(id, delta, options = {}) {
