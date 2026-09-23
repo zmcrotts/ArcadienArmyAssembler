@@ -2407,3 +2407,4 @@ html[data-theme="dark"] svg {
   color: #b8c4c8;
   stroke: currentColor;
 }
+.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#152126;font-weight:700}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#7a898f}html[data-theme="dark"] .leaderTarget option.attachmentOption.legal,html[data-theme="dark"] .bodyguardLeader option.attachmentOption.legal{color:#fff}@media(max-width:900px){.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#fff}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#87949a}}

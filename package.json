@@ -1,6 +1,6 @@
 {
   "name": "my-own-rosterbuilder",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Offline Warhammer 40,000 roster builder.",
   "main": "electron/main.js",
   "scripts": {

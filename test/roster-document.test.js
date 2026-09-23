@@ -172,7 +172,8 @@ test("saved roster document preserves detachment, enhancement, unit identity, an
     sectionLabels: { "custom:vanguard": "Vanguard" },
     groupSections: { "attached:bodyguard-1": "custom:vanguard" },
     groupOrder: ["attached:bodyguard-1", "ally-1"],
-    unitNicknames: { "bodyguard-1": "The Wall", "ally-1": "Gatecrasher" }
+    unitNicknames: { "bodyguard-1": "The Wall", "ally-1": "Gatecrasher" },
+    ownedUnitInstanceIds: ["bodyguard-1", "ally-1"]
   };
 
   const document = buildDocument(roster, state, 2000, { rosterDisplay });
@@ -184,6 +185,7 @@ test("saved roster document preserves detachment, enhancement, unit identity, an
   assert.deepEqual(document.detachments[0].stratagems.map(item => item.name), ["Spirit of the Martyr"]);
   assert.equal(document.stratagemSource.name, "Test Stratagem Source");
   assert.deepEqual(document.rosterDisplay.unitNicknames, { "bodyguard-1": "The Wall", "ally-1": "Gatecrasher" });
+  assert.deepEqual(document.rosterDisplay.ownedUnitInstanceIds, ["bodyguard-1", "ally-1"]);
   assert.deepEqual(document.warlord, { instanceId: "leader-1", name: "Canoness", selectionKey: "leader" });
   assert.deepEqual(document.enhancements.map(item => [item.name, item.bearerInstanceId, item.points]), [["Saintly Example", "leader-1", 20]]);
   assert.equal(document.enhancements[0].description, "Bearer inspires nearby units.");

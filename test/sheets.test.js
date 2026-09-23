@@ -35,6 +35,32 @@ test("statline extraction rejects aura, selectable-mode, phase, and charge effec
   );
 });
 
+test("Gene-tailored Toxins adds 1 Damage to every weapon of only its bearer", () => {
+  const enhancement = {
+    name: "Gene-tailored Toxins",
+    bearerInstanceId: "sanctus-1",
+    description: "LOCUS/SANCTUS model only. This model’s attacks have +1 D. &#x20;"
+  };
+  const configured = {
+    weapons: [
+      { name: "Sanctus bio-dagger", typeName: "Melee Weapons", characteristics: { D: "2" } },
+      { name: "Sanctus sniper rifle", typeName: "Ranged Weapons", characteristics: { D: "D3" } }
+    ]
+  };
+
+  const effects = extractWeaponEffects([enhancement]);
+  assert.deepEqual(effects.map(effect => ({ characteristic: effect.characteristic, delta: effect.delta, scope: effect.scope, bearerInstanceId: effect.bearerInstanceId })), [
+    { characteristic: "D", delta: 1, scope: "bearer", bearerInstanceId: "sanctus-1" }
+  ]);
+
+  const sanctus = rosterSheets.applyWeaponEffectsToConfigured(configured, [enhancement], { instanceId: "sanctus-1" });
+  assert.deepEqual(sanctus.weapons.map(weapon => weapon.characteristics.D), ["3", "D3+1"]);
+  assert.deepEqual(sanctus.weapons.map(weapon => weapon.modifiedCharacteristics), [["D"], ["D"]]);
+
+  const otherModel = rosterSheets.applyWeaponEffectsToConfigured(configured, [enhancement], { instanceId: "locus-1" });
+  assert.deepEqual(otherModel.weapons.map(weapon => weapon.characteristics.D), ["2", "D3"]);
+});
+
 test("printable sheets preserve Transport capacity outside ordinary abilities", () => {
   const sheets = buildRosterSheets({
     rosterEntries: [{
@@ -758,6 +784,33 @@ test("printable sheets infer invulnerable saves split across ability name and va
 
   assert.deepEqual(sheets.combinedUnitSheets[0].statlines.map(profile => profile.characteristics.InSv), ["4+", "4+"]);
   assert.equal(sheets.crusadeSheets[0].statline.characteristics.InSv, "4+");
+});
+
+test("printable sheets do not make the Waaagh Riled Up invulnerable save permanent", () => {
+  const sheets = buildRosterSheets({
+    name: "Orks Test",
+    pointsLimit: 1000,
+    totalPoints: 130,
+    rosterEntries: [{
+      instanceId: "squighog-boyz-1",
+      name: "Squighog Boyz",
+      points: 130,
+      keywords: ["Orks", "Mounted"],
+      unitSize: { current: 4 },
+      configured: {
+        units: [{ name: "Squighog Boy", count: 4, characteristics: { M: "10\"", T: "6", SV: "4+", W: "3", LD: "7+", OC: "2", InSv: "" } }],
+        weapons: [],
+        abilities: [],
+        rules: [{
+          name: "Waaagh!",
+          description: "RILED UP While a unit is riled up: That unit has a 5+ invulnerable save. WAR CRY (Once per battle, per army) friendly ORKS units are riled up until the end of the next turn."
+        }]
+      }
+    }]
+  });
+
+  assert.equal(sheets.combinedUnitSheets[0].statlines[0].characteristics.InSv, "");
+  assert.equal(sheets.crusadeSheets[0].statline.characteristics.InSv, "");
 });
 
 test("printable sheets abbreviate long weapon keywords for attack rows", () => {

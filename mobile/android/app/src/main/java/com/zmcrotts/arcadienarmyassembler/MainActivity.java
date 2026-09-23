@@ -23,6 +23,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.window.OnBackInvokedDispatcher;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -78,7 +79,6 @@ public final class MainActivity extends Activity {
     private boolean oneDriveSignInInProgress;
     private volatile boolean oneDriveSignInCancelled;
     private volatile Thread oneDriveSignInThread;
-    private boolean forceExit;
     private String pendingRosterImportUrl;
     private volatile JSONObject availableUpdate;
     private boolean waitingForUnknownSourcesPermission;
@@ -121,6 +121,12 @@ public final class MainActivity extends Activity {
         });
         setContentView(appFrame);
         appFrame.requestApplyInsets();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                this::handleSystemBack
+            );
+        }
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -194,46 +200,20 @@ public final class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (forceExit || webView == null) {
-            super.onBackPressed();
-            return;
-        }
+        handleSystemBack();
+    }
+
+    private void handleSystemBack() {
+        if (webView == null) return;
         webView.evaluateJavascript(
             "Boolean(window.ArcadienApp && window.ArcadienApp.handleNativeBack && window.ArcadienApp.handleNativeBack())",
             handled -> {
                 if ("true".equals(handled)) return;
                 if (webView.canGoBack()) {
                     webView.goBack();
-                    return;
                 }
-                confirmExitIfNeeded();
             }
         );
-    }
-
-    private void confirmExitIfNeeded() {
-        webView.evaluateJavascript(
-            "Boolean(window.ArcadienApp && window.ArcadienApp.hasUnsavedChanges && window.ArcadienApp.hasUnsavedChanges())",
-            unsaved -> {
-                if (!"true".equals(unsaved)) {
-                    exitNow();
-                    return;
-                }
-                new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Discard unsaved changes?")
-                    .setMessage("This list has changes that have not been saved.")
-                    .setNegativeButton("Keep editing", null)
-                    .setPositiveButton("Discard and exit", (dialog, which) -> {
-                        exitNow();
-                    })
-                    .show();
-            }
-        );
-    }
-
-    private void exitNow() {
-        forceExit = true;
-        super.onBackPressed();
     }
 
     @Override

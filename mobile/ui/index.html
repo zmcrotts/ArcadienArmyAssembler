@@ -143,7 +143,7 @@
           <div class="mobileHeaderActions">
             <button id="mobilePlayMode" class="mobilePlayButton" type="button">Play Mode</button>
             <button id="mobileSaveRoster" type="button">Save</button>
-            <button id="mobileExportRoster" type="button">Export</button>
+            <button id="mobileExportRoster" type="button">Share</button>
           </div>
         </div>
         <button id="mobileOpenMenu" class="mobileIconButton" type="button" aria-label="New roster">New</button>
@@ -259,6 +259,23 @@
       <div class="modalActions">
         <button id="sendQrShare" type="button">Send</button>
         <button id="closeQrShare" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileShareModal" class="modalBackdrop" hidden>
+    <div class="modalPanel mobileSharePanel" role="dialog" aria-modal="true" aria-labelledby="mobileShareTitle">
+      <div class="modalTitleRow">
+        <h2 id="mobileShareTitle">Share roster</h2>
+        <button id="closeMobileShare" type="button" aria-label="Close share menu">Close</button>
+      </div>
+      <div class="mobileShareActions">
+        <button id="mobileCopyShareCode" type="button"><b>Share Code</b><small>Copy a compact AAA roster code</small></button>
+        <button id="mobileOpenQrShare" type="button"><b>QR</b><small>Show a scannable roster code</small></button>
+        <button id="mobileOpenTextShare" type="button"><b>Text</b><small>Preview and copy a formatted list</small></button>
+        <label class="mobileShareReference"><input id="mobileIncludeSheetReferences" type="checkbox" checked><span><b>Rules reference</b><small>Include rules in generated sheets</small></span></label>
+        <button id="mobilePrintUnitSheets" type="button"><b>Unit Sheets</b><small>Open printable unit references</small></button>
+        <button id="mobilePrintCrusadeSheets" type="button"><b>Crusade Sheets</b><small>Open printable Crusade references</small></button>
       </div>
     </div>
   </div>

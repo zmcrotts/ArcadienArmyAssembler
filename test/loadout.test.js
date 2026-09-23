@@ -424,6 +424,32 @@ test("Brood Brothers composition bundles expose only their legal squad sizes", (
   }
 });
 
+test("twenty Cadian Shock Troops can take two of each special weapon and four total", () => {
+  const definition = unit11e("Imperium - Astra Militarum", "Cadian Shock Troops");
+  const entry = setUnitSize(definition, createDefaultRosterEntry(definition), 20);
+  const states = getOptionStates(definition, entry);
+  const specialWeapons = [
+    "Shock Trooper w/ Flamer",
+    "Shock Trooper w/ Grenade Launcher",
+    "Shock Trooper w/ Meltagun",
+    "Shock Trooper w/ Plasma Gun"
+  ].map(name => states.find(item => item.name === name && item.id.includes("6f72-94d9-b0df-e130")));
+
+  assert.equal(specialWeapons.every(Boolean), true);
+  assert.deepEqual(specialWeapons.map(item => item.maximum), [2, 2, 2, 2]);
+
+  let configured = entry;
+  configured = setSelection(definition, configured, specialWeapons[0].id, 2);
+  configured = setSelection(definition, configured, specialWeapons[1].id, 2);
+  assert.deepEqual(validateLoadout(definition, configured), []);
+  configured = setSelection(definition, configured, specialWeapons[2].id, 1);
+  assert.equal(
+    specialWeapons.reduce((total, item) => total + Number(configured.selections[item.id] || 0), 0),
+    4
+  );
+  assert.deepEqual(validateLoadout(definition, configured), []);
+});
+
 legacyTest("single-model units report a size of one", () => {
   const definition = unit("Xenos - Tyranids", "Hive Tyrant");
   assert.deepEqual(getUnitSizeState(definition, createDefaultRosterEntry(definition)), {

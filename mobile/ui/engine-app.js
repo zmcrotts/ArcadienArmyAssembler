@@ -70,6 +70,8 @@ const mobileOpenMenu = document.getElementById("mobileOpenMenu");
 const mobileAddUnit = document.getElementById("mobileAddUnit");
 const mobileSaveRoster = document.getElementById("mobileSaveRoster");
 const mobileExportRoster = document.getElementById("mobileExportRoster");
+const mobileShareModal = document.getElementById("mobileShareModal");
+const mobileIncludeSheetReferences = document.getElementById("mobileIncludeSheetReferences");
 const mobilePlayMode = document.getElementById("mobilePlayMode");
 const desktopPlayMode = document.getElementById("desktopPlayMode");
 const rosterSavesSelect = document.getElementById("rosterSaves");
@@ -485,7 +487,31 @@ async function init() {
   if (mobileSaveRoster) mobileSaveRoster.onclick = saveRoster;
   if (mobilePlayMode) mobilePlayMode.onclick = openCurrentRosterPlayMode;
   if (desktopPlayMode) desktopPlayMode.onclick = openCurrentRosterPlayMode;
-  if (mobileExportRoster) mobileExportRoster.onclick = openMobileExport;
+  if (mobileExportRoster) mobileExportRoster.onclick = openMobileShare;
+  document.getElementById("closeMobileShare").onclick = closeMobileShare;
+  document.getElementById("mobileCopyShareCode").onclick = () => {
+    closeMobileShare();
+    copyCurrentRosterShareCode();
+  };
+  document.getElementById("mobileOpenQrShare").onclick = () => {
+    closeMobileShare();
+    openCurrentRosterQr();
+  };
+  document.getElementById("mobileOpenTextShare").onclick = () => {
+    closeMobileShare();
+    openRosterExport("discord-simple");
+  };
+  document.getElementById("mobilePrintUnitSheets").onclick = () => {
+    closeMobileShare();
+    openSheetPreview("units");
+  };
+  document.getElementById("mobilePrintCrusadeSheets").onclick = () => {
+    closeMobileShare();
+    openSheetPreview("crusade");
+  };
+  if (mobileIncludeSheetReferences) mobileIncludeSheetReferences.onchange = () => {
+    includeSheetReferences.checked = mobileIncludeSheetReferences.checked;
+  };
   if (mobileOpenMenu) mobileOpenMenu.onclick = openNewRosterModal;
   if (closeMobileDetails) closeMobileDetails.onclick = closeMobileSheets;
   if (mobileSheetBackdrop) mobileSheetBackdrop.onclick = closeMobileSheets;
@@ -561,6 +587,9 @@ async function init() {
   });
   discordExportModal.addEventListener("click", event => {
     if (event.target === discordExportModal) closeDiscordExportModal();
+  });
+  mobileShareModal.addEventListener("click", event => {
+    if (event.target === mobileShareModal) closeMobileShare();
   });
 
   connectRosterImportLinks();
@@ -906,7 +935,8 @@ function defaultRosterDisplay() {
     sectionLabels: {},
     groupSections: {},
     groupOrder: [],
-    unitNicknames: {}
+    unitNicknames: {},
+    ownedUnitInstanceIds: []
   };
 }
 
@@ -918,7 +948,10 @@ function normalizeRosterDisplay(input) {
     sectionLabels: source.sectionLabels && typeof source.sectionLabels === "object" ? { ...source.sectionLabels } : {},
     groupSections: source.groupSections && typeof source.groupSections === "object" ? { ...source.groupSections } : {},
     groupOrder: Array.isArray(source.groupOrder) ? source.groupOrder.map(String) : [],
-    unitNicknames: source.unitNicknames && typeof source.unitNicknames === "object" ? normalizeUnitNicknames(source.unitNicknames) : {}
+    unitNicknames: source.unitNicknames && typeof source.unitNicknames === "object" ? normalizeUnitNicknames(source.unitNicknames) : {},
+    ownedUnitInstanceIds: Array.isArray(source.ownedUnitInstanceIds)
+      ? [...new Set(source.ownedUnitInstanceIds.map(String).filter(Boolean))]
+      : []
   };
 }
 
@@ -935,10 +968,12 @@ function currentRosterDisplayDocument() {
 
 function reconcileRosterDisplayMetadata() {
   if (!rosterDisplay.unitNicknames) rosterDisplay.unitNicknames = {};
+  if (!Array.isArray(rosterDisplay.ownedUnitInstanceIds)) rosterDisplay.ownedUnitInstanceIds = [];
   const instanceIds = new Set(roster.map(item => item.instanceId));
   for (const instanceId of Object.keys(rosterDisplay.unitNicknames)) {
     if (!instanceIds.has(instanceId)) delete rosterDisplay.unitNicknames[instanceId];
   }
+  rosterDisplay.ownedUnitInstanceIds = rosterDisplay.ownedUnitInstanceIds.filter(instanceId => instanceIds.has(instanceId));
 }
 
 function setRosterLayoutModeButtons() {
@@ -1188,6 +1223,27 @@ function render() {
   scheduleRosterAutosave();
 }
 
+function selectRosterPanel(panel, instanceId = null) {
+  selectedPanel = panel;
+  selectedInstanceId = instanceId;
+  refreshRosterSelectionState();
+  renderSelectedDetails();
+  bindRulePopovers();
+}
+
+function refreshRosterSelectionState() {
+  rosterList?.querySelector(".rosterConfiguration")?.classList.toggle("selected", selectedPanel === "configuration");
+  for (const card of rosterList?.querySelectorAll(".unit[data-member-instance-ids]") || []) {
+    const memberInstanceIds = (card.dataset.memberInstanceIds || "").split(",").filter(Boolean);
+    card.classList.toggle("selected", memberInstanceIds.includes(selectedInstanceId));
+  }
+  mobileRosterList?.querySelector(".mobileConfigCard")?.classList.toggle("selected", selectedPanel === "configuration");
+  for (const card of mobileRosterList?.querySelectorAll(".mobileRosterUnit[data-member-instance-ids]") || []) {
+    const memberInstanceIds = (card.dataset.memberInstanceIds || "").split(",").filter(Boolean);
+    card.classList.toggle("selected", memberInstanceIds.includes(selectedInstanceId));
+  }
+}
+
 function openMobileAddSheet(section = null) {
   mobileSheet = "add";
   mobileAddSectionFilter = section || null;
@@ -1211,6 +1267,9 @@ function closeMobileSheets() {
 }
 
 function handleNativeBack() {
+  if (window.ArcadienPlayMode?.handleNativeBack?.()) {
+    return true;
+  }
   if (document.querySelector(".weaponPreviewWrap.active")) {
     closeOpenWeaponPreview();
     return true;
@@ -1227,6 +1286,10 @@ function handleNativeBack() {
     closeDiscordExportModal();
     return true;
   }
+  if (mobileShareModal && !mobileShareModal.hidden) {
+    closeMobileShare();
+    return true;
+  }
   if (deleteRosterModal && !deleteRosterModal.hidden) {
     closeDeleteRosterModal();
     return true;
@@ -1239,11 +1302,33 @@ function handleNativeBack() {
     closeNewRosterModal();
     return true;
   }
+  if (shareCodeModal && !shareCodeModal.hidden) {
+    closeRosterShareCodeModal();
+    return true;
+  }
+  if (customThemeModal && !customThemeModal.hidden) {
+    cancelCustomThemeEditor();
+    return true;
+  }
+  const syncDataModal = document.getElementById("syncDataModal");
+  if (syncDataModal && !syncDataModal.hidden) {
+    syncDataModal.querySelector("[data-close-sync-data]")?.click();
+    return true;
+  }
   if (mobileSheet) {
     closeMobileSheets();
     return true;
   }
-  return false;
+  if (appMode === "builder") {
+    showLibrary();
+    return true;
+  }
+  if (appMode === "library" && libraryTab !== "lists") {
+    libraryTab = "lists";
+    renderStartScreen();
+    return true;
+  }
+  return true;
 }
 
 window.ArcadienApp = {
@@ -1307,9 +1392,7 @@ function renderMobileShell() {
   const configCard = mobileRosterList.querySelector(".mobileConfigCard");
   if (configCard) {
     configCard.onclick = () => {
-      selectedPanel = "configuration";
-      selectedInstanceId = null;
-      render();
+      selectRosterPanel("configuration");
       openMobileDetailsSheet();
     };
   }
@@ -1331,9 +1414,7 @@ function renderMobileShell() {
     card.onclick = () => {
       const primaryId = card.dataset.primaryInstanceId;
       const isAttached = card.dataset.groupKind === "attached";
-      selectedInstanceId = primaryId;
-      selectedPanel = isAttached ? "group" : "unit";
-      render();
+      selectRosterPanel(isAttached ? "group" : "unit", primaryId);
       openMobileDetailsSheet();
     };
   }
@@ -1389,12 +1470,13 @@ function renderMobileRosterGroup(group) {
     ? `${bodyguard.unitPackage.name} attached unit`
     : primary.unitPackage.name;
   const secondaryAction = attachedLeaderReference ? "detach" : group.kind === "attached" ? "split" : "remove";
-  const secondaryLabel = attachedLeaderReference ? "Detach Leader" : group.kind === "attached" ? "Split attached unit" : `Remove ${actionLabel}`;
-  const secondaryIcon = attachedLeaderReference ? "Detach" : group.kind === "attached" ? "Split" : "×";
+  const secondaryLabel = attachedLeaderReference ? "Detach Leader" : group.kind === "attached" ? "Detach attached unit" : `Remove ${actionLabel}`;
+  const secondaryIcon = attachedLeaderReference || group.kind === "attached" ? "Detach" : "×";
   return `
     <article class="mobileRosterUnit${selected}${group.kind === "attached" ? " attached" : ""}${attachedLeaderReference ? " attachedLeaderReference" : ""}"
       data-group-kind="${escapeHtml(group.kind)}"
-      data-primary-instance-id="${escapeHtml(primary.instanceId)}">
+      data-primary-instance-id="${escapeHtml(primary.instanceId)}"
+      data-member-instance-ids="${escapeHtml(group.memberInstanceIds.join(","))}">
       <div class="mobileUnitTopline">
         <span class="mobileUnitKind">${attachedLeaderReference ? "Attached Leader" : group.kind === "attached" ? "Attached unit" : mobileUnitRoleLabel(primary)}</span>
         <span>${escapeHtml(points)}</span>
@@ -1405,7 +1487,7 @@ function renderMobileRosterGroup(group) {
       <div class="mobileUnitActions">
         <button class="mobileUnitPrimaryAction" type="button" data-mobile-action="configure" data-instance-id="${escapeHtml(primary.instanceId)}">Configure</button>
         <button class="mobileUnitIconAction" type="button" data-mobile-action="duplicate" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="Duplicate ${escapeHtml(actionLabel)}" title="Duplicate"><span aria-hidden="true">⧉</span></button>
-        <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : secondaryAction === "detach" ? "Detach" : "Split"}"><span aria-hidden="true">${secondaryIcon}</span></button>
+        <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : "Detach"}"><span aria-hidden="true">${secondaryIcon}</span></button>
       </div>
     </article>
   `;
@@ -1485,9 +1567,7 @@ function handleMobileRosterAction(button) {
     render();
     return;
   }
-  selectedInstanceId = instanceId;
-  selectedPanel = "unit";
-  render();
+  selectRosterPanel("unit", instanceId);
   openMobileDetailsSheet();
 }
 
@@ -1974,6 +2054,7 @@ function renderArmyAssignments() {
           <option value="">Not attached</option>
           ${renderRosterUnitOptions(roster.filter(item => item.instanceId !== leader.instanceId), {
             selectedId: assignment?.targetInstanceId,
+            groupByLegality: true,
             legalFor: target => armyEngine.leaderCanTarget(
               { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
               { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
@@ -2614,9 +2695,7 @@ function renderRoster() {
     <small>${escapeHtml(detachments.length ? `${detachments.length} detachment${detachments.length === 1 ? "" : "s"}` : "Choose detachments")} · ${Number(pointsLimitInput.value || 0).toLocaleString()} pt limit · roster options</small>
   `;
   configuration.onclick = () => {
-    selectedPanel = "configuration";
-    selectedInstanceId = null;
-    render();
+    selectRosterPanel("configuration");
   };
   rosterList.appendChild(configuration);
 
@@ -2647,6 +2726,7 @@ function renderRoster() {
     const div = document.createElement("div");
     div.className = "unit";
     div.dataset.groupId = group.id;
+    div.dataset.memberInstanceIds = group.memberInstanceIds.join(",");
     if (rosterDisplay.mode === "custom" && !attachedLeaderReference) bindRosterDragHandle(div, group.id);
     if (group.memberInstanceIds.includes(selectedInstanceId)) div.classList.add("selected");
     if (group.kind === "attached") div.classList.add("attachedUnit");
@@ -2672,7 +2752,7 @@ function renderRoster() {
     };
 
     const action = document.createElement("button");
-    action.textContent = attachedLeaderReference ? "Detach" : group.kind === "attached" ? "Split" : "Remove";
+    action.textContent = attachedLeaderReference || group.kind === "attached" ? "Detach" : "Remove";
     action.onclick = event => {
       event.stopPropagation();
       if (attachedLeaderReference) {
@@ -2692,9 +2772,7 @@ function renderRoster() {
     actions.appendChild(action);
 
     div.onclick = () => {
-      selectedInstanceId = primary.instanceId;
-      selectedPanel = group.kind === "attached" ? "group" : "unit";
-      render();
+      selectRosterPanel(group.kind === "attached" ? "group" : "unit", primary.instanceId);
     };
 
     div.appendChild(label);
@@ -2921,7 +2999,7 @@ function renderRosterUnitLabel(rosterEntry) {
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
   const warningCount = entryLoadoutErrors(rosterEntry).length;
   const warning = renderListErrorBadge(warningCount);
-  return `<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
+  return `${renderOwnedMark(rosterEntry.instanceId)}<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
 }
 
 function renderRosterGroupLabel(group, groupEntries) {
@@ -2937,7 +3015,7 @@ function renderRosterGroupLabel(group, groupEntries) {
   const nickname = rosterNicknameFor(bodyguard.instanceId);
   const points = formatAttachedGroupPoints(group, groupEntries);
   return `
-    <b>${sizePrefix}${escapeHtml(configuredRosterUnitName(bodyguard))}</b>${renderRosterNickname(nickname, bodyguard.instanceId)}${warning} — ${escapeHtml(points)}
+    ${renderOwnedMark(bodyguard.instanceId)}<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(bodyguard))}</b>${renderRosterNickname(nickname, bodyguard.instanceId)}${warning} — ${escapeHtml(points)}
     <small class="attachmentReference">Led by: ${leaders.map(item => `${escapeHtml(configuredRosterUnitName(item))} (${formatAttachedMemberPoints(item)})`).join(", ")}</small>
   `;
 }
@@ -2948,7 +3026,7 @@ function renderAttachedLeaderReferenceLabel(group, leader, groupEntries) {
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const nickname = rosterNicknameFor(leader.instanceId);
   return `
-    <b>${sizePrefix}${escapeHtml(configuredRosterUnitName(leader))}</b>${renderRosterNickname(nickname, leader.instanceId)}
+    ${renderOwnedMark(leader.instanceId)}<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(leader))}</b>${renderRosterNickname(nickname, leader.instanceId)}
     <small class="attachmentReference">Leading: ${escapeHtml(bodyguard ? configuredRosterUnitName(bodyguard) : group.bodyguard?.name || "attached unit")}</small>
   `;
 }
@@ -3068,6 +3146,14 @@ function rosterNicknameFor(instanceId) {
   return String(rosterDisplay.unitNicknames?.[instanceId] || "").trim();
 }
 
+function rosterEntryIsOwned(instanceId) {
+  return (rosterDisplay.ownedUnitInstanceIds || []).includes(instanceId);
+}
+
+function renderOwnedMark(instanceId) {
+  return rosterEntryIsOwned(instanceId) ? `<span class="ownedMark" title="Owned" aria-label="Owned">✓</span> ` : "";
+}
+
 function renderRosterUnitPlainLabel(rosterEntry) {
   return escapeHtml(rosterUnitPlainTextLabel(rosterEntry));
 }
@@ -3081,16 +3167,33 @@ function renderRosterUnitOptions(entries, options = {}) {
   const labels = rosterUnitDropdownLabels(entries);
   const selectedId = options.selectedId || null;
   const legalFor = typeof options.legalFor === "function" ? options.legalFor : () => true;
-  return entries.map(entry => renderRosterUnitOption(entry, {
-    label: labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry),
-    legal: legalFor(entry),
-    selected: selectedId === entry.instanceId
-  })).join("");
+  const rendered = entries.map(entry => {
+    const legal = legalFor(entry);
+    return {
+      legal,
+      html: renderRosterUnitOption(entry, {
+        label: labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry),
+        legal,
+        groupedByLegality: Boolean(options.groupByLegality),
+        selected: selectedId === entry.instanceId
+      })
+    };
+  });
+  if (!options.groupByLegality) return rendered.map(item => item.html).join("");
+  const legal = rendered.filter(item => item.legal).map(item => item.html).join("");
+  const nonstandard = rendered.filter(item => !item.legal).map(item => item.html).join("");
+  return [
+    legal ? `<optgroup class="attachmentOptionGroup legal" label="RULES AS WRITTEN — LEGAL">${legal}</optgroup>` : "",
+    nonstandard ? `<optgroup class="attachmentOptionGroup nonstandard" label="NON-STANDARD">${nonstandard}</optgroup>` : ""
+  ].join("");
 }
 
 function renderRosterUnitOption(rosterEntry, options = {}) {
   const label = options.label || rosterUnitPlainTextLabel(rosterEntry);
-  return `<option value="${escapeHtml(rosterEntry.instanceId)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" ${options.selected ? "selected" : ""}>${escapeHtml(label)}${options.legal === false ? " ⚠" : ""}</option>`;
+  const grouped = Boolean(options.groupedByLegality);
+  const legality = options.legal === false ? "nonstandard" : "legal";
+  const suffix = options.legal === false ? (grouped ? " — non-standard" : " ⚠") : "";
+  return `<option value="${escapeHtml(rosterEntry.instanceId)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" ${grouped ? `class="attachmentOption ${legality}" data-attachment-legality="${legality}"` : ""} ${options.selected ? "selected" : ""}>${escapeHtml(label)}${suffix}</option>`;
 }
 
 function rosterUnitDropdownLabels(entries) {
@@ -3134,6 +3237,27 @@ function renderSidebarNicknameControl(rosterEntry) {
       <input id="unitNicknameInput" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="text" value="${escapeHtml(rosterNicknameFor(rosterEntry.instanceId))}" placeholder="Optional nickname">
     </label>
   `;
+}
+
+function renderSidebarOwnedControl(rosterEntry) {
+  const owned = rosterEntryIsOwned(rosterEntry.instanceId);
+  return `<button id="ownedUnitToggle" class="ownedUnitToggle${owned ? " active" : ""}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="button" aria-pressed="${owned}">${owned ? "✓ Owned" : "Mark as Owned"}</button>`;
+}
+
+function bindSidebarOwnedControl() {
+  const button = document.getElementById("ownedUnitToggle");
+  if (!button) return;
+  button.onclick = () => {
+    const instanceId = button.dataset.instanceId;
+    const owned = rosterEntryIsOwned(instanceId);
+    rosterDisplay.ownedUnitInstanceIds = owned
+      ? rosterDisplay.ownedUnitInstanceIds.filter(id => id !== instanceId)
+      : [...rosterDisplay.ownedUnitInstanceIds, instanceId];
+    renderRoster();
+    renderSelectedDetails();
+    bindRulePopovers();
+    scheduleRosterAutosave();
+  };
 }
 
 function bindSidebarNicknameInput() {
@@ -3180,7 +3304,9 @@ function refreshAssignmentSelectLabels() {
     for (const option of options) {
       const entry = roster.find(item => item.instanceId === option.dataset.instanceId);
       if (!entry) continue;
-      const warning = option.textContent.includes("⚠") ? " ⚠" : "";
+      const warning = option.dataset.attachmentLegality === "nonstandard"
+        ? " — non-standard"
+        : option.textContent.includes("⚠") ? " ⚠" : "";
       option.textContent = `${labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry)}${warning}`;
     }
   }
@@ -3302,6 +3428,7 @@ function showRosterEntry(rosterEntry) {
   details.innerHTML = `
     <h3>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
     ${renderSidebarNicknameControl(rosterEntry)}
+    ${renderSidebarOwnedControl(rosterEntry)}
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
     ${renderKeywords(effectiveKeywords, ruleLookup)}
@@ -3317,12 +3444,12 @@ function showRosterEntry(rosterEntry) {
   bindLoadoutInputs();
   bindSidebarDisclosureState();
   bindSidebarNicknameInput();
+  bindSidebarOwnedControl();
   bindUnitAssignmentInputs();
   const backButton = document.getElementById("backToAttachedUnit");
   if (backButton) {
     backButton.onclick = () => {
-      selectedPanel = "group";
-      render();
+      selectRosterPanel("group", rosterEntry.instanceId);
     };
   }
 }
@@ -3342,6 +3469,7 @@ function showAttachedRosterGroup(group) {
 
   details.innerHTML = `
     <h3>${escapeHtml(group.title)} <span class="pts">${formatGroupPoints(group)}</span></h3>
+    <button class="detachAttachedUnit sidebarBack" data-bodyguard-id="${escapeHtml(bodyguard?.instanceId || "")}">Detach All</button>
     ${renderGroupWarnings(group)}
     <div class="attachedMembers">
       ${[bodyguard, ...leaders].filter(Boolean).map(item => renderAttachedMemberCard(item, item === bodyguard)).join("")}
@@ -3375,7 +3503,9 @@ function renderAttachedMemberCard(rosterEntry, isBodyguard) {
       </div>
       <span>
         <button class="configureMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Configure</button>
-        <button class="removeMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Remove</button>
+        ${isBodyguard
+          ? `<button class="removeMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Remove</button>`
+          : `<button class="detachMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Detach</button>`}
       </span>
     </div>
   `;
@@ -3502,9 +3632,26 @@ function configuredProfilesForRosterDocument(definition, entry, rosterEntry) {
 }
 
 function bindAttachedGroupInputs() {
+  for (const button of document.querySelectorAll(".detachAttachedUnit")) {
+    button.onclick = event => {
+      const bodyguardId = event.currentTarget.dataset.bodyguardId;
+      if (!bodyguardId) return;
+      armyState = armyEngine.detachBodyguard(armyState, bodyguardId);
+      selectedInstanceId = bodyguardId;
+      selectedPanel = "unit";
+      render();
+    };
+  }
   for (const button of document.querySelectorAll(".configureMember")) {
     button.onclick = event => {
-      selectedInstanceId = event.target.dataset.instanceId;
+      selectRosterPanel("unit", event.target.dataset.instanceId);
+    };
+  }
+  for (const button of document.querySelectorAll(".detachMember")) {
+    button.onclick = event => {
+      const leaderId = event.currentTarget.dataset.instanceId;
+      armyState = armyEngine.setLeaderAttachment(armyState, leaderId, null);
+      selectedInstanceId = leaderId;
       selectedPanel = "unit";
       render();
     };
@@ -3554,6 +3701,7 @@ function renderUnitAssignments(rosterEntry) {
                 .map(targetState => roster.find(item => item.instanceId === targetState.instanceId))
                 .filter(Boolean), {
                 selectedId: assignment.leaderAssignment?.targetInstanceId,
+                groupByLegality: true,
                 legalFor: target => armyEngine.leaderCanTarget(
                   { selectionKey: unit.selectionKey, name: unit.name, rosterRules: definition.rosterRules },
                   { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
@@ -3569,6 +3717,7 @@ function renderUnitAssignments(rosterEntry) {
               ${renderRosterUnitOptions(assignment.eligibleLeaders
                 .map(leaderState => roster.find(item => item.instanceId === leaderState.instanceId))
                 .filter(Boolean), {
+                groupByLegality: true,
                 legalFor: leader => armyEngine.leaderCanTarget(
                   { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
                   { selectionKey: unit.selectionKey, name: unit.name }
@@ -4387,12 +4536,18 @@ function unitProfilesWithDerivedInvulnerableSaves(units, configured = {}, effect
 
 function inferredInvulnerableSave(configured = {}, effects = []) {
   const texts = [
-    ...(configured.abilities || []).flatMap(invulnerableEffectTextParts),
-    ...(configured.rules || []).flatMap(invulnerableEffectTextParts),
-    ...(configured.profiles || []).flatMap(invulnerableEffectTextParts),
+    ...automaticInvulnerableEffectTexts(configured.abilities),
+    ...automaticInvulnerableEffectTexts(configured.rules),
+    ...automaticInvulnerableEffectTexts(configured.profiles),
     ...invulnerableEffectTextsFromEffects(effects)
   ];
   return bestSave("", ...texts.map(extractInvulnerableSave).filter(Boolean));
+}
+
+function automaticInvulnerableEffectTexts(items = []) {
+  return (items || []).flatMap(item =>
+    invulnerableEffectTextParts(item).filter(text => !effectRequiresBattleStateForInvulnerableSave(text))
+  );
 }
 
 function invulnerableEffectTextsFromEffects(effects = []) {
@@ -4412,8 +4567,13 @@ function effectAppliesAutomaticallyForInvulnerableSave(text, sourceKind = "") {
 }
 
 function effectRequiresBattleStateForInvulnerableSave(text) {
+  const stableAttachment = /\bwhile\s+.*\b(?:is\s+)?leading\b/i.test(text)
+    || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
+    || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text);
   return /\bAura\b/i.test(text)
     || /\bwithin\s+\d+\s*(?:"|&quot;|inches?\b)/i.test(text)
+    || (!stableAttachment && /\b(?:if|unless|when|whenever|while)\b/i.test(text))
+    || /\b(?:once\s+per|each\s+time|after\s+|during\s+|for\s+every|selected\s+to)\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?'?s?\s+active\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
     || /\bwhile\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
@@ -5727,8 +5887,13 @@ function fileSafeRosterName(document) {
   return name || "roster";
 }
 
-function openMobileExport() {
-  openRosterExport("wtc-compact", true);
+function openMobileShare() {
+  if (mobileIncludeSheetReferences) mobileIncludeSheetReferences.checked = includeSheetReferences.checked;
+  mobileShareModal.hidden = false;
+}
+
+function closeMobileShare() {
+  mobileShareModal.hidden = true;
 }
 
 function openRosterExport(style = "wtc-compact", resetOptions = false) {

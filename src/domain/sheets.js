@@ -174,6 +174,7 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
   effects.push(...bracketedWeaponKeywordEffects(normalized));
   const genericCharacteristics = weaponCharacteristicEffects(normalized);
   effects.push(...genericCharacteristics);
+  effects.push(...modelAttackCharacteristicEffects(normalized));
 
   if (apImprovesByOne(normalized) && !genericCharacteristics.some(effect => effect.characteristic === "AP")) effects.push({ kind: "ap", weaponType, delta: -1 });
   if (meleeStrengthImprovesByOne(normalized) && !genericCharacteristics.some(effect => effect.characteristic === "S")) {
@@ -196,6 +197,32 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
   return effects.map(effect => (effect.targets?.length || !targets.length)
     ? effect
     : { ...effect, targets });
+}
+
+function modelAttackCharacteristicEffects(text) {
+  const effects = [];
+  for (const match of normalizeText(text).matchAll(/\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s)\s+(?:(melee|ranged)\s+)?attacks?\s+have\s+([+-]\d+)\s+(A|S|D|Attacks?|Strength|Damage)\b/ig)) {
+    const weaponType = match[1]
+      ? `${match[1].charAt(0).toUpperCase()}${match[1].slice(1).toLowerCase()} Weapons`
+      : null;
+    const characteristic = ({
+      a: "A",
+      attack: "A",
+      attacks: "A",
+      s: "S",
+      strength: "S",
+      d: "D",
+      damage: "D"
+    })[match[3].toLowerCase()];
+    if (characteristic) effects.push({
+      kind: "characteristic",
+      weaponType,
+      characteristic,
+      delta: Number(match[2]),
+      scope: "bearer"
+    });
+  }
+  return effects;
 }
 
 function staticEffectClauses(text) {
@@ -400,6 +427,7 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\bthe\s+bearer\s+has\s+(?:an?|their)\s+.+?\s+characteristics?\b/i.test(text)
     || /\bthe\s+bearer\s+has\b.*\bcharacteristics?\b/i.test(text)
     || /\bthis\s+model['’]s\s+.+?\s+characteristics?\b/i.test(text)
+    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s)\s+(?:(?:melee|ranged)\s+)?attacks?\s+have\s+[+-]\d+\s+(?:A|S|D|Attacks?|Strength|Damage)\b/i.test(text)
     || /\bthis\s+model\s+has\s+[+-]\d+\s+(?:M|T|SV|W|LD|OC|Move|Movement|Toughness|Wounds?|Leadership|Objective\s+Control|Save)\b/i.test(text)
     || /\bcharacteristics?\s+of\s+this\s+model['’]s\b/i.test(text)
     || /\bcharacteristic\s+of\s+(?:the\s+)?bearer\b/i.test(text)
@@ -1018,13 +1046,20 @@ function statlinesForRecord(record, enhancements = [], effects = [], context = {
 
 function inferredInvulnerableSave(record, enhancements = [], effects = [], context = {}) {
   const texts = [
-    ...asArray(configuredFor(record).abilities).flatMap(invulnerableEffectTextParts),
-    ...asArray(configuredFor(record).rules).flatMap(invulnerableEffectTextParts),
-    ...asArray(configuredFor(record).profiles).flatMap(invulnerableEffectTextParts),
-    ...asArray(enhancements).flatMap(invulnerableEffectTextParts),
+    ...automaticInvulnerableEffectTexts(configuredFor(record).abilities),
+    ...automaticInvulnerableEffectTexts(configuredFor(record).rules),
+    ...automaticInvulnerableEffectTexts(configuredFor(record).profiles),
+    ...automaticInvulnerableEffectTexts(enhancements),
     ...invulnerableEffectTextsFromEffects(effects, context)
   ];
   return bestSave("", ...texts.map(extractInvulnerableSave).filter(Boolean));
+}
+
+function automaticInvulnerableEffectTexts(items = []) {
+  return asArray(items).flatMap(item => {
+    if (effectRecordRequiresBattleState(item)) return [];
+    return invulnerableEffectTextParts(item).filter(text => !effectRequiresBattleState(text));
+  });
 }
 
 function invulnerableEffectTextsFromEffects(effects = [], context = {}) {

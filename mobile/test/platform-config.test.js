@@ -59,6 +59,22 @@ test("Android WebView keeps credentials native and restricts file-origin privile
   assert.match(activity, /setPadding\(left, top, right, bottom\)/);
 });
 
+test("Android system Back navigates inside the app and never finishes the Activity", () => {
+  const activity = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/MainActivity.java");
+  const manifest = read("mobile/android/app/src/main/AndroidManifest.xml");
+  const app = read("mobile/ui/engine-app.js");
+  const playMode = read("mobile/ui/play-mode.js");
+  assert.match(manifest, /android:enableOnBackInvokedCallback="true"/);
+  assert.match(activity, /registerOnBackInvokedCallback\([\s\S]*?this::handleSystemBack/);
+  assert.match(activity, /public void onBackPressed\(\) \{\s*handleSystemBack\(\);/);
+  assert.doesNotMatch(activity, /confirmExitIfNeeded|exitNow|super\.onBackPressed\(\)/);
+  assert.match(app, /ArcadienPlayMode\?\.handleNativeBack/);
+  assert.match(app, /if \(appMode === "builder"\) \{\s*showLibrary\(\);\s*return true;/);
+  assert.match(app, /if \(appMode === "library" && libraryTab !== "lists"\)/);
+  assert.match(playMode, /function handleNativeBack\(\)/);
+  assert.match(playMode, /window\.ArcadienPlayMode = \{ open, close, handleNativeBack,/);
+});
+
 test("Android OneDrive bridge permits the roster and game sync folders", () => {
   const activity = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/MainActivity.java");
   assert.ok(activity.includes('^/me/drive/items/[^/?#:]+:/(?:rosters|games)(?:\\\\?.*)?$'));
@@ -205,6 +221,21 @@ test("every non-sheet export opens the shared text preview", () => {
   assert.doesNotMatch(app, /exportJson|exportTextFormat|exportQrShare|exportCopyShareCode/);
 });
 
+test("mobile Share matches the desktop Share menu instead of opening the legacy export directly", () => {
+  const index = read("mobile/ui/index.html");
+  const app = read("mobile/ui/engine-app.js");
+  assert.match(index, /id="mobileExportRoster"[^>]*>Share<\/button>/);
+  assert.match(index, /id="mobileCopyShareCode"[^>]*>[\s\S]*Share Code/);
+  assert.match(index, /id="mobileOpenQrShare"[^>]*>[\s\S]*<b>QR<\/b>/);
+  assert.match(index, /id="mobileOpenTextShare"[^>]*>[\s\S]*<b>Text<\/b>/);
+  assert.match(index, /id="mobilePrintUnitSheets"/);
+  assert.match(index, /id="mobilePrintCrusadeSheets"/);
+  assert.match(app, /mobileExportRoster\.onclick = openMobileShare/);
+  assert.match(app, /mobileCopyShareCode"[\s\S]*copyCurrentRosterShareCode\(\)/);
+  assert.match(app, /mobileOpenQrShare"[\s\S]*openCurrentRosterQr\(\)/);
+  assert.doesNotMatch(app, /function openMobileExport\(\)/);
+});
+
 test("Leader and Support render once as collapsed abilities", () => {
   for (const relative of ["ui/engine-app.js", "mobile/ui/engine-app.js"]) {
     const source = read(relative);
@@ -263,6 +294,35 @@ test("Leader and Support render once as collapsed abilities", () => {
       roles: { leader: true, support: false }
     });
     assert.match(leaderRulesHtml, /Meaningful core Leader rule/);
+  }
+});
+
+test("Leader target menus group legal choices first and clearly label non-standard choices", () => {
+  for (const relative of ["ui/engine-app.js", "mobile/ui/engine-app.js"]) {
+    const app = read(relative);
+    const styles = read(relative.replace("engine-app.js", "styles.css"));
+    assert.match(app, /groupByLegality: true/);
+    assert.match(app, /RULES AS WRITTEN — LEGAL/);
+    assert.match(app, /label="NON-STANDARD"/);
+    assert.doesNotMatch(app, /NON-STANDARD — WILL WARN/);
+    assert.ok(app.indexOf('label="RULES AS WRITTEN — LEGAL"') < app.indexOf('label="NON-STANDARD"'));
+    assert.match(app, /data-attachment-legality="\$\{legality\}"/);
+    assert.match(app, /— non-standard/);
+    assert.match(styles, /option\.attachmentOption\.legal/);
+    assert.match(styles, /option\.attachmentOption\.nonstandard/);
+  }
+});
+
+test("combined-unit details provide a direct Detach action", () => {
+  for (const relative of ["ui/engine-app.js", "mobile/ui/engine-app.js"]) {
+    const app = read(relative);
+    assert.match(app, /class="detachAttachedUnit sidebarBack"[^>]*>Detach All<\/button>/);
+    assert.match(app, /class="detachMember"[^>]*>Detach<\/button>/);
+    assert.match(app, /querySelectorAll\("\.detachAttachedUnit"\)/);
+    assert.match(app, /querySelectorAll\("\.detachMember"\)/);
+    assert.match(app, /detachBodyguard\(armyState, bodyguardId\)/);
+    assert.match(app, /setLeaderAttachment\(armyState, leaderId, null\)/);
+    assert.match(app, /attachedLeaderReference \|\| group\.kind === "attached" \? "Detach" : "Remove"/);
   }
 });
 

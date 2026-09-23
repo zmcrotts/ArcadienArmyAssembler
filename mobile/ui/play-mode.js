@@ -962,7 +962,12 @@
 
   function renderArmy() {
     const groups = playRosterGroups();
-    content.innerHTML = `<header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>Combined Units</h2></div><span>${groups.length} units</span></header><section class="playArmyList">${groups.map(renderArmyGroup).join("")}</section>`;
+    const armyRules = session.roster?.armyRules || [];
+    content.innerHTML = `
+      <header class="playSectionHeading"><div><small>ARMY REFERENCE</small><h2>Army Rules</h2></div><span>${armyRules.length} ${armyRules.length === 1 ? "rule" : "rules"}</span></header>
+      <section class="playArmyRules">${armyRules.length ? armyRules.map(renderPlayArmyRule).join("") : `<p class="playArmyRulesEmpty">No army rule text is available for this roster.</p>`}</section>
+      <header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>Combined Units</h2></div><span>${groups.length} units</span></header>
+      <section class="playArmyList">${groups.map(renderArmyGroup).join("")}</section>`;
     for (const button of content.querySelectorAll("[data-group]")) button.onclick = () => openUnit(button.dataset.group);
     for (const button of content.querySelectorAll("[data-summary-model-delta]")) button.onclick = event => {
       event.stopPropagation();
@@ -976,6 +981,18 @@
       event.stopPropagation();
       toggleBattleShock(button.dataset.battleshockToggle);
     };
+  }
+
+  function renderPlayArmyRule(rule, index) {
+    const tables = (rule.tables || []).map(table => `
+      <section class="playArmyRuleTable">
+        <h4>${escapeHtml(table.name || "Options")}</h4>
+        <table>
+          <thead><tr><th>${escapeHtml(table.dice || "Roll")}</th><th>${escapeHtml(table.name || "Result")}</th></tr></thead>
+          <tbody>${(table.rows || []).map(row => `<tr><td>${escapeHtml(row.result || "")}</td><td><b>${escapeHtml(row.name || "")}</b>${row.description ? `<p>${formatRuleDescription(row.description)}</p>` : ""}</td></tr>`).join("")}</tbody>
+        </table>
+      </section>`).join("");
+    return `<details class="playArmyRule" ${index === 0 ? "open" : ""}><summary><span><small>ARMY RULE</small><b>${escapeHtml(rule.name || "Army Rule")}</b></span><strong>View rule</strong></summary><div class="playArmyRuleBody">${rule.description ? `<p>${formatRuleDescription(rule.description)}</p>` : ""}${tables}</div></details>`;
   }
 
   function renderBattleShockReminder() {
@@ -1041,6 +1058,7 @@
 
   function renderArmyGroup(group) {
     const models = groupModels(group);
+    const enhancements = enhancementsForGroup(group);
     const alive = models.filter(item => item.current > 0).length;
     const strengthState = groupStrengthState(group, models);
     const battleShocked = isGroupBattleShocked(group.id);
@@ -1053,7 +1071,62 @@
     const quickWounds = editableModel ? `<div class="playArmyQuickWounds" aria-label="Edit ${escapeHtml(editableModel.name)} wounds"><button type="button" data-summary-model-delta="-1" data-model-id="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" aria-label="Remove one wound">−</button><button type="button" class="playWoundValue" data-summary-model-toggle="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" data-max-wounds="${editableModel.max}" aria-label="Toggle between zero and full wounds">${editableModel.current}<small>/${editableModel.max} W</small></button><button type="button" data-summary-model-delta="1" data-model-id="${escapeHtml(editableModel.id)}" data-summary-group="${escapeHtml(group.id)}" aria-label="Restore one wound">+</button></div>` : "";
     const strengthFlag = strengthState === "halfStrength" ? `<span class="playStrengthFlag">AT OR BELOW HALF STRENGTH</span>` : "";
     const statusBar = strengthState === "destroyed" ? "" : `<div class="playArmyStatusBar"><button type="button" class="playBattleShockToggle ${battleShocked ? "active" : ""}" data-battleshock-toggle="${escapeHtml(group.id)}" aria-pressed="${battleShocked}" aria-label="${battleShocked ? "Clear Battleshocked" : "Mark Battleshocked"}"><span aria-hidden="true">ϟ</span>${battleShocked ? `<b>BATTLESHOCKED</b>` : ""}</button>${quickWounds}</div>`;
-    return `<article class="playArmyUnit ${strengthState} ${battleShocked ? "battleShocked" : ""}"><button type="button" class="playArmyUnitOpen" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em>${strengthFlag}</span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>${statusBar}</article>`;
+    const enhancementBadges = enhancements.length ? `<span class="playEnhancementBadges">${enhancements.map(item => `<span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.memberName)}</small></span>`).join("")}</span>` : "";
+    return `<article class="playArmyUnit ${strengthState} ${battleShocked ? "battleShocked" : ""}"><button type="button" class="playArmyUnitOpen" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em>${enhancementBadges}${strengthFlag}</span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>${statusBar}</article>`;
+  }
+
+  function enhancementsForGroup(group) {
+    const members = new Map((group.members || []).map(member => [member.instanceId, member]));
+    return (session.roster?.enhancements || [])
+      .filter(item => members.has(item.bearerInstanceId))
+      .map(item => {
+        const bearer = members.get(item.bearerInstanceId);
+        const description = String(item.description || "").trim()
+          || [...(item.profiles || []), ...(item.rules || [])].map(ruleDescription).filter(Boolean).join("\n\n");
+        const sourceId = item.enhancementId || normalize(item.name);
+        return {
+          key: `enhancement:${item.bearerInstanceId}:${sourceId}`,
+          name: item.name || "Enhancement",
+          description,
+          memberName: item.bearerName || bearer?.name || group.title,
+          points: Number(item.points || 0),
+          sourceKind: "enhancement",
+          tracker: abilityTracker(item.name, description)
+        };
+      });
+  }
+
+  function effectiveWeaponsForGroup(group) {
+    const roster = session.roster || {};
+    const memberIds = new Set((group.members || []).map(member => member.instanceId));
+    const effects = [
+      ...(roster.armyRules || []).map(item => ({ ...item, sourceKind: "army" })),
+      ...(roster.detachments || []).flatMap(detachment =>
+        (detachment.rules || []).map(rule => ({ ...rule, sourceKind: "detachment", sourceLabel: detachment.name }))
+      ),
+      ...(group.members || []).flatMap(member => [
+        ...(member.configured?.abilities || []),
+        ...(member.configured?.rules || []),
+        ...(member.configured?.profiles || [])
+      ]),
+      ...(roster.enhancements || []).filter(item => memberIds.has(item.bearerInstanceId))
+    ];
+    const bodyguardInstanceId = group.kind === "attached"
+      ? group.memberInstanceIds?.[0] || group.members?.[0]?.instanceId
+      : null;
+    const unitNames = (group.members || []).map(member => member.name);
+    const keywords = [...new Set((group.members || []).flatMap(member => member.keywords || []))];
+    return (group.members || []).flatMap(member => {
+      const configured = window.RosterSheets?.applyWeaponEffectsToConfigured
+        ? window.RosterSheets.applyWeaponEffectsToConfigured(member.configured || {}, effects, {
+            instanceId: member.instanceId,
+            isBodyguard: member.instanceId === bodyguardInstanceId,
+            unitNames,
+            keywords
+          })
+        : member.configured || {};
+      return configured.weapons || [];
+    });
   }
 
   function isGroupBattleShocked(groupId) {
@@ -1146,20 +1219,22 @@
     const group = playRosterGroups().find(item => item.id === groupId);
     if (!group) return;
     const models = groupModels(group);
-    const weapons = group.members.flatMap(member => member.configured?.weapons || []);
+    const weapons = effectiveWeaponsForGroup(group);
     const rangedWeapons = weapons.filter(weapon => !isMeleeWeapon(weapon));
     const meleeWeapons = weapons.filter(isMeleeWeapon);
     const rules = unitRules(group);
+    const enhancements = enhancementsForGroup(group);
+    const interactiveRules = [...enhancements, ...rules];
     const stratagems = eligibleStratagems(group);
     const battleShocked = isGroupBattleShocked(group.id);
     modal.hidden = false;
-    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
+    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}${enhancements.length ? `<section class="playUnitEnhancements"><h3>Enhancements</h3>${enhancements.map(item => renderUnitRule(item, group)).join("")}</section>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${models.length ? models.map(renderModel).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
     modal.querySelector(".playUnitPanel").scrollTop = previousScrollTop;
     modal.querySelector("[data-close]").onclick = closeModal;
     for (const button of modal.querySelectorAll("[data-model-delta]")) button.onclick = () => changeModelWounds(button.dataset.modelId, Number(button.dataset.modelDelta));
     for (const button of modal.querySelectorAll("[data-model-toggle]")) button.onclick = () => toggleModel(button.dataset.modelToggle, Number(button.dataset.maxWounds));
-    for (const button of modal.querySelectorAll("[data-use-ability]")) button.onclick = () => useAbility(group, rules.find(item => item.key === button.dataset.useAbility));
-    for (const button of modal.querySelectorAll("[data-restore-ability]")) button.onclick = () => restoreAbility(group, rules.find(item => item.key === button.dataset.restoreAbility));
+    for (const button of modal.querySelectorAll("[data-use-ability]")) button.onclick = () => useAbility(group, interactiveRules.find(item => item.key === button.dataset.useAbility));
+    for (const button of modal.querySelectorAll("[data-restore-ability]")) button.onclick = () => restoreAbility(group, interactiveRules.find(item => item.key === button.dataset.restoreAbility));
     for (const button of modal.querySelectorAll("[data-use-stratagem]")) button.onclick = () => {
       const item = stratagems.find(candidate => stratagemKey(candidate) === button.dataset.useStratagem);
       if (item) useStratagem(group, item, Number(button.dataset.paidCost));
@@ -1307,11 +1382,16 @@
     const used = tracker ? abilityUseCount(group, item) : 0;
     const exhausted = tracker?.max != null && used >= tracker.max;
     const status = tracker ? `${used}${tracker.max == null ? " used" : `/${tracker.max}`} · ${tracker.label}` : "Always available";
-    return `<details class="playUnitRule ${exhausted ? "exhausted" : ""}"><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.memberName)}</small></span><strong>${escapeHtml(status)}</strong></summary><div class="playUnitRuleBody"><p>${formatRuleDescription(item.description)}</p>${tracker ? `<div class="playAbilityActions">${used ? `<button data-restore-ability="${escapeHtml(item.key)}">Restore use</button>` : ""}<button class="playPrimaryButton" data-use-ability="${escapeHtml(item.key)}" ${exhausted ? "disabled" : ""}>${exhausted ? "Fully used ✓" : "Use ability"}</button></div>` : ""}</div></details>`;
+    const enhancement = item.sourceKind === "enhancement";
+    const source = enhancement ? `ENHANCEMENT · ${item.memberName}${item.points ? ` · +${item.points} PTS` : ""}` : item.memberName;
+    return `<details class="playUnitRule ${enhancement ? "playEnhancement" : ""} ${exhausted ? "exhausted" : ""}" ${enhancement ? "open" : ""}><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(source)}</small></span><strong>${escapeHtml(status)}</strong></summary><div class="playUnitRuleBody"><p>${formatRuleDescription(item.description)}</p>${tracker ? `<div class="playAbilityActions">${used ? `<button data-restore-ability="${escapeHtml(item.key)}">Restore use</button>` : ""}<button class="playPrimaryButton" data-use-ability="${escapeHtml(item.key)}" ${exhausted ? "disabled" : ""}>${exhausted ? "Fully used ✓" : "Use ability"}</button></div>` : ""}</div></details>`;
   }
 
   function formatRuleDescription(description) {
-    return escapeHtml(String(description || "").replace(/\*\*|\^\^/g, "").trim()).replace(/\n+/g, "<br><br>");
+    return escapeHtml(String(description || "")
+      .replace(/&(?:#x20|#32|nbsp);/gi, " ")
+      .replace(/\*\*|\^\^/g, "")
+      .trim()).replace(/\n+/g, "<br><br>");
   }
 
   function useAbility(group, item) {
@@ -1712,6 +1792,20 @@
     modal.hidden = true; modal.innerHTML = "";
   }
 
+  function handleNativeBack() {
+    if (!modal.hidden) {
+      if (openedFromHistory && shell.hidden) closeHistoryScorecard();
+      else if (shell.hidden) close();
+      else closeModal();
+      return true;
+    }
+    if (!shell.hidden) {
+      close();
+      return true;
+    }
+    return false;
+  }
+
   function totalVp(player) { return sum(session.ledger.filter(item => item.player === player)); }
   function categoryVp(player, category) { return sum(session.ledger.filter(item => item.player === player && item.category === category)); }
   function roundVp(player, category, round = session.round) { return sum(session.ledger.filter(item => item.player === player && item.round === round && item.category === category)); }
@@ -1763,5 +1857,5 @@
     if (fullscreenClose) fullscreenClose.click();
   });
 
-  window.ArcadienPlayMode = { open, close, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, openLatestResult };
+  window.ArcadienPlayMode = { open, close, handleNativeBack, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, openLatestResult };
 })();

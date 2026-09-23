@@ -113,9 +113,31 @@
     return total;
   }
 
-  function evaluateRawCondition(condition, entry, index, unitDefinition) {
+  function selectedNodeCount(node, entry) {
+    if (!node) return 0;
+    if (node.kind === "unit") return 1;
+    if (node.kind === "group") return groupCount(node, entry);
+    return Number(entry.selections?.[node.id] || 0);
+  }
+
+  function ancestorHasSelectedInstance(node, reference, entry, index) {
+    let ancestor = index.parentById.get(node?.id);
+    while (ancestor) {
+      if (nodeMatchesReference(ancestor, reference) && selectedNodeCount(ancestor, entry) > 0) return true;
+      ancestor = index.parentById.get(ancestor.id);
+    }
+    return false;
+  }
+
+  function evaluateRawCondition(condition, entry, index, unitDefinition, node = null) {
     const expected = Number(condition?.value || 0);
     if (condition?.type === "instanceOf" || condition?.type === "notInstanceOf") {
+      if (condition.scope === "ancestor" && node) {
+        const present = ancestorHasSelectedInstance(node, condition.childId, entry, index)
+          || (unitDefinition?.categoryIds || []).includes(condition.childId)
+          || (entry.context?.instanceOf || []).includes(condition.childId);
+        return condition.type === "instanceOf" ? present : !present;
+      }
       const instances = new Set([
         unitDefinition?.source?.catalogueId,
         unitDefinition?.source?.selectionCatalogueId,
@@ -139,23 +161,23 @@
     }
   }
 
-  function evaluateRawGroup(group, entry, index, unitDefinition) {
+  function evaluateRawGroup(group, entry, index, unitDefinition, node = null) {
     const children = [
       ...asArray(group?.conditions?.condition).map(condition =>
-        evaluateRawCondition(condition, entry, index, unitDefinition)),
+        evaluateRawCondition(condition, entry, index, unitDefinition, node)),
       ...asArray(group?.conditionGroups?.conditionGroup).map(child =>
-        evaluateRawGroup(child, entry, index, unitDefinition))
+        evaluateRawGroup(child, entry, index, unitDefinition, node))
     ];
     return String(group?.type || "and").toLowerCase() === "or"
       ? children.some(Boolean)
       : children.every(Boolean);
   }
 
-  function modifierApplies(modifier, entry, index, unitDefinition) {
+  function modifierApplies(modifier, entry, index, unitDefinition, node = null) {
     const direct = asArray(modifier.conditions);
     const groups = asArray(modifier.conditionGroups);
-    return direct.every(condition => evaluateRawCondition(condition, entry, index, unitDefinition))
-      && groups.every(group => evaluateRawGroup(group, entry, index, unitDefinition));
+    return direct.every(condition => evaluateRawCondition(condition, entry, index, unitDefinition, node))
+      && groups.every(group => evaluateRawGroup(group, entry, index, unitDefinition, node));
   }
 
   function modifierConditions(modifier) {
@@ -213,7 +235,7 @@
     let hidden = Boolean(node.hidden);
     for (const modifier of node.modifiers || []) {
       if (modifier.field !== "hidden" || modifier.type !== "set") continue;
-      if (!modifierApplies(modifier, entry, index, unitDefinition)) continue;
+      if (!modifierApplies(modifier, entry, index, unitDefinition, node)) continue;
       hidden = modifier.value === true || String(modifier.value).toLowerCase() === "true";
     }
     return hidden;
@@ -244,12 +266,13 @@
     return Math.max(0, occurrences * amountPerOccurrence);
   }
 
-  function effectiveConstraintValue(constraint, unitDefinition, entry, index) {
+  function effectiveConstraintValue(constraint, unitDefinition, entry, index, constraintNode = null) {
     let value = Number(constraint.value || 0);
     for (const node of index.all) {
       if (!nodeIsActive(node, entry, index, unitDefinition)) continue;
       for (const modifier of node.modifiers || []) {
-        if (modifier.field !== constraint.id || !modifierApplies(modifier, entry, index, unitDefinition)) continue;
+        if (modifier.field !== constraint.id || !modifierApplies(modifier, entry, index, unitDefinition, node)) continue;
+        if (constraintNode && node !== constraintNode && (node.constraints || []).some(item => item.id === constraint.id)) continue;
         const repeats = asArray(modifier.repeats);
         const multiplier = repeats.length
           ? repeats.reduce((sum, repeat) => sum + repeatCount(repeat, entry, index), 0)
@@ -354,7 +377,7 @@
         const multiplier = constraint.scope === "parent"
           ? nearestSelectedParentCount(node, entry, index)
           : 1;
-        const limit = effectiveConstraintValue(constraint, unitDefinition, entry, index) * multiplier;
+        const limit = effectiveConstraintValue(constraint, unitDefinition, entry, index, node) * multiplier;
         const actual = constraintActualCount(node, constraint, entry, index, unitDefinition);
         if (constraint.type === "min" && actual < limit) {
           errors.push({ nodeId: node.id, name: node.name, type: "min", actual, limit, constraintId: constraint.id });
@@ -364,7 +387,7 @@
         }
       }
       for (const modifier of node.modifiers || []) {
-        if (!modifierApplies(modifier, entry, index, unitDefinition)) continue;
+        if (!modifierApplies(modifier, entry, index, unitDefinition, node)) continue;
         const error = conditionalError(node, modifier, entry, index);
         if (error) errors.push(error);
       }
@@ -424,7 +447,7 @@
     const constraints = localSelectionConstraints(node, "max");
     if (!constraints.length) return Infinity;
     return Math.min(...constraints.map(constraint => {
-      const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index);
+      const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index, node);
       return constraint.scope === "parent" ? value * Math.max(1, parentCount) : value;
     }));
   }
@@ -433,7 +456,7 @@
     const constraints = localSelectionConstraints(node, "min");
     if (!constraints.length) return 0;
     return Math.max(...constraints.map(constraint => {
-      const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index);
+      const value = effectiveConstraintValue(constraint, unitDefinition, { selections, context: {} }, index, node);
       return constraint.scope === "parent" ? value * Math.max(1, parentCount) : value;
     }));
   }
@@ -680,7 +703,7 @@
     const values = type => constraints
       .filter(constraint => constraint.type === type)
       .map(constraint => {
-        const value = effectiveConstraintValue(constraint, unitDefinition, entry, index);
+        const value = effectiveConstraintValue(constraint, unitDefinition, entry, index, node);
         return constraint.scope === "parent" ? value * Math.max(1, parentCount) : value;
       });
     const minimums = values("min");

@@ -1436,6 +1436,7 @@ function renderArmyAssignments() {
           <option value="">Not attached</option>
           ${renderRosterUnitOptions(roster.filter(item => item.instanceId !== leader.instanceId), {
             selectedId: assignment?.targetInstanceId,
+            groupByLegality: true,
             legalFor: target => armyEngine.leaderCanTarget(
               { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
               { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
@@ -1798,7 +1799,7 @@ function renderRoster() {
     };
 
     const action = document.createElement("button");
-    action.textContent = attachedLeaderReference ? "Detach" : group.kind === "attached" ? "Split" : "Remove";
+    action.textContent = attachedLeaderReference || group.kind === "attached" ? "Detach" : "Remove";
     action.onclick = event => {
       event.stopPropagation();
       if (attachedLeaderReference) {
@@ -2207,16 +2208,33 @@ function renderRosterUnitOptions(entries, options = {}) {
   const labels = rosterUnitDropdownLabels(entries);
   const selectedId = options.selectedId || null;
   const legalFor = typeof options.legalFor === "function" ? options.legalFor : () => true;
-  return entries.map(entry => renderRosterUnitOption(entry, {
-    label: labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry),
-    legal: legalFor(entry),
-    selected: selectedId === entry.instanceId
-  })).join("");
+  const rendered = entries.map(entry => {
+    const legal = legalFor(entry);
+    return {
+      legal,
+      html: renderRosterUnitOption(entry, {
+        label: labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry),
+        legal,
+        groupedByLegality: Boolean(options.groupByLegality),
+        selected: selectedId === entry.instanceId
+      })
+    };
+  });
+  if (!options.groupByLegality) return rendered.map(item => item.html).join("");
+  const legal = rendered.filter(item => item.legal).map(item => item.html).join("");
+  const nonstandard = rendered.filter(item => !item.legal).map(item => item.html).join("");
+  return [
+    legal ? `<optgroup class="attachmentOptionGroup legal" label="RULES AS WRITTEN — LEGAL">${legal}</optgroup>` : "",
+    nonstandard ? `<optgroup class="attachmentOptionGroup nonstandard" label="NON-STANDARD">${nonstandard}</optgroup>` : ""
+  ].join("");
 }
 
 function renderRosterUnitOption(rosterEntry, options = {}) {
   const label = options.label || rosterUnitPlainTextLabel(rosterEntry);
-  return `<option value="${escapeHtml(rosterEntry.instanceId)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" ${options.selected ? "selected" : ""}>${escapeHtml(label)}${options.legal === false ? " ⚠" : ""}</option>`;
+  const grouped = Boolean(options.groupedByLegality);
+  const legality = options.legal === false ? "nonstandard" : "legal";
+  const suffix = options.legal === false ? (grouped ? " — non-standard" : " ⚠") : "";
+  return `<option value="${escapeHtml(rosterEntry.instanceId)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" ${grouped ? `class="attachmentOption ${legality}" data-attachment-legality="${legality}"` : ""} ${options.selected ? "selected" : ""}>${escapeHtml(label)}${suffix}</option>`;
 }
 
 function rosterUnitDropdownLabels(entries) {
@@ -2306,7 +2324,9 @@ function refreshAssignmentSelectLabels() {
     for (const option of options) {
       const entry = roster.find(item => item.instanceId === option.dataset.instanceId);
       if (!entry) continue;
-      const warning = option.textContent.includes("⚠") ? " ⚠" : "";
+      const warning = option.dataset.attachmentLegality === "nonstandard"
+        ? " — non-standard"
+        : option.textContent.includes("⚠") ? " ⚠" : "";
       option.textContent = `${labels.get(entry.instanceId) || rosterUnitPlainTextLabel(entry)}${warning}`;
     }
   }
@@ -2455,6 +2475,7 @@ function showAttachedRosterGroup(group) {
 
   details.innerHTML = `
     <h3>${escapeHtml(group.title)} <span class="pts">${formatGroupPoints(group)}</span></h3>
+    <button class="detachAttachedUnit sidebarBack" data-bodyguard-id="${escapeHtml(bodyguard?.instanceId || "")}">Detach All</button>
     ${renderGroupWarnings(group)}
     <div class="attachedMembers">
       ${[bodyguard, ...leaders].filter(Boolean).map(item => renderAttachedMemberCard(item, item === bodyguard)).join("")}
@@ -2488,7 +2509,9 @@ function renderAttachedMemberCard(rosterEntry, isBodyguard) {
       </div>
       <span>
         <button class="configureMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Configure</button>
-        <button class="removeMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Remove</button>
+        ${isBodyguard
+          ? `<button class="removeMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Remove</button>`
+          : `<button class="detachMember" data-instance-id="${escapeHtml(rosterEntry.instanceId)}">Detach</button>`}
       </span>
     </div>
   `;
@@ -2591,9 +2614,28 @@ function configuredEffectSources(configured = {}) {
 }
 
 function bindAttachedGroupInputs() {
+  for (const button of document.querySelectorAll(".detachAttachedUnit")) {
+    button.onclick = event => {
+      const bodyguardId = event.currentTarget.dataset.bodyguardId;
+      if (!bodyguardId) return;
+      armyState = armyEngine.detachBodyguard(armyState, bodyguardId);
+      selectedInstanceId = bodyguardId;
+      selectedPanel = "unit";
+      render();
+    };
+  }
   for (const button of document.querySelectorAll(".configureMember")) {
     button.onclick = event => {
       selectedInstanceId = event.target.dataset.instanceId;
+      selectedPanel = "unit";
+      render();
+    };
+  }
+  for (const button of document.querySelectorAll(".detachMember")) {
+    button.onclick = event => {
+      const leaderId = event.currentTarget.dataset.instanceId;
+      armyState = armyEngine.setLeaderAttachment(armyState, leaderId, null);
+      selectedInstanceId = leaderId;
       selectedPanel = "unit";
       render();
     };
@@ -2643,6 +2685,7 @@ function renderUnitAssignments(rosterEntry) {
                 .map(targetState => roster.find(item => item.instanceId === targetState.instanceId))
                 .filter(Boolean), {
                 selectedId: assignment.leaderAssignment?.targetInstanceId,
+                groupByLegality: true,
                 legalFor: target => armyEngine.leaderCanTarget(
                   { selectionKey: unit.selectionKey, name: unit.name, rosterRules: definition.rosterRules },
                   { selectionKey: target.unitPackage.selectionKey, name: target.unitPackage.name }
@@ -2658,6 +2701,7 @@ function renderUnitAssignments(rosterEntry) {
               ${renderRosterUnitOptions(assignment.eligibleLeaders
                 .map(leaderState => roster.find(item => item.instanceId === leaderState.instanceId))
                 .filter(Boolean), {
+                groupByLegality: true,
                 legalFor: leader => armyEngine.leaderCanTarget(
                   { selectionKey: leader.unitPackage.selectionKey, name: leader.unitPackage.name, rosterRules: leader.unitPackage.definition.rosterRules },
                   { selectionKey: unit.selectionKey, name: unit.name }
@@ -3348,12 +3392,18 @@ function unitProfilesWithDerivedInvulnerableSaves(units, configured = {}, effect
 
 function inferredInvulnerableSave(configured = {}, effects = []) {
   const texts = [
-    ...(configured.abilities || []).flatMap(invulnerableEffectTextParts),
-    ...(configured.rules || []).flatMap(invulnerableEffectTextParts),
-    ...(configured.profiles || []).flatMap(invulnerableEffectTextParts),
+    ...automaticInvulnerableEffectTexts(configured.abilities),
+    ...automaticInvulnerableEffectTexts(configured.rules),
+    ...automaticInvulnerableEffectTexts(configured.profiles),
     ...invulnerableEffectTextsFromEffects(effects)
   ];
   return bestSave("", ...texts.map(extractInvulnerableSave).filter(Boolean));
+}
+
+function automaticInvulnerableEffectTexts(items = []) {
+  return (items || []).flatMap(item =>
+    invulnerableEffectTextParts(item).filter(text => !effectRequiresBattleStateForInvulnerableSave(text))
+  );
 }
 
 function invulnerableEffectTextsFromEffects(effects = []) {
@@ -3373,8 +3423,13 @@ function effectAppliesAutomaticallyForInvulnerableSave(text, sourceKind = "") {
 }
 
 function effectRequiresBattleStateForInvulnerableSave(text) {
+  const stableAttachment = /\bwhile\s+.*\b(?:is\s+)?leading\b/i.test(text)
+    || /\bwhile\s+.*\bunit\s+is\s+led\b/i.test(text)
+    || /\bif\s+this\s+unit\s+is\s+attached\s+to\s+a\s+unit\b/i.test(text);
   return /\bAura\b/i.test(text)
     || /\bwithin\s+\d+\s*(?:"|&quot;|inches?\b)/i.test(text)
+    || (!stableAttachment && /\b(?:if|unless|when|whenever|while)\b/i.test(text))
+    || /\b(?:once\s+per|each\s+time|after\s+|during\s+|for\s+every|selected\s+to)\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?'?s?\s+active\b/i.test(text)
     || /\bif\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)
     || /\bwhile\s+the\s+Waaagh!?\s+is\s+active\b/i.test(text)

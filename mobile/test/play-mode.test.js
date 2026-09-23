@@ -24,6 +24,16 @@ test("Play Mode contains every Chapter Approved secondary card", () => {
   }
 });
 
+test("Army view exposes the roster's army rules and roll tables", () => {
+  assert.match(source, /const armyRules = session\.roster\?\.armyRules \|\| \[\]/);
+  assert.match(source, /<h2>Army Rules<\/h2>/);
+  assert.match(source, /function renderPlayArmyRule\(rule, index\)/);
+  assert.match(source, /class="playArmyRuleTable"/);
+  assert.match(source, /table\.rows \|\| \[\]/);
+  assert.match(styles, /\.playArmyRules\{display:grid/);
+  assert.match(styles, /\.playArmyRuleBody/);
+});
+
 test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
   assert.equal(terrainManifest.schemaVersion, 1);
   assert.deepEqual(terrainManifest.sourcePageRange, { first: 9, last: 53 });
@@ -251,6 +261,24 @@ test("Play Mode preserves enhancement-inclusive points when rebuilding unit grou
   assert.match(source, /savedGroup\?\.totalPoints \?\?/);
   assert.match(source, /function enhancementPointsForMembers\(roster, memberIds\)/);
   assert.match(source, /roster\.enhancements \|\| \[\]/);
+});
+
+test("Play Mode shows enhancements on their bearer and attached unit", () => {
+  assert.match(source, /function enhancementsForGroup\(group\)/);
+  assert.match(source, /filter\(item => members\.has\(item\.bearerInstanceId\)\)/);
+  assert.match(source, /class="playEnhancementBadges"/);
+  assert.match(source, /class="playUnitEnhancements"><h3>Enhancements<\/h3>/);
+  assert.match(source, /ENHANCEMENT · \$\{item\.memberName\}/);
+  assert.match(source, /const interactiveRules = \[\.\.\.enhancements, \.\.\.rules\]/);
+  assert.match(styles, /\.playEnhancementBadges\{display:grid/);
+  assert.match(styles, /\.playUnitRule\.playEnhancement/);
+});
+
+test("Play Mode renders weapon profiles with automatic enhancement modifiers", () => {
+  assert.match(source, /function effectiveWeaponsForGroup\(group\)/);
+  assert.match(source, /RosterSheets\?\.applyWeaponEffectsToConfigured/);
+  assert.match(source, /instanceId: member\.instanceId/);
+  assert.match(source, /const weapons = effectiveWeaponsForGroup\(group\)/);
 });
 
 test("using a stratagem spends CP once per unit and phase with visual confirmation", () => {

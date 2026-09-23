@@ -515,6 +515,11 @@ button:hover {
   box-shadow: inset 4px 0 #006070;
 }
 
+.ownedMark {
+  color: #238636;
+  font-weight: 900;
+}
+
 .unit small {
   color: #596164;
   display: block;
@@ -1065,6 +1070,55 @@ html[data-mobile-ui="false"] .savedRosterCards {
 
 .discordExportPanel {
   width: min(980px, 100%);
+}
+
+.mobileSharePanel {
+  width: min(520px, 100%);
+}
+
+.mobileShareActions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mobileShareActions > button,
+.mobileShareReference {
+  align-content: center;
+  box-sizing: border-box;
+  display: grid;
+  gap: 4px;
+  min-height: 82px;
+  padding: 12px;
+  text-align: left;
+}
+
+.mobileShareActions > button b,
+.mobileShareReference b {
+  font-size: 15px;
+}
+
+.mobileShareActions > button small,
+.mobileShareReference small {
+  color: #617074;
+  line-height: 1.3;
+}
+
+.mobileShareReference {
+  align-items: center;
+  border: 1px solid #93aab1;
+  border-radius: 4px;
+  grid-template-columns: auto 1fr;
+}
+
+.mobileShareReference input {
+  height: 22px;
+  width: 22px;
+}
+
+.mobileShareReference span {
+  display: grid;
+  gap: 4px;
 }
 
 .discordExportLayout {
@@ -2774,6 +2828,16 @@ html[data-mobile-ui="false"] .savedRosterCards {
   width: 100%;
 }
 
+.ownedUnitToggle {
+  margin: 0 0 12px;
+}
+
+.ownedUnitToggle.active {
+  background: #238636;
+  border-color: #176c2a;
+  color: #fff;
+}
+
 .sidebarSelect,
 .unitSizeControl {
   display: grid;
@@ -3210,6 +3274,10 @@ html[data-theme="dark"] .unit.selected,
 html[data-theme="dark"] .rosterConfiguration.selected {
   border-color: #26b8c5;
   box-shadow: inset 4px 0 #0f8290;
+}
+
+html[data-theme="dark"] .ownedMark {
+  color: #46d369;
 }
 
 html[data-theme="dark"] .attachedLeaderReference {
@@ -3917,6 +3985,9 @@ html[data-theme="dark"][data-custom-theme="true"] .ruleToken {
 .playArmyUnit.halfStrength{border-color:#d8972f;background:#302516;box-shadow:0 0 0 1px #d8972f55,0 0 22px #d8972f18}.playArmyUnit.halfStrength .playArmyUnitOpen{background:linear-gradient(90deg,#4a3318aa,#202c3500 52%)!important}.playArmyUnit.halfStrength .playArmyQuickWounds{border-top-color:#805d25;background:#2d251a}.playStrengthFlag{width:max-content;margin-top:3px;padding:3px 6px;border:1px solid #d8972f;border-radius:999px;background:#4b3419;color:#ffd37a;font-size:8px;font-weight:900;letter-spacing:.08em}.playBattleShockReminder{display:grid;grid-template-columns:38px 1fr;align-items:center;gap:10px;margin:10px 0 14px;padding:10px 13px;border:1px solid #c9882a;border-left:4px solid #e5aa35;border-radius:11px;background:#302515;color:#f5f1e8}.playBattleShockReminder>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#d8972f;color:#1b1710;font-size:21px;font-weight:1000}.playBattleShockReminder>div{display:grid;gap:2px}.playBattleShockReminder small{color:#efb84f;font-size:9px;font-weight:900;letter-spacing:.14em}.playBattleShockReminder b{font-size:13px}.playBattleShockReminder p{margin:0;color:#cfc3ad;font-size:11px;line-height:1.35}
 .playArmyStatusBar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-top:1px solid #34414b;background:#18242c}.playArmyStatusBar .playArmyQuickWounds{padding:0;border:0;background:transparent}.playBattleShockToggle{display:flex!important;align-items:center;gap:6px;min-height:36px!important;padding:0 11px!important;border-color:#69537e!important;background:#261f30!important;color:#cdb6e3!important;font-size:10px!important;letter-spacing:.04em}.playBattleShockToggle>span{font-size:17px}.playBattleShockToggle.active{border-color:#c16cff!important;background:#54266f!important;color:#fff!important;box-shadow:0 0 16px #b64cff66}.playBattleShockFlag{display:flex;align-items:center;gap:4px;width:max-content;margin-top:3px;padding:3px 7px;border:1px solid #bb62ee;border-radius:999px;background:#4a225e;color:#f0c9ff;font-size:8px;font-weight:900;letter-spacing:.09em}.playBattleShockFlag i{color:#df8dff;font-size:13px;font-style:normal;line-height:.7}.playArmyUnit.battleShocked{position:relative;border-color:#b65bea;background:#25192d;box-shadow:0 0 0 1px #b65bea66,0 0 25px #a43de733}.playArmyUnit.battleShocked::after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;opacity:.28;background:linear-gradient(117deg,transparent 0 28%,#dc91ff 28.2% 28.45%,transparent 28.7% 100%),linear-gradient(63deg,transparent 0 62%,#a84bd8 62.2% 62.45%,transparent 62.7% 100%),linear-gradient(146deg,transparent 0 76%,#e0a2ff 76.2% 76.4%,transparent 76.65% 100%);background-size:210px 120px,260px 170px,320px 190px}.playArmyUnit.battleShocked .playArmyUnitOpen{position:relative;z-index:2;background:linear-gradient(90deg,#4a205c99,#202c3500 60%)!important}.playArmyUnit.battleShocked .playArmyStatusBar{border-top-color:#654075;background:#241b2d}.playArmyUnit.halfStrength.battleShocked{box-shadow:inset 4px 0 #dc9b31,0 0 0 1px #b65bea66,0 0 25px #a43de733}.playUnitBattleShockNotice{display:grid;grid-template-columns:38px 1fr;align-items:center;gap:10px;margin:14px 16px 0;padding:10px 12px;border:1px solid #a855d4;border-radius:10px;background:#321d3e}.playUnitBattleShockNotice>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#71378c;color:#f3d6ff;font-size:22px}.playUnitBattleShockNotice>div{display:grid;gap:2px}.playUnitBattleShockNotice b{color:#edc5ff;font-size:12px;letter-spacing:.12em}.playUnitBattleShockNotice small{color:#c9b8d2}.playStratagem.blocked{border-color:#74478b;background:#221a29}.playStratagemBlockedFlag{display:flex;align-items:center;justify-content:center;gap:7px;min-height:52px;border:1px solid #a958d0;border-radius:10px;background:#482358;color:#efceff;font-size:13px;font-weight:900;letter-spacing:.03em}.playStratagemBlockedFlag>span{font-size:20px}@media(max-width:520px){.playArmyStatusBar{align-items:stretch;flex-direction:column}.playBattleShockToggle{justify-content:center}.playArmyStatusBar .playArmyQuickWounds{align-self:center}}
 .playBattleShockToggle:not(.active){width:38px;padding:0!important;justify-content:center}.playBattleShockToggle.active b{font-size:9px;letter-spacing:.1em}.playArmyUnit.halfStrength .playArmyStatusBar .playArmyQuickWounds,.playArmyUnit.battleShocked .playArmyStatusBar .playArmyQuickWounds{background:transparent}
+.playArmyRules{display:grid;gap:9px}.playArmyRule{overflow:hidden;border:1px solid #b78026;border-radius:12px;background:linear-gradient(135deg,#2b2418,#19242c 65%)}.playArmyRule>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;cursor:pointer;list-style:none}.playArmyRule>summary::-webkit-details-marker{display:none}.playArmyRule>summary span{display:grid;gap:2px}.playArmyRule>summary small{color:#e5aa35;font-size:9px;font-weight:900;letter-spacing:.14em}.playArmyRule>summary b{font-size:16px}.playArmyRule>summary strong{flex:0 0 auto;color:#d7b66f;font-size:10px;text-transform:uppercase}.playArmyRule[open]>summary strong{font-size:0}.playArmyRule[open]>summary strong::after{content:"Hide rule";font-size:10px}.playArmyRuleBody{display:grid;gap:12px;padding:0 14px 14px;border-top:1px solid #574529}.playArmyRuleBody>p{margin:13px 0 0;color:#d6dadd;line-height:1.55}.playArmyRuleTable{overflow-x:auto}.playArmyRuleTable h4{margin:2px 0 8px;color:#e5aa35}.playArmyRuleTable table{width:100%;border-collapse:collapse;background:#141d24}.playArmyRuleTable th,.playArmyRuleTable td{padding:9px;border:1px solid #3a4852;text-align:left;vertical-align:top}.playArmyRuleTable th{color:#d7b66f;font-size:10px;letter-spacing:.08em;text-transform:uppercase}.playArmyRuleTable td:first-child{width:64px;color:#e5aa35;font-weight:800}.playArmyRuleTable td p{margin:4px 0 0;color:#c8ced2;line-height:1.45}.playArmyRulesEmpty{margin:0;padding:16px;border:1px dashed #45535d;border-radius:12px;color:#9ba5ac}
+.playEnhancementBadges{display:grid!important;gap:4px!important;margin-top:5px}.playEnhancementBadges>span{display:grid;padding:5px 7px;border:1px solid #b78026;border-radius:7px;background:#322816}.playEnhancementBadges b{color:#f2cb72;font-size:11px!important}.playEnhancementBadges small{color:#baaa87!important;font-size:8px!important}.playUnitEnhancements{display:grid;gap:8px;padding-top:14px!important}.playUnitEnhancements>h3{margin-bottom:2px}.playUnitRule.playEnhancement{border-color:#b78026;background:linear-gradient(135deg,#312716,#19242c 70%)}.playUnitRule.playEnhancement>summary small,.playUnitRule.playEnhancement>summary strong{color:#e5aa35}
+.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#152126;font-weight:700}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#7a898f}html[data-theme="dark"] .leaderTarget option.attachmentOption.legal,html[data-theme="dark"] .bodyguardLeader option.attachmentOption.legal{color:#fff}@media(max-width:900px){.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#fff}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#87949a}}
 
 /* Keep secondary hands visually distinct regardless of the active turn or round. */
 .playModeContent.playOpponentHand{background:radial-gradient(circle at 50% -20%,#492d32 0,#1a1014 42%)}
@@ -3947,3 +4018,4 @@ html[data-native-shell="android"] .playModeHeader{padding-top:12px}
   .playCpControl button{box-sizing:border-box;min-width:0;width:36px;padding:0}
   .playCpControl b{box-sizing:border-box;min-width:0;width:100%;padding:8px 3px;font-size:13px}
 }
+.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#152126;font-weight:700}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#7a898f}html[data-theme="dark"] .leaderTarget option.attachmentOption.legal,html[data-theme="dark"] .bodyguardLeader option.attachmentOption.legal{color:#fff}@media(max-width:900px){.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#fff}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#87949a}}

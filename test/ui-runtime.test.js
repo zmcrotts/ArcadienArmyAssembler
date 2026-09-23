@@ -30,6 +30,23 @@ test("roster cards and roster-wide warnings include unit loadout errors", () => 
   }
 });
 
+test("roster unit configuration can mark an entry as owned", () => {
+  const source = fs.readFileSync(require.resolve("../mobile/ui/engine-app.js"), "utf8");
+  const styles = fs.readFileSync(require.resolve("../mobile/ui/styles.css"), "utf8");
+  assert.match(source, /ownedUnitInstanceIds: \[\]/);
+  assert.match(source, /function renderSidebarOwnedControl\(rosterEntry\)/);
+  assert.match(source, /function renderOwnedMark\(instanceId\)/);
+  assert.doesNotMatch(styles, /\.unit\.owned\s*\{/);
+  assert.match(styles, /\.ownedUnitToggle\.active\s*\{/);
+});
+
+test("selecting roster units only refreshes selection state and details", () => {
+  const source = fs.readFileSync(require.resolve("../mobile/ui/engine-app.js"), "utf8");
+  assert.match(source, /function selectRosterPanel\(panel, instanceId = null\)[\s\S]*refreshRosterSelectionState\(\);[\s\S]*renderSelectedDetails\(\);/);
+  assert.match(source, /div\.onclick = \(\) => \{\s*selectRosterPanel\(group\.kind === "attached" \? "group" : "unit", primary\.instanceId\);\s*\};/);
+  assert.match(source, /data-member-instance-ids/);
+});
+
 test("unit-size controls show the actual configured model composition", () => {
   for (const file of ["../ui/engine-app.js", "../mobile/ui/engine-app.js"]) {
     const source = fs.readFileSync(require.resolve(file), "utf8");
@@ -258,6 +275,32 @@ test("packaged Brood Brothers squads expose legal 10 and 20 model compositions",
     assert.equal(engine.getUnitSizeState(definition, twenty).current, 20, `${name} enlarged size`);
     assert.deepEqual(engine.validateLoadout(definition, twenty), [], `${name} enlarged loadout`);
   }
+});
+
+test("packaged Cadian Shock Troops expose two of each special weapon and four total at 20 models", () => {
+  require("../ui/engine-data/imperium-astra-militarum");
+  const units = window.ROSTER_ENGINE_FACTIONS["Imperium - Astra Militarum"];
+  const engine = window.RosterEngine;
+  const definition = units.find(item => item.name === "Cadian Shock Troops").definition;
+  const entry = engine.setUnitSize(definition, engine.createDefaultRosterEntry(definition), 20);
+  const specialWeapons = engine.getOptionStates(definition, entry).filter(item =>
+    item.id.includes("6f72-94d9-b0df-e130")
+    && /^Shock Trooper w\/ (?:Flamer|Grenade Launcher|Meltagun|Plasma Gun)$/.test(item.name)
+  );
+
+  assert.deepEqual(specialWeapons.map(item => item.maximum), [2, 2, 2, 2]);
+  assert.equal(specialWeapons[0].groupMaximum, 4);
+});
+
+test("packaged Astra Militarum Officers expose their Orders allowance and targets", () => {
+  require("../ui/engine-data/imperium-astra-militarum");
+  const units = window.ROSTER_ENGINE_FACTIONS["Imperium - Astra Militarum"];
+  const engine = window.RosterEngine;
+  const definition = units.find(item => item.name === "Ursula Creed").definition;
+  const orders = engine.getConfiguredProfiles(definition, engine.createDefaultRosterEntry(definition)).abilities
+    .find(item => item.name === "Orders");
+
+  assert.match(orders.characteristics.Description, /issue up to 3 Orders to .*Regiment.* units/i);
 });
 
 test("browser configured profiles suppress fallback melee weapons after replacement", () => {

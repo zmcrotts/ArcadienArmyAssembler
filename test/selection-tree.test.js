@@ -81,6 +81,28 @@ test("ability effects normalize to the canonical Description field", () => {
   assert.equal(tree.profiles[0].characteristics.Effect, "Re-roll Hit and Wound rolls of 1.");
   assert.equal(tree.profiles[0].characteristics.Description, "Re-roll Hit and Wound rolls of 1.");
 });
+test("Orders profiles normalize to the canonical Description field", () => {
+  const unit = {
+    id: "officer",
+    name: "Officer",
+    type: "selectionEntry",
+    profiles: {
+      profile: [{
+        id: "orders",
+        name: "Orders",
+        typeName: "Orders",
+        characteristics: {
+          characteristic: [{ name: "Orders", "#text": "This Officer can issue 2 Orders to Regiment units." }]
+        }
+      }]
+    }
+  };
+
+  const tree = buildSelectionTree(unit, treeIndex());
+
+  assert.equal(tree.profiles[0].characteristics.Orders, "This Officer can issue 2 Orders to Regiment units.");
+  assert.equal(tree.profiles[0].characteristics.Description, "This Officer can issue 2 Orders to Regiment units.");
+});
 test("Mark of Chaos becomes a mandatory four-choice God Blessing only for CSM Daemon Princes", () => {
   const markGroup = {
     id: "mark-group",
