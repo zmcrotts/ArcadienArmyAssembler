@@ -26,7 +26,7 @@ test("mobile build produces a complete installable offline package", () => {
 
   assert.match(index, /rel="manifest" href="app\.webmanifest"/);
   assert.match(index, /rel="apple-touch-icon" href="app-icon-192\.png"/);
-  assert.match(index, /name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/);
+  assert.match(index, /name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/);
   assert.match(index, /name="apple-mobile-web-app-capable" content="yes"/);
   assert.match(index, /name="apple-mobile-web-app-status-bar-style" content="black-translucent"/);
   assert.match(index, /src="bootstrap-app\.js(?:\?[^\"]+)?"/);
@@ -56,6 +56,8 @@ test("mobile build produces a complete installable offline package", () => {
   assert.match(offlineApp, /navigator\.standalone === true/);
   assert.match(offlineApp, /panel\.hidden = state === "ready" && installedApp/);
   assert.match(engineApp, /mobileSheetBackdrop\.onclick = closeMobileSheets/);
+  assert.match(engineApp, /if \(mobileSheet === "details" && mobileDetailsReturnSheet === "add"\) \{[\s\S]*?mobileSheet = "add";[\s\S]*?applyMobileSheetState\(\);[\s\S]*?return;/);
+  assert.match(engineApp, /showPreview\(unit\);\s*openMobileDetailsSheet\("add"\);/);
   assert.match(engineApp, /class="mobileRosterSectionLabel"/);
   assert.match(engineApp, /<small>— \$\{section\.groups\.length\}/);
   assert.doesNotMatch(engineApp, /id="startCleanSync"|id="startDisconnectSync"|>Un-sync<\/button>/);

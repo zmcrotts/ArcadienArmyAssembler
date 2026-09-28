@@ -1,3 +1,8 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -877,6 +882,7 @@ html[data-mobile-ui="false"] .gameHistoryCards { flex: 1 1 auto; min-height: 0; 
 .savedRosterCards {
   display: grid;
   gap: 8px;
+  grid-auto-rows: max-content;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   max-height: min(60vh, 720px);
   margin-top: 12px;
@@ -898,7 +904,6 @@ html[data-mobile-ui="false"] .savedRosterCards {
   display: grid;
   gap: 18px;
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 58px;
   padding: 11px 14px;
   cursor: pointer;
   transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
@@ -945,21 +950,34 @@ html[data-mobile-ui="false"] .savedRosterCards {
 }
 
 .savedRosterText {
+  align-content: center;
+  display: grid;
+  gap: 3px;
+  grid-template-rows: repeat(3, max-content);
   min-width: 0;
 }
 
 .savedRosterText b {
   display: block;
   line-height: 1.2;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .savedRosterCard small {
   color: #596164;
   display: block;
-  margin-top: 4px;
+  line-height: 1.25;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.savedRosterCard .savedRosterEdited { color: #356352; font-weight: 700; }
+.savedRosterCard .savedRosterEdited {
+  color: #356352;
+  font-weight: 700;
+  line-height: 1.2;
+}
 
 .savedRosterActions {
   align-items: center;
@@ -996,6 +1014,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 .savedRosterFactionCards {
   display: grid;
   gap: 8px;
+  grid-auto-rows: max-content;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -1003,6 +1022,33 @@ html[data-mobile-ui="false"] .savedRosterCards {
   .savedRosterCards,
   .savedRosterFactionCards {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1180px) {
+  .savedRosterCards,
+  .savedRosterFactionCards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .savedRosterCard {
+    gap: clamp(10px, 1.4vw, 18px);
+  }
+
+  .savedRosterText b {
+    font-size: clamp(14px, 1.5vw, 16px);
+    overflow-wrap: anywhere;
+  }
+
+  .savedRosterCard small {
+    font-size: clamp(11px, 1.2vw, 13px);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .savedRosterActions button {
+    font-size: clamp(11px, 1.2vw, 13px);
+    padding-inline: clamp(6px, 1vw, 10px);
   }
 }
 
@@ -2635,12 +2681,13 @@ html[data-mobile-ui="false"] .savedRosterCards {
   }
 
   .startHeaderActions button {
-    font-size: 13px;
+    font-size: clamp(10px, 1.5vw, 13px);
+    line-height: 1.15;
     margin-left: 0;
     min-height: 40px;
-    overflow: hidden;
+    overflow-wrap: anywhere;
     padding: 7px 4px;
-    text-overflow: ellipsis;
+    white-space: normal;
     width: 100%;
   }
 
@@ -3990,6 +4037,8 @@ html[data-theme="dark"][data-custom-theme="true"] .ruleToken {
 .playEnhancementBadges{display:grid!important;gap:4px!important;margin-top:5px}.playEnhancementBadges>span{display:grid;padding:5px 7px;border:1px solid #b78026;border-radius:7px;background:#322816}.playEnhancementBadges b{color:#f2cb72;font-size:11px!important}.playEnhancementBadges small{color:#baaa87!important;font-size:8px!important}.playUnitEnhancements{display:grid;gap:8px;padding-top:14px!important}.playUnitEnhancements>h3{margin-bottom:2px}.playUnitRule.playEnhancement{border-color:#b78026;background:linear-gradient(135deg,#312716,#19242c 70%)}.playUnitRule.playEnhancement>summary small,.playUnitRule.playEnhancement>summary strong{color:#e5aa35}
 .leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#152126;font-weight:700}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#7a898f}html[data-theme="dark"] .leaderTarget option.attachmentOption.legal,html[data-theme="dark"] .bodyguardLeader option.attachmentOption.legal{color:#fff}@media(max-width:900px){.leaderTarget option.attachmentOption.legal,.bodyguardLeader option.attachmentOption.legal{color:#fff}.leaderTarget option.attachmentOption.nonstandard,.bodyguardLeader option.attachmentOption.nonstandard,.attachmentOptionGroup.nonstandard{color:#87949a}}
 button:not(:disabled){transition:transform .1s ease,filter .1s ease,box-shadow .16s ease}button:not(:disabled):active{transform:translateY(1px) scale(.975);filter:brightness(.9)}button.buttonFeedbackPulse{animation:buttonFeedbackPulse .24s ease-out}button.buttonFeedbackSuccess{border-color:#3fa873!important;background:#236b4a!important;color:#fff!important;box-shadow:0 0 0 3px #3fa87333,0 5px 18px #174b3433!important}@keyframes buttonFeedbackPulse{0%{transform:scale(.975);filter:brightness(.9)}55%{transform:scale(1.025);filter:brightness(1.08)}100%{transform:scale(1);filter:brightness(1)}}@media(prefers-reduced-motion:reduce){button:not(:disabled){transition:none}button:not(:disabled):active{transform:none;filter:brightness(.88)}button.buttonFeedbackPulse{animation:none}}
+
+.playFirstTurnSetup{box-sizing:border-box;width:min(100%,620px);margin:clamp(28px,8vh,90px) auto 0;padding:24px;border:1px solid #46545e;border-radius:18px;background:linear-gradient(145deg,#1c2932,#131c23);box-shadow:0 20px 60px #0006;text-align:center}.playFirstTurnSetup h2{margin:7px 0;font-size:clamp(26px,5vw,38px)}.playFirstTurnSetup p{max-width:470px;margin:0 auto;color:#aab4ba;line-height:1.5}.playFirstTurnChoices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}.playFirstTurnChoices button{min-height:58px}@media(max-width:520px){.playFirstTurnSetup{margin-top:18px;padding:20px 16px}.playFirstTurnChoices{grid-template-columns:1fr}}
 
 /* Keep secondary hands visually distinct regardless of the active turn or round. */
 .playModeContent.playOpponentHand{background:radial-gradient(circle at 50% -20%,#492d32 0,#1a1014 42%)}

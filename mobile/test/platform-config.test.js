@@ -109,6 +109,27 @@ test("PWA manifest declares generated install icons", () => {
   assert.match(builder, /createCrosshairPng\(size\)/);
 });
 
+test("responsive library cards collapse before the desktop minimum and mobile zoom stays locked", () => {
+  const index = read("mobile/ui/index.html");
+  const bootstrap = read("mobile/ui/bootstrap-app.js");
+  const styles = read("mobile/ui/styles.css");
+  const activity = read("mobile/android/app/src/main/java/com/zmcrotts/arcadienarmyassembler/MainActivity.java");
+
+  assert.match(index, /maximum-scale=1, user-scalable=no/);
+  assert.match(bootstrap, /width=860, initial-scale=1, maximum-scale=1, user-scalable=no/);
+  assert.match(bootstrap, /addEventListener\("gesturestart"[\s\S]*?preventDefault/);
+  assert.match(styles, /@media \(max-width: 1180px\)[\s\S]*?\.savedRosterCards,[\s\S]*?grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(styles, /\.savedRosterText \{[\s\S]*?display: grid;[\s\S]*?grid-template-rows: repeat\(3, max-content\)/);
+  assert.match(styles, /\.savedRosterCard small \{[\s\S]*?margin: 0;[\s\S]*?overflow-wrap: anywhere;/);
+  assert.match(styles, /\.savedRosterCards \{[\s\S]*?grid-auto-rows: max-content;/);
+  assert.doesNotMatch(styles, /\.savedRosterCard \{[\s\S]*?min-height: 58px;/);
+  assert.match(styles, /\.startHeaderActions button \{[\s\S]*?font-size: clamp\(10px, 1\.5vw, 13px\)/);
+  assert.match(styles, /overflow-wrap: anywhere/);
+  assert.match(activity, /setSupportZoom\(false\)/);
+  assert.match(activity, /setTextZoom\(100\)/);
+  assert.match(activity, /setLoadWithOverviewMode\(false\)/);
+});
+
 test("wide browser layout keeps the desktop shell visible", () => {
   const app = read("mobile/ui/engine-app.js");
   assert.match(app, /mobileShell\.hidden = !mobileLayout/);

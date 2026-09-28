@@ -293,7 +293,7 @@ function canBearEnhancement(enhancement, entry) {
   if (godRestriction && !(entry.keywords || []).some(keyword =>
     normalizeTargetName(keyword) === normalizeTargetName(godRestriction)
   )) return false;
-  return Boolean(entry.roles?.character && !entry.roles?.epicHero);
+  return Boolean(!entry.roles?.epicHero && (enhancement.allowNonCharacterBearer || entry.roles?.character));
 }
 
 function selectionKeyMatchesAny(selectionKey, eligibleSelectionKeys = []) {
@@ -539,6 +539,15 @@ const NATIVE_UNIT_DETACHMENT_GATES = {
     detachmentName: "Questor Forgepact",
     category: "Faction: Adeptus Mechanicus",
     label: "Adeptus Mechanicus"
+  }],
+  "Xenos - Genestealer Cults": [{
+    detachmentName: "Brood Brother Auxilia",
+    category: "Faction: Astra Militarum",
+    label: "Astra Militarum"
+  }, {
+    detachmentName: "Final Day",
+    category: "Faction: Tyranids",
+    label: "Tyranids"
   }]
 };
 

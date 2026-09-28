@@ -1407,6 +1407,37 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 280);
 });
 
+test("11e Ork Boyz allow a second Nob only in a full 20-model mob", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const boyz = ruleset.units.find(unit =>
+    unit.faction === "Xenos - Orks" && unit.name === "Boyz"
+  );
+  assert.ok(boyz, "Missing Orks Boyz");
+
+  const defaultEntry = createDefaultRosterEntry(boyz);
+  assert.equal(getUnitSizeState(boyz, defaultEntry).current, 10);
+  assert.equal(getOptionStates(boyz, defaultEntry).find(item => item.name === "Boy")?.current, 9);
+  assert.equal(getOptionStates(boyz, defaultEntry).find(item => item.name === "Nob")?.current, 1);
+
+  const elevenModels = setUnitSize(boyz, defaultEntry, 11);
+  assert.equal(getOptionStates(boyz, elevenModels).find(item => item.name === "Boy")?.current, 10);
+  assert.equal(getOptionStates(boyz, elevenModels).find(item => item.name === "Nob")?.current, 1);
+
+  const largeEntry = setUnitSize(boyz, defaultEntry, 20);
+  assert.equal(getUnitSizeState(boyz, largeEntry).current, 20);
+  assert.equal(getOptionStates(boyz, largeEntry).find(item => item.name === "Boy")?.current, 18);
+  assert.equal(getOptionStates(boyz, largeEntry).find(item => item.name === "Nob")?.current, 2);
+  assert.deepEqual(validateLoadout(boyz, largeEntry), []);
+
+  const nob = getOptionStates(boyz, defaultEntry).find(item => item.name === "Nob");
+  const malformed = structuredClone(defaultEntry);
+  malformed.selections[nob.id] = 2;
+  const repaired = normalizeRosterEntry(boyz, malformed);
+  assert.equal(getUnitSizeState(boyz, repaired).current, 10);
+  assert.equal(getOptionStates(boyz, repaired).find(item => item.name === "Boy")?.current, 9);
+  assert.equal(getOptionStates(boyz, repaired).find(item => item.name === "Nob")?.current, 1);
+});
+
 test("11e selected wargear direct points are included in entry totals", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const riptide = ruleset.units.find(unit =>
@@ -1649,6 +1680,10 @@ test("keyword-limited enhancements and upgrades expose only their printed bearer
 
   const targetinGizmos = eligibleNames("Xenos - Orks", "Blitz Brigade", "Targetin' Gizmos");
   assert.deepEqual([...targetinGizmos].sort(), ["Battlewagon", "Gunwagon", "Hunta Rig", "Kill Rig"]);
+
+  const ferociousShowOff = eligibleNames("Xenos - Orks", "Green Tide", "Ferocious Show-off");
+  assert.equal(ferociousShowOff.has("Boyz"), true);
+  assert.equal(ferociousShowOff.has("Stormboyz"), true);
 
   const benediction = eligibleNames(
     "Imperium - Adeptus Astartes - Black Templars", "Wrathful Procession", "Benediction of Fury"

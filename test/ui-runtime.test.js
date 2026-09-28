@@ -791,6 +791,29 @@ test("browser army runtime offers selected-detachment upgrades without character
   );
 });
 
+test("browser army runtime honors enhancements that allow non-character bearers", () => {
+  const army = {
+    id: "orks",
+    detachments: [{ id: "green-tide", name: "Green Tide", points: 0 }],
+    enhancements: [{
+      id: "ferocious-show-off",
+      name: "Ferocious Show-off",
+      kind: "enhancement",
+      allowNonCharacterBearer: true,
+      detachmentIds: ["green-tide"],
+      eligibleSelectionKeys: ["boyz-key"],
+      points: 15
+    }]
+  };
+  const boyz = { instanceId: "boyz-1", selectionKey: "boyz-key", roles: {}, rosterRules: {} };
+  const state = window.ArmyEngine.selectDetachment(army, window.ArmyEngine.createArmyState(army), "green-tide");
+
+  assert.deepEqual(
+    window.ArmyEngine.getUnitAssignmentState(army, state, [boyz], boyz).enhancements.map(item => item.name),
+    ["Ferocious Show-off"]
+  );
+});
+
 test("browser army runtime applies selectable detachment keyword upgrades before enhancement eligibility", () => {
   const army = {
     id: "guard",

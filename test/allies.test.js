@@ -113,6 +113,40 @@ test("all god-specific Chaos factions hide daemon allies outside their required 
   }
 });
 
+test("Genestealer Cults hide Guard and Tyranid soup units outside their matching detachments", () => {
+  const ruleset = extractNormalizedRuleset();
+  const army = ruleset.armies.find(item => item.faction === "Xenos - Genestealer Cults");
+  const guard = ruleset.units.find(item => item.faction === army?.faction && item.name === "Armoured Sentinels");
+  const tyranid = ruleset.units.find(item => item.faction === army?.faction && item.name === "Lictor");
+  const native = ruleset.units.find(item => item.faction === army?.faction && item.name === "Acolyte Hybrids with Autopistols");
+  const ordinaryDetachment = army?.detachments.find(item => item.name === "Host of Ascension");
+  const guardDetachment = army?.detachments.find(item => item.name === "Brood Brother Auxilia");
+  const tyranidDetachment = army?.detachments.find(item => item.name === "Final Day");
+  assert.ok(army && guard && tyranid && native && ordinaryDetachment && guardDetachment && tyranidDetachment);
+
+  const ordinaryState = selectDetachment(army, createArmyState(army), ordinaryDetachment.id);
+  assert.equal(canAddUnitForSelectedDetachment(army, ordinaryState, native), true);
+  assert.equal(canAddUnitForSelectedDetachment(army, ordinaryState, guard), false);
+  assert.equal(canAddUnitForSelectedDetachment(army, ordinaryState, tyranid), false);
+
+  const guardState = selectDetachment(army, createArmyState(army), guardDetachment.id);
+  assert.equal(canAddUnitForSelectedDetachment(army, guardState, guard), true);
+  assert.equal(canAddUnitForSelectedDetachment(army, guardState, tyranid), false);
+
+  const tyranidState = selectDetachment(army, createArmyState(army), tyranidDetachment.id);
+  assert.equal(canAddUnitForSelectedDetachment(army, tyranidState, guard), false);
+  assert.equal(canAddUnitForSelectedDetachment(army, tyranidState, tyranid), true);
+
+  const staleRoster = [guard, tyranid].map((definition, index) => ({
+    instanceId: `gsc-soup-${index}`,
+    definition,
+    points: definition.pricing.base
+  }));
+  const warnings = validateRosterLegality(army, ordinaryState, staleRoster).warnings
+    .filter(item => item.code === "NATIVE_UNIT_DETACHMENT_REQUIRED");
+  assert.deepEqual(warnings.map(item => item.details.requiredDetachmentName).sort(), ["Brood Brother Auxilia", "Final Day"]);
+});
+
 test("embedded daemon epic heroes without Summoned are still detachment-gated", () => {
   const ruleset = extractNormalizedRuleset();
   const fixtures = [

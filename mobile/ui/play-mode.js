@@ -271,7 +271,6 @@
           <label class="playSetupOpponent">Opponent secondaries<select name="opponentMissionMode"><option value="tactical">Tactical</option><option value="fixed">Fixed</option></select></label>
           <fieldset class="playFixedSetup" data-fixed-setup="you" hidden><legend>Your Fixed missions</legend><label>Mission 1<select name="yourFixedOne">${fixedMissionOptions(0)}</select></label><label>Mission 2<select name="yourFixedTwo">${fixedMissionOptions(1)}</select></label></fieldset>
           <fieldset class="playFixedSetup" data-fixed-setup="opponent" hidden><legend>Opponent Fixed missions</legend><label>Mission 1<select name="opponentFixedOne">${fixedMissionOptions(0)}</select></label><label>Mission 2<select name="opponentFixedTwo">${fixedMissionOptions(1)}</select></label></fieldset>
-          <label class="playSetupFirst">First turn<select name="firstTurn"><option value="you">Your turn</option><option value="opponent">Opponent's turn</option></select></label>
         </div>
         <div id="playSetupMissions" class="playSetupMissions"></div>
         <div class="playModalActions"><button type="button" data-close>Cancel</button><button class="playPrimaryButton" type="submit">Start Game</button></div>
@@ -459,7 +458,7 @@
     const yourDisposition = (roster.forceDispositions || []).find(item => item.id === setup.yourDisposition);
     const opponentDisposition = (roster.forceDispositions || []).find(item => item.id === setup.opponentDisposition);
     const state = {
-      schemaVersion: 5,
+      schemaVersion: 6,
       rosterId,
       status: "active",
       startedAt: new Date().toISOString(),
@@ -467,6 +466,7 @@
       setup: {
         yourName: setup.yourName || "You",
         opponentName: setup.opponentName || "Opponent",
+        firstTurn: null,
         yourFaction: setup.yourFaction || factionLabel(roster.subfaction || roster.faction),
         opponentFaction: setup.opponentFaction || "",
         yourDispositionId: yourDisposition?.id || "",
@@ -479,11 +479,11 @@
         }
       },
       round: 1,
-      turn: setup.firstTurn === "opponent" ? "opponent" : "you",
+      turn: null,
       phase: "Command",
       cp: { you: 1, opponent: 1 },
-      cpAwarded: [`1:${setup.firstTurn === "opponent" ? "opponent" : "you"}`],
-      cpHistory: PLAYERS.map(player => ({ id: uid(), round: 1, turn: setup.firstTurn === "opponent" ? "opponent" : "you", player, amount: 1, reason: "Starting CP" })),
+      cpAwarded: [],
+      cpHistory: [],
       ledger: [],
       stratagemUses: [],
       abilityUses: [],
@@ -553,6 +553,12 @@
     session.cpHistory ||= [];
     session.setup.yourFaction ||= factionLabel(session.roster.subfaction || session.roster.faction);
     session.setup.opponentFaction ||= "";
+    const awaitingFirstTurn = previousSchema >= 6 && !PLAYERS.includes(session.setup.firstTurn);
+    if (!awaitingFirstTurn) {
+      session.setup.firstTurn = PLAYERS.includes(session.setup.firstTurn)
+        ? session.setup.firstTurn
+        : openingPlayerForSession();
+    }
     session.decks ||= { you: createDeck(), opponent: createDeck() };
     session.stratagemUses ||= [];
     session.abilityUses ||= [];
@@ -581,7 +587,7 @@
       session.cpHistory = PLAYERS.map(player => ({ id: uid(), round: 1, turn: openingTurn, player, amount: 1, reason: "Starting CP" }));
     }
     pruneUndoHistory();
-    session.schemaVersion = 5;
+    session.schemaVersion = 6;
   }
 
   function undoStateSnapshot() {
@@ -644,6 +650,10 @@
   }
 
   function renderBattle() {
+    if (!PLAYERS.includes(session.setup.firstTurn)) {
+      renderFirstTurnSelection();
+      return;
+    }
     const yourVp = totalVp("you");
     const opponentVp = totalVp("opponent");
     content.innerHTML = `
@@ -673,6 +683,35 @@
       ${renderTerrainLayoutShortcut()}
       <button class="playScoreShortcut" type="button" data-open-missions>Open secondary hands</button>`;
     bindBattle();
+  }
+
+  function renderFirstTurnSelection() {
+    content.innerHTML = `
+      <section class="playFirstTurnSetup">
+        <span class="playModeEyebrow">DEPLOYMENT COMPLETE</span>
+        <h2>Roll for first turn</h2>
+        <p>After both armies are deployed, roll off and select who takes the first turn.</p>
+        <div class="playFirstTurnChoices">
+          <button class="playPrimaryButton" type="button" data-first-turn="you">${escapeHtml(session.setup.yourName)} goes first</button>
+          <button type="button" data-first-turn="opponent">${escapeHtml(session.setup.opponentName)} goes first</button>
+        </div>
+      </section>
+      ${renderTerrainLayoutShortcut()}`;
+    for (const button of content.querySelectorAll("[data-first-turn]")) {
+      button.onclick = () => selectFirstTurn(button.dataset.firstTurn);
+    }
+    content.querySelector("[data-view-layout]")?.addEventListener("click", openSelectedTerrainLayout);
+  }
+
+  function selectFirstTurn(player) {
+    if (!PLAYERS.includes(player) || PLAYERS.includes(session.setup.firstTurn)) return;
+    session.setup.firstTurn = player;
+    session.turn = player;
+    session.phase = "Command";
+    session.cpAwarded = [`1:${player}`];
+    session.cpHistory = PLAYERS.map(cpPlayer => ({ id: uid(), round: 1, turn: player, player: cpPlayer, amount: 1, reason: "Starting CP" }));
+    persist();
+    render();
   }
 
   function playerScore(player, vp) {
@@ -728,15 +767,29 @@
     if (index < PHASES.length - 1) session.phase = PHASES[index + 1];
     else {
       session.phase = "Command";
-      if (session.turn === "you") session.turn = "opponent";
-      else {
-        session.turn = "you";
-        session.round = Math.min(5, session.round + 1);
-      }
+      const next = nextBattleTurn(session.round, session.turn, session.setup.firstTurn);
+      session.turn = next.turn;
+      session.round = next.round;
       awardCommandCp();
     }
     persist();
     render();
+  }
+
+  function openingPlayerForSession() {
+    const openingAward = (session.cpAwarded || []).find(key => /^1:(you|opponent)$/.test(String(key)));
+    if (openingAward) return openingAward.split(":")[1];
+    const openingHistory = (session.cpHistory || []).find(item => Number(item?.round) === 1 && PLAYERS.includes(item?.turn));
+    return openingHistory?.turn || (PLAYERS.includes(session.turn) ? session.turn : "you");
+  }
+
+  function nextBattleTurn(round, turn, firstTurn) {
+    const openingTurn = firstTurn === "opponent" ? "opponent" : "you";
+    const nextTurn = turn === "you" ? "opponent" : "you";
+    return {
+      turn: nextTurn,
+      round: Math.min(5, Number(round || 1) + (nextTurn === openingTurn ? 1 : 0))
+    };
   }
 
   function awardCommandCp() {

@@ -260,7 +260,7 @@ function canBearEnhancement(enhancement, entry) {
   if (godRestriction && !(entry.keywords || []).some(keyword =>
     normalizeTargetName(keyword) === normalizeTargetName(godRestriction)
   )) return false;
-  return Boolean(entry.roles?.character && !entry.roles?.epicHero);
+  return Boolean(!entry.roles?.epicHero && (enhancement.allowNonCharacterBearer || entry.roles?.character));
 }
 
 function selectionKeyMatchesAny(selectionKey, eligibleSelectionKeys = []) {

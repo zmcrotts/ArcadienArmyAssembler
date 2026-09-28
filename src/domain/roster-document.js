@@ -313,6 +313,13 @@ function diffArmyStateReferences(before, after) {
   return removed;
 }
 
+function isCurrentOrksRosterUnit(definition) {
+  if (definition?.faction !== "Xenos - Orks") return false;
+  return !["non-unit-terrain-feature", "not-valid-for-matched-play", "zero-point-placeholder"].includes(
+    definition?.sourceDisposition
+  );
+}
+
 function hydrateRosterDocument(document, options = {}) {
   const warnings = [];
   const unitPackages = options.unitPackages || [];
@@ -334,12 +341,16 @@ function hydrateRosterDocument(document, options = {}) {
     const staleSelectionIds = Object.entries(normalized.entry.selections || {})
       .filter(([selectionId, count]) => Number(count) > 0 && !currentIds.has(selectionId))
       .map(([selectionId]) => selectionId);
-    let hydratedEntry = options.normalizeRosterEntry
-      ? options.normalizeRosterEntry(unitPackage.definition, normalized.entry)
+    const migrateCurrentOrksEntry = staleSelectionIds.length > 0
+      && isCurrentOrksRosterUnit(unitPackage.definition);
+    const entryToNormalize = migrateCurrentOrksEntry && options.createDefaultRosterEntry
+      ? options.createDefaultRosterEntry(unitPackage.definition, normalized.instanceId)
       : normalized.entry;
+    let hydratedEntry = options.normalizeRosterEntry
+      ? options.normalizeRosterEntry(unitPackage.definition, entryToNormalize)
+      : entryToNormalize;
     const savedSize = Number(saved?.unitSize?.current);
-    if (unitPackage.definition?.sourceDisposition === "codex-current"
-      && unitPackage.definition?.faction === "Xenos - Orks"
+    if (isCurrentOrksRosterUnit(unitPackage.definition)
       && Number.isFinite(savedSize) && savedSize > 0 && options.setUnitSize) {
       try {
         hydratedEntry = options.setUnitSize(unitPackage.definition, hydratedEntry, savedSize);
@@ -347,7 +358,7 @@ function hydrateRosterDocument(document, options = {}) {
         // Removed compositions intentionally fall back to the new legal default.
       }
     }
-    if (staleSelectionIds.length && unitPackage.definition?.sourceDisposition === "codex-current") {
+    if (migrateCurrentOrksEntry) {
       warnings.push({
         severity: "warning",
         code: "SAVED_UNIT_MIGRATED",

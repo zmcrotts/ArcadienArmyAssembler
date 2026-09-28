@@ -5,7 +5,7 @@ try {
   const androidApp = Boolean(window.AndroidFiles);
   const mobileUi = androidApp || installedWebApp || window.matchMedia("(max-width: 860px)").matches;
   if (androidApp && window.screen.width > 860) {
-    document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=860, initial-scale=1, viewport-fit=cover");
+    document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=860, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover");
   }
   document.documentElement.dataset.mobileUi = mobileUi ? "true" : "false";
   document.documentElement.dataset.nativeShell = androidApp ? "android" : "web";
@@ -29,6 +29,9 @@ function applyBootCustomTheme() {
     document.documentElement.style.setProperty(`--custom-${channel}`, /^#[0-9a-f]{6}$/i.test(candidate) ? candidate : fallback);
   }
 }
+
+document.addEventListener("gesturestart", event => event.preventDefault(), { passive: false });
+document.addEventListener("gesturechange", event => event.preventDefault(), { passive: false });
 
 window.addEventListener("error", event => {
   if (!(event.target instanceof HTMLScriptElement)) return;

@@ -98,6 +98,7 @@ function applyOrksCodex(units, armies, document) {
           id: existingEnhancement?.id || `orks-codex-enhancement-${slug}`,
           name: enhancement.name,
           kind: enhancement.kind || "enhancement",
+          allowNonCharacterBearer: Boolean(enhancement.allowNonCharacterBearer),
           maxSelections: Number(enhancement.maxSelections || (enhancement.kind === "upgrade" ? 3 : 1)),
           points: Number(enhancement.points),
           detachmentIds: [ids.get(normalize(detachment.name))],

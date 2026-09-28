@@ -239,6 +239,29 @@ test("unit assignments show selected-detachment upgrades without offering charac
   assert.deepEqual(getUnitAssignmentState(army, state, roster, character).enhancements.map(item => item.name), ["Frenzied Focus"]);
 });
 
+test("enhancements can explicitly allow eligible non-character bearers", () => {
+  const army = {
+    id: "army",
+    detachments: [{ id: "green-tide", name: "Green Tide", points: 0 }],
+    enhancements: [{
+      id: "ferocious-show-off",
+      name: "Ferocious Show-off",
+      kind: "enhancement",
+      allowNonCharacterBearer: true,
+      detachmentIds: ["green-tide"],
+      eligibleSelectionKeys: ["boyz-key"],
+      points: 15
+    }]
+  };
+  const boyz = { instanceId: "boyz-1", selectionKey: "boyz-key", name: "Boyz", roles: {}, rosterRules: {} };
+  const state = selectDetachment(army, createArmyState(army), "green-tide");
+
+  assert.deepEqual(
+    getUnitAssignmentState(army, state, [boyz], boyz).enhancements.map(item => item.name),
+    ["Ferocious Show-off"]
+  );
+});
+
 test("chapter enhancements recognize the same unit entry from the core catalogue", () => {
   const army = {
     id: "raven-guard",

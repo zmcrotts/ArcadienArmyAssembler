@@ -89,6 +89,16 @@ test("Start Game requires a terrain choice before entering the Play Mode menu", 
   assert.match(source, /modal\.querySelector\("\.playSetupPanel, \.playLayoutPanel"\)/);
 });
 
+test("first player is selected after deployment inside the active game", () => {
+  assert.doesNotMatch(source, /name="firstTurn"/);
+  assert.match(source, /firstTurn: null/);
+  assert.match(source, /function renderFirstTurnSelection\(\)/);
+  assert.match(source, /DEPLOYMENT COMPLETE/);
+  assert.match(source, /function selectFirstTurn\(player\)/);
+  assert.match(source, /session\.setup\.firstTurn = player;\s*session\.turn = player;/);
+  assert.match(source, /session\.cpAwarded = \[`1:\$\{player\}`\]/);
+});
+
 test("terrain layouts expand and shrink with a double tap", () => {
   assert.match(source, /function bindDoubleTap\(target, handler\)/);
   assert.match(source, /function openLayoutFullscreen\(layout, picker\)/);
@@ -124,12 +134,27 @@ test("Play Mode enforces round and game category caps and persists one active se
 });
 
 test("Play Mode starts both players at 1 CP without awarding the first Command phase", () => {
-  assert.match(source, /schemaVersion: 5/);
+  assert.match(source, /schemaVersion: 6/);
   assert.match(source, /cp: \{ you: 1, opponent: 1 \}/);
-  assert.match(source, /cpAwarded: \[`1:\$\{setup\.firstTurn/);
+  assert.match(source, /cpAwarded: \[\]/);
   assert.doesNotMatch(source, /session\.setup\.opponentPrimary = opponentMission;\s*awardCommandCp\(\)/);
   assert.match(source, /untouchedLegacyOpening/);
   assert.match(source, /session\.cp = \{ you: 1, opponent: 1 \}/);
+});
+
+test("battle rounds advance only after both players have taken a turn, regardless of who goes first", () => {
+  assert.match(source, /firstTurn: null/);
+  assert.match(source, /session\.setup\.firstTurn = PLAYERS\.includes\(session\.setup\.firstTurn\)/);
+  const start = source.indexOf("function nextBattleTurn(round, turn, firstTurn)");
+  const end = source.indexOf("\n  function awardCommandCp", start);
+  assert.ok(start >= 0 && end > start);
+  const nextBattleTurn = new Function(`${source.slice(start, end)}; return nextBattleTurn;`)();
+
+  assert.deepEqual(nextBattleTurn(1, "you", "you"), { round: 1, turn: "opponent" });
+  assert.deepEqual(nextBattleTurn(1, "opponent", "you"), { round: 2, turn: "you" });
+  assert.deepEqual(nextBattleTurn(1, "opponent", "opponent"), { round: 1, turn: "you" });
+  assert.deepEqual(nextBattleTurn(1, "you", "opponent"), { round: 2, turn: "opponent" });
+  assert.deepEqual(nextBattleTurn(5, "you", "opponent"), { round: 5, turn: "opponent" });
 });
 
 test("Tactical scoring discards the mission and displays VP confirmation", () => {

@@ -396,6 +396,14 @@ function applyManualLoadoutCorrections(definitions) {
 
     if (
       definition.rulesetId === "wh40k-11e-vflam"
+      && definition.faction === "Xenos - Orks"
+      && definition.name === "Boyz"
+    ) {
+      return fixOrkBoyzRulesUpdate(definition);
+    }
+
+    if (
+      definition.rulesetId === "wh40k-11e-vflam"
       && definition.faction === "Imperium - Adeptus Astartes - Black Templars"
       && definition.name === "Sword Brethren Squad"
     ) {
@@ -485,6 +493,42 @@ function fixChaosTerminatorPowerFistLoadout(definition) {
 
 function fixOrkBoyzRulesUpdate(definition) {
   const unit = clone(definition);
+  const boy = (unit.composition || []).find(item => normalizeName(item.name) === "boy");
+  const nob = (unit.composition || []).find(item => normalizeName(item.name) === "nob");
+  if (boy && nob) {
+    unit.composition = (unit.composition || []).map(item => {
+      if (item.id === boy.id) return { ...item, min: 9, max: 18, defaultCount: 9 };
+      if (item.id === nob.id) return { ...item, min: 1, max: 2, defaultCount: 1 };
+      return item;
+    });
+    const nobNode = findNodesByName(unit.selectionTree, "Nob").find(item => item.kind === "model");
+    const nobMaximum = (nobNode?.constraints || []).find(item =>
+      item.field === "selections" && item.type === "max"
+    );
+    if (nobNode && nobMaximum) {
+      nobMaximum.value = 1;
+      nobMaximum.raw = { ...(nobMaximum.raw || {}), value: 1 };
+      nobNode.modifiers = [
+        ...(nobNode.modifiers || []).filter(item => item.field !== nobMaximum.id),
+        {
+          type: "set",
+          field: nobMaximum.id,
+          value: 2,
+          conditions: [{
+            childId: "model",
+            field: "selections",
+            includeChildSelections: true,
+            scope: "unit",
+            type: "atLeast",
+            value: 20
+          }],
+          conditionGroups: [],
+          repeats: [],
+          raw: { source: "Faction Pack - Orks v1.1, Boyz unit composition" }
+        }
+      ];
+    }
+  }
   const profiles = profilesByOptionName(unit.selectionTree);
   const bossWargear = findNodeByName(unit.selectionTree, "Big Choppa and Slugga");
   if (bossWargear) {

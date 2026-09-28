@@ -193,6 +193,7 @@ let syncActionInFlight = false;
 let rosterStorageWarning = null;
 let rosterStorageReadFailed = false;
 let mobileSheet = null;
+let mobileDetailsReturnSheet = null;
 let mobileAddSectionFilter = null;
 let mobileAddKeywordFilter = "";
 const mobileRosterSectionDisclosureState = {};
@@ -1280,20 +1281,29 @@ function refreshRosterSelectionState() {
 
 function openMobileAddSheet(section = null) {
   mobileSheet = "add";
+  mobileDetailsReturnSheet = null;
   mobileAddSectionFilter = section || null;
   mobileAddKeywordFilter = "";
   renderUnits();
   applyMobileSheetState();
 }
 
-function openMobileDetailsSheet() {
+function openMobileDetailsSheet(returnSheet = null) {
+  mobileDetailsReturnSheet = returnSheet;
   mobileSheet = "details";
   applyMobileSheetState();
 }
 
 function closeMobileSheets() {
+  if (mobileSheet === "details" && mobileDetailsReturnSheet === "add") {
+    mobileSheet = "add";
+    mobileDetailsReturnSheet = null;
+    applyMobileSheetState();
+    return;
+  }
   const hadAddFilter = Boolean(mobileAddSectionFilter || mobileAddKeywordFilter);
   mobileSheet = null;
+  mobileDetailsReturnSheet = null;
   mobileAddSectionFilter = null;
   mobileAddKeywordFilter = "";
   applyMobileSheetState();
@@ -2630,7 +2640,7 @@ function renderMobileUnitAddList(units) {
       const unit = findUnitBySelectionKey(button.dataset.mobilePreviewUnit);
       if (!unit) return;
       showPreview(unit);
-      openMobileDetailsSheet();
+      openMobileDetailsSheet("add");
     };
   }
 }
@@ -5448,8 +5458,10 @@ async function validateImportedRosterHydration(record, index) {
   const loaded = rosterDocument.hydrateRosterDocument(record.document, {
     unitPackages,
     createArmyState: () => armyEngine.createArmyState(armyDefinition),
+    createDefaultRosterEntry: engine.createDefaultRosterEntry,
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
-    normalizeRosterEntry: engine.normalizeRosterEntry
+    normalizeRosterEntry: engine.normalizeRosterEntry,
+    setUnitSize: engine.setUnitSize
   });
   if (savedEntriesFromDocument(record.document).length && !loaded.roster.length) {
     throw new Error(`Roster ${index + 1} contains no units recognized by the installed rules data.`);
@@ -5606,9 +5618,11 @@ async function loadRosterDocument(save, options = {}) {
   const loaded = rosterDocument.hydrateRosterDocument(save, {
     unitPackages: factionUnits(hydrationArmyState),
     createArmyState: () => armyEngine.createArmyState(currentArmyDefinition()),
+    createDefaultRosterEntry: engine.createDefaultRosterEntry,
     normalizeArmyState: state => armyEngine.normalizeArmyStateForDefinition(currentArmyDefinition(), state),
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
-    normalizeRosterEntry: engine.normalizeRosterEntry
+    normalizeRosterEntry: engine.normalizeRosterEntry,
+    setUnitSize: engine.setUnitSize
   });
   pointsLimitInput.value = loaded.pointsLimit || 1000;
   armyState = loaded.armyState;

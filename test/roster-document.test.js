@@ -534,7 +534,7 @@ test("stale current Orks hydrate onto the new datasheet and preserve saved size"
     id: "boyz-current", selectionKey: "orks:boyz", name: "Boyz",
     definition: {
       id: "boyz-current", selectionKey: "orks:boyz", name: "Boyz",
-      faction: "Xenos - Orks", sourceDisposition: "codex-current",
+      faction: "Xenos - Orks",
       selectionTree: { id: "boyz-root", kind: "unit", children: [{ id: "new-boy", kind: "model", children: [] }] }
     }
   };
@@ -552,11 +552,18 @@ test("stale current Orks hydrate onto the new datasheet and preserve saved size"
     }]
   }, {
     unitPackages: [currentBoyz, legendsLootas],
-    normalizeRosterEntry: (definition, entry) => ({ ...entry, selections: { "new-boy": 9 } }),
+    createDefaultRosterEntry: (definition, instanceId) => ({
+      instanceId,
+      selections: { "new-boy": 9 },
+      rebuiltFromCurrentDefaults: true
+    }),
+    normalizeRosterEntry: (definition, entry) => entry,
     setUnitSize: (definition, entry, size) => ({ ...entry, migratedSize: size })
   });
 
   assert.equal(loaded.roster[0].entry.migratedSize, 20);
+  assert.equal(loaded.roster[0].entry.rebuiltFromCurrentDefaults, true);
+  assert.equal(loaded.roster[0].entry.selections["old-boy"], undefined);
   assert.deepEqual(loaded.roster.map(item => item.unitPackage.name), ["Boyz", "Lootas [Legends]"]);
   assert.ok(loaded.warnings.some(item => item.code === "SAVED_UNIT_MIGRATED"));
 });

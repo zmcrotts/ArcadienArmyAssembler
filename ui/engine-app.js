@@ -4203,6 +4203,7 @@ async function validateImportedRosterHydration(record, index) {
   const loaded = rosterDocument.hydrateRosterDocument(record.document, {
     unitPackages,
     createArmyState: () => armyEngine.createArmyState(armyDefinition),
+    createDefaultRosterEntry: engine.createDefaultRosterEntry,
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
     normalizeRosterEntry: engine.normalizeRosterEntry,
     setUnitSize: engine.setUnitSize
@@ -4361,6 +4362,7 @@ async function loadRosterDocument(save, options = {}) {
   const loaded = rosterDocument.hydrateRosterDocument(save, {
     unitPackages: factionUnits(hydrationArmyState),
     createArmyState: () => armyEngine.createArmyState(currentArmyDefinition()),
+    createDefaultRosterEntry: engine.createDefaultRosterEntry,
     normalizeArmyState: state => armyEngine.normalizeArmyStateForDefinition(currentArmyDefinition(), state),
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
     normalizeRosterEntry: engine.normalizeRosterEntry,

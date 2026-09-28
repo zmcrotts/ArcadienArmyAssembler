@@ -83,10 +83,10 @@
         {
           "name": "Ferocious Show-off",
           "points": 15,
+          "allowNonCharacterBearer": true,
           "eligible": {
             "keywords": [
-              "INFANTRY",
-              "CHARACTER"
+              "INFANTRY"
             ]
           },
           "description": "ORKS INFANTRY model only. This model's melee attacks have +1 Attack, or +2 Attacks while this unit has 11+ models."
