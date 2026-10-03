@@ -64,7 +64,8 @@ def preceding_section(card, helpers, replacements):
         headings = current.xpath("preceding-sibling::h3[1]")
         if headings:
             value = helpers.resolved_text(headings[0], replacements)
-            return value if value and value != "UNITS" else None
+            if value and value != "UNITS":
+                return value
         current = current.getparent()
     return None
 
@@ -154,6 +155,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--active-input-dir", type=Path, help="Same MFM pages with Show Legends disabled, for authoritative status comparison")
     parser.add_argument("--version", default="1.3")
     args = parser.parse_args()
 
@@ -171,6 +173,20 @@ def main():
 
     unique = {row_key(row): row for row in rows}
     ordered = [unique[key] for key in sorted(unique)]
+    if args.active_input_dir:
+        def status_key(row):
+            return tuple(row.get(key) for key in ("kind", "factionSlug", "context", "unitName", "detachmentName", "enhancementName", "costBand", "label", "points"))
+        active_rows = []
+        for slug in FACTIONS:
+            page = args.active_input_dir / f"{slug}.html"
+            if not page.exists():
+                raise FileNotFoundError(f"Missing active-only MFM snapshot: {page}")
+            active_rows.extend(extract_page(page, slug, helpers))
+        active = {status_key(row): row for row in active_rows}
+        for row in ordered:
+            row["legends"] = status_key(row) not in active
+            if status_key(row) in active:
+                row["section"] = active[status_key(row)]["section"]
     payload = {
         "schemaVersion": 1,
         "source": "https://mfm.warhammer-community.com/en",

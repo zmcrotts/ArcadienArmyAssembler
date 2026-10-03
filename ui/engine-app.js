@@ -127,6 +127,7 @@ const SAVED_ROSTER_FACTION_ICONS = Object.freeze({
 let currentFaction = "";
 let currentSubfaction = "";
 let roster = [];
+let rosterRecoveryWarnings = [];
 let selectedInstanceId = null;
 let selectedPanel = "configuration";
 let searchText = "";
@@ -183,6 +184,7 @@ function init() {
     currentSubfaction = currentFactionRecord()?.defaultMode || currentFaction;
     appMode = "loading";
     roster = [];
+    rosterRecoveryWarnings = [];
     rosterDisplay = defaultRosterDisplay();
     currentRosterSaveId = null;
     armyState = null;
@@ -203,6 +205,7 @@ function init() {
     currentSubfaction = subfactionSelect.value;
     appMode = "loading";
     roster = [];
+    rosterRecoveryWarnings = [];
     rosterDisplay = defaultRosterDisplay();
     currentRosterSaveId = null;
     armyState = null;
@@ -613,6 +616,10 @@ function currentArmyDefinition() {
     allowedSelectionKeys: [...new Set([...(base.allowedSelectionKeys || []), ...(selected.allowedSelectionKeys || []), ...nativeKeys, ...allyKeys])],
     enhancements: [...enhancements.values()]
   };
+}
+
+function sectionForCurrentArmyUnit(unit) {
+  return catalogueSections.sectionForUnit(unit, armyEngine.effectiveKeywordsForEntry(unit, armyState));
 }
 
 function uniqueRules(rules) {
@@ -1397,6 +1404,7 @@ async function createRosterFromDraft() {
   currentRosterSaveId = null;
   armyState = null;
   roster = [];
+  rosterRecoveryWarnings = [];
   currentFaction = newRosterDraft.faction;
   currentSubfaction = newRosterDraft.subfaction || currentFactionRecord()?.defaultMode || currentFaction;
   factionSelect.value = currentFaction;
@@ -1667,7 +1675,7 @@ function renderUnits() {
   const units = factionUnits()
     .filter(unitMatchesSearch);
 
-  for (const group of catalogueSections.groupUnits(units)) {
+  for (const group of catalogueSections.groupUnits(units, unit => armyEngine.effectiveKeywordsForEntry(unit, armyState))) {
     if (!group.units.length) continue;
     const section = document.createElement("details");
     section.className = "unitSection";
@@ -1858,7 +1866,7 @@ function groupRosterPresentation(presentation) {
     const primary = group.displayInstanceId
       ? roster.find(entry => entry.instanceId === group.displayInstanceId)
       : group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
-    const defaultSection = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
+    const defaultSection = sectionForCurrentArmyUnit(primary?.unitPackage || primary || {});
     defaultSections[group.id] = defaultSection;
     const section = rosterDisplay.mode === "custom" ? rosterDisplay.groupSections[group.id] || defaultSection : defaultSection;
     if (!groupsBySection.has(section)) groupsBySection.set(section, []);
@@ -1919,7 +1927,7 @@ function initializeCustomRosterLayout() {
   const defaultSections = {};
   for (const group of presentation) {
     const primary = group.entries.map(item => roster.find(entry => entry.instanceId === item.instanceId)).find(Boolean);
-    defaultSections[group.id] = catalogueSections.sectionForUnit(primary?.unitPackage || primary || {});
+    defaultSections[group.id] = sectionForCurrentArmyUnit(primary?.unitPackage || primary || {});
   }
   reconcileCustomRosterLayout(presentation, defaultSections);
 }
@@ -3900,7 +3908,9 @@ function renderTotal() {
 function validateRoster() {
   const total = getTotalPoints();
   const limit = Number(pointsLimitInput.value || 0);
-  const messages = [];
+  const messages = rosterRecoveryWarnings
+    .filter(item => item.code !== "SAVED_SELECTION_UNRESOLVED" || !item.affectedInstanceIds?.length || item.affectedInstanceIds.some(id => roster.some(entry => entry.instanceId === id)))
+    .map(item => ({ ok: false, code: item.code, text: item.message }));
 
   if (currentArmyDefinition()) {
     const legalityRoster = rosterWithPoints();
@@ -4206,7 +4216,8 @@ async function validateImportedRosterHydration(record, index) {
     createDefaultRosterEntry: engine.createDefaultRosterEntry,
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
     normalizeRosterEntry: engine.normalizeRosterEntry,
-    setUnitSize: engine.setUnitSize
+    setUnitSize: engine.setUnitSize,
+    unitSizeState: engine.getUnitSizeState
   });
   if (savedEntriesFromDocument(record.document).length && !loaded.roster.length) {
     throw new Error(`Roster ${index + 1} contains no units recognized by the installed rules data.`);
@@ -4346,6 +4357,7 @@ async function loadRosterDocument(save, options = {}) {
   appMode = "loading";
   armyState = null;
   roster = [];
+  rosterRecoveryWarnings = [];
   const savedRecord = (engineData.factionNavigation || []).flatMap(group => group.factions)
     .find(item => item.id === save.faction || (item.modes || []).some(mode => mode.id === save.faction));
   currentFaction = savedRecord?.id || save.faction;
@@ -4366,11 +4378,13 @@ async function loadRosterDocument(save, options = {}) {
     normalizeArmyState: state => armyEngine.normalizeArmyStateForDefinition(currentArmyDefinition(), state),
     pruneArmyStateForRoster: armyEngine.pruneArmyStateForRoster,
     normalizeRosterEntry: engine.normalizeRosterEntry,
-    setUnitSize: engine.setUnitSize
+    setUnitSize: engine.setUnitSize,
+    unitSizeState: engine.getUnitSizeState
   });
   pointsLimitInput.value = loaded.pointsLimit || 1000;
   armyState = loaded.armyState;
   roster = loaded.roster;
+  rosterRecoveryWarnings = loaded.warnings;
 
   selectedInstanceId = roster[0]?.instanceId || null;
   selectedPanel = selectedInstanceId ? "unit" : "configuration";
@@ -4378,8 +4392,9 @@ async function loadRosterDocument(save, options = {}) {
   markRosterClean();
   render();
   if (loaded.warnings.length && options.showWarnings !== false) {
-    alert(`Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"}. Recoverable choices were preserved where possible.`);
+    showTransientMessage(`Loaded with ${loaded.warnings.length} warning${loaded.warnings.length === 1 ? "" : "s"} to review. See roster warnings for details.`);
   }
+  restoreTypingFocus(unitSearch);
   return loaded;
 }
 

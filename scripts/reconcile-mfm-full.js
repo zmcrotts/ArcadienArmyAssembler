@@ -7,7 +7,7 @@ const path = require("path");
 const { createDefaultRosterEntry, setUnitSize } = require("../src/domain/loadout");
 const { calculateEntryPoints } = require("../src/domain/pricing");
 const { extractNormalizedRuleset } = require("../src/rulesets/sources");
-const { canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName } = require("../src/rulesets/mfm-normalization");
+const { canonicalUnitName, canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName } = require("../src/rulesets/mfm-normalization");
 
 const FACTIONS = new Map(Object.entries({
   "adepta-sororitas": "Imperium - Adepta Sororitas",
@@ -65,17 +65,12 @@ const BORROWED_MFM_SOURCES = new Map([
   ["Imperium - Imperial Knights", new Set(["Imperium - Adeptus Mechanicus"])]
 ]);
 
-const UNIT_ALIASES = new Map([
-  ["myphitic blight haulers", "myphitic blight hauler"]
-]);
-
 function normalize(value) {
   return normalizeMfmName(value);
 }
 
 function unitName(value) {
-  const name = normalize(value);
-  return UNIT_ALIASES.get(name) || name;
+  return canonicalUnitName(value);
 }
 
 function targetFaction(row) {
@@ -347,6 +342,7 @@ function audit(document, ruleset) {
       report.wargear.unmatchedUnits.push(row);
       continue;
     }
+    const missingOptions = [];
     let foundAny = false;
     for (const definition of matches) {
       const definitionKey = unitIdentity(definition);
@@ -355,7 +351,7 @@ function audit(document, ruleset) {
       expectedWargearByUnit.get(definitionKey).add(comparableWargearName(wargearName(row.label)));
       const nodes = findWargearNodes(definition, row);
       if (!nodes.length) {
-        report.wargear.unmatchedOptions.push({ row, unit: { faction: definition.faction, name: definition.name, selectionKey: definition.selectionKey } });
+        missingOptions.push({ row, unit: { faction: definition.faction, name: definition.name, selectionKey: definition.selectionKey } });
         continue;
       }
       foundAny = true;
@@ -370,7 +366,10 @@ function audit(document, ruleset) {
         });
       }
     }
-    if (foundAny) report.wargear.matchedRows += 1;
+    if (foundAny) {
+      report.wargear.matchedRows += 1;
+      report.wargear.unavailableVariants = [...(report.wargear.unavailableVariants || []), ...missingOptions];
+    } else report.wargear.unmatchedOptions.push(...missingOptions);
   }
 
   for (const [selectionKey, definition] of matchedUnitDefinitions) {

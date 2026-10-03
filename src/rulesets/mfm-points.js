@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-const { canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName } = require("./mfm-normalization");
+const { canonicalUnitName, canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName } = require("./mfm-normalization");
 
 const FACTION_ALIASES = new Map(Object.entries({
   "adepta sororitas": "Imperium - Adepta Sororitas",
@@ -34,15 +34,6 @@ const FACTION_ALIASES = new Map(Object.entries({
   "titan legions": "Imperium - Adeptus Titanicus",
   "tyranids": "Xenos - Tyranids",
   "world eaters": "Chaos - World Eaters"
-}));
-
-const UNIT_NAME_ALIASES = new Map(Object.entries({
-  "chaos reaver titan": "reaver titan",
-  "chaos warbringer nemesis titan": "warbringer nemesis titan",
-  "chaos warhound titan": "warhound titan",
-  "chaos warlord titan": "warlord titan",
-  "myphitic blight haulers": "myphitic blight hauler",
-  "vyper": "vypers"
 }));
 
 const SPACE_MARINE_SECTION_FACTIONS = new Map(Object.entries({
@@ -117,23 +108,23 @@ function unitMatchesFaction(unit, change) {
 }
 
 function matchingUnits(units, change, directUnitKeys = new Set()) {
-  const normalizedName = normalize(change.unitName);
-  const wantedName = UNIT_NAME_ALIASES.get(normalizedName) || normalizedName;
+  const normalizedName = canonicalUnitName(change.unitName);
+  const wantedName = normalizedName;
   const expectedFaction = canonicalChangeFaction(change);
-  const exactFaction = units.filter(unit => unit.faction === expectedFaction && normalize(unit.name) === wantedName);
+  const exactFaction = units.filter(unit => unit.faction === expectedFaction && canonicalUnitName(unit.name) === wantedName);
   if (normalize(change.faction) === "space marines" && expectedFaction === canonicalFaction(change.faction)) {
-    return units.filter(unit => unitMatchesFaction(unit, change) && normalize(unit.name) === wantedName);
+    return units.filter(unit => unitMatchesFaction(unit, change) && canonicalUnitName(unit.name) === wantedName);
   }
   const borrowed = units.filter(unit =>
     unit.faction !== expectedFaction
     && BORROWED_MFM_SOURCES.get(unit.faction)?.has(expectedFaction)
     && !directUnitKeys.has(`${unit.faction}\u0000${wantedName}`)
-    && normalize(unit.name) === wantedName
+    && canonicalUnitName(unit.name) === wantedName
   );
   if (exactFaction.length || borrowed.length) return [...exactFaction, ...borrowed];
   return units.filter(unit => {
     if (!unitMatchesFaction(unit, change)) return false;
-    const candidate = normalize(unit.name);
+    const candidate = canonicalUnitName(unit.name);
     if (candidate === wantedName) return true;
     if (candidate.replace(/s$/, "") === wantedName.replace(/s$/, "")) return true;
     return wantedName === "soul grinder" && candidate.endsWith(" soul grinder");
@@ -143,7 +134,7 @@ function matchingUnits(units, change, directUnitKeys = new Set()) {
 function inferImperialAgentsContext(change, occurrence) {
   if (change.context) return change.context;
   if (change.faction !== "Imperial Agents" || change.kind !== "unit") return null;
-  const name = normalize(change.unitName);
+  const name = canonicalUnitName(change.unitName);
   if (["deathwatch kill team", "sisters of battle squad", "watch master"].includes(name)) return "Every model has the Imperium keyword";
   if (name === "eversor assassin") return change.points === 100 ? "Imperial Agents army" : "Every model has the Imperium keyword";
   if (name === "grey knights terminator squad") return change.points === 175 ? "Imperial Agents army" : "Every model has the Imperium keyword";
@@ -226,7 +217,7 @@ function applyMfmPoints(units, armies, document) {
   const pointSource = `mfm-${document?.version || "unknown"}`;
   const directUnitKeys = new Set((document?.changes || [])
     .filter(change => change.kind === "unit")
-    .map(change => `${canonicalChangeFaction(change)}\u0000${UNIT_NAME_ALIASES.get(normalize(change.unitName)) || normalize(change.unitName)}`));
+    .map(change => `${canonicalChangeFaction(change)}\u0000${canonicalUnitName(change.unitName)}`));
 
   for (const change of document?.changes || []) {
     summary.total += 1;
@@ -334,6 +325,12 @@ function applyMfmPoints(units, armies, document) {
     summary.conditionalUnitRows += rows.length;
   }
 
+  const legendsKeys = new Set((document?.changes || [])
+    .filter(change => change.kind === "unit" && change.legends === true)
+    .flatMap(change => matchingUnits(definitions, change, directUnitKeys).map(unitIdentity)));
+  definitions = definitions.map(unit => legendsKeys.has(unitIdentity(unit)) && !/\[Legends\]/i.test(unit.name)
+    ? { ...unit, name: `${unit.name} [Legends]`, legendsSource: pointSource }
+    : unit);
   return { units: definitions, armies: armyDefinitions, summary, issues };
 }
 
@@ -346,4 +343,4 @@ function unmatchedIssue(change) {
   };
 }
 
-module.exports = { applyMfmPoints, readMfmPoints };
+module.exports = { applyMfmPoints, readMfmPoints, canonicalFaction };

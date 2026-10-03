@@ -44,7 +44,7 @@ const RULESET_SOURCES = {
     format: "bsdata-json",
     sourcePath: path.join(ROOT, "data", "rulesets", "wh40k-11e-vflam"),
     upstreamRepository: "https://github.com/BSData/wh40k-11e",
-    upstreamCommit: "377901eb77348a8da0f1527e03bcd3bb43b0869f",
+    upstreamCommit: "2f14fe57544c3e26c056abe97ca9bcef9cda1091",
     auxiliarySources: {
       coreStratagems: path.join(ROOT, "data", "manual-rules", "wh40k-11e-core-stratagems.json"),
       detachmentStratagems: [

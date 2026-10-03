@@ -110,6 +110,15 @@ test("every New List faction configuration renders Army Rule text in Config", ()
   assert.equal(configurationCount, 34);
   assert.deepEqual(failures, []);
 });
+test("Aeldari and Drukhari only expose their own imported army rules", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const ruleNames = faction => ruleset.armies.find(army => army.faction === faction)
+    .armyRules.map(rule => rule.name).sort();
+
+  assert.deepEqual(ruleNames("Xenos - Aeldari"), ["Battle Focus", "Disparate Paths"]);
+  assert.deepEqual(ruleNames("Xenos - Drukhari"), ["Corsairs and Travelling Players", "Power from Pain"]);
+});
+
 test("normalized enhancements and detachments expose only their always-on characteristic changes", () => {
   const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
   const allEnhancements = ruleset.armies.flatMap(army => army.enhancements || []);
@@ -271,6 +280,30 @@ test("11e ruleset gap-fills incomplete army rules", () => {
   assert.doesNotMatch(waaagh.description, /Strength and Attacks characteristics/i);
   assert.match(waaagh.description, /5\+ invulnerable save/i);
   assert.equal(waaagh.source.name, "Local 11e Army Rule Gap-fill");
+});
+
+test("World Eaters army rule includes the six standard Blessings of Khorne", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const army = ruleset.armies.find(item => item.faction === "Chaos - World Eaters");
+  const rule = army.armyRules.find(item => item.name === "Blessings of Khorne");
+  assert.match(rule.description, /roll eight D6/);
+  assert.equal(rule.tables.length, 1);
+  assert.equal(rule.tables[0].dice, "Roll");
+  assert.deepEqual(rule.tables[0].rows.map(row => [row.name, row.result]), [
+    ["Unbridled Bloodlust", "Double 1+"],
+    ["Rage-fuelled Invigoration", "Double 2+"],
+    ["Total Carnage", "Double 3+"],
+    ["Martial Excellence", "Double 4+ or Triple 1+"],
+    ["Warp Blades", "Double 5+ or Triple 2+"],
+    ["Decapitating Strikes", "Double 6+ or Triple 3+"]
+  ]);
+  const rows = rule.tables[0].rows;
+  assert.match(rows[0].description, /\+1 to charge rolls/);
+  assert.match(rows[1].description, /6" instead of up to 3"/);
+  assert.match(rows[2].description, /on a 4\+/);
+  assert.match(rows[3].description, /SUSTAINED HITS 1/);
+  assert.match(rows[4].description, /LETHAL HITS/);
+  assert.match(rows[5].description, /Infantry.*DEVASTATING WOUNDS/);
 });
 
 test("11e JSON catalogues expose native shared army rules", () => {
@@ -535,7 +568,7 @@ test("11e ruleset skips unpriced model shells but keeps priced Legends units", (
   assert.equal(byName("Shas'o R'alai").length, 0);
   assert.equal(byName("Shas'o R'alai [Legends]").length, 1);
   assert.equal(calculateEntryPoints(byName("Shas'o R'alai [Legends]")[0], createDefaultRosterEntry(byName("Shas'o R'alai [Legends]")[0])).points, 80);
-  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 230);
+  assert.equal(calculateEntryPoints(byName("The Twin Lance")[0], createDefaultRosterEntry(byName("The Twin Lance")[0])).points, 240);
 });
 
 test("11e Astartes chapter catalogues include shared Space Marine units and support leader targets", () => {
@@ -832,14 +865,14 @@ test("11e Chaos Terminator melee weapon caps apply across every loadout branch",
 
   entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
   entry = setSelection(unit, entry, powerFistBolter.id, 3);
-  entry = setSelection(unit, entry, powerFistCombi.id, 4);
+  entry = setSelection(unit, entry, powerFistCombi.id, 4, false);
   assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "dc97-25d5-522e-4213")?.actual, 7);
 
   entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
   const chainfistBolter = getOptionStates(unit, entry).find(option => option.name === "Chainfist and combi-bolter");
   const chainfistCombi = getOptionStates(unit, entry).find(option => option.name === "Chainfist and combi-weapon");
   entry = setSelection(unit, entry, chainfistBolter.id, 2);
-  entry = setSelection(unit, entry, chainfistCombi.id, 1);
+  entry = setSelection(unit, entry, chainfistCombi.id, 1, false);
   assert.equal(validateLoadout(unit, entry).find(error => error.constraintId === "55e4-7647-d0c0-5fc6")?.actual, 3);
 
   entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
@@ -955,8 +988,8 @@ test("11e Khorne Berzerker special weapons scale at one per five models", () => 
   entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
   const plasma = getOptionStates(unit, entry).find(option => option.name === plasmaName);
   const eviscerator = getOptionStates(unit, entry).find(option => option.name === evisceratorName);
-  entry = setSelection(unit, entry, plasma.id, 4);
-  entry = setSelection(unit, entry, eviscerator.id, 4);
+  entry = setSelection(unit, entry, plasma.id, 4, false);
+  entry = setSelection(unit, entry, eviscerator.id, 4, false);
   const errors = validateLoadout(unit, entry);
   assert.ok(errors.some(error =>
     error.name === "Plasma pistols" && error.actual === 4 && error.limit === 2
@@ -1289,7 +1322,7 @@ test("11e Ork Blitz Brigade upgrades enforce their wagon restriction", () => {
 test("11e Sisters of Silence use stepped MFM points at every selectable size", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const schedules = {
-    Prosecutors: [45, 50, 75, 75, 75, 75, 85],
+    Prosecutors: [50, 55, 80, 80, 80, 80, 90],
     Vigilators: [50, 55, 90, 90, 90, 90, 100],
     Witchseekers: [50, 55, 90, 90, 90, 90, 100]
   };
@@ -1381,8 +1414,8 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   };
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 135],
-    ["Breaka Boyz", 135],
+    ["Big Mek Dakkarig", 160],
+    ["Breaka Boyz", 120],
     ["Gorkanaut", 325]
   ]) {
     const definition = unit(name);
@@ -1391,8 +1424,8 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
   }
 
   for (const [name, expected] of [
-    ["Big Mek Dakkarig", 145],
-    ["Breaka Boyz", 145],
+    ["Big Mek Dakkarig", 180],
+    ["Breaka Boyz", 130],
     ["Gorkanaut", 355]
   ]) {
     const definition = unit(name);
@@ -1403,8 +1436,8 @@ test("11e copy-count point modifiers apply only to third and later copies", () =
 
   const nobz = unit("Nobz");
   const nobzEntry = setUnitSize(nobz, createDefaultRosterEntry(nobz), 10);
-  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 250);
-  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 280);
+  assert.equal(calculateEntryPoints(nobz, nobzEntry).points, 230);
+  assert.equal(calculateEntryPoints(nobz, { ...nobzEntry, context: { previousCopies: 2 } }).points, 260);
 });
 
 test("11e Ork Boyz allow a second Nob only in a full 20-model mob", () => {
@@ -1557,8 +1590,8 @@ test("before-any copy-count modifiers apply their later-copy points tax", () => 
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   for (const [faction, name, previousCopies, expectedPoints] of [
     ["Chaos - Chaos Daemons", "Khorne Soul Grinder", 2, 195],
-    ["Chaos - Chaos Space Marines", "Noise Marines", 2, 160],
-    ["Chaos - Thousand Sons", "Rubric Marines", 3, 110]
+    ["Chaos - Chaos Space Marines", "Noise Marines", 2, 175],
+    ["Chaos - Thousand Sons", "Rubric Marines", 3, 125]
   ]) {
     const definition = ruleset.units.find(unit => unit.faction === faction && unit.name === name);
     assert.ok(definition, `${faction}: ${name}`);
@@ -1713,4 +1746,63 @@ test("keyword-limited enhancements and upgrades expose only their printed bearer
     "Xenos - Necrons", "Skyshroud Spearhead", "Deepening Madness"
   );
   assert.equal(deepeningMadness.has("Lokhust Lord"), true);
+});
+
+
+test("Travelling Players makes Troupes Battleline with OC 2 in both Harlequin detachments", () => {
+  const { effectiveKeywordsForEntry } = require("../src/domain/army");
+  const { applyUnitEffectsToProfiles } = require("../src/domain/sheets");
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const army = ruleset.armies.find(army => army.faction === "Xenos - Aeldari");
+  const troupe = ruleset.units.find(unit => unit.faction === army.faction && unit.name === "Troupe" && unit.rosterSelectable);
+  assert.ok(troupe);
+  const configured = getConfiguredProfiles(troupe, createDefaultRosterEntry(troupe));
+  for (const name of ["Ghosts of the Webway", "Serpent's Brood"]) {
+    const detachment = army.detachments.find(detachment => detachment.name === name);
+    const rule = detachment.rules.find(rule => rule.name === "Travelling Players");
+    assert.match(rule.description, /BATTLELINE/i);
+    assert.match(rule.description, /Objective Control characteristic of 2/i);
+    assert.match(rule.description, /up to three/i);
+    const state = { detachmentIds: [detachment.id] };
+    const keywords = effectiveKeywordsForEntry({ definition: troupe }, state);
+    assert.ok(keywords.includes("Battleline"), name);
+    assert.equal(require("../mobile/ui/catalogue-sections").sectionForUnit({ definition: troupe }, keywords), "Battleline", name);
+    const profiles = applyUnitEffectsToProfiles(configured.units, [{ ...rule, sourceKind: "detachment" }], { keywords });
+    assert.ok(profiles.length);
+    assert.ok(profiles.every(profile => profile.characteristics.OC === "2"), name);
+    const other = applyUnitEffectsToProfiles([{ characteristics: { OC: "1" } }], [{ ...rule, sourceKind: "detachment" }], { keywords: ["Harlequins", "Troupe Master", "Character"] });
+    assert.equal(other[0].characteristics.OC, "1", `${name} does not affect a Troupe Master`);
+  }
+  assert.ok(!effectiveKeywordsForEntry({ definition: troupe }, { detachmentIds: [] }).includes("Battleline"));
+});
+
+
+test("Battle Focus includes all six Agile Manoeuvres with triggers and effects", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  const aeldari = ruleset.armies.find(army => army.faction === "Xenos - Aeldari");
+  const rule = aeldari.armyRules.find(rule => rule.name === "Battle Focus");
+  for (const name of ["Swift as the wind", "Flitting Shadows", "Star Engines", "Sudden Strike", "Opportunity Seized", "Fade Back"]) {
+    assert.ok(rule.description.includes(`**${name}**`), name);
+  }
+  assert.ok((rule.description.match(/trigger/gi) || []).length >= 6);
+  assert.equal((rule.description.match(/effect/gi) || []).length, 6);
+  assert.match(rule.description, /Incursion - 2/);
+  assert.match(rule.description, /unspent Battle Focus tokens are lost/);
+  assert.deepEqual(extractWeaponEffects([{ ...rule, sourceKind: "army" }]), []);
+  assert.deepEqual(extractUnitEffects([{ ...rule, sourceKind: "army" }]), []);
+  const drukhari = ruleset.armies.find(army => army.faction === "Xenos - Drukhari");
+  assert.equal(drukhari.armyRules.some(rule => /Agile Manoeuvres/.test(rule.description)), false);
+});
+
+
+test("Harlequin defaults do not expose Mistweave's conditional Infiltrators", () => {
+  const ruleset = extractNormalizedRuleset(DEFAULT_RULESET_SOURCE_ID);
+  for (const name of ["Troupe", "Shadowseer"]) {
+    const unit = ruleset.units.find(unit => unit.faction === "Xenos - Aeldari" && unit.name === name && unit.rosterSelectable);
+    assert.ok(unit);
+    const rules = getConfiguredProfiles(unit, createDefaultRosterEntry(unit)).rules;
+    assert.equal(rules.some(rule => rule.name === "Infiltrators"), false, name);
+  }
+  const rangers = ruleset.units.find(unit => unit.faction === "Xenos - Aeldari" && unit.name === "Rangers" && unit.rosterSelectable);
+  assert.ok(getConfiguredProfiles(rangers, createDefaultRosterEntry(rangers)).rules.some(rule => rule.name === "Infiltrators"));
 });

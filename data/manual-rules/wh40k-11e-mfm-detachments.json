@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "https://mfm.warhammer-community.com/en",
-  "version": "1.4",
-  "generatedAt": "2026-09-08T04:04:28.635470Z",
+  "version": "1.5",
+  "generatedAt": "2026-09-30T21:11:44.731608Z",
   "detachments": [
     {
       "factionSlug": "adepta-sororitas",
@@ -45,8 +45,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/adepta-sororitas",
       "detachmentName": "HALLOWED MARTYRS",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -91,7 +91,7 @@
       "detachmentName": "LIONS OF THE EMPEROR",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -145,7 +145,7 @@
       "detachmentName": "TALONS OF THE EMPEROR",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -170,10 +170,10 @@
       "factionSlug": "adeptus-mechanicus",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
       "detachmentName": "COHORT CYBERNETICA",
-      "detachmentPoints": 2,
+      "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "adeptus-mechanicus",
@@ -188,10 +188,10 @@
       "factionSlug": "adeptus-mechanicus",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
       "detachmentName": "ERADICATION COHORT",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "adeptus-mechanicus",
@@ -208,17 +208,17 @@
       "detachmentName": "HALOSCREED BATTLE CLADE",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
       "factionSlug": "adeptus-mechanicus",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
       "detachmentName": "LORDS OF THE FORGE",
-      "detachmentPoints": 1,
+      "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "adeptus-mechanicus",
@@ -262,7 +262,7 @@
       "detachmentName": "ASPECT HOST",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -296,6 +296,7 @@
       "factionSlug": "aeldari",
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "FATEFUL PERFORMANCE",
+      "uniqueTags": [],
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
       "dispositionChanged": false,
@@ -305,6 +306,7 @@
       "factionSlug": "aeldari",
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "GHOSTS OF THE WEBWAY",
+      "uniqueTags": [],
       "detachmentPoints": 2,
       "forceDisposition": "Disruption",
       "dispositionChanged": false,
@@ -341,6 +343,7 @@
       "factionSlug": "aeldari",
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "SERPENT’S BROOD",
+      "uniqueTags": [],
       "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
@@ -359,6 +362,7 @@
       "factionSlug": "aeldari",
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "TWILIGHT FLICKERS",
+      "uniqueTags": [],
       "detachmentPoints": 1,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
@@ -368,10 +372,10 @@
       "factionSlug": "aeldari",
       "sourceUrl": "https://mfm.warhammer-community.com/en/aeldari",
       "detachmentName": "WARHOST",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "aeldari",
@@ -433,7 +437,7 @@
       "detachmentName": "GRIZZLED COMPANY",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -484,99 +488,9 @@
     {
       "factionSlug": "black-templars",
       "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "COMPANIONS OF VEHEMENCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "FULGURIS TASK FORCE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "GLADIUS TASK FORCE",
-      "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "GODHAMMER ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -592,81 +506,9 @@
     {
       "factionSlug": "black-templars",
       "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
       "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "THE LIVING MIRACLE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "VENGEFUL HOSTS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "VINDICATION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "black-templars",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
-      "detachmentName": "WRATHFUL PROCESSION",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "1ST COMPANY TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -682,42 +524,6 @@
     {
       "factionSlug": "blood-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
       "detachmentName": "ENCARMINE SPEARTIP",
       "detachmentPoints": 1,
       "forceDisposition": "Disruption",
@@ -727,36 +533,9 @@
     {
       "factionSlug": "blood-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "FULGURIS TASK FORCE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
       "detachmentName": "GLADIUS TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -764,52 +543,7 @@
       "factionSlug": "blood-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "LEGACY OF GRACE",
       "detachmentPoints": 1,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "LIBERATOR ASSAULT GROUP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "LIBRARIUS CONCLAVE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "RAGE-CURSED ONSLAUGHT",
-      "detachmentPoints": 3,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -818,53 +552,8 @@
       "factionSlug": "blood-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
       "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "THE ANGELIC HOST",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "THE LOST BRETHREN",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "blood-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
-      "detachmentName": "VENGEFUL HOSTS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -901,7 +590,7 @@
       "detachmentName": "DAEMONIC INCURSION",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1009,7 +698,7 @@
       "detachmentName": "INFERNAL LANCE",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1053,8 +742,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
       "detachmentName": "CREATIONS OF BILE",
       "detachmentPoints": 3,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1107,8 +796,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
       "detachmentName": "HURON’S MARAUDERS",
       "detachmentPoints": 3,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1134,8 +823,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
       "detachmentName": "PACTBOUND ZEALOTS",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1143,8 +832,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/chaos-space-marines",
       "detachmentName": "RENEGADE RAIDERS",
       "detachmentPoints": 3,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1186,88 +875,7 @@
     {
       "factionSlug": "dark-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "1ST COMPANY TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "COMPANY OF HUNTERS",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "DARK AGE ARSENAL",
-      "detachmentPoints": 1,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "DARKFLIGHT PURSUIT",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "FULGURIS TASK FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
@@ -1278,16 +886,7 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "GLADIUS TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1295,17 +894,8 @@
       "factionSlug": "dark-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "INNER CIRCLE TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "INTERROGATION CONCLAVE",
       "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
+      "forceDisposition": "Priority Assets",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1313,25 +903,7 @@
       "factionSlug": "dark-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "LIBRARIUS CONCLAVE",
       "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "LION’S BLADE TASK FORCE",
-      "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -1339,44 +911,8 @@
     {
       "factionSlug": "dark-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "UNFORGIVEN TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -1384,18 +920,9 @@
     {
       "factionSlug": "dark-angels",
       "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
-      "detachmentName": "VENGEFUL HOSTS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "dark-angels",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
       "detachmentName": "WRATH OF THE ROCK",
-      "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
+      "detachmentPoints": 2,
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1477,43 +1004,7 @@
       "detachmentName": "VIRULENT VECTORIUM",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "1ST COMPANY TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1521,34 +1012,7 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
       "detachmentName": "BLACK SPEAR TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "FULGURIS TASK FORCE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1557,16 +1021,7 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
       "detachmentName": "GLADIUS TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1574,26 +1029,8 @@
       "factionSlug": "deathwatch",
       "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "LIBRARIUS CONCLAVE",
       "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1601,35 +1038,8 @@
       "factionSlug": "deathwatch",
       "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
       "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "deathwatch",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
-      "detachmentName": "VENGEFUL HOSTS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -1683,8 +1093,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/drukhari",
       "detachmentName": "REAPER’S WAGER",
       "detachmentPoints": 3,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1718,10 +1128,10 @@
       "factionSlug": "emperors-children",
       "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
       "detachmentName": "CARNIVAL OF EXCESS",
-      "detachmentPoints": 2,
+      "detachmentPoints": 3,
       "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "dispositionChanged": true,
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "emperors-children",
@@ -1729,7 +1139,7 @@
       "detachmentName": "COTERIE OF THE CONCEITED",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1790,10 +1200,10 @@
       "factionSlug": "emperors-children",
       "sourceUrl": "https://mfm.warhammer-community.com/en/emperors-children",
       "detachmentName": "SLAANESH’S CHOSEN",
-      "detachmentPoints": 2,
+      "detachmentPoints": 1,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "emperors-children",
@@ -1846,7 +1256,7 @@
       "detachmentName": "HOST OF ASCENSION",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -1963,7 +1373,7 @@
       "detachmentName": "WARPBANE TASK FORCE",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2026,7 +1436,7 @@
       "detachmentName": "FREEBLADE COMPANY",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2053,7 +1463,7 @@
       "detachmentName": "QUESTORIS COMPANIONS",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2125,7 +1535,7 @@
       "detachmentName": "HEARTHBAND",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2188,17 +1598,17 @@
       "detachmentName": "AWAKENED DYNASTY",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
       "factionSlug": "necrons",
       "sourceUrl": "https://mfm.warhammer-community.com/en/necrons",
       "detachmentName": "CANOPTEK COURT",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "necrons",
@@ -2269,7 +1679,7 @@
       "detachmentName": "STARSHATTER ARSENAL",
       "detachmentPoints": 3,
       "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2419,45 +1829,9 @@
     {
       "factionSlug": "space-marines",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "1ST COMPANY TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
       "detachmentName": "BLADE OF ULTRAMAR",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2465,26 +1839,8 @@
       "factionSlug": "space-marines",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
       "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "EMPEROR’S SHIELD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2500,36 +1856,9 @@
     {
       "factionSlug": "space-marines",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "FULGURIS TASK FORCE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
       "detachmentName": "GLADIUS TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "HAMMER OF AVERNII",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2537,35 +1866,8 @@
       "factionSlug": "space-marines",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "LIBRARIUS CONCLAVE",
       "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "RECLAMATION FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2583,33 +1885,6 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
       "detachmentName": "SPEARPOINT TASK FORCE",
       "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "SUBVERSION ASSETS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-marines",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -2617,54 +1892,9 @@
     {
       "factionSlug": "space-marines",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
-      "detachmentName": "VENGEFUL HOSTS",
+      "detachmentName": "STORMLANCE TASK FORCE",
       "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "1ST COMPANY TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "ANVIL SIEGE FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "ARMOURED SPEARTIP",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "BASTION TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "CERAMITE SENTINELS",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
+      "forceDisposition": "Reconnaissance",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2680,36 +1910,9 @@
     {
       "factionSlug": "space-wolves",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "FIRESTORM ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "FULGURIS TASK FORCE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
       "detachmentName": "GLADIUS TASK FORCE",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "HEADHUNTER TASK FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "forceDisposition": "Take and Hold",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2717,43 +1920,7 @@
       "factionSlug": "space-wolves",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
       "detachmentName": "IRONSTORM SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "LEGENDS OF SAGA AND SONG",
       "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "LIBRARIUS CONCLAVE",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "ORBITAL ASSAULT FORCE",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "SAGA OF THE BEASTSLAYER",
-      "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
@@ -2761,9 +1928,9 @@
     {
       "factionSlug": "space-wolves",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "SAGA OF THE BOLD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
+      "detachmentName": "SAGA OF THE BEASTSLAYER",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2779,54 +1946,9 @@
     {
       "factionSlug": "space-wolves",
       "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "SAGA OF THE HUNTER",
-      "detachmentPoints": 2,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
       "detachmentName": "STORMLANCE TASK FORCE",
-      "detachmentPoints": 3,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "SUBVERSION ASSETS",
       "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "VANGUARD SPEARHEAD",
-      "detachmentPoints": 2,
       "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "VENGEFUL HOSTS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "space-wolves",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
-      "detachmentName": "VETERANS OF THE FANG",
-      "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     },
@@ -2880,8 +2002,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/tau-empire",
       "detachmentName": "MONT’KA",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2890,7 +2012,7 @@
       "detachmentName": "RETALIATION CADRE",
       "detachmentPoints": 3,
       "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2907,8 +2029,8 @@
       "sourceUrl": "https://mfm.warhammer-community.com/en/thousand-sons",
       "detachmentName": "GRAND COVEN",
       "detachmentPoints": 3,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2917,7 +2039,7 @@
       "detachmentName": "HEXWARP THRALLBAND",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -2935,7 +2057,7 @@
       "detachmentName": "RUBRICAE PHALANX",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -3007,7 +2129,7 @@
       "detachmentName": "INVASION FLEET",
       "detachmentPoints": 3,
       "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -3016,7 +2138,7 @@
       "detachmentName": "SUBTERRANEAN ASSAULT",
       "detachmentPoints": 3,
       "forceDisposition": "Disruption",
-      "dispositionChanged": false,
+      "dispositionChanged": true,
       "detachmentPointsChanged": false
     },
     {
@@ -3068,10 +2190,10 @@
       "factionSlug": "world-eaters",
       "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
       "detachmentName": "BERZERKER WARBAND",
-      "detachmentPoints": 3,
+      "detachmentPoints": 2,
       "forceDisposition": "Purge the Foe",
       "dispositionChanged": false,
-      "detachmentPointsChanged": false
+      "detachmentPointsChanged": true
     },
     {
       "factionSlug": "world-eaters",
@@ -3131,6 +2253,728 @@
       "factionSlug": "world-eaters",
       "sourceUrl": "https://mfm.warhammer-community.com/en/world-eaters",
       "detachmentName": "VESSELS OF WRATH",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    }
+  ],
+  "pendingDetachments": [
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "DEATHWATCH SUPPORT",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "FIST OF THE GOD-EMPEROR",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "TERMINATOR STORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "black-templars",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/black-templars",
+      "detachmentName": "VOW-SWORN CRUSADERS",
+      "detachmentPoints": 2,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "DEATHWATCH SUPPORT",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "blood-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/blood-angels",
+      "detachmentName": "TERMINATOR STORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "DEATHWATCH SUPPORT",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "dark-angels",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/dark-angels",
+      "detachmentName": "TERMINATOR STORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "deathwatch",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/deathwatch",
+      "detachmentName": "TERMINATOR STORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "DEATHWATCH SUPPORT",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "MEDUSA'S WRATH",
+      "detachmentPoints": 2,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-marines",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-marines",
+      "detachmentName": "TERMINATOR STORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "ASSAULT BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "DEATHWATCH SUPPORT",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "DEVASTATOR BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Purge the Foe",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "GAUNTLET TASK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Reconnaissance",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "GRAVIS LINEBREAKER FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "GRAVIS SIEGE FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "IRONCLAD CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "PHOBOS SHADOW FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "PHOBOS SHOCK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Disruption",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "TACTICAL BRETHREN",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "TACTICUS ATTACK FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Take and Hold",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "TACTICUS FIRESTORM FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "Priority Assets",
+      "dispositionChanged": false,
+      "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "space-wolves",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/space-wolves",
+      "detachmentName": "TERMINATOR STORM FORCE",
       "detachmentPoints": 1,
       "forceDisposition": "Priority Assets",
       "dispositionChanged": false,

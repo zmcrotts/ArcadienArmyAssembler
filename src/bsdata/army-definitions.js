@@ -174,7 +174,7 @@ function armyRuleImportMatches(catalogue, link) {
     && /^aeldari - aeldari library$/i.test(String(link?.name || ""));
 }
 
-function importedSharedRuleApplies(catalogue, imported, rule) {
+function importedArmyRuleApplies(catalogue, imported, rule) {
   if (!/^aeldari - aeldari library$/i.test(String(imported?.name || ""))) return true;
   const isDrukhariRule = /\bdrukhari\b/i.test(String(rule?.description || ""));
   return /^xenos - drukhari$/i.test(String(catalogue?.name || ""))
@@ -182,11 +182,40 @@ function importedSharedRuleApplies(catalogue, imported, rule) {
     : !isDrukhariRule;
 }
 
+function armyRuleReferenceDescription(rule, indexes) {
+  const wanted = normalizeName(rule?.name);
+  const entry = [...indexes.entries.values()].find(entry =>
+    normalizeName(entry?.name) === `${wanted} agile manoeuvres`
+  );
+  if (!entry) return rule.description;
+  const manoeuvres = asArray(entry?.profiles?.profile)
+    .filter(profile => !bsdataFlagIsTrue(profile.hidden) && /^abilities$/i.test(profile.typeName || ""))
+    .map(normalizeProfile)
+    .filter(profile => profile.name && profile.characteristics?.Description);
+  if (!manoeuvres.length) return rule.description;
+  return [rule.description, "**Agile Manoeuvres**", ...manoeuvres.map(profile =>
+    `**${profile.name}**\n${profile.characteristics.Description}`
+  )].join("\n\n");
+}
+
 function armyRuleTablesFor(rule, indexes) {
   const wanted = normalizeName(rule?.name);
   if (!wanted) return [];
   const tables = [];
   for (const entry of indexes.entries.values()) {
+    if (normalizeName(entry?.name) === `${wanted} reference`) {
+      const rows = asArray(entry?.profiles?.profile)
+        .filter(profile => normalizeName(profile.typeName) === wanted
+          && !asArray(profile?.modifiers?.modifier).some(modifier => modifier.field === "hidden"))
+        .map(normalizeProfile)
+        .map(profile => ({
+          result: profile.characteristics?.Roll || "",
+          name: profile.name.replace(/^\d+\.\s*/, ""),
+          description: profile.characteristics?.Effect || ""
+        }))
+        .filter(row => row.result && row.name && row.description);
+      if (rows.length) tables.push({ name: rule.name, dice: "Roll", rows });
+    }
     if (normalizeName(entry?.name) !== wanted) continue;
     for (const group of asArray(entry?.selectionEntries?.selectionEntry)) {
       const rows = asArray(group?.profiles?.profile).map(normalizeProfile).map(profile => ({
@@ -226,14 +255,12 @@ function catalogueArmyRules(catalogue, indexes, faction = "", catalogueLookup = 
   const rules = [...new Map(sources
     .flatMap(source => [
       ...rulesFor(source.catalogue, indexes),
-      ...sharedRulesFor(source.catalogue).filter(rule =>
-        source.includeShared
-        && (!source.imported || importedSharedRuleApplies(catalogue, source.catalogue, rule))
-      )
-    ])
+      ...(source.includeShared ? sharedRulesFor(source.catalogue) : [])
+    ].filter(rule => !source.imported || importedArmyRuleApplies(catalogue, source.catalogue, rule)))
     .filter(rule => !/^boarding actions$/i.test(rule.name))
     .map(rule => [`${normalizeName(rule.name)}:${normalizeName(rule.description)}`, {
       ...rule,
+      description: armyRuleReferenceDescription(rule, indexes),
       tables: armyRuleTablesFor(rule, indexes)
     }])).values()];
   if (/black templars/i.test(faction)) return rules;

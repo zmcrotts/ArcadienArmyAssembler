@@ -3,6 +3,8 @@
 
 const fs = require("fs");
 const path = require("path");
+const { canonicalFaction } = require("../src/rulesets/mfm-points");
+const { canonicalUnitName } = require("../src/rulesets/mfm-normalization");
 
 const ACTIVE_PATH = path.resolve(__dirname, "..", "data", "manual-rules", "wh40k-11e-mfm-points.json");
 
@@ -23,7 +25,7 @@ function sortKey(row) {
 
 function normalizedOptionKey(row) {
   const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  return [row.kind, normalize(row.unitName), normalize(row.label)].join("|");
+  return [row.kind, normalize(canonicalFaction(row.faction)), canonicalUnitName(row.unitName), normalize(row.label).replace(/^per /, "")].join("|");
 }
 
 function main() {

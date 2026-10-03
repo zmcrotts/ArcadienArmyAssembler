@@ -44,6 +44,23 @@ function normalizeMfmName(value) {
     .trim();
 }
 
+function canonicalUnitName(value) {
+  const normalized = normalizeMfmName(value).replace(/ legends$/, "");
+  const aliases = {
+    "eradicator squad with melta rifles": "eradicator squad",
+    "sicaran": "sicaran battle tank",
+    "tarantula air defence battery": "tarantula air defense battery",
+    "invader atvs": "invader atv",
+    "chaos reaver titan": "reaver titan",
+    "chaos warbringer nemesis titan": "warbringer nemesis titan",
+    "chaos warhound titan": "warhound titan",
+    "chaos warlord titan": "warlord titan",
+    "myphitic blight haulers": "myphitic blight hauler",
+    "vyper": "vypers"
+  };
+  return aliases[normalized] || normalized;
+}
+
 function canonicalEnhancementName(value) {
   const normalized = normalizeMfmName(value)
     .replace(/(?:\s+(?:upgrade|aura|psychic))+$/, "");
@@ -55,4 +72,4 @@ function canonicalDetachmentName(value) {
   return DETACHMENT_ALIASES.get(normalized) || normalized;
 }
 
-module.exports = { canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName };
+module.exports = { canonicalUnitName, canonicalDetachmentName, canonicalEnhancementName, normalizeMfmName };

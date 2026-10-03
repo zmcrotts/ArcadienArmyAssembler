@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "source": "Warhammer 40,000 Faction Packs updated through 26 August 2026",
-  "version": "2026-08-26",
-  "lastUpdated": "2026-08-26",
+  "source": "Official Warhammer 40,000 Faction Packs updated through 30 September 2026",
+  "version": "2026-09-30",
+  "lastUpdated": "2026-09-30",
   "updates": [
     {
       "id": "custodes-frame",
@@ -1611,12 +1611,12 @@
     },
     {
       "id": "grey-knights-gate-infinity",
-      "kind": "army-rule-add",
+      "kind": "army-rule-replace",
       "target": {
         "faction": "Imperium - Grey Knights"
       },
       "ruleName": "Gate of Infinity",
-      "description": "At the end of your opponent's turn, select the units specified by this rule. Place those units in strategic reserves. Those units can make an ingress move in your next Movement phase (including in your first turn).",
+      "description": "If your Army Faction is **^^Grey Knights^^**, at the end of your opponent’s Fight phase, you can select a number of units from your army that are on the battlefield (excluding units that are within Engagement Range of one or more enemy units), providing every model in those units has this ability. The maximum number of units you can select depends on the battle size, as follows:\n\nIncursion - Up to 2 units\nStrike Force - Up to 3 units\nOnslaught - Up to 4 units\n\n- Place those units in **strategic reserves**.\n- Those units can make an **ingress move** in your next Movement phase (including in your first turn)",
       "source": "Faction Pack - Grey Knights v1.1, page 9"
     },
     {
@@ -3435,7 +3435,7 @@
       },
       "detachmentName": "Serpent's Brood",
       "ruleName": "Travelling Players",
-      "description": "When mustering your army, you can include HARLEQUINS units in your army even though they do not have the ASURYANI keyword. The combined points cost of such units depends on your battle size. When mustering your army, you can select a friendly HARLEQUINS CHARACTER model to be your WARLORD.",
+      "description": "- TROUPE units from your army gain the BATTLELINE keyword, and TROUPE models in those units have an Objective Control characteristic of 2.\n- You can include up to three of each of the following models in your army: DEATH JESTER, SHADOWSEER, TROUPE MASTER.\n- When mustering your army, you can select a friendly HARLEQUINS CHARACTER model to be your WARLORD.",
       "source": "Faction Pack - Aeldari v1.3, pages 1 and 30"
     },
     {
@@ -3890,6 +3890,5067 @@
         "Frame"
       ],
       "source": "Faction Pack - Tyranids v1.2, page 1"
+    },
+    {
+      "id": "sep2026-1",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Prosecutors"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-2",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Allarus Custodians"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-3",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Wardens"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-4",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-5",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain in Allarus Terminator Armour"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-6",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Venerable Contemptor Dreadnought"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-7",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Valerian"
+      ],
+      "profileNames": [
+        "Gnosis"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-8",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Allarus Custodians"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-9",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Guard"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-10",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Wardens"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-11",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-12",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain in Allarus Terminator Armour"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-13",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Knight-Centura"
+      ],
+      "profileNames": [
+        "Master-crafted boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-14",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Guard"
+      ],
+      "profileNames": [
+        "Sentinel Blade"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-15",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Sentinel Blade"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-16",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Anathema Psykana Rhino"
+      ],
+      "profileNames": [
+        "Storm Bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-17",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Venerable Land Raider"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-18",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-19",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-20",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Abaddon the Despoiler"
+      ],
+      "profileNames": [
+        "Abaddon the Despoiler"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-21",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Bikers"
+      ],
+      "profileNames": [
+        "Chaos Bikers",
+        "Biker Champion"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-22",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord in Terminator Armour"
+      ],
+      "profileNames": [
+        "Chaos Lord in Terminator Armour"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-23",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Terminator Squad"
+      ],
+      "profileNames": [
+        "Chaos Terminator",
+        "Terminator Champion"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-24",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Huron Blackheart"
+      ],
+      "profileNames": [
+        "Huron Blackheart"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-25",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Kravek Morne"
+      ],
+      "profileNames": [
+        "Kravek Morne"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-26",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-27",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord"
+      ],
+      "profileNames": [
+        "Chaos Lord"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-28",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord with Jump Pack"
+      ],
+      "profileNames": [
+        "Chaos Lord with Jump Pack"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-29",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chosen"
+      ],
+      "profileNames": [
+        "Chosen",
+        "Chosen Champion"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-30",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Cypher"
+      ],
+      "profileNames": [
+        "Cypher"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-31",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Dark Apostle"
+      ],
+      "profileNames": [
+        "Dark Apostle",
+        "Dark Disciple"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-32",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Fabius Bile"
+      ],
+      "profileNames": [
+        "Fabius Bile",
+        "Surgeon Acolyte"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-33",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Haarken Worldclaimer"
+      ],
+      "profileNames": [
+        "Haarken Worldclaimer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-34",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Legionaries"
+      ],
+      "profileNames": [
+        "Aspiring Champion",
+        "Legionaries"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-35",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Master of Executions"
+      ],
+      "profileNames": [
+        "Master of Executions"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-36",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Master of Possession"
+      ],
+      "profileNames": [
+        "Master of Possession"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-37",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Masters of the Maelstrom"
+      ],
+      "profileNames": [
+        "Garreon the Corpsemaster",
+        "Garlon Souleater",
+        "Katar Garrix"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-38",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Nemesis Claw"
+      ],
+      "profileNames": [
+        "Nemesis Claw"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-39",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Raptors"
+      ],
+      "profileNames": [
+        "Raptors",
+        "Raptor Champion"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-40",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Red Corsairs Raiders"
+      ],
+      "profileNames": [
+        "Red Corsairs Raider Champion",
+        "Red Corsairs Raider"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-41",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Red Corsairs Reave-captain"
+      ],
+      "profileNames": [
+        "Red Corsairs Reave-Captain"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-42",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Sorcerer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-43",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Warpsmith"
+      ],
+      "profileNames": [
+        "Warpsmith"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-44",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Warp Talons"
+      ],
+      "profileNames": [
+        "Warp Talon Champion",
+        "Warp Talons"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-45",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Havocs"
+      ],
+      "profileNames": [
+        "Havoc Champion",
+        "Havocs"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "W": "3"
+      }
+    },
+    {
+      "id": "sep2026-46",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Bikers"
+      ],
+      "profileNames": [
+        "Astartes chainsword"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-47",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord"
+      ],
+      "profileNames": [
+        "Astartes chainblade"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-48",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Havocs"
+      ],
+      "profileNames": [
+        "Astartes chainsword"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-49",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Legionaries"
+      ],
+      "profileNames": [
+        "Astartes chainsword"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-50",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Nemesis Claw"
+      ],
+      "profileNames": [
+        "Astartes chainsword"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-51",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Raptors"
+      ],
+      "profileNames": [
+        "Astartes chainsword"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-52",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Bikers"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-53",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord with Jump Pack"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-54",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chosen"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-55",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Dark Apostle"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-56",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Legionaries"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-57",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Lord Discordant on Helstalker"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-58",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Master of Executions"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-59",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Master of Possession"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-60",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Masters of the Maelstrom"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-61",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Nemesis Claw"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-62",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Raptors"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-63",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Red Corsairs Raiders"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-64",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Red Corsairs Reave-captain"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-65",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-66",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chosen"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-67",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Havocs"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-68",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Legionaries"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-69",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Nemesis Claw"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-70",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Red Corsairs Raiders"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-71",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Bikers"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-72",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-73",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord in Terminator Armour"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-74",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-75",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-76",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-77",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Terminator Squad"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-78",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Vindicator"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-79",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Helbrute"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-80",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Kravek Morne"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-81",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-82",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-83",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Lord in Terminator Armour"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-84",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-85",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-86",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-87",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Terminator Squad"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-88",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Vindicator"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-89",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chosen"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-90",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-91",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Chaos Bikers"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-92",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Havocs"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-93",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Legionaries"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-94",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Raptors"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-95",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Cypher"
+      ],
+      "profileNames": [
+        "Cypher's bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-96",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Cypher"
+      ],
+      "profileNames": [
+        "Cypher's bolt pistol"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-97",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Possessed"
+      ],
+      "profileNames": [
+        "Hideous mutations"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "6"
+      }
+    },
+    {
+      "id": "sep2026-98",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "source": "Faction Pack - Chaos Space Marines legal 30 September 2026, page 38",
+      "unitNames": [
+        "Nemesis Claw"
+      ],
+      "profileNames": [
+        "Nostraman chainblade"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-99",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Plague Marines"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-100",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Plague Surgeon"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-101",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Malignant Plaguecaster"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-102",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Icon Bearer"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-103",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Plague Marines"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-104",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Blightlord Terminators"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-105",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-106",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-107",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-108",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-109",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Helbrute"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-110",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Blightlord Terminators"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-111",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-112",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-113",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-114",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-115",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Blightlord Terminators"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-116",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Foul Blightspawn"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-117",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Tallyman"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-118",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Icon Bearer"
+      ],
+      "profileNames": [
+        "Plague knife"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-119",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Biologus Putrifier"
+      ],
+      "profileNames": [
+        "Plague knives"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-120",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Death Guard"
+      },
+      "source": "Faction Pack - Death Guard legal 30 September 2026, page 7",
+      "unitNames": [
+        "Plague Marines"
+      ],
+      "profileNames": [
+        "Plague knives"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-121",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Chaos Terminators"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-122",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lord Kakophonist"
+      ],
+      "profileNames": [
+        "Lord Kakophonist"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-123",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lucius the Eternal"
+      ],
+      "profileNames": [
+        "Lucius the Eternal"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-124",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Infractors"
+      ],
+      "profileNames": [
+        "Infractors"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-125",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lord Exultant"
+      ],
+      "profileNames": [
+        "Lord Exultant"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-126",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Sorcerer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-127",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Tormentors"
+      ],
+      "profileNames": [
+        "Tormentors"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-128",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Noise Marines"
+      ],
+      "profileNames": [
+        "Disharmonist",
+        "Noise Marines"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "W": "3"
+      }
+    },
+    {
+      "id": "sep2026-129",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Flawless Blades"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-130",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Infractors"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-131",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lord Exultant"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-132",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-133",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Tormentors"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-134",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Tormentors"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-135",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-136",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-137",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-138",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-139",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-140",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-141",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lord Exultant"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-142",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Lord Kakophonist"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-143",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Noise Marines"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-144",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Tormentors"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-145",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Faction Pack - Emperor's Children legal 30 September 2026, page 9",
+      "unitNames": [
+        "Infractors"
+      ],
+      "profileNames": [
+        "Duelling sabre"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-146",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brother-Captain"
+      ],
+      "profileNames": [
+        "Brother-Captain"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-147",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Chaplain"
+      ],
+      "profileNames": [
+        "Brotherhood Chaplain"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-148",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Librarian"
+      ],
+      "profileNames": [
+        "Brotherhood Librarian"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-149",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Terminator Squad"
+      ],
+      "profileNames": [
+        "Terminator"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-150",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Grand Master"
+      ],
+      "profileNames": [
+        "Grand Master"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-151",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Grand Master Voldus"
+      ],
+      "profileNames": [
+        "Grand Master Voldus"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-152",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Paladin Squad"
+      ],
+      "profileNames": [
+        "Paladin"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-153",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Champion"
+      ],
+      "profileNames": [
+        "Brotherhood Champion"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-154",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Techmarine"
+      ],
+      "profileNames": [
+        "Brotherhood Techmarine"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-155",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Castellan Crowe"
+      ],
+      "profileNames": [
+        "Castellan Crowe"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-156",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Interceptor Squad"
+      ],
+      "profileNames": [
+        "Interceptor Squad"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-157",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purgation Squad"
+      ],
+      "profileNames": [
+        "Purgation Squad"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-158",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purifier Squad"
+      ],
+      "profileNames": [
+        "Purifier Squad"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-159",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Strike Squad"
+      ],
+      "profileNames": [
+        "Strike Squad"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-160",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Grand Master in Nemesis Dreadknight"
+      ],
+      "profileNames": [
+        "Grand Master in Nemesis Dreadknight"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "9"
+      }
+    },
+    {
+      "id": "sep2026-161",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Nemesis Dreadknight"
+      ],
+      "profileNames": [
+        "Nemesis Dreadknight"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "9"
+      }
+    },
+    {
+      "id": "sep2026-162",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Interceptor Squad"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-163",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purgation Squad"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-164",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purifier Squad"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-165",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Strike Squad"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-166",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Librarian"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-167",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Stormraven Gunship"
+      ],
+      "profileNames": [
+        "Hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-168",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brother-Captain"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-169",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Champion"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-170",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Chaplain"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-171",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Librarian"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-172",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Brotherhood Terminator Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-173",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Castellan Crowe"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-174",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Grand Master"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-175",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Grand Master Voldus"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-176",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Interceptor Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-177",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Land Raider"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-178",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Land Raider Crusader"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-179",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Land Raider Redeemer"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-180",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Paladin Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-181",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purgation Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-182",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Purifier Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-183",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Razorback"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-184",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Rhino"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-185",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Strike Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-186",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 9",
+      "unitNames": [
+        "Venerable Dreadnought"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-187",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Scarab Occult Terminators"
+      ],
+      "profileNames": [
+        "Scarab Occult Sorcerer",
+        "Scarab Occult Terminator"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-188",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-189",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Ahriman"
+      ],
+      "profileNames": [
+        "Ahriman"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-190",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Exalted Sorcerer"
+      ],
+      "profileNames": [
+        "Exalted Sorcerer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-191",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Exalted Sorcerer on Disc of Tzeentch"
+      ],
+      "profileNames": [
+        "Exalted Sorcerer on Disc of Tzeentch"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-192",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Infernal Master"
+      ],
+      "profileNames": [
+        "Infernal Master"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-193",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Rubric Marines"
+      ],
+      "profileNames": [
+        "Rubric Marine",
+        "Aspiring Sorcerer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-194",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Sorcerer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-195",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Rubric Marines"
+      ],
+      "profileNames": [
+        "Close combat weapon"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-196",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Ahriman"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-197",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Exalted Sorcerer"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-198",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Exalted Sorcerer on Disc of Tzeentch"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-199",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Infernal Master"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-200",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Rubric Marines"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-201",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Sorcerer"
+      ],
+      "profileNames": [
+        "Inferno bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-2"
+      }
+    },
+    {
+      "id": "sep2026-202",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Rubric Marines"
+      ],
+      "profileNames": [
+        "Inferno boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-203",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-204",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-205",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-206",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-207",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Vindicator"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-208",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Helbrute"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-209",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Scarab Occult Terminators"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-210",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Inferno combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-211",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-212",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-213",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-214",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-215",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Chaos Vindicator"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-216",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Faction Pack - Thousand Sons legal 30 September 2026, page 10",
+      "unitNames": [
+        "Sorcerer in Terminator Armour"
+      ],
+      "profileNames": [
+        "Inferno combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-217",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Chaos Terminators"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-218",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Khârn the Betrayer"
+      ],
+      "profileNames": [
+        "Khârn the Betrayer"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-219",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Khorne Berzerkers"
+      ],
+      "profileNames": [
+        "Khorne Berzerker"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-220",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Master of Executions"
+      ],
+      "profileNames": [
+        "Master of Executions"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "5"
+      }
+    },
+    {
+      "id": "sep2026-221",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Khorne Berzerkers"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-222",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Lord Invocatus"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-223",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Master of Executions"
+      ],
+      "profileNames": [
+        "Bolt pistol"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-224",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Khorne Berzerkers"
+      ],
+      "profileNames": [
+        "Chainblade"
+      ],
+      "typeName": "Melee Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-225",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-226",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-227",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-228",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-229",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-230",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Helbrute"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-231",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Land Raider"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-232",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Annihilator"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-233",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Predator Destructor"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-234",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Rhino"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-235",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Faction Pack - World Eaters legal 30 September 2026, page 7",
+      "unitNames": [
+        "Chaos Terminators"
+      ],
+      "profileNames": [
+        "Combi-weapon"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-236",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "source": "Faction Pack - Imperial Agents legal 30 September 2026, page 1",
+      "unitNames": [
+        "Grey Knights Terminator Squad"
+      ],
+      "profileNames": [
+        "Grey Knights Terminator Squad"
+      ],
+      "typeName": "Unit",
+      "characteristics": {
+        "T": "6"
+      }
+    },
+    {
+      "id": "sep2026-237",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "source": "Faction Pack - Imperial Agents legal 30 September 2026, page 1",
+      "unitNames": [
+        "Grey Knights Terminator Squad"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-238",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "source": "Faction Pack - Imperial Agents legal 30 September 2026, page 1",
+      "unitNames": [
+        "Imperial Rhino"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-239",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Adepta Sororitas"
+      },
+      "source": "Faction Pack - Adepta Sororitas legal 30 September 2026, page 17",
+      "unitNames": [
+        "Repressor [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-240",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Adepta Sororitas"
+      },
+      "source": "Faction Pack - Adepta Sororitas legal 30 September 2026, page 17",
+      "unitNames": [
+        "Battle Sanctum [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-241",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Adeptus Mechanicus"
+      },
+      "source": "Faction Pack - Adeptus Mechanicus legal 30 September 2026, page 1",
+      "unitNames": [
+        "Terrax-Pattern Termite [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-242",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "source": "Faction Pack - Astra Militarum legal 30 September 2026, page 15",
+      "unitNames": [
+        "Commissar Graves"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-243",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "source": "Faction Pack - Astra Militarum legal 30 September 2026, page 15",
+      "unitNames": [
+        "Hippogriff AFV"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-244",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "source": "Faction Pack - Astra Militarum legal 30 September 2026, page 15",
+      "unitNames": [
+        "Centaur RSV"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-245",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "source": "Faction Pack - Astra Militarum legal 30 September 2026, page 17",
+      "unitNames": [
+        "Commissar Graves on Foot"
+      ],
+      "keywords": [
+        "Officer"
+      ]
+    },
+    {
+      "id": "sep2026-246",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Astra Militarum"
+      },
+      "source": "Faction Pack - Astra Militarum legal 30 September 2026, page 86",
+      "unitNames": [
+        "Sentinel Powerlifter [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-247",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Xenos - Necrons"
+      },
+      "source": "Faction Pack - Necrons legal 30 September 2026, page 32",
+      "unitNames": [
+        "Seraptek Heavy Construct"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-248",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Xenos - Necrons"
+      },
+      "source": "Faction Pack - Necrons legal 30 September 2026, page 32",
+      "unitNames": [
+        "Gauss Pylon [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-249",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Orion Assault Dropship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-250",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Ares Gunship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-251",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-252",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-253",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Faction Pack - Chaos Daemons legal 30 September 2026, page 60",
+      "unitNames": [
+        "Screamers"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-254",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 7",
+      "unitNames": [
+        "Grey Knights Thunderhawk Gunship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-255",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 7",
+      "unitNames": [
+        "Stormhawk Interceptor"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-256",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 7",
+      "unitNames": [
+        "Stormraven Gunship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-257",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 7",
+      "unitNames": [
+        "Stormtalon Gunship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-258",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "source": "Faction Pack - Grey Knights legal 30 September 2026, page 13",
+      "unitNames": [
+        "Grey Knights Relic Razorback [Legends]"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-259",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "source": "Faction Pack - Imperial Agents legal 30 September 2026, page 10",
+      "unitNames": [
+        "Corvus Blackstar"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-260",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Salvo launcher"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "24\"",
+        "A": "1",
+        "BS": "2+",
+        "S": "10",
+        "AP": "-3",
+        "D": "D6+1",
+        "Keywords": "Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-261",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "18\"",
+        "A": "3",
+        "BS": "2+",
+        "S": "5",
+        "AP": "-1",
+        "D": "2",
+        "Keywords": "Rapid Fire 3, Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-262",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Salvo launcher"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "24\"",
+        "A": "1",
+        "BS": "2+",
+        "S": "10",
+        "AP": "-3",
+        "D": "D6+1",
+        "Keywords": "Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-263",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "18\"",
+        "A": "3",
+        "BS": "2+",
+        "S": "5",
+        "AP": "-1",
+        "D": "2",
+        "Keywords": "Rapid Fire 3, Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-rule-264",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Daemonic Incursion",
+      "stratagemName": "The Realm of Chaos",
+      "description": "<b>WHEN:</b> End of your opponent's turn.<br><br><b>TARGET:</b> Up to two LEGIONES DAEMONICA units from your army that are within your army's Shadow of Chaos, or one other LEGIONES DAEMONICA unit from your army.<br><br><b>EFFECT:</b> Remove the targeted units from the battlefield and place them into Strategic Reserves. Those units must make an ingress move in your next Movement phase (including in your first turn). RESTRICTIONS: You cannot target units that are within Engagement Range of one or more enemy units with this Stratagem."
+    },
+    {
+      "id": "sep2026-rule-265",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Cavalcade of Chaos",
+      "stratagemName": "From Beyond the Veil",
+      "cpCost": 2
+    },
+    {
+      "id": "sep2026-rule-266",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Plague Legion",
+      "stratagemName": "Foetid Resurgence",
+      "description": "<b>WHEN:</b> Your Command phase.<br><br><b>TARGET:</b> One LEGIONES DAEMONICA NURGLE unit from your army that is on the battlefield.<br><br><b>EFFECT:</b> Return up to 1 destroyed non-CHARACTER model to your unit, or up to D3 destroyed non-CHARACTER models instead if your unit is a Battleline unit, with their full wounds remaining. If it is a Monster unit, one model in your unit regains up to D3+1 lost wounds instead."
+    },
+    {
+      "id": "sep2026-rule-267",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Legion of Excess",
+      "stratagemName": "Thieves of Pain",
+      "newName": "Rapturous Agony",
+      "cpCost": 1,
+      "description": "WHEN: Your opponent's Shooting phase or the Fight phase, just after an enemy unit has selected its targets.\nTARGET: One LEGIONES DAEMONICA SLAANESH unit from your army (excluding MONSTER and VEHICLE units) that was selected as the target of one or more of the attacking unit's attacks.\nEFFECT: Each time an attack targets your unit, if the Strength characteristic of that attack is greater than the Toughness characteristic of your unit, subtract 1 from the Wound roll."
+    },
+    {
+      "id": "sep2026-rule-268",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Chaos Daemons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Legion of Excess",
+      "stratagemName": "Sensory Excruciation",
+      "textReplacements": [
+        {
+          "from": "Daemonic Terror",
+          "to": "Daemonic Manifestation"
+        }
+      ]
+    },
+    {
+      "id": "sep2026-rule-269",
+      "kind": "detachment-rule-replace",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Frenzied Host",
+      "ruleName": "Frantic Focus",
+      "description": "When a friendly EMPEROR’S CHILDREN BATTLELINE unit is selected to make an Advance or Fall Back move, until the end of the turn, attacks made by BATTLELINE models in that unit have the [SUSTAINED HITS 1] ability.\nThis detachment has the HOST tag and cannot be taken with another HOST detachment."
+    },
+    {
+      "id": "sep2026-rule-270",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Emperor's Children"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Slaanesh's Chosen",
+      "stratagemName": "Vengeful Surge",
+      "description": "WHEN: Your opponent’s Shooting phase, just after an enemy unit that targeted an unengaged EMPEROR’S CHILDREN CHARACTER unit from your army has shot.\nTARGET: That EMPEROR’S CHILDREN CHARACTER unit.\nEFFECT: Your unit can make a Surge move. To do so, roll one D6: each model in your unit can move a distance in inches up to the result, but your unit must end that move as close as possible to the closest enemy unit. When doing so, those models can be moved within Engagement Range of that enemy unit. If your unit is not your army’s Favoured Champions, you can re-roll the dice to determine the distance of its Surge move."
+    },
+    {
+      "id": "sep2026-rule-271",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Veiled Blade Elimination Force",
+      "stratagemName": "Ensnaring Trap",
+      "textReplacements": [
+        {
+          "from": ", and your unit does not receive a Charge bonus this turn",
+          "to": ""
+        }
+      ]
+    },
+    {
+      "id": "sep2026-rule-272",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Rubricae Phalanx",
+      "stratagemName": "Infernal Fusillade",
+      "cpCost": 1
+    },
+    {
+      "id": "sep2026-rule-273",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - Thousand Sons"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Rubricae Phalanx",
+      "stratagemName": "Unwavering Phalanx",
+      "description": "WHEN: Your opponent’s Charge phase, just after an enemy unit ends a Charge move.\nTARGET: One RUBRIC MARINES unit from your army within Engagement Range of that enemy unit.\nEFFECT: Until the end of the turn, each time an attack targets your unit, if the Strength characteristic of that attack is greater than the Toughness characteristic of your unit, subtract 1 from the Wound roll."
+    },
+    {
+      "id": "sep2026-rule-274",
+      "kind": "detachment-rule-replace",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "detachmentName": "Berzerker Warband",
+      "ruleName": "Relentless Rage",
+      "description": "Add 1 to the Attacks characteristic of melee weapons equipped by models in friendly WORLD EATERS units."
+    },
+    {
+      "id": "sep2026-rule-275",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "unitNames": [
+        "Angron"
+      ],
+      "profileName": "Driven by Ultimate Rage (Aura)",
+      "typeName": "Wrathful Presence",
+      "characteristics": {
+        "Effect": "While a friendly WORLD EATERS unit is within 6\" of this model, each time a model in that unit makes a melee attack, re-roll a Hit roll of 1 and re-roll a Wound roll of 1."
+      }
+    },
+    {
+      "id": "sep2026-rule-276",
+      "kind": "rule-replace",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "source": "Official Faction Pack, legal 30 September 2026",
+      "unitNames": [
+        "Khorne Berzerkers"
+      ],
+      "ruleName": "Murderous Charge",
+      "description": "Each time this unit makes a Charge move, until the end of the turn, add 1 to the Strength characteristic of melee weapons equipped by models in this unit."
+    },
+    {
+      "id": "sep2026-sigil-first-turn",
+      "kind": "enhancement-replace",
+      "target": {
+        "faction": "Imperium - Grey Knights"
+      },
+      "detachmentName": "Sanctic Spearhead",
+      "enhancementName": "Sigil of Exigence",
+      "description": "^^**Grey Knights^^** model only. Once per battle, in your opponent's Shooting phase, when the bearer's unit is selected as the target of a ranged attack, you can remove the bearer's unit from the battlefield and then set it back up again anywhere on the battlefield that is more than 8\" horizontally away from all enemy units. If the bearer's unit is no longer an eligible target, your opponent can then select new targets for any attacks that had targeted the bearer's unit.\nFAQ: This ability can be used during your opponent’s first turn.",
+      "source": "Faction Pack - Grey Knights, legal 30 September 2026, page 10"
+    },
+    {
+      "id": "sep2026-havocs-bolt-pistol",
+      "kind": "profile-add",
+      "target": {
+        "faction": "Chaos - Chaos Space Marines"
+      },
+      "unitNames": [
+        "Havocs"
+      ],
+      "profileName": "Bolt pistol",
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "12\"",
+        "A": "1",
+        "BS": "3+",
+        "S": "5",
+        "AP": "-1",
+        "D": "1",
+        "Keywords": "Pistol"
+      },
+      "source": "Faction Pack - Chaos Space Marines, legal 30 September 2026, page 38; base shared BSData bolt-pistol profile"
+    },
+    {
+      "id": "september-breaka-pistol-compatibility",
+      "kind": "selection-alias-add",
+      "target": {
+        "faction": "Xenos - Orks"
+      },
+      "unitNames": [
+        "Breaka Boyz"
+      ],
+      "nodeDefinitionId": "9786-120d-a921-3226",
+      "aliasIds": [
+        "5eb7-e403-1abe-3160"
+      ],
+      "source": "BSData 2f14fe57544c3e26c056abe97ca9bcef9cda1091 inlines the former Rokkit Pistol link; preserve its old selection ID"
+    },
+    {
+      "id": "butchers-of-khorne-target-focused-ferocity",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "detachmentName": "Butchers of Khorne",
+      "stratagemName": "FOCUSED FEROCITY",
+      "stratagemTarget": {
+        "type": "keyword",
+        "value": "Terminator Squad"
+      },
+      "source": "World Eaters: Butchers of Khorne TARGET clause (TERMINATOR SQUAD keyword); corrected cached unit-name target"
+    },
+    {
+      "id": "butchers-of-khorne-target-a-trophy-for-the-throne",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "detachmentName": "Butchers of Khorne",
+      "stratagemName": "A TROPHY FOR THE THRONE",
+      "stratagemTarget": {
+        "type": "keyword",
+        "value": "Terminator Squad"
+      },
+      "source": "World Eaters: Butchers of Khorne TARGET clause (TERMINATOR SQUAD keyword); corrected cached unit-name target"
+    },
+    {
+      "id": "butchers-of-khorne-target-wrath-beyond-reason",
+      "kind": "stratagem-patch",
+      "target": {
+        "faction": "Chaos - World Eaters"
+      },
+      "detachmentName": "Butchers of Khorne",
+      "stratagemName": "WRATH BEYOND REASON",
+      "stratagemTarget": {
+        "type": "keyword",
+        "value": "Terminator Squad"
+      },
+      "source": "World Eaters: Butchers of Khorne TARGET clause (TERMINATOR SQUAD keyword); corrected cached unit-name target"
     }
   ],
   "audit": {
@@ -4018,6 +9079,19 @@
         "reason": "The active imported catalogue has no Adeptus Mechanicus-faction Terrax-pattern Termite definition. Its shared Legends profile is current in other factions, but it is not selectable by Adeptus Mechanicus.",
         "source": "Faction Pack - Adeptus Mechanicus v1.2, page 26"
       }
+    ]
+  },
+  "septemberReview": {
+    "confirmedDecisions": [
+      "Custodes hurricane bolter S5 over complete profile",
+      "Terrax-pattern Termite FRAME",
+      "Red Corsairs Raiders boltgun S5 AP-1",
+      "Grey Knights Inceptor means Interceptor Squad"
+    ],
+    "catalogueGaps": [],
+    "report": "downloads/warhammer-40000/2026-09-30/Faction-pack-changes-2026-09-30.md",
+    "profileImportNotes": [
+      "Havocs bolt-pistol profile is imported using the shared Infantry bolt-pistol profile with the official S5/AP-1 amendment. Existing equipment selection IDs and options are preserved."
     ]
   }
 }

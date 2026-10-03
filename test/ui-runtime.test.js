@@ -976,3 +976,15 @@ test("browser army runtime warns when god-specific summoned daemons lack the dae
     false
   );
 });
+
+
+test("configured rules honor conditional visibility in both runtimes", () => {
+  const definition = { selectionTree: { id: "unit", kind: "unit", forceVisible: true, children: [{ id: "mistweave", kind: "upgrade", children: [], profiles: [], rules: [] }], profiles: [], rules: [
+    { id: "native", name: "Stealth", hidden: false },
+    { id: "conditional", name: "Infiltrators", hidden: false, modifiers: [{ field: "hidden", type: "set", value: true, conditions: [{ field: "selections", scope: "self", childId: "mistweave", type: "lessThan", value: 1 }] }] }
+  ] } };
+  for (const engine of [require("../src/domain/loadout"), window.RosterEngine]) {
+    assert.deepEqual(engine.getConfiguredProfiles(definition, { selections: {}, context: {} }).rules.map(rule => rule.name), ["Stealth"]);
+    assert.deepEqual(engine.getConfiguredProfiles(definition, { selections: { mistweave: 1 }, context: {} }).rules.map(rule => rule.name), ["Stealth", "Infiltrators"]);
+  }
+});

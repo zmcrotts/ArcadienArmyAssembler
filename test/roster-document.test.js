@@ -529,7 +529,7 @@ test("old saves hydrate while stale references are pruned with warnings", () => 
   assert.equal(loaded.warnings.filter(item => item.code === "STALE_REFERENCE_PRUNED").length, 3);
 });
 
-test("stale current Orks hydrate onto the new datasheet and preserve saved size", () => {
+test("unresolved old Orks choices retain recovery information and preserve saved size", () => {
   const currentBoyz = {
     id: "boyz-current", selectionKey: "orks:boyz", name: "Boyz",
     definition: {
@@ -565,5 +565,171 @@ test("stale current Orks hydrate onto the new datasheet and preserve saved size"
   assert.equal(loaded.roster[0].entry.rebuiltFromCurrentDefaults, true);
   assert.equal(loaded.roster[0].entry.selections["old-boy"], undefined);
   assert.deepEqual(loaded.roster.map(item => item.unitPackage.name), ["Boyz", "Lootas [Legends]"]);
-  assert.ok(loaded.warnings.some(item => item.code === "SAVED_UNIT_MIGRATED"));
+  assert.ok(loaded.warnings.some(item => item.code === "SAVED_SELECTION_UNRESOLVED"));
+});
+
+
+function recoveryUnit(children) {
+  return { name: "Recovery unit", selectionKey: "recovery-unit", definition: {
+    name: "Recovery unit", selectionKey: "recovery-unit", faction: "Test faction",
+    selectionTree: { id: "root", name: "Recovery unit", kind: "unit", children }
+  } };
+}
+
+function recoverFixture(unit, selections, selectionMetadata = {}, extra = {}) {
+  return hydrateRosterDocument({ rosterEntries: [{
+    instanceId: "recover-1", selectionKey: unit.selectionKey, selectionMetadata,
+    entry: { instanceId: "recover-1", selections, ...extra }
+  }] }, { unitPackages: [unit] });
+}
+
+test("catalogue aliases recover without doubling counts or resetting equipment", () => {
+  const unit = recoveryUnit([
+    { id: "root/model", definitionId: "model", name: "Boy", kind: "model" },
+    { id: "root/klaw", definitionId: "klaw", name: "Power Klaw", kind: "upgrade" },
+    { id: "root/choppa", definitionId: "choppa", name: "Choppa", kind: "upgrade" }
+  ]);
+  const loaded = recoverFixture(unit, { "root/model": 19, model: 19, "root/klaw": 2, klaw: 2, "root/choppa": 0 });
+  assert.deepEqual(loaded.roster[0].entry.selections, { "root/model": 19, "root/klaw": 2, "root/choppa": 0 });
+  assert.deepEqual(loaded.warnings, []);
+});
+
+test("new roster saves retain selection names and parent context for future updates", () => {
+  const unit = recoveryUnit([{ id: "model", name: "Nob", kind: "model", children: [
+    { id: "old-klaw", name: "Power Klaw", kind: "upgrade" }
+  ] }]);
+  const document = createRosterDocument({ rosterEntries: [{ unitPackage: unit,
+    instanceId: "recover-1", entry: { selections: { model: 1, "old-klaw": 1 } }
+  }] });
+  unit.definition.selectionTree.children[0].children[0].id = "new-klaw";
+  const loaded = hydrateRosterDocument(document, { unitPackages: [unit] });
+  assert.equal(loaded.roster[0].entry.selections["new-klaw"], 1);
+  assert.equal(loaded.roster[0].entry.selections["old-klaw"], undefined);
+  assert.deepEqual(loaded.warnings, []);
+});
+
+test("same-name weapons are recovered under the correct model and never guessed", () => {
+  const unit = recoveryUnit(["Boy", "Nob"].map(name => ({ id: name, name, kind: "model", children: [
+    { id: `${name}/klaw`, name: "Power Klaw", kind: "upgrade" }
+  ] })));
+  const contextual = recoverFixture(unit, { "old-klaw": 2 }, { "old-klaw": {
+    name: "Power Klaw", kind: "upgrade", path: [{ name: "Recovery unit", kind: "unit" }, { name: "Nob", kind: "model" }]
+  } });
+  assert.deepEqual(contextual.roster[0].entry.selections, { "Nob/klaw": 2 });
+  assert.deepEqual(contextual.warnings, []);
+  const ambiguous = recoverFixture(unit, { "Boy/klaw": 1, "old-klaw": 2 }, { "old-klaw": { name: "Power Klaw", kind: "upgrade" } });
+  assert.equal(ambiguous.roster[0].entry.selections["Boy/klaw"], 1);
+  assert.equal(ambiguous.roster[0].entry.selections["Nob/klaw"], undefined);
+  assert.equal(ambiguous.warnings[0].details.unresolvedSelections[0].reason, "ambiguous match");
+});
+
+test("unrecoverable choices survive save/reload for review while other choices stay intact", () => {
+  const unit = recoveryUnit([{ id: "kept", name: "Choppa", kind: "upgrade" }]);
+  const loaded = recoverFixture(unit, { kept: 3, removed: 2 });
+  assert.equal(loaded.roster[0].entry.selections.kept, 3);
+  assert.equal(loaded.roster[0].entry.unresolvedSelections.removed.count, 2);
+  const document = createRosterDocument({ rosterEntries: loaded.roster });
+  const reloaded = hydrateRosterDocument(document, { unitPackages: [unit] });
+  assert.equal(reloaded.roster[0].entry.selections.kept, 3);
+  assert.equal(reloaded.roster[0].entry.unresolvedSelections.removed.count, 2);
+  assert.equal(reloaded.warnings.length, 1);
+});
+
+test("conflicting aliases cannot overwrite the full-path quantity", () => {
+  const unit = recoveryUnit([{ id: "root/model", definitionId: "model", name: "Boy", kind: "model" }]);
+  const loaded = recoverFixture(unit, { "root/model": 9, model: 19 });
+  assert.equal(loaded.roster[0].entry.selections["root/model"], 9);
+  assert.equal(loaded.warnings[0].details.unresolvedSelections[0].reason, "conflicting quantity");
+});
+
+
+test("desktop and mobile roster loading display recovery warnings without native dialogs and restore search focus", async () => {
+  const fs = require("node:fs");
+  const vm = require("node:vm");
+  const path = require("node:path");
+  for (const filename of ["ui/engine-app.js", "mobile/ui/engine-app.js"]) {
+    const source = fs.readFileSync(path.join(__dirname, "..", filename), "utf8").replace(/\r\n/g, "\n");
+    const start = source.indexOf("async function loadRosterDocument(");
+    const end = source.indexOf("\n}\n", start) + 3;
+    const loaded = { roster: [], armyState: {}, pointsLimit: 1000,
+      warnings: [{ code: "SAVED_SELECTION_UNRESOLVED", message: "Review removed weapon" }] };
+    const search = {};
+    const notices = [];
+    const focused = [];
+    const context = {
+      engineData: { factionNavigation: [] }, factionSelect: {}, rosterNameInput: {}, pointsLimitInput: {},
+      renderSubfactionControl() {}, loadSelectedFactionData: async () => {},
+      normalizeRosterDisplay: () => ({}), currentArmyDefinition: () => ({}), factionUnits: () => [],
+      armyEngine: { createArmyState: () => ({}) }, engine: {},
+      rosterDocument: { hydrateRosterDocument: () => loaded },
+      markRosterClean() {}, render() {}, showTransientMessage: message => notices.push(message),
+      restoreTypingFocus: target => focused.push(target), unitSearch: search,
+      alert() { assert.fail(`${filename} opened a native dialog`); }
+    };
+    vm.createContext(context);
+    vm.runInContext(source.slice(start, end), context);
+    await context.loadRosterDocument({ faction: "Xenos - Orks" });
+    assert.equal(context.rosterRecoveryWarnings, loaded.warnings);
+    assert.equal(notices.length, 1);
+    assert.deepEqual(focused, [search]);
+  }
+});
+
+
+test("fallback defaults preserve custom choices and explicit zero counts", () => {
+  const unit = recoveryUnit([
+    { id: "klaw", name: "Power Klaw", kind: "upgrade" },
+    { id: "choppa", name: "Choppa", kind: "upgrade" }
+  ]);
+  const loaded = hydrateRosterDocument({ rosterEntries: [{ selectionKey: unit.selectionKey,
+    entry: { selections: { klaw: 2, choppa: 0, removed: 1 } }
+  }] }, { unitPackages: [unit], createDefaultRosterEntry: () => ({ selections: { klaw: 0, choppa: 2 } }) });
+  assert.deepEqual(loaded.roster[0].entry.selections, { klaw: 2, choppa: 0 });
+  assert.equal(loaded.warnings.length, 1);
+});
+
+test("unrestorable model counts produce an explicit warning", () => {
+  const unit = recoveryUnit([{ id: "model", name: "Boy", kind: "model" }]);
+  const loaded = hydrateRosterDocument({ rosterEntries: [{ selectionKey: unit.selectionKey,
+    unitSize: { current: 20 }, entry: { selections: { model: 10 } }
+  }] }, { unitPackages: [unit], unitSizeState: () => ({ current: 10 }), setUnitSize: () => { throw Error("composition removed"); } });
+  assert.equal(loaded.roster[0].entry.selections.model, 10);
+  assert.equal(loaded.warnings[0].code, "SAVED_UNIT_SIZE_CHANGED");
+});
+
+test("explicit catalogue transition aliases preserve old full-path weapon choices", () => {
+  const unit = recoveryUnit([{id:"root/model/current-pistol",definitionId:"current-pistol",name:"Rokkit Pistol",kind:"upgrade",legacySelectionIds:["root/model/old-pistol"]}]);
+  const loaded = recoverFixture(unit, {"root/model/old-pistol":1});
+  assert.deepEqual(loaded.roster[0].entry.selections, {"root/model/current-pistol":1});
+  assert.deepEqual(loaded.warnings, []);
+});
+
+
+test("stale structural aliases do not warn or overwrite current group selections", () => {
+  const unit = recoveryUnit([{ id: "root/group", definitionId: "group", name: "4 - 9 Terminators", kind: "group" }]);
+  const loaded = recoverFixture(unit, { "root/group": 9, group: 4 }, {}, {
+    unresolvedSelections: { group: { count: 4, reason: "conflicting quantity" } }
+  });
+  assert.deepEqual(loaded.roster[0].entry.selections, { "root/group": 9 });
+  assert.equal(loaded.roster[0].entry.unresolvedSelections, undefined);
+  assert.deepEqual(loaded.warnings, []);
+});
+
+test("redundant repeated model aliases recover from complete full-path counts", () => {
+  const unit = recoveryUnit([
+    { id: "root/standard/jakhal", definitionId: "jakhal", name: "Jakhal", kind: "model" },
+    { id: "root/special/jakhal", definitionId: "jakhal", name: "Jakhal", kind: "model" }
+  ]);
+  const loaded = recoverFixture(unit, { "root/standard/jakhal": 8, "root/special/jakhal": 0, jakhal: 8 }, {}, {
+    unresolvedSelections: { jakhal: { count: 7, reason: "ambiguous match" } }
+  });
+  assert.deepEqual(loaded.roster[0].entry.selections, { "root/standard/jakhal": 8, "root/special/jakhal": 0 });
+  assert.equal(loaded.roster[0].entry.unresolvedSelections, undefined);
+  assert.deepEqual(loaded.warnings, []);
+  const reloaded = hydrateRosterDocument(createRosterDocument({ rosterEntries: loaded.roster }), { unitPackages: [unit] });
+  assert.deepEqual(reloaded.warnings, []);
+  const incomplete = recoverFixture(unit, { "root/standard/jakhal": 8, jakhal: 8 });
+  assert.equal(incomplete.warnings[0].code, "SAVED_SELECTION_UNRESOLVED");
+  const conflict = recoverFixture(unit, { "root/standard/jakhal": 8, "root/special/jakhal": 0, jakhal: 7 });
+  assert.equal(conflict.warnings[0].code, "SAVED_SELECTION_UNRESOLVED");
 });

@@ -513,7 +513,9 @@
     for (const candidate of ordered) {
       if (remaining <= 0) break;
       const current = Number(selections[candidate.id] || 0);
-      const remove = Math.min(remaining, current);
+      const minimum = evaluatedLimits(candidate, { selections, context: {} }, index, unitDefinition).minimum;
+      const removable = Math.max(0, current - minimum);
+      const remove = Math.min(remaining, removable);
       if (remove <= 0) continue;
       selections[candidate.id] = current - remove;
       refreshDescendants(candidate, selections[candidate.id], selections, unitDefinition, index);
@@ -540,7 +542,8 @@
     for (const candidate of ordered) {
       if (remaining <= 0) break;
       const current = Number(selections[candidate.id] || 0);
-      const remove = Math.min(remaining, current);
+      const minimum = evaluatedLimits(candidate, { selections, context: {} }, index, unitDefinition).minimum;
+      const remove = Math.min(remaining, Math.max(0, current - minimum));
       if (remove <= 0) continue;
       selections[candidate.id] = current - remove;
       refreshDescendants(candidate, selections[candidate.id], selections, unitDefinition, index);
@@ -714,6 +717,21 @@
     };
   }
 
+  function normalizeRosterEntry(unitDefinition, rosterEntry) {
+    const next = JSON.parse(JSON.stringify(rosterEntry || {}));
+    next.selections = next.selections || {};
+    const index = buildTreeIndex(unitDefinition);
+    for (const selectionId of Object.keys(next.selections)) {
+      if (!index.byId.has(selectionId)) delete next.selections[selectionId];
+    }
+    for (const node of index.all) {
+      if (["unit", "group"].includes(node.kind) || Number(next.selections[node.id] || 0) <= 0) continue;
+      if (!nodeIsActive(node, next, index, unitDefinition)) clearSubtree(node, next.selections);
+    }
+    applyDefaults(unitDefinition.selectionTree, 1, next.selections, unitDefinition, index);
+    return repairDefaultLoadout(unitDefinition, next);
+  }
+
   function replaceNestedCompositionModel(node, amount, entry, unitDefinition, index) {
     if (amount <= 0 || node.kind !== "model") return;
     const compositionIds = new Set((unitDefinition.composition || []).map(item => item.id));
@@ -763,7 +781,7 @@
       .map(node => {
         const active = nodeIsActive(node, entry, index, unitDefinition);
         const current = Number(entry.selections[node.id] || 0);
-        const { minimum, maximum } = evaluatedLimits(node, entry, index, unitDefinition);
+        const { minimum, maximum: localMaximum } = evaluatedLimits(node, entry, index, unitDefinition);
         const parent = index.parentById.get(node.id);
         const activeSiblings = parent?.kind === "group"
           ? (parent.children || []).filter(sibling =>
@@ -773,6 +791,13 @@
         const parentLimits = parent?.kind === "group"
           ? evaluatedLimits(parent, entry, index, unitDefinition)
           : { minimum: 0, maximum: Infinity };
+        // Alternative loadouts may replace optional siblings, but must leave
+        // space for mandatory models or options in the same group.
+        const reserved = parent?.kind === "group"
+          ? (parent.children || []).filter(sibling => sibling.id !== node.id && nodeIsActive(sibling, entry, index, unitDefinition))
+            .reduce((sum, sibling) => sum + evaluatedLimits(sibling, entry, index, unitDefinition).minimum, 0)
+          : 0;
+        const maximum = Math.min(localMaximum, Math.max(0, parentLimits.maximum - reserved));
         const groupCurrent = parent?.kind === "group" ? groupCount(parent, entry) : current;
         const groupRequired = parent?.kind === "group" && parentLimits.minimum > 0;
         const mutuallyExclusive = parent?.kind === "group"
@@ -780,20 +805,20 @@
           && activeSiblings.length > 1;
         const parentIsFixed = Number.isFinite(parentLimits.maximum)
           && parentLimits.minimum === parentLimits.maximum;
-        const fixed = (Number.isFinite(maximum) && minimum === maximum)
+        const fixed = Number.isFinite(maximum) && minimum === maximum
           || (activeSiblings.length === 1 && parentIsFixed);
         const mandatory = minimum > 0;
         const editable = active && maximum > 0 && !mandatory && !fixed;
 
         return {
           id: node.id,
-        definitionId: node.definitionId,
-        name: node.name,
-        kind: node.kind,
-        points: Number(node.points || 0),
-        effectivePoints: bundledOptionPoints(node),
-        parentId: parent?.id || null,
-        current,
+          definitionId: node.definitionId,
+          name: node.name,
+          kind: node.kind,
+          points: Number(node.points || 0),
+          effectivePoints: bundledOptionPoints(node),
+          parentId: parent?.id || null,
+          current,
           minimum,
           maximum,
           groupCurrent,
@@ -817,6 +842,11 @@
         const changed = setSelection(unitDefinition, entry, state.id, candidate, false);
         const blockingErrors = validateLoadout(unitDefinition, changed).filter(error => {
           const errorNode = index.byId.get(error.nodeId);
+          // Increasing a repeated model can temporarily duplicate its default
+          // descendant weapon. That descendant can be redistributed after the
+          // model is added, so it must not hide an otherwise legal model count.
+          // Constraints on the option itself or one of its ancestors still cap
+          // the control immediately.
           if (error.nodeId === state.id || (errorNode && nodeContains(errorNode, state.id))) return true;
           if (!errorNode || !stateNode || !nodeContains(stateNode, errorNode.id)) return false;
 
@@ -846,10 +876,17 @@
       throw new Error(`Unknown or non-selectable option: ${nodeId}`);
     }
 
+    if (!Number.isFinite(Number(count)) || !Number.isInteger(Number(count)) || Number(count) < 0) {
+      throw new Error(`Option count must be a non-negative whole number: ${node.name}`);
+    }
+
     if (enforceOptionState) {
       const state = getOptionStates(unitDefinition, entry).find(option => option.id === nodeId);
       if (state && !state.editable && Number(count) !== state.current) {
         throw new Error(`Option is not editable (${state.reason}): ${node.name}`);
+      }
+      if (state && (Number(count) < state.minimum || Number(count) > state.maximum)) {
+        throw new Error(`Option count must be between ${state.minimum} and ${state.maximum}: ${node.name}`);
       }
     }
 
@@ -867,8 +904,9 @@
       const fixed = min !== null && max !== null && min === max;
       const delta = newCount - oldCount;
       const preferred = defaultChild(parent);
-      // A fallback repair choice is not a declared default, so it must not
-      // turn an otherwise multi-select group into a replacement choice.
+      // A group may have no declared default. In that case defaultChild() falls
+      // back to the first visible option for repair purposes, but choosing a
+      // different option must not make the whole group mutually exclusive.
       const replacingDefault = parent.defaultSelectionId && preferred && preferred.id !== nodeId;
 
       if ((fixed || replacingDefault) && delta !== 0) {
@@ -880,7 +918,9 @@
           if (remaining <= 0) break;
           const current = Number(next.selections[sibling.id] || 0);
           if (delta > 0) {
-            const change = Math.min(current, remaining);
+            const minimum = evaluatedLimits(sibling, next, index, unitDefinition).minimum;
+            const change = Math.min(Math.max(0, current - minimum), remaining);
+            if (change <= 0) continue;
             next.selections[sibling.id] = current - change;
             refreshDescendants(sibling, next.selections[sibling.id], next.selections, unitDefinition, index);
             remaining -= change;
@@ -1276,7 +1316,10 @@
           ])];
         } else profiles.set(key, { ...configuredProfile, count: contribution });
       }
-      for (const rule of node.rules || []) rules.set(rule.id || rule.name, rule);
+      for (const rule of node.rules || []) {
+        const visibility = { ...node, forceVisible: false, hidden: rule.hidden, modifiers: rule.modifiers || [] };
+        if (!effectiveHidden(visibility, entry, index, unitDefinition)) rules.set(rule.id || rule.name, rule);
+      }
     }
 
     const corrected = applyKnownConfiguredProfileCorrections(
@@ -1603,6 +1646,7 @@
 
   window.RosterEngine = {
     createDefaultRosterEntry,
+    normalizeRosterEntry,
     getConfiguredUnitName,
     getOptionStates,
     getUnitSizeState,

@@ -92,11 +92,12 @@ function categoriesFor(node, indexes) {
 
 function rulesFor(node, indexes) {
   const rules = asArray(node?.rules?.rule)
-    .filter(rule => !bsdataFlagIsTrue(rule.hidden))
     .map(rule => ({
       id: rule.id || null,
       name: rule.name || "Unnamed rule",
-      description: rule.description || ""
+      description: rule.description || "",
+      hidden: bsdataFlagIsTrue(rule.hidden),
+      modifiers: modifiersFor(rule).map(modifier => normalizeModifier(modifier, indexes))
     }));
 
   rules.push(...asArray(node?.infoLinks?.infoLink)
@@ -108,7 +109,9 @@ function rulesFor(node, indexes) {
         id: link.targetId ? `${link.targetId}:${name}` : link.id || null,
         targetId: link.targetId || null,
         name,
-        description: rule?.description || ""
+        description: rule?.description || "",
+        hidden: bsdataFlagIsTrue(link.hidden ?? rule?.hidden),
+        modifiers: [...modifiersFor(rule), ...modifiersFor(link)].map(modifier => normalizeModifier(modifier, indexes))
       };
     }));
 

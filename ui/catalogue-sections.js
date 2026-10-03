@@ -19,26 +19,26 @@
     "Allied Units"
   ];
 
-  function hasCategory(unit, category) {
-    return (unit.definition?.categories || unit.categories || [])
+  function hasCategory(unit, category, effectiveKeywords = []) {
+    return [...(unit.definition?.categories || unit.categories || []), ...effectiveKeywords]
       .some(item => item.toLowerCase() === category.toLowerCase());
   }
 
-  function sectionForUnit(unit) {
+  function sectionForUnit(unit, effectiveKeywords = []) {
     const roles = unit.definition?.roles || unit.roles || {};
     if (unit.alliedFor) return "Allied Units";
-    if (roles.epicHero || hasCategory(unit, "Epic Hero")) return "Epic Hero";
-    if (roles.character || hasCategory(unit, "Character")) return "Character";
-    if (roles.battleline || hasCategory(unit, "Battleline")) return "Battleline";
-    if (roles.dedicatedTransport || hasCategory(unit, "Dedicated Transport")) return "Dedicated Transport";
-    if (hasCategory(unit, "Fortification")) return "Fortification";
+    if (roles.epicHero || hasCategory(unit, "Epic Hero", effectiveKeywords)) return "Epic Hero";
+    if (roles.character || hasCategory(unit, "Character", effectiveKeywords)) return "Character";
+    if (roles.battleline || hasCategory(unit, "Battleline", effectiveKeywords)) return "Battleline";
+    if (roles.dedicatedTransport || hasCategory(unit, "Dedicated Transport", effectiveKeywords)) return "Dedicated Transport";
+    if (hasCategory(unit, "Fortification", effectiveKeywords)) return "Fortification";
     return ["Infantry", "Mounted", "Beast", "Monster", "Vehicle"]
-      .find(category => hasCategory(unit, category)) || "Infantry";
+      .find(category => hasCategory(unit, category, effectiveKeywords)) || "Infantry";
   }
 
-  function groupUnits(units) {
+  function groupUnits(units, keywordsForUnit = () => []) {
     const groups = new Map(SECTION_ORDER.map(section => [section, []]));
-    for (const unit of units) groups.get(sectionForUnit(unit)).push(unit);
+    for (const unit of units) groups.get(sectionForUnit(unit, keywordsForUnit(unit))).push(unit);
     for (const group of groups.values()) group.sort((a, b) => a.name.localeCompare(b.name));
     return SECTION_ORDER.map(section => ({ section, units: groups.get(section) }));
   }

@@ -8,7 +8,7 @@
     "gameSystemId": "sys-352e-adc2-7639-d610",
     "gameSystemRevision": 1,
     "library": false,
-    "revision": 3,
+    "revision": 6,
     "type": "catalogue",
     "xmlns": "http://www.battlescribe.net/schema/catalogueSchema",
     "catalogueLinks": [{"name": "Unaligned Forces", "id": "9a77-c467-98e7-6ddf", "importRootEntries": true, "targetId": "581a-46b9-5b86-44b7", "type": "catalogue"}],
@@ -509,7 +509,7 @@
         "characteristics": [
           {
             "name": "Description",
-            "$text": "In your Movement phase, at the start of end of this unit's move, you can select one friendly **BEAST SNAGGA** unit within 6\" of this unit. That unit:\n- Is no longer **battle-shocked**.\n- Is **riled up** until the start of your next turn.",
+            "$text": "In your Movement phase, at the start or end of this unit's move, you can select one friendly **BEAST SNAGGA** unit within 6\" of this unit. That unit:\n- Is no longer **battle-shocked**.\n- Is **riled up** until the start of your next turn.",
             "typeId": "9b8f-694b-e5e-b573"
           }
         ]
@@ -628,23 +628,6 @@
         ]
       },
       {
-        "name": "Nob",
-        "id": "0138-b6bc-e6e6-9f67",
-        "comment": "Sv5+",
-        "hidden": false,
-        "typeId": "c547-1836-d8a-ff4f",
-        "typeName": "Unit",
-        "characteristics": [
-          {"name": "M", "$text": "6\"", "typeId": "e703-ecb6-5ce7-aec1"},
-          {"name": "T", "$text": "5", "typeId": "d29d-cf75-fc2d-34a4"},
-          {"name": "Sv", "$text": "5+", "typeId": "450-a17e-9d5e-29da"},
-          {"name": "W", "$text": "3", "typeId": "750a-a2ec-90d3-21fe"},
-          {"name": "LD", "$text": "7+", "typeId": "58d2-b879-49c7-43bc"},
-          {"name": "OC", "$text": "1", "typeId": "bef7-942a-1a23-59f8"},
-          {"name": "InSv", "$text": "", "typeId": "55a7-5b54-c60d-11dc"}
-        ]
-      },
-      {
         "name": "Bomb Squig (Once per turn, twice per battle, per unit)",
         "id": "c723-b625-87e1-0b66",
         "comment": "Two tokens",
@@ -684,6 +667,34 @@
             "name": "Description",
             "$text": "In your Movement phase, when this unit ends a **normal move**, units embarked within this unit can make an **assault disembark move**.",
             "typeId": "9b8f-694b-e5e-b573"
+          }
+        ]
+      },
+      {
+        "name": "Visions of Violence (psychic level 1)",
+        "id": "7103-d369-9d7b-f219",
+        "hidden": false,
+        "typeId": "7e03-38c2-7fea-e955",
+        "typeName": "Psychic Abilities",
+        "characteristics": [
+          {
+            "name": "Descriptions",
+            "$text": "At the start of the Fight phase, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- On a 1, this unit is **battle-shocked**.\n- This unit has **Fights First**.",
+            "typeId": "1917-301f-5d49-2f76"
+          }
+        ]
+      },
+      {
+        "name": "Roar of Mork (psychic level 1)",
+        "id": "3cf0-d5d8-a76c-d910",
+        "hidden": false,
+        "typeId": "7e03-38c2-7fea-e955",
+        "typeName": "Psychic Abilities",
+        "characteristics": [
+          {
+            "name": "Descriptions",
+            "$text": "In your Movement phase, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- On a 1, this unit is **battle-shocked**.\n- Select one enemy unit (excluding **MONSTER/VEHICLE** units) within 12\" of this unit. That enemy unit makes a **battle-shock roll**, with -1 from that **battle-shock roll** for every 10 models in this unit.",
+            "typeId": "1917-301f-5d49-2f76"
           }
         ]
       }
@@ -748,7 +759,7 @@
           {"id": "a3fe-ad12-3404-8578", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 150},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 160},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -921,18 +932,6 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
-          },
-          {
-            "comment": "Boarding Actions modifiers",
-            "type": "and",
-            "modifiers": [
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
-            ]
           }
         ],
         "modifiers": [
@@ -956,7 +955,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 20,
             "conditionGroups": [
               {
                 "type": "and",
@@ -1155,7 +1154,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 85},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 80},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -1347,36 +1346,36 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
+            "comment": "Shoota Boyz detachment modifiers",
             "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
             "modifiers": [
               {
-                "field": "662e-b1f6-20a2-370d",
-                "type": "set",
-                "value": 3,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "atLeast", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
               },
               {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "lessThan", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -1385,7 +1384,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 170,
+            "value": 160,
             "conditions": [{"childId": "model", "field": "selections", "scope": "b7c3-d00e-daf2-76fb", "shared": true, "type": "greaterThan", "value": 10}]
           },
           {
@@ -1995,6 +1994,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -2091,7 +2124,6 @@
               {
                 "name": "Shoota",
                 "id": "64da-fae7-507d-8b18",
-                "comment": "\n",
                 "hidden": false,
                 "import": true,
                 "type": "upgrade",
@@ -2491,6 +2523,42 @@
                       {"name": "AP", "$text": "-2", "typeId": "41a0-1301-112a-e2f2"},
                       {"name": "D", "$text": "D6", "typeId": "3254-9fe6-d824-513e"},
                       {"name": "Keywords", "$text": "\n", "typeId": "893f-9000-ccf7-648e"}
+                    ],
+                    "modifiers": [
+                      {
+                        "field": "3254-9fe6-d824-513e",
+                        "join": "",
+                        "skipIfPresent": "+",
+                        "type": "append",
+                        "value": "+0",
+                        "conditionGroups": [
+                          {
+                            "type": "or",
+                            "conditions": [
+                              {
+                                "childId": "584b-5fa7-a3c3-942e",
+                                "childName": "Master-worked (D+1)",
+                                "field": "selections",
+                                "includeChildSelections": true,
+                                "scope": "root-entry",
+                                "shared": true,
+                                "type": "atLeast",
+                                "value": 1
+                              },
+                              {
+                                "childId": "1a5d-7811-73df-2724",
+                                "childName": "Brutal But Kunnin'",
+                                "field": "selections",
+                                "includeChildSelections": true,
+                                "scope": "root-entry",
+                                "shared": true,
+                                "type": "atLeast",
+                                "value": 1
+                              }
+                            ]
+                          }
+                        ]
+                      }
                     ]
                   },
                   {
@@ -2804,6 +2872,40 @@
                 "value": "IGNORES COVER"
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -3004,15 +3106,6 @@
                     "entryLinks": [{"name": "Weapon Upgrades", "id": "4919-42bf-d5c9-929a", "hidden": false, "import": true, "targetId": "0197-b272-85e4-92bc", "type": "selectionEntryGroup"}]
                   },
                   {
-                    "name": "Kombi-weapon",
-                    "id": "f87b-896f-3aad-d4d2",
-                    "hidden": false,
-                    "import": true,
-                    "targetId": "ce61-585b-aea7-18fc",
-                    "type": "selectionEntry",
-                    "entryLinks": [{"name": "Weapon Upgrades", "id": "629b-765c-af99-4037", "hidden": false, "import": true, "targetId": "0197-b272-85e4-92bc", "type": "selectionEntryGroup"}]
-                  },
-                  {
                     "name": "Killsaw",
                     "id": "064a-bdc4-5d3a-ab24",
                     "hidden": false,
@@ -3086,6 +3179,89 @@
                               }
                             ]
                           }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Kombi-weapon",
+                    "id": "233b-c4d9-3be9-06da",
+                    "collective": false,
+                    "comment": "BS4+ variant",
+                    "hidden": false,
+                    "import": true,
+                    "type": "upgrade",
+                    "categoryLinks": [
+                      {"name": "Ranged Weapon", "id": "0fbd-5679-01fe-91c6", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"},
+                      {"name": "Rapid Fire Weapon", "id": "f464-af98-0f01-f536", "hidden": false, "primary": false, "targetId": "751c-b78a-45fa-cc5f"}
+                    ],
+                    "entryLinks": [{"name": "Weapon Upgrades", "id": "629b-765c-af99-4037", "hidden": false, "import": true, "targetId": "0197-b272-85e4-92bc", "type": "selectionEntryGroup"}],
+                    "profiles": [
+                      {
+                        "name": "➤ Kombi-weapon - Point Blank",
+                        "id": "065c-1cd2-9a18-43c6",
+                        "hidden": false,
+                        "typeId": "f77d-b953-8fa4-b762",
+                        "typeName": "Ranged Weapons",
+                        "characteristics": [
+                          {"name": "Range", "$text": "12\"", "typeId": "9896-9419-16a1-92fc"},
+                          {"name": "A", "$text": "3", "typeId": "3bb-c35f-f54-fb08"},
+                          {"name": "BS", "$text": "-", "typeId": "94d-8a98-cf90-183e"},
+                          {"name": "S", "$text": "5", "typeId": "2229-f494-25db-c5d3"},
+                          {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+                          {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+                          {"name": "Keywords", "$text": "BLAST 1, TORRENT", "typeId": "7f1b-8591-2fcf-d01c"}
+                        ],
+                        "modifiers": [
+                          {
+                            "field": "9896-9419-16a1-92fc",
+                            "type": "decrement",
+                            "value": 3,
+                            "conditions": [
+                              {
+                                "childId": "8128-b57a-74a5-c36b",
+                                "childName": "Targetin' Squigs",
+                                "field": "selections",
+                                "includeChildSelections": true,
+                                "scope": "root-entry",
+                                "shared": true,
+                                "type": "atLeast",
+                                "value": 1
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "➤ Kombi-weapon - Kill Shot",
+                        "id": "318d-028c-cece-7689",
+                        "hidden": false,
+                        "typeId": "f77d-b953-8fa4-b762",
+                        "typeName": "Ranged Weapons",
+                        "characteristics": [
+                          {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
+                          {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
+                          {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+                          {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
+                          {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
+                          {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
+                          {"name": "Keywords", "$text": "\n", "typeId": "7f1b-8591-2fcf-d01c"}
+                        ]
+                      },
+                      {
+                        "name": "➤ Kombi-weapon - Shoota",
+                        "id": "538a-9edc-8442-57e5",
+                        "hidden": false,
+                        "typeId": "f77d-b953-8fa4-b762",
+                        "typeName": "Ranged Weapons",
+                        "characteristics": [
+                          {"name": "Range", "$text": "18\"", "typeId": "9896-9419-16a1-92fc"},
+                          {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
+                          {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+                          {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
+                          {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+                          {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+                          {"name": "Keywords", "$text": "LETHAL HITS: non-MONSTER/VEHICLE, RAPID FIRE 1", "typeId": "7f1b-8591-2fcf-d01c"}
                         ]
                       }
                     ]
@@ -3242,7 +3418,7 @@
           {"id": "e451-9ac6-66e1-1905", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 95},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 110},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -3419,13 +3595,47 @@
                 "value": "IGNORES COVER"
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 15,
             "conditionGroups": [
               {
                 "type": "and",
@@ -3752,7 +3962,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "While this model is within range of your **home objective*, add the **OC** of models embarked within this model to this model's **OC**.",
+                "$text": "While this model is within range of your **home objective**, add the **OC** of models embarked within this model to this model's **OC**.",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -3766,7 +3976,7 @@
             "characteristics": [
               {
                 "name": "Capacity",
-                "$text": "This model has a **transport capacity** of 11 **ORKS INFANTRY* models. It cannot transport **GHAZGHKULL THRAKA** models. Each **MEGA ARMOUR/JUMP PACK** model takes up the space of 2 models.",
+                "$text": "This model has a **transport capacity** of 11 **ORKS INFANTRY** models. It cannot transport **GHAZGHKULL THRAKA** models. Each **MEGA ARMOUR/JUMP PACK** model takes up the space of 2 models.",
                 "typeId": "30f2-be70-861d-1b84"
               }
             ]
@@ -4279,6 +4489,42 @@
           {"name": "Lone Operative", "id": "7cc2-10fa-fc7a-607e", "hidden": false, "targetId": "a8a0-8fe7-898-e0f3", "type": "rule"},
           {"name": "Leader", "id": "496e-cfdd-a4f9-21ec", "hidden": false, "targetId": "b4dd-3e1f-41cb-218f", "type": "rule"}
         ],
+        "modifierGroups": [
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
+          }
+        ],
         "profiles": [
           {
             "name": "Boss Snikrot",
@@ -4512,6 +4758,40 @@
                 "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -4670,7 +4950,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 90},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 85},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -4862,40 +5142,6 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
-            "type": "and",
-            "modifiers": [
-              {
-                "field": "4fd9-fe6e-357c-e91e",
-                "type": "set",
-                "value": 3,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "atLeast", "value": 1}
-                    ]
-                  }
-                ]
-              },
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "lessThan", "value": 1}
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "comment": "Green Tide detachment modifiers",
             "type": "and",
             "conditions": [
@@ -4928,13 +5174,47 @@
                 "value": "SUSTAINED HITS 1"
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 180,
+            "value": 170,
             "conditions": [{"childId": "model", "field": "selections", "scope": "e3b1-1240-2476-cd86", "shared": true, "type": "greaterThan", "value": 10}]
           },
           {
@@ -5378,7 +5658,25 @@
                   {"id": "ede-2175-7bb2-79a4", "field": "selections", "scope": "parent", "shared": true, "type": "min", "value": 1},
                   {"id": "a749-65d7-b74b-c1f6", "field": "selections", "scope": "parent", "shared": true, "type": "max", "value": 2}
                 ],
-                "infoLinks": [{"name": "Nob", "id": "2fdd-b081-56ac-c4b6", "hidden": false, "targetId": "0138-b6bc-e6e6-9f67", "type": "profile"}],
+                "profiles": [
+                  {
+                    "name": "Nob",
+                    "id": "0138-b6bc-e6e6-9f67",
+                    "comment": "Sv5+ OC2",
+                    "hidden": false,
+                    "typeId": "c547-1836-d8a-ff4f",
+                    "typeName": "Unit",
+                    "characteristics": [
+                      {"name": "M", "$text": "6\"", "typeId": "e703-ecb6-5ce7-aec1"},
+                      {"name": "T", "$text": "5", "typeId": "d29d-cf75-fc2d-34a4"},
+                      {"name": "Sv", "$text": "5+", "typeId": "450-a17e-9d5e-29da"},
+                      {"name": "W", "$text": "3", "typeId": "750a-a2ec-90d3-21fe"},
+                      {"name": "LD", "$text": "7+", "typeId": "58d2-b879-49c7-43bc"},
+                      {"name": "OC", "$text": "2", "typeId": "bef7-942a-1a23-59f8"},
+                      {"name": "InSv", "$text": "", "typeId": "55a7-5b54-c60d-11dc"}
+                    ]
+                  }
+                ],
                 "selectionEntryGroups": [
                   {
                     "name": "Kustom Choppa and Kombi-skorcha",
@@ -5586,36 +5884,6 @@
               {"name": "AP", "$text": "-2", "typeId": "41a0-1301-112a-e2f2"},
               {"name": "D", "$text": "2", "typeId": "3254-9fe6-d824-513e"},
               {"name": "Keywords", "$text": "", "typeId": "893f-9000-ccf7-648e"}
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Kombi-weapon",
-        "id": "ac6f-9310-e9ac-678",
-        "collective": false,
-        "hidden": false,
-        "import": true,
-        "type": "upgrade",
-        "categoryLinks": [
-          {"name": "Ranged Weapon", "id": "1aee-c126-c1ca-5f25", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"},
-          {"name": "Rapid Fire Weapon", "id": "159e-ded4-898a-76fb", "hidden": false, "primary": false, "targetId": "751c-b78a-45fa-cc5f"}
-        ],
-        "profiles": [
-          {
-            "name": "Kombi-weapon",
-            "id": "1451-6820-fd91-1dec",
-            "hidden": false,
-            "typeId": "f77d-b953-8fa4-b762",
-            "typeName": "Ranged Weapons",
-            "characteristics": [
-              {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
-              {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
-              {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
-              {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
-              {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
-              {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
-              {"name": "Keywords", "$text": "Anti-Infantry 4+, Devastating Wounds, Rapid Fire 1", "typeId": "7f1b-8591-2fcf-d01c"}
             ]
           }
         ]
@@ -5850,6 +6118,40 @@
                 "type": "append",
                 "value": "(Legendary)",
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -7185,17 +7487,7 @@
             "max": 1,
             "min": 0,
             "scope": "force",
-            "conditionGroups": [
-              {
-                "type": "or",
-                "conditions": [
-                  {"childId": "a851-5f73-be1a-8791", "childName": "Nobz on Warbikes", "field": "selections", "scope": "self", "shared": true, "type": "instanceOf", "value": 1},
-                  {"childId": "2e47-8a2f-a6d0-7b5e", "childName": "Skorchas", "field": "selections", "scope": "self", "shared": true, "type": "instanceOf", "value": 1},
-                  {"childId": "9610-d887-1e01-a8e9", "childName": "Warbikers", "field": "selections", "scope": "self", "shared": true, "type": "instanceOf", "value": 1},
-                  {"childId": "fa65-47a3-7218-dc0b", "childName": "Warbuggies", "field": "selections", "scope": "self", "shared": true, "type": "instanceOf", "value": 1}
-                ]
-              }
-            ]
+            "conditions": [{"childId": "9610-d887-1e01-a8e9", "childName": "Warbikers", "field": "selections", "scope": "self", "shared": true, "type": "instanceOf", "value": 1}]
           }
         ],
         "categoryLinks": [
@@ -7621,7 +7913,7 @@
           {"id": "4447-77a4-fc41-3ad5", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 80},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 85},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -7789,7 +8081,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 160,
+            "value": 170,
             "conditions": [{"childId": "model", "field": "selections", "scope": "2d6e-aa3b-c28c-5ef0", "shared": true, "type": "greaterThan", "value": 3}]
           },
           {
@@ -8130,7 +8422,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 105},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 110},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -8322,36 +8614,36 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
+            "comment": "Shoota Boyz detachment modifiers",
             "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
             "modifiers": [
               {
-                "field": "64aa-118a-c0f8-0783",
-                "type": "set",
-                "value": 1,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "atLeast", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
               },
               {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "lessThan", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -8360,13 +8652,13 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 210,
+            "value": 220,
             "conditions": [{"childId": "model", "field": "selections", "scope": "1de9-b138-28a1-9c4b", "shared": true, "type": "greaterThan", "value": 5}]
           },
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 30,
+            "value": 40,
             "conditionGroups": [
               {
                 "type": "and",
@@ -8558,7 +8850,7 @@
         ],
         "constraints": [{"id": "3d9f-ad30-b750-5f5a", "field": "selections", "scope": "roster", "shared": true, "type": "max", "value": 1}],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 300},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 290},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -8583,6 +8875,42 @@
         "infoLinks": [
           {"name": "Waaagh!", "id": "9509-a73f-ac4a-85c5", "hidden": false, "targetId": "37c-6ef9-277-9091", "type": "rule"},
           {"name": "Da Boss", "id": "6c8d-a8f8-ec1c-1704", "hidden": false, "targetId": "ebb0-ef6d-a20a-ee1b", "type": "rule"}
+        ],
+        "modifierGroups": [
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
+          }
         ],
         "profiles": [
           {
@@ -8646,7 +8974,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "While a friendly **ORKS** unit is within 6\" of this unit, that unit's melee attacks have:\n- +1 to **hit rolls*.\n- +1 to **wound rolls**.",
+                "$text": "While a friendly **ORKS** unit is within 6\" of this unit, that unit's melee attacks have:\n- +1 to **hit rolls**.\n- +1 to **wound rolls**.",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -9537,6 +9865,40 @@
                 ]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -9545,7 +9907,7 @@
             "type": "set",
             "value": 80,
             "conditions": [
-              {"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "de8f-24f9-c543-92b7", "shared": true, "type": "greaterThan", "value": 11}
+              {"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "de8f-24f9-c543-92b7", "shared": true, "type": "greaterThan", "value": 10}
             ]
           },
           {
@@ -9918,7 +10280,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 20,
             "conditionGroups": [
               {
                 "type": "and",
@@ -10280,6 +10642,40 @@
                 "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -10446,17 +10842,8 @@
             "id": "2125-1825-5da9-8a23",
             "hidden": false,
             "import": true,
-            "sortIndex": 3,
-            "targetId": "ebea-74c4-f3db-183d",
-            "type": "selectionEntryGroup"
-          },
-          {
-            "name": "Enhancements",
-            "id": "3f5c-aa25-a5e0-46f6",
-            "hidden": false,
-            "import": true,
             "sortIndex": 2,
-            "targetId": "1dd8-39ae-cbd8-a9fa",
+            "targetId": "ebea-74c4-f3db-183d",
             "type": "selectionEntryGroup"
           }
         ],
@@ -10479,6 +10866,58 @@
             "targetId": "b68a-5ded-65ac-98c",
             "type": "rule",
             "modifiers": [{"field": "name", "type": "append", "value": "D6"}]
+          },
+          {
+            "name": "Roar of Mork (psychic level 1)",
+            "id": "0ad7-3087-90b8-937d",
+            "hidden": false,
+            "targetId": "3cf0-d5d8-a76c-d910",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Visions of Violence (psychic level 1)",
+            "id": "3709-2ec2-94bd-74a3",
+            "hidden": false,
+            "targetId": "7103-d369-9d7b-f219",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
           }
         ],
         "modifierGroups": [
@@ -10721,7 +11160,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 20,
             "conditionGroups": [
               {
                 "type": "and",
@@ -10800,7 +11239,7 @@
             "characteristics": [
               {
                 "name": "Descriptions",
-                "$text": "In your Movement phase, when a unit embarked within this unit is selected to make a **disembark move**, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- One a 1, this unit is **battle-shocked*.\n- That disembarking unit's attacks that target a **MONSTER/VEHICLE** unit have +1 to **wound rolls** until the end of the turn.",
+                "$text": "In your Movement phase, when a unit embarked within this unit is selected to make a **disembark move**, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- On a 1, this unit is **battle-shocked**.\n- That disembarking unit's attacks that target a **MONSTER/VEHICLE** unit have +1 to **wound rolls** until the end of the turn.",
                 "typeId": "1917-301f-5d49-2f76"
               }
             ]
@@ -10811,7 +11250,7 @@
             "name": "Wargear",
             "id": "8f8a-afcf-a345-4943",
             "hidden": false,
-            "sortIndex": 4,
+            "sortIndex": 3,
             "entryLinks": [
               {
                 "name": "’Eavy Lobba",
@@ -11116,13 +11555,13 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 260,
+            "value": 275,
             "conditions": [{"childId": "model", "field": "selections", "scope": "8c36-c946-2e0f-f648", "shared": true, "type": "greaterThan", "value": 3}]
           },
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 20,
+            "value": 40,
             "conditionGroups": [
               {
                 "type": "and",
@@ -11592,36 +12031,36 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
+            "comment": "Shoota Boyz detachment modifiers",
             "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
             "modifiers": [
               {
-                "field": "f74f-e0ba-a759-6a86",
-                "type": "set",
-                "value": 1,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "atLeast", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
               },
               {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "lessThan", "value": 1}
-                    ]
-                  }
-                ]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -11963,7 +12402,25 @@
                     ]
                   }
                 ],
-                "infoLinks": [{"name": "Nob", "id": "f84e-1f04-d5df-f2bd", "hidden": false, "targetId": "0138-b6bc-e6e6-9f67", "type": "profile"}],
+                "profiles": [
+                  {
+                    "name": "Nob",
+                    "id": "e8b7-4a9c-8cef-69ad",
+                    "comment": "Sv5+ OC1",
+                    "hidden": false,
+                    "typeId": "c547-1836-d8a-ff4f",
+                    "typeName": "Unit",
+                    "characteristics": [
+                      {"name": "M", "$text": "6\"", "typeId": "e703-ecb6-5ce7-aec1"},
+                      {"name": "T", "$text": "5", "typeId": "d29d-cf75-fc2d-34a4"},
+                      {"name": "Sv", "$text": "5+", "typeId": "450-a17e-9d5e-29da"},
+                      {"name": "W", "$text": "3", "typeId": "750a-a2ec-90d3-21fe"},
+                      {"name": "LD", "$text": "7+", "typeId": "58d2-b879-49c7-43bc"},
+                      {"name": "OC", "$text": "1", "typeId": "bef7-942a-1a23-59f8"},
+                      {"name": "InSv", "$text": "", "typeId": "55a7-5b54-c60d-11dc"}
+                    ]
+                  }
+                ],
                 "selectionEntryGroups": [
                   {
                     "name": "Choppa",
@@ -12203,6 +12660,40 @@
                 "type": "append",
                 "value": "(Legendary)",
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -12475,6 +12966,42 @@
           {"name": "Waaagh!", "id": "b65d-9e8f-6d90-9bf1", "hidden": false, "targetId": "37c-6ef9-277-9091", "type": "rule"},
           {"name": "Leader", "id": "9f26-b6fa-dfd6-f459", "hidden": false, "targetId": "b4dd-3e1f-41cb-218f", "type": "rule"}
         ],
+        "modifierGroups": [
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
+          }
+        ],
         "modifiers": [
           {
             "field": "hidden",
@@ -12617,7 +13144,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 75},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 70},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -12841,25 +13368,59 @@
                 "value": "SUSTAINED HITS 1"
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 110,
+            "value": 105,
             "conditions": [{"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "atLeast", "value": 3}]
           },
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 185,
+            "value": 175,
             "conditions": [{"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "atLeast", "value": 4}]
           },
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 225,
+            "value": 210,
             "conditions": [{"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "atLeast", "value": 6}]
           },
           {
@@ -13409,7 +13970,7 @@
           {"id": "4ca3-a1a6-e7c5-bedd", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 45},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 55},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -13583,6 +14144,40 @@
                 "skipIfPresent": "IGNORES COVER",
                 "type": "append",
                 "value": "IGNORES COVER"
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -14740,21 +15335,6 @@
                 ]
               },
               {
-                "name": "Dual Big Shoota",
-                "id": "f2b3-d200-1f6b-804d",
-                "hidden": false,
-                "import": true,
-                "targetId": "9d75-a79d-1adb-64f5",
-                "type": "selectionEntry",
-                "constraints": [
-                  {"id": "a9cf-da30-ca95-f28c", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 2},
-                  {"id": "d6c1-b85a-9298-4b1e", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
-                ],
-                "entryLinks": [
-                  {"name": "Weapon Modifications", "id": "104f-8f97-3fb0-1620", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
-                ]
-              },
-              {
                 "name": "Rokkit Launcha",
                 "id": "f890-dd3f-0163-c6a0",
                 "hidden": false,
@@ -14832,6 +15412,39 @@
                       {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
                       {"name": "D", "$text": "4", "typeId": "a354-c1c8-a745-f9e3"},
                       {"name": "Keywords", "$text": "BLAST 1, HAZARDOUS", "typeId": "7f1b-8591-2fcf-d01c"}
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Dual Big Shoota",
+                "id": "7843-55c3-4500-18a6",
+                "hidden": false,
+                "import": true,
+                "type": "upgrade",
+                "constraints": [
+                  {"id": "a9cf-da30-ca95-f28c", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 2},
+                  {"id": "d6c1-b85a-9298-4b1e", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
+                ],
+                "entryLinks": [
+                  {"name": "Weapon Modifications", "id": "104f-8f97-3fb0-1620", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                ],
+                "profiles": [
+                  {
+                    "name": "Dual Big Shoota",
+                    "id": "cce7-50f0-e28a-9013",
+                    "comment": "BS4+ variant",
+                    "hidden": false,
+                    "typeId": "f77d-b953-8fa4-b762",
+                    "typeName": "Ranged Weapons",
+                    "characteristics": [
+                      {"name": "Range", "$text": "36\"", "typeId": "9896-9419-16a1-92fc"},
+                      {"name": "A", "$text": "6", "typeId": "3bb-c35f-f54-fb08"},
+                      {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+                      {"name": "S", "$text": "5", "typeId": "2229-f494-25db-c5d3"},
+                      {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+                      {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+                      {"name": "Keywords", "$text": "LETHAL HITS: non-MONSTER/VEHICLE, RAPID FIRE 4", "typeId": "7f1b-8591-2fcf-d01c"}
                     ]
                   }
                 ]
@@ -15092,7 +15705,7 @@
           {"id": "3eca-eff2-b1cb-4dc0", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 35},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 30},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -15250,6 +15863,40 @@
                 "type": "append",
                 "value": "(Legendary)",
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -15415,7 +16062,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 125},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 115},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -15639,13 +16286,47 @@
                 "value": "SUSTAINED HITS 1"
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 250,
+            "value": 230,
             "conditions": [{"childId": "model", "field": "selections", "scope": "b16a-7132-3f8a-abe5", "shared": true, "type": "greaterThan", "value": 5}]
           },
           {
@@ -16327,6 +17008,40 @@
               {"field": "category", "type": "add", "value": "355c-0ee6-3cde-6c71"},
               {"field": "category", "type": "add", "value": "14a0-40c9-2748-ae6e"}
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -16689,6 +17404,40 @@
                 "type": "append",
                 "value": "(Legendary)",
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -17209,7 +17958,6 @@
                       {
                         "name": "Saw Blades",
                         "id": "3adf-705f-c05c-b49d",
-                        "comment": "\n",
                         "hidden": false,
                         "import": true,
                         "type": "upgrade",
@@ -17327,7 +18075,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 140},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 130},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -17486,7 +18234,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 280,
+            "value": 260,
             "conditions": [{"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "6a83-8e1f-63ef-50c3", "shared": true, "type": "greaterThan", "value": 4}]
           },
           {
@@ -17509,7 +18257,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 20,
+            "value": 30,
             "conditionGroups": [
               {
                 "type": "and",
@@ -18531,47 +19279,6 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
-            "type": "and",
-            "modifiers": [
-              {
-                "field": "77ba-f804-b5f6-6dfe",
-                "type": "set",
-                "value": 1,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "atLeast", "value": 1}
-                    ]
-                  }
-                ]
-              },
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditionGroups": [
-                  {
-                    "type": "and",
-                    "conditions": [
-                      {"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1},
-                      {"childId": "09d3-a08a-0671-fe86", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "lessThan", "value": 1}
-                    ]
-                  }
-                ]
-              },
-              {
-                "affects": "self.entries.recursive.profiles.Unit",
-                "field": "e703-ecb6-5ce7-aec1",
-                "type": "ceil",
-                "value": 9,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
-            ]
-          },
-          {
             "comment": "Taktikal Brigade detachment",
             "type": "and",
             "modifiers": [
@@ -18655,6 +19362,40 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -19025,7 +19766,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 145},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 160},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -19181,6 +19922,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -19300,20 +20075,41 @@
                         "entryLinks": [
                           {"name": "Weapon Modifications", "id": "b1e6-cdff-5f1b-ce37", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
                         ]
-                      },
+                      }
+                    ],
+                    "selectionEntries": [
                       {
                         "name": "Rokkit Pistol",
-                        "id": "3095-c083-618d-f3c2",
+                        "id": "811f-e844-83ab-78a4",
+                        "comment": "BS4+",
                         "hidden": false,
                         "import": true,
-                        "targetId": "9786-120d-a921-3226",
-                        "type": "selectionEntry",
+                        "type": "upgrade",
+                        "categoryLinks": [{"name": "Ranged Weapon", "id": "b4fe-c3db-63ca-1b1e", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"}],
                         "constraints": [
-                          {"id": "595f-dd9e-be19-318c", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
-                          {"id": "a4af-038d-ece8-e575", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
+                          {"id": "9cb8-aa9e-6b63-a726", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
+                          {"id": "93da-dd84-72e7-47fd", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
                         ],
                         "entryLinks": [
-                          {"name": "Weapon Modifications", "id": "9935-ce59-457d-e832", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                          {"name": "Weapon Modifications", "id": "2261-024c-382b-8252", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                        ],
+                        "profiles": [
+                          {
+                            "name": "Rokkit pistol",
+                            "id": "c347-30c1-48ee-dccd",
+                            "hidden": false,
+                            "typeId": "f77d-b953-8fa4-b762",
+                            "typeName": "Ranged Weapons",
+                            "characteristics": [
+                              {"name": "Range", "$text": "12\"", "typeId": "9896-9419-16a1-92fc"},
+                              {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
+                              {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+                              {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
+                              {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
+                              {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
+                              {"name": "Keywords", "$text": "CLOSE-QUARTERS", "typeId": "7f1b-8591-2fcf-d01c"}
+                            ]
+                          }
                         ]
                       }
                     ]
@@ -19780,7 +20576,6 @@
               {
                 "name": "Spiked Ram",
                 "id": "f633-8829-48cd-0b36",
-                "comment": "\n",
                 "hidden": false,
                 "import": true,
                 "type": "upgrade",
@@ -20624,6 +21419,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -20751,7 +21580,6 @@
                   {
                     "name": "Power Klaw",
                     "id": "1694-28e7-4b1f-5c3f",
-                    "comment": "\n",
                     "hidden": false,
                     "import": true,
                     "type": "upgrade",
@@ -20900,7 +21728,7 @@
           {"id": "a300-5739-a832-5ca2", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 125},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 115},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -21062,6 +21890,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -21153,7 +22015,7 @@
             "hidden": false,
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following unit:\n- **^^Meganobz^^**", "typeId": "9b8f-694b-e5e-b573"}]
+            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following unit:\n- **MEGANOBZ**", "typeId": "9b8f-694b-e5e-b573"}]
           }
         ],
         "selectionEntryGroups": [
@@ -21757,7 +22619,16 @@
           {"id": "28ff-48c0-67f6-c7f8", "field": "f759-1bc4-cb3a-f0d2", "includeChildSelections": true, "scope": "self", "shared": true, "type": "max", "value": 1},
           {"id": "dca5-58e9-c1d6-52f5", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
-        "costs": [{"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 65}],
+        "costs": [
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 60},
+          {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
+          {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
+          {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
+          {"name": "Crusade: Weapon Modifications", "typeId": "716d-91b7-d55a-1022", "value": 0},
+          {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0},
+          {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 0},
+          {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0}
+        ],
         "entryLinks": [
           {"name": "Warlord", "id": "fd-2a89-7d92-2808", "hidden": false, "import": true, "sortIndex": 2, "targetId": "8b5-898c-f79b-5a9c", "type": "selectionEntry"},
           {
@@ -21799,7 +22670,59 @@
           },
           {"name": "Unstable Energies", "id": "13c6-1439-12d9-be0c", "hidden": false, "targetId": "c9f4-4f72-11e9-1fa4", "type": "rule"},
           {"name": "Support", "id": "318-934a-7bd6-ec8e", "hidden": false, "targetId": "3342-2180-9c5d-925f", "type": "rule"},
-          {"name": "Waaagh!", "id": "02be-6e00-2a6f-c0a4", "hidden": false, "targetId": "37c-6ef9-277-9091", "type": "rule"}
+          {"name": "Waaagh!", "id": "02be-6e00-2a6f-c0a4", "hidden": false, "targetId": "37c-6ef9-277-9091", "type": "rule"},
+          {
+            "name": "Roar of Mork (psychic level 1)",
+            "id": "a67e-2c55-9b5c-3b72",
+            "hidden": false,
+            "targetId": "3cf0-d5d8-a76c-d910",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Visions of Violence (psychic level 1)",
+            "id": "19e7-123f-b7ce-547f",
+            "hidden": false,
+            "targetId": "7103-d369-9d7b-f219",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          }
         ],
         "modifierGroups": [
           {
@@ -22000,6 +22923,40 @@
                 ]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -22050,14 +23007,6 @@
                 "$text": "In your Movement phase, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- On a 1, this unit is **battle-shocked**.\n- Place this unit in **strategic reserves**.\n- This unit has **Deep Strike**.",
                 "typeId": "1917-301f-5d49-2f76"
               }
-            ],
-            "modifiers": [
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
             ]
           },
           {
@@ -22066,15 +23015,7 @@
             "hidden": false,
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This model has the **psychic abilities** listed in the Psychic Abilities section.", "typeId": "9b8f-694b-e5e-b573"}],
-            "modifiers": [
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
-            ]
+            "characteristics": [{"name": "Description", "$text": "This model has the **psychic abilities** listed in the Psychic Abilities section.", "typeId": "9b8f-694b-e5e-b573"}]
           },
           {
             "name": "Support",
@@ -22262,6 +23203,40 @@
                 "join": ", ",
                 "type": "increment",
                 "value": 1
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -23931,7 +24906,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 50,
+            "value": 100,
             "conditionGroups": [
               {
                 "type": "and",
@@ -24205,6 +25180,15 @@
             "sortIndex": 1,
             "targetId": "87e9-baa9-52e2-5cce",
             "type": "selectionEntryGroup"
+          },
+          {
+            "name": "Enhancements - Upgrades",
+            "id": "471f-cc8a-6930-c882",
+            "hidden": false,
+            "import": true,
+            "sortIndex": 2,
+            "targetId": "ebea-74c4-f3db-183d",
+            "type": "selectionEntryGroup"
           }
         ],
         "infoLinks": [
@@ -24466,7 +25450,7 @@
             "name": "Wargear",
             "id": "bede-984a-c688-c3ca",
             "hidden": false,
-            "sortIndex": 2,
+            "sortIndex": 3,
             "selectionEntryGroups": [
               {
                 "name": "Big Shootas",
@@ -24571,6 +25555,40 @@
                     "constraints": [{"id": "6549-c1e8-cfb3-a0ae", "field": "selections", "scope": "parent", "shared": true, "type": "max", "value": 2}],
                     "entryLinks": [
                       {"name": "Weapon Modifications", "id": "59a2-3dfc-aa98-8cac", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                    ],
+                    "modifiers": [
+                      {
+                        "field": "6549-c1e8-cfb3-a0ae",
+                        "type": "set",
+                        "value": 4,
+                        "conditionGroups": [
+                          {
+                            "type": "or",
+                            "conditions": [
+                              {
+                                "childId": "5113-76ee-1ef7-8ade",
+                                "childName": "2 Rokkit Launchas",
+                                "field": "selections",
+                                "includeChildSelections": true,
+                                "scope": "root-entry",
+                                "shared": true,
+                                "type": "atLeast",
+                                "value": 1
+                              },
+                              {
+                                "childId": "18dc-d4b9-d4a8-ddd0",
+                                "childName": "2 Skorchas",
+                                "field": "selections",
+                                "includeChildSelections": true,
+                                "scope": "root-entry",
+                                "shared": true,
+                                "type": "atLeast",
+                                "value": 1
+                              }
+                            ]
+                          }
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -26686,6 +27704,15 @@
             "sortIndex": 1,
             "targetId": "87e9-baa9-52e2-5cce",
             "type": "selectionEntryGroup"
+          },
+          {
+            "name": "Enhancements - Upgrades",
+            "id": "3ac8-09c9-605f-6e03",
+            "hidden": false,
+            "import": true,
+            "sortIndex": 2,
+            "targetId": "ebea-74c4-f3db-183d",
+            "type": "selectionEntryGroup"
           }
         ],
         "infoLinks": [
@@ -26899,7 +27926,7 @@
             "name": "Wargear",
             "id": "aadd-6ea5-a13a-2cbf",
             "hidden": false,
-            "sortIndex": 2,
+            "sortIndex": 3,
             "selectionEntries": [
               {
                 "name": "Lifta-droppa",
@@ -27450,7 +28477,7 @@
           {"id": "bea1-21b9-89ae-20dd", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 85},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 100},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -27619,12 +28646,46 @@
                 "value": "More Dakka"
               },
               {
-                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "affects": "self.entries.group.recursive.profiles.Ranged Weapons",
                 "field": "7f1b-8591-2fcf-d01c",
                 "join": ", ",
                 "skipIfPresent": "IGNORES COVER",
                 "type": "append",
                 "value": "IGNORES COVER"
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -27650,7 +28711,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 15,
             "conditionGroups": [
               {
                 "type": "and",
@@ -27798,7 +28859,6 @@
                     "name": "Kustom mega-blasta",
                     "id": "df3a-0414-6edc-005a",
                     "collective": false,
-                    "comment": "\n",
                     "hidden": false,
                     "import": true,
                     "type": "upgrade",
@@ -28346,7 +29406,7 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 135},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 120},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -28504,14 +29564,36 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
+            "comment": "Shoota Boyz detachment modifiers",
             "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
             "modifiers": [
               {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -28736,20 +29818,6 @@
                     ],
                     "entryLinks": [
                       {
-                        "name": "Rokkit Pistol",
-                        "id": "5eb7-e403-1abe-3160",
-                        "hidden": false,
-                        "targetId": "9786-120d-a921-3226",
-                        "type": "selectionEntry",
-                        "constraints": [
-                          {"id": "ea82-28f2-3c48-8eae", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
-                          {"id": "f492-e143-bbec-5555", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
-                        ],
-                        "entryLinks": [
-                          {"name": "Weapon Modifications", "id": "c0ec-0af9-32f3-8b91", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
-                        ]
-                      },
-                      {
                         "name": "Smash Hammer",
                         "id": "a35e-42b2-c786-aa66",
                         "hidden": false,
@@ -28759,6 +29827,42 @@
                         "constraints": [{"id": "4d7e-66bd-480a-0ebb", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 1}],
                         "entryLinks": [
                           {"name": "Weapon Modifications", "id": "4435-2969-ea80-153d", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                        ]
+                      }
+                    ],
+                    "selectionEntries": [
+                      {
+                        "name": "Rokkit Pistol",
+                        "id": "9786-120d-a921-3226",
+                        "comment": "BS5+",
+                        "hidden": false,
+                        "import": true,
+                        "type": "upgrade",
+                        "categoryLinks": [{"name": "Ranged Weapon", "id": "94fc-ce47-f511-f643", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"}],
+                        "constraints": [
+                          {"id": "ea82-28f2-3c48-8eae", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
+                          {"id": "f492-e143-bbec-5555", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 2}
+                        ],
+                        "entryLinks": [
+                          {"name": "Weapon Modifications", "id": "c0ec-0af9-32f3-8b91", "hidden": false, "import": true, "targetId": "f9da-852a-d7f0-92e9", "type": "selectionEntryGroup"}
+                        ],
+                        "profiles": [
+                          {
+                            "name": "Rokkit pistol",
+                            "id": "5a93-042d-e67c-3526",
+                            "hidden": false,
+                            "typeId": "f77d-b953-8fa4-b762",
+                            "typeName": "Ranged Weapons",
+                            "characteristics": [
+                              {"name": "Range", "$text": "12\"", "typeId": "9896-9419-16a1-92fc"},
+                              {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
+                              {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
+                              {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
+                              {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
+                              {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
+                              {"name": "Keywords", "$text": "CLOSE-QUARTERS", "typeId": "7f1b-8591-2fcf-d01c"}
+                            ]
+                          }
                         ]
                       }
                     ]
@@ -29735,6 +30839,42 @@
             "modifiers": [{"field": "name", "join": " ", "type": "append", "value": "D6"}]
           }
         ],
+        "modifierGroups": [
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
+          }
+        ],
         "modifiers": [
           {
             "field": "hidden",
@@ -30489,18 +31629,6 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
-            "type": "and",
-            "modifiers": [
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
-            ]
-          },
-          {
             "comment": "Kustom Force Field attached unit modifiers",
             "type": "and",
             "conditionGroups": [
@@ -30572,6 +31700,40 @@
                     "value": 5
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -30711,32 +31873,6 @@
                   }
                 ]
               }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Rokkit Pistol",
-        "id": "9786-120d-a921-3226",
-        "hidden": false,
-        "import": true,
-        "type": "upgrade",
-        "categoryLinks": [{"name": "Ranged Weapon", "id": "94fc-ce47-f511-f643", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"}],
-        "profiles": [
-          {
-            "name": "Rokkit pistol",
-            "id": "5a93-042d-e67c-3526",
-            "hidden": false,
-            "typeId": "f77d-b953-8fa4-b762",
-            "typeName": "Ranged Weapons",
-            "characteristics": [
-              {"name": "Range", "$text": "12\"", "typeId": "9896-9419-16a1-92fc"},
-              {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
-              {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
-              {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
-              {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
-              {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
-              {"name": "Keywords", "$text": "CLOSE-QUARTERS", "typeId": "7f1b-8591-2fcf-d01c"}
             ]
           }
         ]
@@ -31032,7 +32168,59 @@
           },
           {"name": "Hazardous", "id": "cec5-eb6f-1d26-2041", "hidden": false, "targetId": "8367-374c-f87-c627", "type": "rule"},
           {"name": "Leader", "id": "9e9c-4216-5cb6-a3bf", "hidden": false, "targetId": "b4dd-3e1f-41cb-218f", "type": "rule"},
-          {"name": "Crucible", "id": "646c-8508-318e-8777", "hidden": false, "targetId": "5ce6-a3cf-e871-f081", "type": "rule"}
+          {"name": "Crucible", "id": "646c-8508-318e-8777", "hidden": false, "targetId": "5ce6-a3cf-e871-f081", "type": "rule"},
+          {
+            "name": "Roar of Mork (psychic level 1)",
+            "id": "ffbd-d396-b602-e743",
+            "hidden": false,
+            "targetId": "3cf0-d5d8-a76c-d910",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Visions of Violence (psychic level 1)",
+            "id": "3946-68c5-e7fb-1f7c",
+            "hidden": false,
+            "targetId": "7103-d369-9d7b-f219",
+            "type": "profile",
+            "modifiers": [
+              {
+                "field": "hidden",
+                "type": "set",
+                "value": true,
+                "conditions": [
+                  {
+                    "childId": "1b34-af6b-8900-61b5",
+                    "childName": "Wurrband",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "force",
+                    "shared": true,
+                    "type": "lessThan",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          }
         ],
         "modifierGroups": [
           {
@@ -31296,6 +32484,123 @@
                     "value": 10
                   }
                 ]
+              },
+              {
+                "affects": "self.entries.recursive.4546-4a0c-b3be-e84c.profiles.Melee Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Channellin' da Waaagh!",
+                "type": "append",
+                "value": "Channellin' da Waaagh!",
+                "conditions": [
+                  {
+                    "childId": "model",
+                    "childName": "model",
+                    "field": "selections",
+                    "includeChildForces": false,
+                    "includeChildSelections": true,
+                    "scope": "self",
+                    "shared": true,
+                    "traverseAssociationGroup": true,
+                    "type": "atLeast",
+                    "value": 5
+                  }
+                ]
+              },
+              {
+                "affects": "self.entries.recursive.4546-4a0c-b3be-e84c.profiles.Melee Weapons",
+                "field": "893f-9000-ccf7-648e",
+                "join": ", ",
+                "position": -1,
+                "skipIfPresent": "Hazardous",
+                "type": "append",
+                "value": "Hazardous",
+                "conditions": [
+                  {
+                    "childId": "model",
+                    "childName": "model",
+                    "field": "selections",
+                    "includeChildForces": false,
+                    "includeChildSelections": true,
+                    "scope": "self",
+                    "shared": true,
+                    "traverseAssociationGroup": true,
+                    "type": "atLeast",
+                    "value": 10
+                  }
+                ]
+              },
+              {
+                "affects": "self.entries.recursive.4546-4a0c-b3be-e84c.profiles.Melee Weapons",
+                "field": "2337-daa1-6682-b110",
+                "join": ", ",
+                "position": -1,
+                "skipIfPresent": "Channellin' da Waaagh!",
+                "type": "increment",
+                "value": 1,
+                "repeats": [
+                  {
+                    "childId": "model",
+                    "childName": "model",
+                    "field": "selections",
+                    "includeChildForces": false,
+                    "includeChildSelections": true,
+                    "repeats": 1,
+                    "roundUp": false,
+                    "scope": "self",
+                    "shared": true,
+                    "traverseAssociationGroup": true,
+                    "value": 5
+                  }
+                ]
+              },
+              {
+                "affects": "self.entries.recursive.4546-4a0c-b3be-e84c.profiles.Melee Weapons",
+                "field": "ab33-d393-96ce-ccba",
+                "join": ", ",
+                "position": -1,
+                "skipIfPresent": "Channellin' da Waaagh!",
+                "type": "increment",
+                "value": 1,
+                "repeats": [
+                  {
+                    "childId": "model",
+                    "childName": "model",
+                    "field": "selections",
+                    "includeChildForces": false,
+                    "includeChildSelections": true,
+                    "repeats": 1,
+                    "roundUp": false,
+                    "scope": "self",
+                    "shared": true,
+                    "traverseAssociationGroup": true,
+                    "value": 5
+                  }
+                ]
+              },
+              {
+                "affects": "self.entries.recursive.4546-4a0c-b3be-e84c.profiles.Melee Weapons",
+                "field": "3254-9fe6-d824-513e",
+                "join": ", ",
+                "position": -1,
+                "skipIfPresent": "Channellin' da Waaagh!",
+                "type": "increment",
+                "value": 1,
+                "repeats": [
+                  {
+                    "childId": "model",
+                    "childName": "model",
+                    "field": "selections",
+                    "includeChildForces": false,
+                    "includeChildSelections": true,
+                    "repeats": 1,
+                    "roundUp": false,
+                    "scope": "self",
+                    "shared": true,
+                    "traverseAssociationGroup": true,
+                    "value": 5
+                  }
+                ]
               }
             ]
           },
@@ -31384,6 +32689,40 @@
                     "value": 5
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -31876,14 +33215,36 @@
             ]
           },
           {
-            "comment": "Boarding Actions modifiers",
+            "comment": "Shoota Boyz detachment modifiers",
             "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
             "modifiers": [
               {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
               }
             ]
           }
@@ -32430,6 +33791,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -32657,7 +34052,7 @@
           {"id": "855d-9c2e-4c3e-c0d0", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 135},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 160},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -32853,7 +34248,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "increment",
-            "value": 10,
+            "value": 20,
             "conditionGroups": [
               {
                 "type": "and",
@@ -33092,6 +34487,7 @@
         "hidden": false,
         "import": true,
         "type": "upgrade",
+        "categoryLinks": [{"name": "Ranged Weapon", "id": "0035-4d2b-4864-8f07", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"}],
         "profiles": [
           {
             "name": "➤ Kombi-rokkit - Busta Rokkit",
@@ -33190,7 +34586,7 @@
         ],
         "constraints": [{"id": "b1ce-1d9c-c80d-839a", "field": "selections", "scope": "roster", "shared": true, "type": "max", "value": 1}],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 175},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 165},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -33236,6 +34632,40 @@
               },
               {"affects": "group", "field": "add-info", "type": "add", "value": "7cb5-dd6b-dd87-ad3b"}
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "profiles": [
@@ -33276,6 +34706,14 @@
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
+          },
+          {
+            "name": "Leader",
+            "id": "fb30-b59c-8d2c-599b",
+            "hidden": false,
+            "typeId": "9cc3-6d83-4dd3-9b64",
+            "typeName": "Abilities",
+            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following unit:\n- **MEGANOBZ**", "typeId": "9b8f-694b-e5e-b573"}]
           }
         ],
         "selectionEntries": [
@@ -33405,6 +34843,7 @@
         "hidden": false,
         "import": true,
         "type": "upgrade",
+        "categoryLinks": [{"name": "Ranged Weapon", "id": "98d2-102e-df34-021b", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"}],
         "profiles": [
           {
             "name": "➤ Kombi-skorcha - Skorcha",
@@ -33642,7 +35081,7 @@
         "name": "Kombi-weapon",
         "id": "ce61-585b-aea7-18fc",
         "collective": false,
-        "comment": "Multi-profile",
+        "comment": "BS5+",
         "hidden": false,
         "import": true,
         "type": "upgrade",
@@ -33695,7 +35134,7 @@
             "characteristics": [
               {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
               {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
-              {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
               {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
               {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
               {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
@@ -33711,7 +35150,7 @@
             "characteristics": [
               {"name": "Range", "$text": "18\"", "typeId": "9896-9419-16a1-92fc"},
               {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
-              {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
               {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
               {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
               {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
@@ -33934,6 +35373,40 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
+          },
+          {
+            "comment": "Shoota Boyz detachment modifiers",
+            "type": "and",
+            "conditions": [
+              {
+                "childId": "fca1-ecdf-4e4a-df41",
+                "childName": "Shoota Boyz",
+                "field": "selections",
+                "includeChildSelections": true,
+                "scope": "force",
+                "shared": true,
+                "type": "atLeast",
+                "value": 1
+              }
+            ],
+            "modifiers": [
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "annotation",
+                "join": ", ",
+                "skipIfPresent": "Dakka! Dakka! Dakka!",
+                "type": "append",
+                "value": "Dakka! Dakka! Dakka!"
+              },
+              {
+                "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                "field": "7f1b-8591-2fcf-d01c",
+                "join": ", ",
+                "skipIfPresent": "ASSAULT",
+                "type": "append",
+                "value": "ASSAULT"
+              }
+            ]
           }
         ],
         "modifiers": [
@@ -34067,7 +35540,6 @@
           {
             "name": "Burna",
             "id": "7537-8bb3-6b78-bccb",
-            "comment": "\n",
             "hidden": false,
             "typeId": "f77d-b953-8fa4-b762",
             "typeName": "Ranged Weapons",
@@ -34515,7 +35987,6 @@
         "name": "Spiked Ram",
         "id": "fc82-5e42-1496-1b05",
         "collective": true,
-        "comment": "\n",
         "hidden": false,
         "import": true,
         "type": "upgrade",
@@ -34749,18 +36220,6 @@
                 "conditions": [{"childId": "2dbf-4d49-5d74-85c9", "field": "selections", "includeChildSelections": true, "scope": "self", "shared": true, "type": "greaterThan", "value": 50}]
               }
             ]
-          },
-          {
-            "comment": "Boarding Actions modifiers",
-            "type": "and",
-            "modifiers": [
-              {
-                "field": "hidden",
-                "type": "set",
-                "value": true,
-                "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
-              }
-            ]
           }
         ],
         "modifiers": [
@@ -34919,7 +36378,6 @@
                   {
                     "name": "Lobba",
                     "id": "d336-6461-6c10-28b9",
-                    "comment": "\n",
                     "hidden": false,
                     "typeId": "f77d-b953-8fa4-b762",
                     "typeName": "Ranged Weapons",
@@ -35236,6 +36694,7 @@
       {
         "name": "Dual Big Shoota",
         "id": "9d75-a79d-1adb-64f5",
+        "comment": "BS5+",
         "hidden": false,
         "import": true,
         "type": "upgrade",
@@ -35430,7 +36889,6 @@
           {
             "name": "Crushin' Bulk",
             "id": "cf1e-899f-f250-1ceb",
-            "comment": "\n",
             "hidden": false,
             "typeId": "8a40-4aaa-c780-9046",
             "typeName": "Melee Weapons",
@@ -35485,7 +36943,6 @@
         "name": "Gun Stock and Fists",
         "id": "050a-60ad-b309-77f5",
         "collective": true,
-        "comment": "\n",
         "hidden": false,
         "import": true,
         "type": "upgrade",
@@ -35504,6 +36961,88 @@
               {"name": "AP", "$text": "0", "typeId": "41a0-1301-112a-e2f2"},
               {"name": "D", "$text": "1", "typeId": "3254-9fe6-d824-513e"},
               {"name": "Keywords", "$text": "", "typeId": "893f-9000-ccf7-648e"}
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Kombi-weapon",
+        "id": "969e-8830-7c92-c9db",
+        "collective": false,
+        "comment": "Multi-profile",
+        "hidden": false,
+        "import": true,
+        "type": "upgrade",
+        "categoryLinks": [
+          {"name": "Ranged Weapon", "id": "5b9e-f05e-34dc-8fd9", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"},
+          {"name": "Rapid Fire Weapon", "id": "abc2-eb62-0ed1-3a79", "hidden": false, "primary": false, "targetId": "751c-b78a-45fa-cc5f"}
+        ],
+        "profiles": [
+          {
+            "name": "➤ Kombi-weapon - Point Blank",
+            "id": "fe67-0eca-94e9-bf3b",
+            "hidden": false,
+            "typeId": "f77d-b953-8fa4-b762",
+            "typeName": "Ranged Weapons",
+            "characteristics": [
+              {"name": "Range", "$text": "12\"", "typeId": "9896-9419-16a1-92fc"},
+              {"name": "A", "$text": "3", "typeId": "3bb-c35f-f54-fb08"},
+              {"name": "BS", "$text": "-", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "S", "$text": "5", "typeId": "2229-f494-25db-c5d3"},
+              {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+              {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+              {"name": "Keywords", "$text": "BLAST 1, TORRENT", "typeId": "7f1b-8591-2fcf-d01c"}
+            ],
+            "modifiers": [
+              {
+                "field": "9896-9419-16a1-92fc",
+                "type": "decrement",
+                "value": 3,
+                "conditions": [
+                  {
+                    "childId": "8128-b57a-74a5-c36b",
+                    "childName": "Targetin' Squigs",
+                    "field": "selections",
+                    "includeChildSelections": true,
+                    "scope": "root-entry",
+                    "shared": true,
+                    "type": "atLeast",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "➤ Kombi-weapon - Kill Shot",
+            "id": "e035-0fc2-7b23-84da",
+            "hidden": false,
+            "typeId": "f77d-b953-8fa4-b762",
+            "typeName": "Ranged Weapons",
+            "characteristics": [
+              {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
+              {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
+              {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "S", "$text": "10", "typeId": "2229-f494-25db-c5d3"},
+              {"name": "AP", "$text": "-2", "typeId": "9ead-8a10-520-de15"},
+              {"name": "D", "$text": "3", "typeId": "a354-c1c8-a745-f9e3"},
+              {"name": "Keywords", "$text": "\n", "typeId": "7f1b-8591-2fcf-d01c"}
+            ]
+          },
+          {
+            "name": "➤ Kombi-weapon - Shoota",
+            "id": "8c13-b293-2f40-d792",
+            "hidden": false,
+            "typeId": "f77d-b953-8fa4-b762",
+            "typeName": "Ranged Weapons",
+            "characteristics": [
+              {"name": "Range", "$text": "18\"", "typeId": "9896-9419-16a1-92fc"},
+              {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
+              {"name": "BS", "$text": "4+", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
+              {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+              {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+              {"name": "Keywords", "$text": "LETHAL HITS: non-MONSTER/VEHICLE, RAPID FIRE 1", "typeId": "7f1b-8591-2fcf-d01c"}
             ]
           }
         ]
@@ -36350,7 +37889,7 @@
                   }
                 ],
                 "costs": [
-                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 20},
+                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 30},
                   {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
                   {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
                   {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -36537,7 +38076,7 @@
                             "shared": true,
                             "traverseAssociationGroup": true,
                             "type": "atLeast",
-                            "value": 11
+                            "value": 10
                           }
                         ]
                       }
@@ -36594,7 +38133,7 @@
                     "characteristics": [
                       {
                         "name": "Description",
-                        "$text": "**ORKS INFANTRY** model only. This model's melee attacks have:\n- +1 **A**.\n- <ins>Or:</ins> If this unit has 11+, +2 **A**.",
+                        "$text": "**ORKS INFANTRY** model only. This model's melee attacks have:\n- +1 **A**.\n- <ins>Or:</ins> If this unit has 11+ models, +2 **A**.",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
                     ]
@@ -37063,7 +38602,7 @@
                     "characteristics": [
                       {
                         "name": "Description",
-                        "$text": "**BIG MEK/WARBOSS INFANTRY* model only. While this unit is part of an attached unit, this model has:\n- **Infiltrators**.\n- **Stealth**.",
+                        "$text": "**BIG MEK/WARBOSS INFANTRY** model only. While this unit is part of an attached unit, this model has:\n- **Infiltrators**.\n- **Stealth**.",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
                     ]
@@ -37680,28 +39219,28 @@
                     "type": "and",
                     "modifiers": [
                       {
-                        "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                        "affects": "self.entries.group.recursive.profiles.Ranged Weapons",
                         "field": "annotation",
                         "join": ", ",
-                        "scope": "model",
+                        "scope": "root-entry",
                         "skipIfPresent": "Targetin' Squigs",
                         "type": "append",
                         "value": "Targetin' Squigs"
                       },
                       {
-                        "affects": "self.entries.recursive.profiles.Ranged Weapons",
+                        "affects": "self.entries.group.recursive.profiles.Ranged Weapons",
                         "field": "9896-9419-16a1-92fc",
                         "join": ", ",
-                        "scope": "model",
+                        "scope": "root-entry",
                         "skipIfPresent": "ANTI-INFANTRY",
                         "type": "increment",
                         "value": 3
                       },
                       {
-                        "affects": "self.entries.recursive.064a-0470-60eb-e3ef.profiles.Ranged Weapons",
+                        "affects": "self.entries.group.recursive.064a-0470-60eb-e3ef.profiles.Ranged Weapons",
                         "field": "9896-9419-16a1-92fc",
                         "join": ", ",
-                        "scope": "model",
+                        "scope": "root-entry",
                         "skipIfPresent": "ANTI-INFANTRY",
                         "type": "decrement",
                         "value": 3
@@ -39335,14 +40874,6 @@
                 "characteristics": [{"name": "Button Effect", "$text": "Those attacks have +1 to **hit rolls**.", "typeId": "232d-0c9e-4511-cc0f"}]
               },
               {
-                "name": "6 - Runitified",
-                "id": "002b-bfeb-3663-5004",
-                "hidden": false,
-                "typeId": "d7a7-dd57-f0c3-088a",
-                "typeName": "Unpredictable Genius - D6",
-                "characteristics": [{"name": "Button Effect", "$text": "The target unit has -1 **T** until your unit has shot.", "typeId": "232d-0c9e-4511-cc0f"}]
-              },
-              {
                 "name": "5 - Lifted",
                 "id": "3945-8bc0-7ad0-30c7",
                 "hidden": false,
@@ -39355,6 +40886,14 @@
                     "typeId": "232d-0c9e-4511-cc0f"
                   }
                 ]
+              },
+              {
+                "name": "6 - Runitified",
+                "id": "002b-bfeb-3663-5004",
+                "hidden": false,
+                "typeId": "d7a7-dd57-f0c3-088a",
+                "typeName": "Unpredictable Genius - D6",
+                "characteristics": [{"name": "Button Effect", "$text": "The target unit has -1 **T** until your unit has shot.", "typeId": "232d-0c9e-4511-cc0f"}]
               }
             ],
             "rules": [
@@ -39454,6 +40993,10 @@
               {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 1},
               {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0}
             ],
+            "infoLinks": [
+              {"name": "Roar of Mork (psychic level 1)", "id": "1236-cb25-93f7-7f3d", "hidden": false, "targetId": "3cf0-d5d8-a76c-d910", "type": "profile"},
+              {"name": "Visions of Violence (psychic level 1)", "id": "cbab-5a3e-093e-dceb", "hidden": false, "targetId": "7103-d369-9d7b-f219", "type": "profile"}
+            ],
             "modifiers": [
               {
                 "field": "hidden",
@@ -39462,41 +41005,11 @@
                 "conditions": [{"childId": "1d6e-2579-8e7f-1ed4", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "instanceOf", "value": 1}]
               }
             ],
-            "profiles": [
-              {
-                "name": "Visions of Violence (psychic level 1)",
-                "id": "7103-d369-9d7b-f219",
-                "hidden": false,
-                "typeId": "7e03-38c2-7fea-e955",
-                "typeName": "Psychic Abilities",
-                "characteristics": [
-                  {
-                    "name": "Descriptions",
-                    "$text": "At the start of the Fight phase, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- On a 1, this unit is **battle-shocked**.\n- This unit has **Fights First**.",
-                    "typeId": "1917-301f-5d49-2f76"
-                  }
-                ]
-              },
-              {
-                "name": "Roar of Mork (psychic level 1)",
-                "id": "3cf0-d5d8-a76c-d910",
-                "hidden": false,
-                "typeId": "7e03-38c2-7fea-e955",
-                "typeName": "Psychic Abilities",
-                "characteristics": [
-                  {
-                    "name": "Descriptions",
-                    "$text": "In your Movement phase, if this unit is not **battle-shocked**, you can make a **psychic roll** for this unit by rolling one D6. If you do:\n- One a 1, this unit is **battle-shocked**.\n- Select one enemy unit (excluding **MONSTER/VEHICLE** units) within 12\" of this unit. That enemy unit makes a **battle-shock roll**, with -1 from that **battle-shock roll** for every 10 models in this unit.",
-                    "typeId": "1917-301f-5d49-2f76"
-                  }
-                ]
-              }
-            ],
             "rules": [
               {
                 "name": "Powers of Da Waaagh!",
                 "id": "340c-eebd-4abd-7d46",
-                "description": "Friendly **ORKS PSYKER** models' **[PSYCHIC]** attacks have:\n- +1 **S**.\n- +1 **S** for every 5 models in this unit (or embarked within this model).\n\n\nFriendly **ORKS PSYKER** models have the **Roar of Mork** and **Visions of Violence psychic abilities** ",
+                "description": "Friendly **ORKS PSYKER** models' **[PSYCHIC]** attacks have:\n- +1 **S**.\n- +1 **S** for every 5 models in this unit (or embarked within this model).\n\nFriendly **ORKS PSYKER** models have the **Roar of Mork** and **Visions of Violence psychic abilities** ",
                 "hidden": false
               }
             ]
@@ -40062,7 +41575,7 @@
                     "characteristics": [
                       {
                         "name": "Description",
-                        "$text": "**^^Infantry^^* or **^^Mounted^^** model only.\n\n■ Add 1 to the bearer's Wounds characteristic.\n■ Each time an attack is allocated to the bearer, worsen the Armour Penetration of that attack by 1.",
+                        "$text": "**^^Infantry^^** or **^^Mounted^^** model only.\n- Add 1 to the bearer's Wounds characteristic.\n- Each time an attack is allocated to the bearer, worsen the Armour Penetration of that attack by 1.",
                         "typeId": "9b8f-694b-e5e-b573"
                       }
                     ]
@@ -42319,16 +43832,6 @@
                 ]
               },
               {
-                "name": "Kombi-weapon",
-                "id": "afb8-2412-ba68-7d9d",
-                "hidden": false,
-                "import": true,
-                "targetId": "ac6f-9310-e9ac-678",
-                "type": "selectionEntry",
-                "constraints": [{"id": "1b40-637b-0960-b136", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 1}],
-                "entryLinks": [{"name": "Weapon Upgrades", "id": "1c9a-fb29-0ca2-39a1", "hidden": false, "import": true, "targetId": "0197-b272-85e4-92bc", "type": "selectionEntryGroup"}]
-              },
-              {
                 "name": "Kustom mega-blasta",
                 "id": "842f-7c10-6705-4bc6",
                 "hidden": false,
@@ -42540,6 +44043,38 @@
                       {"name": "AP", "id": "7d3d-af05-b893-4846", "$text": "0", "hidden": false, "typeId": "9ead-8a10-520-de15"},
                       {"name": "D", "id": "f737-75b3-514b-40a0", "$text": "1", "hidden": false, "typeId": "a354-c1c8-a745-f9e3"},
                       {"name": "Keywords", "id": "fa4c-87ec-437f-ba40", "$text": "Assault", "hidden": false, "typeId": "7f1b-8591-2fcf-d01c"}
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Kombi-weapon",
+                "id": "ac6f-9310-e9ac-678",
+                "collective": false,
+                "hidden": false,
+                "import": true,
+                "type": "upgrade",
+                "categoryLinks": [
+                  {"name": "Ranged Weapon", "id": "1aee-c126-c1ca-5f25", "hidden": false, "primary": false, "targetId": "eeda-8544-a2f3-3fab"},
+                  {"name": "Rapid Fire Weapon", "id": "159e-ded4-898a-76fb", "hidden": false, "primary": false, "targetId": "751c-b78a-45fa-cc5f"}
+                ],
+                "constraints": [{"id": "1b40-637b-0960-b136", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 1}],
+                "entryLinks": [{"name": "Weapon Upgrades", "id": "1c9a-fb29-0ca2-39a1", "hidden": false, "import": true, "targetId": "0197-b272-85e4-92bc", "type": "selectionEntryGroup"}],
+                "profiles": [
+                  {
+                    "name": "Kombi-weapon",
+                    "id": "1451-6820-fd91-1dec",
+                    "hidden": false,
+                    "typeId": "f77d-b953-8fa4-b762",
+                    "typeName": "Ranged Weapons",
+                    "characteristics": [
+                      {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
+                      {"name": "A", "$text": "1", "typeId": "3bb-c35f-f54-fb08"},
+                      {"name": "BS", "$text": "5+", "typeId": "94d-8a98-cf90-183e"},
+                      {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
+                      {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+                      {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+                      {"name": "Keywords", "$text": "Anti-Infantry 4+, Devastating Wounds, Rapid Fire 1", "typeId": "7f1b-8591-2fcf-d01c"}
                     ]
                   }
                 ]
@@ -43203,6 +44738,16 @@
                       {"name": "AP", "$text": "-1", "typeId": "41a0-1301-112a-e2f2"},
                       {"name": "D", "$text": "D3", "typeId": "3254-9fe6-d824-513e"},
                       {"name": "Keywords", "$text": "Psychic", "typeId": "893f-9000-ccf7-648e"}
+                    ],
+                    "modifiers": [
+                      {
+                        "field": "3254-9fe6-d824-513e",
+                        "join": "",
+                        "skipIfPresent": "+",
+                        "type": "append",
+                        "value": "+0",
+                        "conditions": [{"childId": "any", "field": "associations", "scope": "root-entry", "shared": true, "type": "atLeast", "value": 1}]
+                      }
                     ]
                   }
                 ]
@@ -43937,7 +45482,7 @@
                   {"id": "e57a-d1a0-d284-f749", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
                 ],
                 "costs": [
-                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 20},
+                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 25},
                   {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
                   {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
                   {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
@@ -44320,7 +45865,7 @@
                   {"id": "4b58-0343-294a-1fab", "field": "selections", "includeChildSelections": true, "scope": "force", "shared": true, "type": "max", "value": 3}
                 ],
                 "costs": [
-                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 10},
+                  {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 25},
                   {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
                   {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
                   {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},

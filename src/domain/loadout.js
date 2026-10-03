@@ -546,7 +546,8 @@ function reduceGroup(group, amount, selections, unitDefinition, index) {
   for (const candidate of ordered) {
     if (remaining <= 0) break;
     const current = Number(selections[candidate.id] || 0);
-    const removable = current;
+    const minimum = evaluatedLimits(candidate, { selections, context: {} }, index, unitDefinition).minimum;
+    const removable = Math.max(0, current - minimum);
     const remove = Math.min(remaining, removable);
     if (remove <= 0) continue;
     selections[candidate.id] = current - remove;
@@ -574,7 +575,8 @@ function reduceGroupExcluding(group, amount, excludedNodeId, selections, unitDef
   for (const candidate of ordered) {
     if (remaining <= 0) break;
     const current = Number(selections[candidate.id] || 0);
-    const remove = Math.min(remaining, current);
+    const minimum = evaluatedLimits(candidate, { selections, context: {} }, index, unitDefinition).minimum;
+    const remove = Math.min(remaining, Math.max(0, current - minimum));
     if (remove <= 0) continue;
     selections[candidate.id] = current - remove;
     refreshDescendants(candidate, selections[candidate.id], selections, unitDefinition, index);
@@ -850,7 +852,7 @@ function getOptionStates(unitDefinition, entry) {
     .map(node => {
       const active = nodeIsActive(node, entry, index, unitDefinition);
       const current = Number(entry.selections[node.id] || 0);
-      const { minimum, maximum } = evaluatedLimits(node, entry, index, unitDefinition);
+      const { minimum, maximum: localMaximum } = evaluatedLimits(node, entry, index, unitDefinition);
       const parent = index.parentById.get(node.id);
       const activeSiblings = parent?.kind === "group"
         ? (parent.children || []).filter(sibling =>
@@ -860,6 +862,13 @@ function getOptionStates(unitDefinition, entry) {
       const parentLimits = parent?.kind === "group"
         ? evaluatedLimits(parent, entry, index, unitDefinition)
         : { minimum: 0, maximum: Infinity };
+      // Alternative loadouts may replace optional siblings, but must leave
+      // space for mandatory models or options in the same group.
+      const reserved = parent?.kind === "group"
+        ? (parent.children || []).filter(sibling => sibling.id !== node.id && nodeIsActive(sibling, entry, index, unitDefinition))
+          .reduce((sum, sibling) => sum + evaluatedLimits(sibling, entry, index, unitDefinition).minimum, 0)
+        : 0;
+      const maximum = Math.min(localMaximum, Math.max(0, parentLimits.maximum - reserved));
       const groupCurrent = parent?.kind === "group" ? groupCount(parent, entry) : current;
       const groupRequired = parent?.kind === "group" && parentLimits.minimum > 0;
       const mutuallyExclusive = parent?.kind === "group"
@@ -938,10 +947,17 @@ function setSelection(unitDefinition, entry, nodeId, count, enforceOptionState =
     throw new Error(`Unknown or non-selectable option: ${nodeId}`);
   }
 
+  if (!Number.isFinite(Number(count)) || !Number.isInteger(Number(count)) || Number(count) < 0) {
+    throw new Error(`Option count must be a non-negative whole number: ${node.name}`);
+  }
+
   if (enforceOptionState) {
     const state = getOptionStates(unitDefinition, entry).find(option => option.id === nodeId);
     if (state && !state.editable && Number(count) !== state.current) {
       throw new Error(`Option is not editable (${state.reason}): ${node.name}`);
+    }
+    if (state && (Number(count) < state.minimum || Number(count) > state.maximum)) {
+      throw new Error(`Option count must be between ${state.minimum} and ${state.maximum}: ${node.name}`);
     }
   }
 
@@ -973,7 +989,9 @@ function setSelection(unitDefinition, entry, nodeId, count, enforceOptionState =
         if (remaining <= 0) break;
         const current = Number(next.selections[sibling.id] || 0);
         if (delta > 0) {
-          const change = Math.min(current, remaining);
+          const minimum = evaluatedLimits(sibling, next, index, unitDefinition).minimum;
+          const change = Math.min(Math.max(0, current - minimum), remaining);
+          if (change <= 0) continue;
           next.selections[sibling.id] = current - change;
           refreshDescendants(sibling, next.selections[sibling.id], next.selections, unitDefinition, index);
           remaining -= change;
@@ -1368,7 +1386,10 @@ function getConfiguredProfiles(unitDefinition, entry) {
         ])];
       } else profiles.set(key, { ...configuredProfile, count: contribution });
     }
-    for (const rule of node.rules || []) rules.set(rule.id || rule.name, rule);
+    for (const rule of node.rules || []) {
+        const visibility = { ...node, forceVisible: false, hidden: rule.hidden, modifiers: rule.modifiers || [] };
+        if (!effectiveHidden(visibility, entry, index, unitDefinition)) rules.set(rule.id || rule.name, rule);
+      }
   }
 
   const corrected = applyKnownConfiguredProfileCorrections(

@@ -31,3 +31,18 @@ test("units are alphabetical within their single section", () => {
   assert.deepEqual(groups.find(group => group.section === "Infantry").units.map(item => item.name), ["Barbgaunts", "Zoanthropes"]);
   assert.equal(groups.reduce((sum, group) => sum + group.units.length, 0), 3);
 });
+
+
+test("active Battleline grants move Infantry into Battleline and revert when removed", () => {
+  for (const file of ["../ui/catalogue-sections", "../mobile/ui/catalogue-sections"]) {
+    const sections = require(file);
+    const troupe = unit("Troupe", ["Infantry"]);
+    const master = unit("Troupe Master", ["Character", "Infantry"], { character: true });
+    assert.equal(sections.sectionForUnit(troupe, ["Troupe", "Infantry", "Battleline"]), "Battleline");
+    assert.equal(sections.sectionForUnit(troupe, ["Troupe", "Infantry"]), "Infantry");
+    assert.equal(sections.sectionForUnit(master, ["Character", "Battleline"]), "Character");
+    const groups = sections.groupUnits([troupe, master], item => item === troupe ? ["Battleline"] : []);
+    assert.deepEqual(groups.find(group => group.section === "Battleline").units, [troupe]);
+    assert.equal(groups.find(group => group.section === "Infantry").units.length, 0);
+  }
+});

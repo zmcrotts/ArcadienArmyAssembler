@@ -82,6 +82,19 @@ function recordDetachmentName(record) {
   return DETACHMENT_ALIASES.get(`${record.factionSlug}|${name}`) || name;
 }
 
+function removeObsoleteUniqueTagText(rules, uniqueTags) {
+  if (!Array.isArray(uniqueTags)) return rules;
+  const retained = new Set(uniqueTags.map(normalize));
+  return (rules || []).map(rule => ({
+    ...rule,
+    description: String(rule.description || "").split(/\n\s*\n/).filter(paragraph => {
+      const text = paragraph.replace(/[*^]/g, "").replace(/\s+/g, " ").trim();
+      const restriction = text.match(/^This detachment has the (.+?) tag and cannot be taken with another \1 detachment\.$/i);
+      return !restriction || retained.has(normalize(restriction[1]));
+    }).join("\n\n")
+  }));
+}
+
 function applyMfmDetachments(armies, document) {
   const records = document?.detachments || [];
   const issues = [...(document?.issues || [])];
@@ -122,6 +135,7 @@ function applyMfmDetachments(armies, document) {
         ...detachment,
         detachmentPoints: points,
         detachmentPointsSource: `mfm-${document.version || "current"}`,
+        rules: removeObsoleteUniqueTagText(detachment.rules, match.record.uniqueTags),
         uniqueTags: Array.isArray(match.record.uniqueTags)
           ? [...new Set(match.record.uniqueTags.map(String).filter(Boolean))]
           : detachment.uniqueTags || [],

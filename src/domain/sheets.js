@@ -396,7 +396,7 @@ function scopedWeaponTypeBefore(prefix, fallbackWeaponType) {
 }
 
 function normalizeWeaponKeywordName(value) {
-  let keyword = normalizeText(value).replace(/\^/g, "");
+  let keyword = normalizeText(value).replace(/[*^]/g, "");
   if (/^pyschic$/i.test(keyword)) keyword = "Psychic";
   if (!keyword || /\bthis ability\b/i.test(keyword) || /\bexample\b/i.test(keyword)) return "";
   if (/^Sustained Hits X$/i.test(keyword)) return "";
@@ -791,9 +791,9 @@ function unitEffectTargets(text) {
   for (const pattern of patterns) {
     const match = normalizeText(text).match(pattern);
     if (!match) continue;
-    const subject = match[1].split(/\band\b/i).at(-1) || match[1];
-    const target = normalizeMatchText(subject.replace(/\bmodels?\b/ig, "").replace(/\bunits?\b/ig, ""));
-    return target ? [target] : [];
+    return match[1].split(/\s+(?:and|or)\s+/i)
+      .map(subject => normalizeMatchText(subject.replace(/\bmodels?\b/ig, "").replace(/\bunits?\b/ig, "")))
+      .filter(Boolean);
   }
   return [];
 }

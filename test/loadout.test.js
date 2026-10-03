@@ -157,7 +157,7 @@ legacyTest("Termagant special weapon replaces a default model and scales one per
   assert.equal(oneSpecial.selections[ordinary.id], 9);
   assert.equal(validateLoadout(definition, oneSpecial).length, 0);
 
-  const twoSpecialAtTen = setSelection(definition, oneSpecial, shardlauncher.id, 2);
+  const twoSpecialAtTen = setSelection(definition, oneSpecial, shardlauncher.id, 2, false);
   assert.ok(validateLoadout(definition, twoSpecialAtTen).some(error => error.type === "max"));
 
   const stateAtTen = getOptionStates(definition, entry).find(state => state.id === shardlauncher.id);
@@ -605,4 +605,93 @@ test("selected group-level Unit profiles contribute their descendant model count
     const units = getConfiguredProfiles(definition, createDefaultRosterEntry(definition)).units;
     assert.equal(units.find(profile => profile.name === name)?.count, expectedCount, name);
   }
+});
+
+
+test("Assault Terminator swaps retain the sergeant and reject ten ordinary claw models", () => {
+  const definition = unit11e("Imperium - Adeptus Astartes - Space Marines", "Terminator Assault Squad");
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+  const claws = option(definition, "Assault Terminator w/ Twin Lightning Claws");
+  const sergeant = option(definition, "Assault Terminator Sergeant");
+  const sergeantClaws = option(definition, "Twin Lightning Claws", "Weapon Option");
+  const original = JSON.stringify(entry);
+  assert.throws(() => setSelection(definition, entry, claws.id, 10), /between 0 and 9/);
+  assert.equal(JSON.stringify(entry), original);
+  entry = setSelection(definition, entry, claws.id, 9);
+  entry = setSelection(definition, entry, sergeantClaws.id, 1);
+  assert.equal(entry.selections[sergeant.id], 1);
+  assert.equal(getConfiguredModels(definition, entry).reduce((sum, model) => sum + model.count, 0), 10);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+  entry = setSelection(definition, entry, claws.id, 0);
+  assert.equal(entry.selections[sergeant.id], 1);
+  assert.equal(entry.selections[sergeantClaws.id], 1);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+test("unchecked over-allocation cannot consume mandatory siblings and damaged squads normalize", () => {
+  const definition = unit11e("Imperium - Adeptus Astartes - Space Marines", "Terminator Assault Squad");
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+  const claws = option(definition, "Assault Terminator w/ Twin Lightning Claws");
+  const sergeant = option(definition, "Assault Terminator Sergeant");
+  entry = setSelection(definition, entry, claws.id, 10, false);
+  assert.equal(entry.selections[sergeant.id], 1);
+  assert.ok(validateLoadout(definition, entry).some(error => error.type === "max"));
+  // Reproduce a roster saved by the old engine: ten ordinary models and no sergeant.
+  entry.selections[sergeant.id] = 0;
+  const repaired = require("../src/domain/loadout").normalizeRosterEntry(definition, entry);
+  assert.equal(repaired.selections[sergeant.id], 1);
+  assert.equal(repaired.selections[claws.id], 9);
+  assert.deepEqual(validateLoadout(definition, repaired), []);
+});
+
+
+test("shared group limits reserve room for required models even without an individual option cap", () => {
+  const definition = structuredClone(unit11e("Imperium - Adeptus Astartes - Space Marines", "Terminator Assault Squad"));
+  const claws = option(definition, "Assault Terminator w/ Twin Lightning Claws");
+  const node = require("../src/domain/loadout").buildTreeIndex(definition).byId.get(claws.id);
+  node.constraints = node.constraints.filter(constraint => constraint.type !== "max");
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+  assert.equal(getOptionStates(definition, entry).find(state => state.id === claws.id).maximum, 9);
+  assert.throws(() => setSelection(definition, entry, claws.id, 10), /between 0 and 9/);
+  entry = setSelection(definition, entry, claws.id, 9);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+
+test("a required default sibling retains its selected equipment during a model swap", () => {
+  const definition = structuredClone(unit11e("Imperium - Adeptus Astartes - Space Marines", "Terminator Assault Squad"));
+  let entry = setUnitSize(definition, createDefaultRosterEntry(definition), 10);
+  const sergeant = option(definition, "Assault Terminator Sergeant");
+  const sergeantClaws = option(definition, "Twin Lightning Claws", "Weapon Option");
+  const claws = option(definition, "Assault Terminator w/ Twin Lightning Claws");
+  entry = setSelection(definition, entry, sergeantClaws.id, 1);
+  const index = require("../src/domain/loadout").buildTreeIndex(definition);
+  index.parentById.get(sergeant.id).defaultSelectionId = sergeant.definitionId;
+  entry = setSelection(definition, entry, claws.id, 9);
+  assert.equal(entry.selections[sergeant.id], 1);
+  assert.equal(entry.selections[sergeantClaws.id], 1);
+  assert.deepEqual(validateLoadout(definition, entry), []);
+});
+
+
+test("browser loadout engine rejects overflow and restores a saved Assault Terminator sergeant", () => {
+  const context = { window: {} };
+  require("node:vm").runInNewContext(fs.readFileSync(path.join(__dirname, "../ui/engine-runtime.js"), "utf8"), context);
+  const engine = context.window.RosterEngine;
+  const definition = unit11e("Imperium - Adeptus Astartes - Space Marines", "Terminator Assault Squad");
+  let entry = engine.setUnitSize(definition, engine.createDefaultRosterEntry(definition), 10);
+  const states = engine.getOptionStates(definition, entry);
+  const claws = states.find(state => state.name === "Assault Terminator w/ Twin Lightning Claws");
+  const hammer = states.find(state => state.name === "Assault Terminator w/ Thunder Hammer & Storm Shield");
+  const sergeant = states.find(state => state.name === "Assault Terminator Sergeant");
+  assert.throws(() => engine.setSelection(definition, entry, claws.id, 10), /between 0 and 9/);
+  entry = engine.setSelection(definition, entry, claws.id, 9);
+  assert.equal(entry.selections[sergeant.id], 1);
+  entry.selections[claws.id] = 10;
+  entry.selections[hammer.id] = 0;
+  entry.selections[sergeant.id] = 0;
+  entry = engine.normalizeRosterEntry(definition, entry);
+  assert.equal(entry.selections[sergeant.id], 1);
+  assert.equal(entry.selections[claws.id], 9);
+  assert.equal(engine.validateLoadout(definition, entry).length, 0);
 });

@@ -1670,3 +1670,27 @@ test("crusade sheets preserve unit data and provide empty bookkeeping fields", (
   assert.equal(crusade.crusade.crusadePoints, "");
   assert.equal(crusade.crusade.battleHonours, "");
 });
+
+
+test("Boons of the Brood gives permanent Sustained Hits to Harlequins Mounted and Vehicle weapons", () => {
+  const rule = {
+    name: "Boons of the Brood",
+    sourceKind: "detachment",
+    description: "Weapons equipped by ^^**Harlequins Mounted**^^ and ^^**Harlequins Vehicle**^^ models from your army have the [^^**SUSTAINED HITS 1**^^] ability. Each time a Harlequins unit from your army disembarks from a Transport, until the end of the turn, that unit’s weapons have the [^^**SUSTAINED HITS 1**^^] ability."
+  };
+  assert.deepEqual(extractWeaponEffects([rule]).map(effect => effect.targets), [["harlequins mounted", "harlequins vehicle"]]);
+  const configured = { weapons: [
+    { name: "Shuriken cannon", typeName: "Ranged Weapons", characteristics: { Keywords: "-" } },
+    { name: "Close combat weapon", typeName: "Melee Weapons", characteristics: { Keywords: "-" } }
+  ] };
+  for (const [keywords, expected] of [
+    [["Harlequins", "Mounted"], "Sustained Hits 1"],
+    [["Harlequins", "Vehicle"], "Sustained Hits 1"],
+    [["Harlequins", "Infantry"], "-"],
+    [["Asuryani", "Mounted"], "-"],
+    [["Asuryani", "Vehicle"], "-"]
+  ]) {
+    const result = rosterSheets.applyWeaponEffectsToConfigured(configured, [rule], { keywords });
+    assert.deepEqual(result.weapons.map(weapon => weapon.characteristics.Keywords), [expected, expected], keywords.join(" "));
+  }
+});

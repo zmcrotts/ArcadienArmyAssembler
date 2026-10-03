@@ -6,7 +6,7 @@
     "gameSystemId": "sys-352e-adc2-7639-d610",
     "gameSystemRevision": 1,
     "library": false,
-    "revision": 13,
+    "revision": 17,
     "type": "catalogue",
     "xmlns": "http://www.battlescribe.net/schema/catalogueSchema",
     "catalogueLinks": [
@@ -2270,7 +2270,7 @@
             ]
           },
           {
-            "name": "Micromelta Round",
+            "name": "Micromelta Rounds",
             "id": "bcba-352d-f7f2-84ba",
             "hidden": true,
             "import": true,
@@ -2298,7 +2298,7 @@
             ],
             "profiles": [
               {
-                "name": "Micromelta Round",
+                "name": "Micromelta Rounds",
                 "id": "2992-78d6-3deb-f5b7",
                 "hidden": false,
                 "typeId": "9cc3-6d83-4dd3-9b64",
@@ -2818,7 +2818,7 @@
                 "characteristics": [
                   {
                     "name": "Description",
-                    "$text": "Once per battle round, you can target this model with the Heroic Intervention or Counter‑offensive Stratagem for 0CP, and can do so even if you have already used that Stratagem on a different unit this phase.",
+                    "$text": "You can target this unit with the **Heroic Intervention stratagem**, regardless of any other uses of that **stratagem** this phase. If you do: \n- That use is -1 CP. \n- That use does not prevent any uses of that stratagem on other units this phase.",
                     "typeId": "9b8f-694b-e5e-b573"
                   }
                 ]
@@ -8143,7 +8143,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "This model can be attached to the following units: EXACTION SQUAD, IMPERIUM BATTLELINE INFANTRY, IMPERIAL NAVY BREACHERS, INQUISITORIAL AGENTS, SISTERS OF BATTLE SQUAD, SUBDUCTOR SQUAD, VIGILANT SQUAD",
+                "$text": "This model can be attached to the following units: BATTLELINE IMPERIUM INFANTRY, EXACTION SQUAD, IMPERIAL NAVY BREACHERS, INQUISITORIAL AGENTS, SANCTIFIERS, SISTERS OF BATTLE SQUAD, SUBDUCTOR SQUAD, VIGILANT SQUAD",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -9352,7 +9352,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "This model can be attached to the following units: \n■ DEATHWATCH KILL TEAM (including FORTIS KILL TEAM, INDOMITOR KILL TEAM, PROTEUS KILL TEAM and SPECTRUS KILL TEAM) \n■ DAEMONHOST\n■ EXACTION SQUAD \n■ IMPERIUM BATTLELINE INFANTRY \n■ IMPERIAL NAVY BREACHERS\n■ INQUISITORIAL AGENTS\n■ SUBDUCTOR SQUAD\n■ VIGILANT SQUAD",
+                "$text": "This model can be attached to the following units: DAEMONHOST, DEATHWATCH KILL TEAM, DEATHWATCH TERMINATOR SQUAD, EXACTION SQUAD, FORTIS KILL TEAM, IMPERIAL NAVY BREACHERS, INDOMITOR KILL TEAM, INQUISITORIAL AGENTS, PROTEUS KILL TEAM, SPECTRUS KILL TEAM, SUBDUCTOR SQUAD, VIGILANT SQUAD",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -9861,11 +9861,7 @@
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
             "characteristics": [
-              {
-                "name": "Description",
-                "$text": "This model can be attached to the following units:\n■ IMPERIAL NAVY BREACHERS\n■ VOIDSMEN-AT-ARMS",
-                "typeId": "9b8f-694b-e5e-b573"
-              }
+              {"name": "Description", "$text": "This model can be attached to the following units: IMPERIAL NAVY BREACHERS, VOIDSMEN-AT-ARMS", "typeId": "9b8f-694b-e5e-b573"}
             ]
           },
           {
@@ -10074,11 +10070,7 @@
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
             "characteristics": [
-              {
-                "name": "Description",
-                "$text": "This model can be attached to the following units:\n■ IMPERIAL NAVY BREACHERS\n■ VOIDSMEN-AT-ARMS",
-                "typeId": "9b8f-694b-e5e-b573"
-              }
+              {"name": "Description", "$text": "This model can be attached to the following units: IMPERIAL NAVY BREACHERS, VOIDSMEN-AT-ARMS", "typeId": "9b8f-694b-e5e-b573"}
             ]
           },
           {
@@ -11273,7 +11265,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "This model can be attached to the following units: \n■ DEATHWATCH KILL TEAM (including FORTIS KILL TEAM, INDOMITOR KILL TEAM, PROTEUS KILL TEAM and SPECTRUS KILL TEAM) \n■ DEATHWATCH TERMINATOR SQUAD\n■ EXACTION SQUAD \n\n■ GREY KNIGHTS TERMINATOR SQUAD\n■ IMPERIUM BATTLELINE INFANTRY \n■ IMPERIAL NAVY BREACHERS\n■ INQUISITORIAL AGENTS\n■ SISTERS OF BATTLE SQUAD\n■ SUBDUCTOR SQUAD\n■ VIGILANT SQUAD",
+                "$text": "This model can be attached to the following units: DEATHWATCH KILL TEAM, DEATHWATCH TERMINATOR SQUAD, EXACTION SQUAD, FORTIS KILL TEAM, GREY KNIGHTS TERMINATOR SQUAD, IMPERIAL NAVY BREACHERS, INDOMITOR KILL TEAM, INQUISITORIAL AGENTS, PROTEUS KILL TEAM, SISTERS OF BATTLE SQUAD, SPECTRUS KILL TEAM, SUBDUCTOR SQUAD, VIGILANT SQUAD",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -11834,7 +11826,7 @@
             ],
             "selectionEntries": [
               {
-                "name": "Ordo Xenos, Alien Hunters",
+                "name": "Ordo Xenos Alien Hunters",
                 "id": "aabf-4988-4054-bed2",
                 "hidden": false,
                 "import": true,
@@ -11861,7 +11853,7 @@
                 ]
               },
               {
-                "name": "Ordo Hereticus, Purgation Force",
+                "name": "Ordo Hereticus Purgation Force",
                 "id": "cfc6-5531-53cb-1964",
                 "hidden": false,
                 "import": true,
@@ -11888,7 +11880,7 @@
                 ]
               },
               {
-                "name": "Ordo Malleus, Daemon Hunters",
+                "name": "Ordo Malleus Daemon Hunters",
                 "id": "bd6f-97c7-6ac4-8320",
                 "hidden": false,
                 "import": true,
@@ -12668,7 +12660,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "This model can be attached to the following units: INQUISITORIAL AGENTS, IMPERIAL NAVY BREACHERS, SUBDUCTOR SQUAD, EXACTION SQUAD, VIGILANT SQUAD, SISTERS OF BATTLE SQUAD.\n\n\n*You can attach this model to an INQUISITORIAL AGENTS unit, even if one INQUISITOR unit has already been attached to it. If you do, and that Bodyguard unit is destroyed, the Leader units attached to it become separate units, with their original Starting Strength.*",
+                "$text": "This model can be attached to the following units: EXACTION SQUAD, IMPERIAL NAVY BREACHERS, INQUISITORIAL AGENTS, SANCTIFIERS, SISTERS OF BATTLE SQUAD, SUBDUCTOR SQUAD, VIGILANT SQUAD",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -14212,7 +14204,7 @@
             "typeName": "Unit",
             "characteristics": [
               {"name": "M", "$text": "5\"", "typeId": "e703-ecb6-5ce7-aec1"},
-              {"name": "T", "$text": "5", "typeId": "d29d-cf75-fc2d-34a4"},
+              {"name": "T", "$text": "6", "typeId": "d29d-cf75-fc2d-34a4"},
               {"name": "Sv", "$text": "2+", "typeId": "450-a17e-9d5e-29da"},
               {"name": "W", "$text": "3", "typeId": "750a-a2ec-90d3-21fe"},
               {"name": "LD", "$text": "6+", "typeId": "58d2-b879-49c7-43bc"},
@@ -14591,6 +14583,7 @@
       {
         "name": "Storm bolter",
         "id": "ac72-81fa-ea32-15fe",
+        "comment": "S5",
         "hidden": false,
         "import": true,
         "type": "upgrade",
@@ -14607,8 +14600,8 @@
               {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
               {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
               {"name": "BS", "$text": "3+", "typeId": "94d-8a98-cf90-183e"},
-              {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
-              {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+              {"name": "S", "$text": "5", "typeId": "2229-f494-25db-c5d3"},
+              {"name": "AP", "$text": "-1", "typeId": "9ead-8a10-520-de15"},
               {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
               {"name": "Keywords", "$text": "Rapid Fire 2", "typeId": "7f1b-8591-2fcf-d01c"}
             ]
@@ -15650,8 +15643,8 @@
                       {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
                       {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
                       {"name": "BS", "$text": "3+", "typeId": "94d-8a98-cf90-183e"},
-                      {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
-                      {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+                      {"name": "S", "$text": "5", "typeId": "2229-f494-25db-c5d3"},
+                      {"name": "AP", "$text": "-1", "typeId": "9ead-8a10-520-de15"},
                       {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
                       {"name": "Keywords", "$text": "Rapid Fire 2", "typeId": "7f1b-8591-2fcf-d01c"}
                     ]
@@ -17060,16 +17053,16 @@
         ],
         "profiles": [
           {
-            "name": "Transport",
+            "name": "Sisters of Battle Immolator",
             "id": "7f12-782b-ccb8-c711",
             "hidden": false,
-            "typeId": "9cc3-6d83-4dd3-9b64",
-            "typeName": "Abilities",
+            "typeId": "74f8-5443-9d6d-1f1e",
+            "typeName": "Transport",
             "characteristics": [
               {
-                "name": "Description",
+                "name": "Capacity",
                 "$text": "This model has a transport capacity of 6 ORDO HERETICUS INFANTRY models.\n\nAt the start of the Declare Battle Formations step, you can select one SISTERS OF BATTLE SQUAD from your army. If you do, that unit is split into two units, each containing as equal a number of models as possible (when splitting a unit in this way, make a note of which models form each of the two new units). One of these units must start the battle embarked within this TRANSPORT; the other can start the battle embarked within another TRANSPORT, or it can be deployed as a separate unit.",
-                "typeId": "9b8f-694b-e5e-b573"
+                "typeId": "30f2-be70-861d-1b84"
               }
             ]
           },
@@ -18093,13 +18086,7 @@
             "hidden": false,
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
-            "characteristics": [
-              {
-                "name": "Description",
-                "$text": "This model can be attached to the following units: \n■ Inquisitorial Agents\n\n*You can attach this model to an INQUISITORIAL AGENTS unit, even if one INQUISITOR unit has already been attached to it. If you do, and that Bodyguard unit is destroyed, the Leader units attached to it become separate units, with their original Starting Strengths.*",
-                "typeId": "9b8f-694b-e5e-b573"
-              }
-            ]
+            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following units: INQUISITORIAL AGENTS", "typeId": "9b8f-694b-e5e-b573"}]
           },
           {
             "name": "Inquisitorial Agent",
@@ -18521,14 +18508,14 @@
             ]
           },
           {
-            "name": "Transport",
+            "name": "Corvus Blackstar",
             "id": "8caa-45ec-02cc-cb5e",
             "hidden": false,
             "page": 20,
             "publicationId": "4115-3627-e608-39f6",
-            "typeId": "9cc3-6d83-4dd3-9b64",
-            "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This model has a transport capacity of 12 DEATHWATCH INFANTRY models.", "typeId": "9b8f-694b-e5e-b573"}]
+            "typeId": "74f8-5443-9d6d-1f1e",
+            "typeName": "Transport",
+            "characteristics": [{"name": "Capacity", "$text": "This model has a transport capacity of 12 DEATHWATCH INFANTRY models.", "typeId": "30f2-be70-861d-1b84"}]
           }
         ],
         "selectionEntryGroups": [
@@ -18919,7 +18906,16 @@
             "value": 1
           }
         ],
-        "costs": [{"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 100}],
+        "costs": [
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 115},
+          {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
+          {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
+          {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
+          {"name": "Crusade: Weapon Modifications", "typeId": "716d-91b7-d55a-1022", "value": 0},
+          {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0},
+          {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 0},
+          {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0}
+        ],
         "entryLinks": [
           {
             "name": "Crusade",
@@ -19054,7 +19050,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 190,
+            "value": 220,
             "conditions": [{"childId": "model", "field": "selections", "includeChildSelections": true, "scope": "0744-61ce-619d-ffe1", "shared": true, "type": "greaterThan", "value": 5}]
           },
           {
@@ -20247,7 +20243,7 @@
                         "id": "b658-8b2e-9804-04c8",
                         "hidden": false,
                         "import": true,
-                        "targetId": "ac72-81fa-ea32-15fe",
+                        "targetId": "3769-e91f-7da3-a8f0",
                         "type": "selectionEntry",
                         "constraints": [
                           {"id": "57ad-602c-4aba-f0af", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -20284,7 +20280,7 @@
                         "id": "b6eb-8984-7f9b-b492",
                         "hidden": false,
                         "import": true,
-                        "targetId": "ac72-81fa-ea32-15fe",
+                        "targetId": "3769-e91f-7da3-a8f0",
                         "type": "selectionEntry",
                         "constraints": [
                           {"id": "1605-b03c-ae90-6f4a", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -20416,7 +20412,7 @@
                         "id": "7d48-01bd-7a38-97b0",
                         "hidden": false,
                         "import": true,
-                        "targetId": "ac72-81fa-ea32-15fe",
+                        "targetId": "3769-e91f-7da3-a8f0",
                         "type": "selectionEntry",
                         "constraints": [
                           {"id": "9ce3-92dc-cc8a-a790", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -20774,12 +20770,12 @@
             ]
           },
           {
-            "name": "Transport",
+            "name": "Fortis Kill Team",
             "id": "26bd-b08b-4012-387f",
             "hidden": false,
-            "typeId": "9cc3-6d83-4dd3-9b64",
-            "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "9b8f-694b-e5e-b573"}]
+            "typeId": "74f8-5443-9d6d-1f1e",
+            "typeName": "Transport",
+            "characteristics": [{"name": "Capacity", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "30f2-be70-861d-1b84"}]
           }
         ],
         "selectionEntryGroups": [
@@ -21990,12 +21986,12 @@
             ]
           },
           {
-            "name": "Transport",
+            "name": "Indomitor Kill Team",
             "id": "b7ad-36cc-0a36-8992",
             "hidden": false,
-            "typeId": "9cc3-6d83-4dd3-9b64",
-            "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "9b8f-694b-e5e-b573"}]
+            "typeId": "74f8-5443-9d6d-1f1e",
+            "typeName": "Transport",
+            "characteristics": [{"name": "Capacity", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "30f2-be70-861d-1b84"}]
           }
         ],
         "selectionEntryGroups": [
@@ -24473,7 +24469,7 @@
                                 "id": "2a67-cc80-60f8-6458",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "e347-3fce-efbb-da30", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -24510,7 +24506,7 @@
                                 "id": "b158-359d-5c72-2cdb",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "a691-1a08-fa31-7f25", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -24642,7 +24638,7 @@
                                 "id": "9fbf-33aa-e858-cfc7",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "5c6f-26de-eb71-de70", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -24855,7 +24851,7 @@
                                 "id": "8513-89f9-d450-df70",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "6b82-6809-bcb2-1899", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -25147,7 +25143,7 @@
                                 "id": "f680-e865-a166-b52f",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "ce72-c1aa-e98a-f315", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -25198,7 +25194,7 @@
                                 "id": "ccc3-d377-b6fb-0c5d",
                                 "hidden": false,
                                 "import": true,
-                                "targetId": "ac72-81fa-ea32-15fe",
+                                "targetId": "3769-e91f-7da3-a8f0",
                                 "type": "selectionEntry",
                                 "constraints": [
                                   {"id": "64c8-71fa-3d4d-5297", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -26086,12 +26082,12 @@
             ]
           },
           {
-            "name": "Transport",
+            "name": "Spectrus Kill Team",
             "id": "1d30-033e-3211-fc61",
             "hidden": false,
-            "typeId": "9cc3-6d83-4dd3-9b64",
-            "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "9b8f-694b-e5e-b573"}]
+            "typeId": "74f8-5443-9d6d-1f1e",
+            "typeName": "Transport",
+            "characteristics": [{"name": "Capacity", "$text": "This unit cannot embark within an IMPERIAL RHINO.", "typeId": "30f2-be70-861d-1b84"}]
           }
         ],
         "selectionEntryGroups": [
@@ -27418,7 +27414,16 @@
           {"name": "Leader", "id": "f026-53a8-52fe-63a8", "hidden": false, "primary": false, "targetId": "1556-9b56-fba6-4370"}
         ],
         "constraints": [{"id": "84f4-787d-91a7-2404", "field": "selections", "includeChildSelections": true, "scope": "roster", "shared": true, "type": "max", "value": 1}],
-        "costs": [{"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 65}],
+        "costs": [
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 75},
+          {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
+          {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
+          {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
+          {"name": "Crusade: Weapon Modifications", "typeId": "716d-91b7-d55a-1022", "value": 0},
+          {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0},
+          {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 0},
+          {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0}
+        ],
         "infoLinks": [
           {"name": "Leader", "id": "fd46-c438-bc82-f757", "hidden": false, "targetId": "b4dd-3e1f-41cb-218f", "type": "rule"},
           {
@@ -27517,7 +27522,13 @@
             "publicationId": "4115-3627-e608-39f6",
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following units: AQUILA KILL TEAM, DEATHWATCH KILL TEAM", "typeId": "9b8f-694b-e5e-b573"}]
+            "characteristics": [
+              {
+                "name": "Description",
+                "$text": "This model can be attached to the following units: AQUILA KILL TEAM, DEATHWATCH KILL TEAM, DEATHWATCH TERMINATOR SQUAD, FORTIS KILL TEAM, INDOMITOR KILL TEAM, PROTEUS KILL TEAM, SPECTRUS KILL TEAM",
+                "typeId": "9b8f-694b-e5e-b573"
+              }
+            ]
           }
         ],
         "selectionEntries": [
@@ -27675,12 +27686,14 @@
           {"id": "22ac-a124-b2e6-63ca", "field": "selections", "includeChildSelections": true, "scope": "roster", "shared": true, "type": "max", "value": 3}
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 95},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 105},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
           {"name": "Crusade: Weapon Modifications", "typeId": "716d-91b7-d55a-1022", "value": 0},
-          {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0}
+          {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0},
+          {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 0},
+          {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0}
         ],
         "entryLinks": [
           {
@@ -27902,7 +27915,13 @@
             "publicationId": "4115-3627-e608-39f6",
             "typeId": "9cc3-6d83-4dd3-9b64",
             "typeName": "Abilities",
-            "characteristics": [{"name": "Description", "$text": "This model can be attached to the following units: AQUILA KILL TEAM, DEATHWATCH KILL TEAM", "typeId": "9b8f-694b-e5e-b573"}]
+            "characteristics": [
+              {
+                "name": "Description",
+                "$text": "This model can be attached to the following units: AQUILA KILL TEAM, DEATHWATCH KILL TEAM, DEATHWATCH TERMINATOR SQUAD, FORTIS KILL TEAM, INDOMITOR KILL TEAM, PROTEUS KILL TEAM, SPECTRUS KILL TEAM",
+                "typeId": "9b8f-694b-e5e-b573"
+              }
+            ]
           }
         ],
         "selectionEntryGroups": [
@@ -30295,7 +30314,7 @@
             "characteristics": [
               {
                 "name": "Description",
-                "$text": "This model can be attached to the following units: EXACTION SQUAD, IMPERIUM BATTLELINE INFANTRY, IMPERIAL NAVY BREACHERS, INQUISITORIAL AGENTS, SISTERS OF BATTLE SQUAD, SUBDUCTOR SQUAD, VIGILANT SQUAD",
+                "$text": "This model can be attached to the following units: EXACTION SQUAD, IMPERIAL NAVY BREACHERS, INQUISITORIAL AGENTS, SISTERS OF BATTLE SQUAD, SUBDUCTOR SQUAD, VIGILANT SQUAD",
                 "typeId": "9b8f-694b-e5e-b573"
               }
             ]
@@ -31321,12 +31340,14 @@
           }
         ],
         "costs": [
-          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 100},
+          {"name": "pts", "typeId": "51b2-306e-1021-d207", "value": 110},
           {"name": "Crusade Points", "typeId": "b03b-c239-15a5-da55", "value": 0},
           {"name": "Crusade: Battle Honours", "typeId": "75bb-ded1-c86d-bdf0", "value": 0},
           {"name": "Crusade: Experience", "typeId": "a623-fe74-1d33-cddf", "value": 0},
           {"name": "Crusade: Weapon Modifications", "typeId": "716d-91b7-d55a-1022", "value": 0},
           {"name": "Blackstone Fragments", "typeId": "ac6b-ced3-9b5e-9a6e", "value": 0},
+          {"name": "Detachment Points", "typeId": "82ae-1066-5107-6ae0", "value": 0},
+          {"name": "Enhancements", "typeId": "f759-1bc4-cb3a-f0d2", "value": 0},
           {"name": "Honour Points", "typeId": "8135-9a2f-6627-09e2", "value": 0},
           {"name": "Relic Fragments", "typeId": "0ece-6541-4662-ece2", "value": 0}
         ],
@@ -31454,7 +31475,7 @@
           {
             "field": "51b2-306e-1021-d207",
             "type": "set",
-            "value": 200,
+            "value": 210,
             "conditions": [
               {
                 "childId": "3f37-595a-56ef-4143",
@@ -33421,6 +33442,34 @@
             ]
           }
         ]
+      },
+      {
+        "name": "Storm bolter",
+        "id": "3769-e91f-7da3-a8f0",
+        "comment": "S4",
+        "hidden": false,
+        "import": true,
+        "type": "upgrade",
+        "constraints": [{"id": "32a3-b661-043d-d7ce", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "max", "value": 1}],
+        "infoLinks": [{"name": "Rapid Fire", "id": "6222-f498-2490-aa2a", "hidden": false, "targetId": "c5c8-8b58-b8b6-7786", "type": "rule"}],
+        "profiles": [
+          {
+            "name": "Storm bolter",
+            "id": "9be4-c71a-1c56-2c9a",
+            "hidden": false,
+            "typeId": "f77d-b953-8fa4-b762",
+            "typeName": "Ranged Weapons",
+            "characteristics": [
+              {"name": "Range", "$text": "24\"", "typeId": "9896-9419-16a1-92fc"},
+              {"name": "A", "$text": "2", "typeId": "3bb-c35f-f54-fb08"},
+              {"name": "BS", "$text": "3+", "typeId": "94d-8a98-cf90-183e"},
+              {"name": "S", "$text": "4", "typeId": "2229-f494-25db-c5d3"},
+              {"name": "AP", "$text": "0", "typeId": "9ead-8a10-520-de15"},
+              {"name": "D", "$text": "1", "typeId": "a354-c1c8-a745-f9e3"},
+              {"name": "Keywords", "$text": "Rapid Fire 2", "typeId": "7f1b-8591-2fcf-d01c"}
+            ]
+          }
+        ]
       }
     ],
     "sharedSelectionEntryGroups": [
@@ -34639,7 +34688,7 @@
                 "id": "4af6-d927-2ccc-d6eb",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "dfe5-a8d1-9b2e-8084-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -34844,7 +34893,7 @@
                 "id": "c142-cd00-2e55-e6ad",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "9e4f-2fa1-6205-2d38-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -34879,7 +34928,7 @@
                 "id": "4274-b36b-2db7-3d6a",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "9592-1987-151a-04c2-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -34927,7 +34976,7 @@
                 "id": "8c78-ad82-b339-73dc",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "a034-8214-6669-4f52-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -34951,7 +35000,7 @@
                 "id": "f29b-8bb3-550c-1296",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "3295-d4ea-7cd7-92bb-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},
@@ -35064,7 +35113,7 @@
                 "id": "3c38-83c4-edd1-97b9",
                 "hidden": false,
                 "import": true,
-                "targetId": "ac72-81fa-ea32-15fe",
+                "targetId": "3769-e91f-7da3-a8f0",
                 "type": "selectionEntry",
                 "constraints": [
                   {"id": "7be2-7ddd-0cb7-be4b-min", "field": "selections", "includeChildSelections": false, "scope": "parent", "shared": true, "type": "min", "value": 1},

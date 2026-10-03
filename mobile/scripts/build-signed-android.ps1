@@ -1,5 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
+Import-Module (Join-Path $PSHOME "Modules\Microsoft.PowerShell.Security\Microsoft.PowerShell.Security.psd1") -ErrorAction Stop
 
 $mobileRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $gradleConfig = Get-Content -Raw -LiteralPath (Join-Path $mobileRoot "android\app\build.gradle")
@@ -54,7 +55,7 @@ try {
   $env:ARCADIEN_KEY_ALIAS = $alias
   $env:ARCADIEN_KEY_PASSWORD = $password
 
-  & $gradle -p android :app:assembleSideload
+  & $gradle --no-daemon -p android :app:assembleSideload
   if ($LASTEXITCODE -ne 0) {
     throw "Signed Android build failed with exit code $LASTEXITCODE."
   }

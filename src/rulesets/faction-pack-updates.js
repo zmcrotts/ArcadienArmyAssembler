@@ -138,7 +138,12 @@ function updateUnit(unit, update) {
       ? (() => { let found = null; walkTree(next.selectionTree, node => { if (!found && normalize(node.name) === normalize(update.nodeName)) found = node; }); return found; })()
       : next.selectionTree;
     if (!target) return { value: next, matches: 0 };
-    target.profiles = [...(target.profiles || []), {
+    const existing = (target.profiles || []).find(profile =>
+      normalize(profile.name) === normalize(update.profileName) && normalize(profile.typeName) === normalize(update.typeName));
+    if (existing) {
+      existing.characteristics = { ...(existing.characteristics || {}), ...(update.characteristics || {}) };
+      existing.source = update.source;
+    } else target.profiles = [...(target.profiles || []), {
       id: update.id,
       name: update.profileName,
       typeId: update.typeId || null,
@@ -149,6 +154,12 @@ function updateUnit(unit, update) {
     return { value: next, matches: 1 };
   }
   walkTree(next.selectionTree, node => {
+    if (update.kind === "selection-alias-add" && [node.definitionId, node.sourceId, node.targetId].includes(update.nodeDefinitionId)) {
+      const parentPath = String(node.id || "").split("/").slice(0, -1).join("/");
+      node.legacySelectionIds = [...new Set([...(node.legacySelectionIds || []),
+        ...(update.aliasIds || []).flatMap(id => [id, parentPath ? `${parentPath}/${id}` : id])])];
+      matches += 1;
+    }
     if (update.kind === "rule-remove") {
       const before = (node.rules || []).length;
       node.rules = (node.rules || []).filter(rule => !matchesRuleName(rule.name, update.ruleName));
@@ -177,7 +188,8 @@ function updateUnit(unit, update) {
     }
     if (update.kind === "profile-patch") {
       node.profiles = (node.profiles || []).map(profile => {
-        if (normalize(profile.name) !== normalize(update.profileName)) return profile;
+        if (update.profileName && normalize(profile.name) !== normalize(update.profileName)) return profile;
+        if (update.profileNames && !matchesName(profile.name, update.profileNames)) return profile;
         if (update.typeName && normalize(profile.typeName) !== normalize(update.typeName)) return profile;
         matches += 1;
         return {
@@ -228,6 +240,7 @@ function updateArmy(army, update) {
           ...(update.newName ? { name: update.newName } : {}),
           ...((update.description !== undefined || update.textReplacements) ? { description: patchedText(stratagem.description, update) } : {}),
           ...(update.cpCost !== undefined ? { cpCost: String(update.cpCost) } : {}),
+          ...(update.stratagemTarget !== undefined ? { target: JSON.parse(JSON.stringify(update.stratagemTarget)) } : {}),
           sourceUrl: update.source
         };
       });

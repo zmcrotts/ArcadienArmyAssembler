@@ -74,6 +74,7 @@ function summarizeUnit(item, services) {
     source: item?.unitPackage?.source || definition.source || null,
     unitSize: services.unitSizeState ? clone(services.unitSizeState(definition, entry)) : null,
     entry: clone(entry),
+    selectionMetadata: selectionMetadataFor(definition, entry),
     models: services.configuredModels ? clone(services.configuredModels(definition, entry)) : [],
     configured: services.configuredProfiles ? clone(services.configuredProfiles(definition, entry, item)) : null
   };
@@ -282,14 +283,93 @@ function normalizeSavedEntry(saved) {
   };
 }
 
-function selectionIdsFor(definition) {
-  const ids = new Set();
-  (function visit(node) {
+function selectionRecordsFor(definition) {
+  const records = [];
+  (function visit(node, parents = []) {
     if (!node) return;
-    if (node.id) ids.add(node.id);
-    for (const child of node.children || []) visit(child);
+    if (node.id) records.push({ node, parents });
+    for (const child of node.children || []) visit(child, [...parents, node]);
   }(definition?.selectionTree));
-  return ids;
+  return records;
+}
+
+function selectionIdentity(record) {
+  return {
+    name: record.node.name,
+    kind: record.node.kind,
+    path: record.parents.map(node => ({ name: node.name, kind: node.kind }))
+  };
+}
+
+function selectionAliases(node) {
+  return [node.definitionId, node.sourceId, node.targetId, ...(node.legacySelectionIds || [])].filter(Boolean);
+}
+
+function selectionMetadataFor(definition, entry) {
+  const records = selectionRecordsFor(definition);
+  const metadata = {};
+  for (const id of Object.keys(entry.selections || {})) {
+    const record = records.find(record => record.node.id === id);
+    if (record) metadata[id] = selectionIdentity(record);
+  }
+  return metadata;
+}
+
+function identityName(value) {
+  return String(value || "").normalize("NFKC").toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, " ").trim();
+}
+
+function recoverSavedSelections(definition, saved, entry) {
+  const records = selectionRecordsFor(definition);
+  if (!records.length) return { entry, unresolved: [] };
+  const byId = new Map(records.map(record => [record.node.id, record]));
+  const selections = {};
+  const unresolved = [];
+  const metadata = saved.selectionMetadata || {};
+  // Full instance paths take precedence over redundant catalogue aliases.
+  for (const [id, count] of Object.entries(entry.selections || {})) {
+    if (byId.has(id)) selections[id] = count;
+  }
+  const pending = { ...(entry.unresolvedSelections || {}) };
+  for (const [id, count] of Object.entries(entry.selections || {})) {
+    if (!byId.has(id)) pending[id] = { count, identity: metadata[id] };
+  }
+  for (const [id, choice] of Object.entries(pending)) {
+    const count = choice.count;
+    const identity = choice.identity || metadata[id];
+    let candidates = byId.has(id) ? [byId.get(id)] : records.filter(record => selectionAliases(record.node).includes(id));
+    if (!candidates.length && identity?.name) {
+      candidates = records.filter(record => identityName(record.node.name) === identityName(identity.name)
+        && (!identity.kind || record.node.kind === identity.kind));
+    }
+    if (candidates.length > 1 && identity?.path?.length) {
+      const pathMatches = candidates.filter(record => JSON.stringify(selectionIdentity(record).path.map(part => [identityName(part.name), part.kind]))
+        === JSON.stringify(identity.path.map(part => [identityName(part.name), part.kind])));
+      if (pathMatches.length) candidates = pathMatches;
+    }
+    // Older runtimes saved catalogue aliases alongside every full instance path.
+    // Repeated model aliases summarize those paths; they are not extra models.
+    const redundantAlias = candidates.length > 1
+      && candidates.every(record => selectionAliases(record.node).includes(id)
+        && Object.prototype.hasOwnProperty.call(selections, record.node.id))
+      && candidates.reduce((total, record) => total + Number(selections[record.node.id]), 0) === Number(count);
+    if (redundantAlias) continue;
+    if (candidates.length === 1) {
+      const targetId = candidates[0].node.id;
+      if (!(targetId in selections)) selections[targetId] = count;
+      // A duplicate alias must never add its count to the full-path count.
+      else if (!["unit", "group"].includes(candidates[0].node.kind)
+        && Number(selections[targetId]) !== Number(count) && Number(count) > 0) {
+        unresolved.push({ id, count, identity, reason: "conflicting quantity" });
+      }
+    } else if (Number(count) > 0) {
+      unresolved.push({ id, count, identity, reason: candidates.length ? "ambiguous match" : "no equivalent choice" });
+    }
+  }
+  const next = { ...entry, selections };
+  delete next.unresolvedSelections;
+  if (unresolved.length) next.unresolvedSelections = Object.fromEntries(unresolved.map(choice => [choice.id, choice]));
+  return { entry: next, unresolved };
 }
 
 function diffArmyStateReferences(before, after) {
@@ -313,13 +393,6 @@ function diffArmyStateReferences(before, after) {
   return removed;
 }
 
-function isCurrentOrksRosterUnit(definition) {
-  if (definition?.faction !== "Xenos - Orks") return false;
-  return !["non-unit-terrain-feature", "not-valid-for-matched-play", "zero-point-placeholder"].includes(
-    definition?.sourceDisposition
-  );
-}
-
 function hydrateRosterDocument(document, options = {}) {
   const warnings = [];
   const unitPackages = options.unitPackages || [];
@@ -337,34 +410,43 @@ function hydrateRosterDocument(document, options = {}) {
       });
       continue;
     }
-    const currentIds = selectionIdsFor(unitPackage.definition);
-    const staleSelectionIds = Object.entries(normalized.entry.selections || {})
-      .filter(([selectionId, count]) => Number(count) > 0 && !currentIds.has(selectionId))
-      .map(([selectionId]) => selectionId);
-    const migrateCurrentOrksEntry = staleSelectionIds.length > 0
-      && isCurrentOrksRosterUnit(unitPackage.definition);
-    const entryToNormalize = migrateCurrentOrksEntry && options.createDefaultRosterEntry
+    const recovered = recoverSavedSelections(unitPackage.definition, saved, normalized.entry);
+    const defaults = recovered.unresolved.length && options.createDefaultRosterEntry
       ? options.createDefaultRosterEntry(unitPackage.definition, normalized.instanceId)
-      : normalized.entry;
+      : null;
+    const entryToNormalize = defaults ? {
+      ...defaults, ...recovered.entry,
+      selections: { ...defaults.selections, ...recovered.entry.selections }
+    } : recovered.entry;
     let hydratedEntry = options.normalizeRosterEntry
       ? options.normalizeRosterEntry(unitPackage.definition, entryToNormalize)
       : entryToNormalize;
     const savedSize = Number(saved?.unitSize?.current);
-    if (isCurrentOrksRosterUnit(unitPackage.definition)
-      && Number.isFinite(savedSize) && savedSize > 0 && options.setUnitSize) {
+    if (Number.isFinite(savedSize) && savedSize > 0 && options.setUnitSize
+      && (recovered.unresolved.length || (options.unitSizeState
+        && Number(options.unitSizeState(unitPackage.definition, hydratedEntry)?.current) !== savedSize))) {
       try {
         hydratedEntry = options.setUnitSize(unitPackage.definition, hydratedEntry, savedSize);
       } catch {
-        // Removed compositions intentionally fall back to the new legal default.
+        // Keep recovered equipment; report any remaining size mismatch below.
       }
     }
-    if (migrateCurrentOrksEntry) {
+    const loadedSize = options.unitSizeState?.(unitPackage.definition, hydratedEntry)?.current;
+    if (Number.isFinite(savedSize) && savedSize > 0 && loadedSize != null && Number(loadedSize) !== savedSize) {
+      warnings.push({
+        severity: "warning", code: "SAVED_UNIT_SIZE_CHANGED",
+        message: `${unitPackage.name}: saved size ${savedSize} could not be restored; the loaded size is ${loadedSize}. Review its composition.`,
+        affectedInstanceIds: [normalized.instanceId].filter(Boolean),
+        details: { savedSize, loadedSize }
+      });
+    }
+    if (recovered.unresolved.length) {
       warnings.push({
         severity: "warning",
-        code: "SAVED_UNIT_MIGRATED",
-        message: `${unitPackage.name} was updated to its current datasheet; obsolete loadout selections were replaced with legal defaults.`,
+        code: "SAVED_SELECTION_UNRESOLVED",
+        message: `${unitPackage.name}: review ${recovered.unresolved.length} saved choice${recovered.unresolved.length === 1 ? "" : "s"} that could not be recovered (${recovered.unresolved.map(choice => choice.identity?.name || "unidentified choice").join(", ")}). Other selections were preserved.`,
         affectedInstanceIds: [normalized.instanceId].filter(Boolean),
-        details: { removedSelectionIds: staleSelectionIds }
+        details: { unresolvedSelections: recovered.unresolved }
       });
     }
     roster.push({
