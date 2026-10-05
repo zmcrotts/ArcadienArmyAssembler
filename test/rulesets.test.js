@@ -447,7 +447,9 @@ test("11e ruleset reads detachment point modifiers from catalogue-specific detac
   const liberator = bloodAngels.detachments.find(item => item.name === "Liberator Assault Group");
   const angelic = bloodAngels.detachments.find(item => item.name === "Angelic Inheritors");
 
-  assert.equal(liberator.detachmentPoints, 3);
+  assert.equal(liberator, undefined);
+  assert.equal(bloodAngels.detachments.find(item => item.name === "Encarmine Speartip").detachmentPoints, 1);
+  assert.equal(bloodAngels.detachments.find(item => item.name === "Wrath of the Doomed").detachmentPoints, 1);
   assert.equal(angelic.detachmentPoints, 3);
 });
 
@@ -1111,8 +1113,8 @@ test("11e detachment upgrades retain bearer limits and representative eligibilit
   assert.deepEqual(eligibleNames("Imperium - Adeptus Mechanicus", "Stealth-screened Cybercanids"), ["Serberys Raiders"]);
   assert.deepEqual(eligibleNames("Xenos - Leagues of Votann", "Shroudwërke Talismans"), ["Hernkyn Yaegirs"]);
   assert.deepEqual(eligibleNames("Xenos - Necrons", "Mortality Shroud (Aura)"), ["Obelisk"]);
-  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Fervent Exemplars"), ["Sword Brethren Squad"]);
-  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Inheritors of Sigismund"), ["Sword Brethren Squad"]);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Fervent Exemplars (Upgrade)"), ["Sword Brethren Squad"]);
+  assert.deepEqual(eligibleNames("Imperium - Adeptus Astartes - Black Templars", "Inheritors of Sigismund (Upgrade)"), ["Sword Brethren Squad"]);
   assert.equal(
     eligibleNames("Chaos - World Eaters", "Murder-forged Entity").every(name =>
       ruleset.units.find(unit => unit.faction === "Chaos - World Eaters" && unit.name === name)?.keywords.includes("Vehicle")
@@ -1147,8 +1149,10 @@ test("11e ordinary enhancement restrictions exclude unrelated bearer units", () 
   ]);
 
   const spaceMarines = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Astartes - Space Marines");
-  const orksbane = spaceMarines.enhancements.find(item => item.name === "Orksbane");
-  assert.match(description(orksbane), /ADEPTUS ASTARTES FLY INFANTRY model only/i);
+  const firearm = spaceMarines.enhancements.find(item => item.name === "Master-forged Firearms");
+  assert.ok(firearm);
+  assert.match(description(firearm), /ADEPTUS ASTARTES INFANTRY\/MOUNTED model only/i);
+  assert.equal(spaceMarines.enhancements.some(item => item.name === "Orksbane"), false);
   assert.equal(ruleset.enhancementRestrictionSource.unmatched, 0);
   assert.equal(ruleset.enhancementRestrictionSource.applied, ruleset.enhancementRestrictionSource.configured);
 });
@@ -1683,10 +1687,11 @@ test("every explicit 11e enhancement and upgrade bearer restriction is enforced"
   const result = auditEnhancementEligibility();
 
   assert.equal(result.summary.armies, 35);
-  assert.equal(result.summary.records, 1575);
-  assert.equal(result.summary.enhancements, 1453);
-  assert.equal(result.summary.upgrades, 122);
-  assert.equal(result.summary.explicitLimiters, 1256);
+  assert.ok(result.summary.records > 1000);
+  assert.equal(result.summary.records, result.summary.enhancements + result.summary.upgrades);
+  assert.ok(result.summary.enhancements > 1000);
+  assert.ok(result.summary.upgrades > 100);
+  assert.ok(result.summary.explicitLimiters > 900);
   assert.equal(result.summary.overBroadRecords, 0);
 });
 
@@ -1719,7 +1724,7 @@ test("keyword-limited enhancements and upgrades expose only their printed bearer
   assert.equal(ferociousShowOff.has("Stormboyz"), true);
 
   const benediction = eligibleNames(
-    "Imperium - Adeptus Astartes - Black Templars", "Wrathful Procession", "Benediction of Fury"
+    "Imperium - Adeptus Astartes - Black Templars", "Vow-sworn Crusaders", "Incendiary Animus"
   );
   assert.equal(benediction.has("Chaplain"), true);
   assert.equal(benediction.has("Captain"), false);

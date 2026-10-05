@@ -1,0 +1,1727 @@
+{
+  "schemaVersion": 1,
+  "source": "User-supplied Chapter app screenshots and clarifications, October 5, 2026",
+  "lastUpdated": "2026-10-05",
+  "chapters": {
+    "Black Templars": {
+      "armyRules": [
+        {
+          "name": "Heirs of Sigismund",
+          "description": "• Your army cannot include any ADEPTUS ASTARTES PSYKER models.\n• Your army cannot include the following datasheets from Codex: Space Marines: GLADIATOR LANCER; GLADIATOR REAPER; GLADIATOR VALIANT; IMPULSOR; REPULSOR; REPULSOR EXECUTIONER."
+        }
+      ],
+      "excludedKeywords": [
+        "Psyker"
+      ],
+      "excludedCoreDatasheets": [
+        "Gladiator Lancer",
+        "Gladiator Reaper",
+        "Gladiator Valiant",
+        "Impulsor",
+        "Repulsor",
+        "Repulsor Executioner"
+      ]
+    },
+    "Space Wolves": {
+      "armyRules": [
+        {
+          "name": "Curse of the Wulfen",
+          "description": "While this unit is within 6″ of a friendly SPACE WOLVES CHARACTER model (excluding WULFEN models) or within 12″ of a friendly WOLF PRIEST model, if this unit is not battle-shocked:\n• If this unit has INFANTRY, this unit has +1 OC.\n• If this unit has VEHICLE, this unit has +3 OC.\nBestial Forms: For the purposes of transport capacity, each WULFEN model takes up the space of 2 models."
+        },
+        {
+          "name": "Sons of Russ",
+          "description": "Your army cannot include APOTHECARY units."
+        }
+      ],
+      "excludedKeywords": [
+        "Apothecary"
+      ]
+    },
+    "Dark Angels": {
+      "armyRules": [
+        {
+          "name": "The Ravenwing",
+          "description": "The following friendly ADEPTUS ASTARTES units have RAVENWING:\n• MOUNTED units.\n• VEHICLE FLY units."
+        },
+        {
+          "name": "The Deathwing",
+          "description": "The following friendly ADEPTUS ASTARTES units have DEATHWING:\n• TERMINATOR units.\n• BLADEGUARD ANCIENT/BLADEGUARD VETERAN SQUAD/STERNGUARD VETERAN SQUAD/VANGUARD VETERAN SQUAD WITH JUMP PACKS units.\n• LAND RAIDER/LAND RAIDER CRUSADER/LAND RAIDER REDEEMER/REPULSOR/REPULSOR EXECUTIONER units.\n• DREADNOUGHT units."
+        }
+      ]
+    },
+    "Deathwatch": {
+      "armyRules": []
+    },
+    "Imperial Fists": {
+      "armyRules": []
+    },
+    "Iron Hands": {
+      "armyRules": []
+    },
+    "Raven Guard": {
+      "armyRules": []
+    },
+    "Salamanders": {
+      "armyRules": []
+    },
+    "Ultramarines": {
+      "armyRules": []
+    },
+    "White Scars": {
+      "armyRules": []
+    },
+    "Blood Angels": {
+      "armyRules": []
+    }
+  },
+  "detachments": [
+    {
+      "chapter": "Black Templars",
+      "name": "Fist of the God-Emperor",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Take and Hold"
+      ],
+      "rules": [
+        {
+          "name": "Purge and Sanctify",
+          "description": "When a friendly CRUSADER SQUAD unit makes a surge move, you can select the closest objective marker instead of a surge target. Each model must end that surge move as close as possible to that objective marker."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLACK TEMPLARS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Righteous Fervour (Upgrade)",
+          "points": 15,
+          "description": "CRUSADER SQUAD unit only. This unit can re-roll advance rolls.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        },
+        {
+          "name": "Oathbound Exemplar",
+          "points": 10,
+          "description": "ADEPTUS ASTARTES INFANTRY unit only. When this unit is selected to make an advance/fall-back move, that advance/fall-back move does not prevent this unit from being eligible to start an action.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": true
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Doctrinal Flexibility",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly CRUSADER SQUAD unit.",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly CRUSADER SQUAD unit.\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        },
+        {
+          "name": "Angels Defiant",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly CRUSADER SQUAD unit.",
+          "target": "That CRUSADER SQUAD unit.",
+          "effect": "Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly CRUSADER SQUAD unit.\nTARGET: That CRUSADER SQUAD unit.\nEFFECT: Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T."
+        },
+        {
+          "name": "Avowed Destruction",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly CRUSADER SQUAD unit is selected to fight.",
+          "target": "That CRUSADER SQUAD unit.",
+          "effect": "Your unit’s melee attacks have [LETHAL HITS] or [SUSTAINED HITS 1].",
+          "description": "WHEN: Fight phase, when a friendly CRUSADER SQUAD unit is selected to fight.\nTARGET: That CRUSADER SQUAD unit.\nEFFECT: Your unit’s melee attacks have [LETHAL HITS] or [SUSTAINED HITS 1]."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Black Templars",
+      "name": "Marshal’s Household",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Priority Assets"
+      ],
+      "rules": [
+        {
+          "name": "Faith-fuelled Resolve",
+          "description": "Friendly SWORD BRETHREN SQUAD units within range of an objective marker have +1A to their melee attacks in the Fight phase."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLACK TEMPLARS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Fervent Exemplars (Upgrade)",
+          "points": 10,
+          "description": "SWORD BRETHREN SQUAD unit only. This unit has +1 to charge rolls.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        },
+        {
+          "name": "Inheritors of Sigismund (Upgrade)",
+          "points": 15,
+          "description": "SWORD BRETHREN SQUAD unit only. This unit has Fights First.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Slayers of Abominations",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly SWORD BRETHREN SQUAD unit is selected to fight.",
+          "target": "That SWORD BRETHREN SQUAD unit.",
+          "effect": "Your unit’s melee attacks that target MONSTER/VEHICLE units have +2S.",
+          "description": "WHEN: Fight phase, when a friendly SWORD BRETHREN SQUAD unit is selected to fight.\nTARGET: That SWORD BRETHREN SQUAD unit.\nEFFECT: Your unit’s melee attacks that target MONSTER/VEHICLE units have +2S."
+        },
+        {
+          "name": "Unsparing Execution",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit engaged with a friendly SWORD BRETHREN SQUAD unit is selected to make a fall-back move.",
+          "target": "That SWORD BRETHREN SQUAD unit.",
+          "effect": "When an enemy unit engaged with your unit is selected to make a fall-back move, that enemy unit must use the desperate escape mode, with -1 to those hazard rolls if that enemy unit is battle-shocked.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit engaged with a friendly SWORD BRETHREN SQUAD unit is selected to make a fall-back move.\nTARGET: That SWORD BRETHREN SQUAD unit.\nEFFECT: When an enemy unit engaged with your unit is selected to make a fall-back move, that enemy unit must use the desperate escape mode, with -1 to those hazard rolls if that enemy unit is battle-shocked."
+        },
+        {
+          "name": "Blade of Detestation",
+          "cpCost": 1,
+          "when": "Your Charge phase, when a friendly SWORD BRETHREN SQUAD unit ends a charge move.",
+          "target": "That SWORD BRETHREN SQUAD unit.",
+          "effect": "Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 4+, that enemy unit suffers 1 mortal wound (maximum 6).",
+          "description": "WHEN: Your Charge phase, when a friendly SWORD BRETHREN SQUAD unit ends a charge move.\nTARGET: That SWORD BRETHREN SQUAD unit.\nEFFECT: Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 4+, that enemy unit suffers 1 mortal wound (maximum 6)."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Black Templars",
+      "name": "Vow-sworn Crusaders",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Templar Vows",
+          "description": "At the start of the first battle round, select one Templar vow. That vow is active for friendly ADEPTUS ASTARTES units until the end of the battle.\nAbhor the Witch, Destroy the Witch: Your unit’s melee attacks that target PSYKER units have [PRECISION] and [LANCE].\nAccept Any Challenge, No Matter the Odds: Your unit’s melee attacks that target an enemy unit with T greater than this unit’s S have +1 to wound rolls.\nUphold the Honour of the Emperor: At the end of your Movement phase, objective markers controlled by friendly ADEPTUS ASTARTES INFANTRY units are secured. Advance moves do not prevent those units from being eligible to start an action."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLACK TEMPLARS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Augury Servo-host",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. In your Shooting phase, select one visible enemy unit within 18″ of this unit. That enemy unit does not have the Benefit of Cover.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Consecrating Aura",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. This unit has 5+ InSv.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Incendiary Animus",
+          "points": 25,
+          "description": "CHAPLAIN/JUDICIAR model only. This unit’s melee attacks have +1S.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Zealous Vanguard",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This unit has Scouts 6″.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Dread Crusaders",
+          "cpCost": 1,
+          "when": "Your opponent’s Charge phase, when an enemy unit selects charge targets.",
+          "target": "One friendly ADEPTUS ASTARTES INFANTRY unit that is a target of that charge.",
+          "effect": "That enemy unit makes a battle-shock roll with -1 to that roll.",
+          "description": "WHEN: Your opponent’s Charge phase, when an enemy unit selects charge targets.\nTARGET: One friendly ADEPTUS ASTARTES INFANTRY unit that is a target of that charge.\nEFFECT: That enemy unit makes a battle-shock roll with -1 to that roll."
+        },
+        {
+          "name": "For the Emperor’s Honour!",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit’s melee attacks have [PRECISION].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit’s melee attacks have [PRECISION]."
+        },
+        {
+          "name": "Heresy Begets Retribution",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly ADEPTUS ASTARTES INFANTRY unit.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit can make a surge move of up to D6″.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly ADEPTUS ASTARTES INFANTRY unit.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit can make a surge move of up to D6″."
+        },
+        {
+          "name": "Spoor of the Unholy",
+          "cpCost": 1,
+          "when": "Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s attacks can ignore modifiers to BS, WS and hit rolls.",
+          "description": "WHEN: Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s attacks can ignore modifiers to BS, WS and hit rolls."
+        },
+        {
+          "name": "Pious Enmity",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly CHAPLAIN/JUDICIAR unit is selected to fight.",
+          "target": "That CHAPLAIN/JUDICIAR unit.",
+          "effect": "Your unit’s melee attacks can re-roll hit rolls of 1. When targeting MONSTER/VEHICLE units, they can also re-roll wound rolls of 1.",
+          "description": "WHEN: Fight phase, when a friendly CHAPLAIN/JUDICIAR unit is selected to fight.\nTARGET: That CHAPLAIN/JUDICIAR unit.\nEFFECT: Your unit’s melee attacks can re-roll hit rolls of 1. When targeting MONSTER/VEHICLE units, they can also re-roll wound rolls of 1."
+        },
+        {
+          "name": "Devout Push",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit makes a pile-in/consolidation move.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit can make a pile-in/consolidation move of up to D3+3″.",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit makes a pile-in/consolidation move.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit can make a pile-in/consolidation move of up to D3+3″."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Blood Angels",
+      "name": "Angelic Inheritors",
+      "detachmentPoints": 3,
+      "forceDispositions": [
+        "Priority Assets",
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Legacy of the Angel",
+          "description": "Friendly BLOOD ANGELS CHARACTER units:\n• Can re-roll hit rolls of 1.\n• Can re-roll wound rolls of 1."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLOOD ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Prescient Flash",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This unit has Scouts 6″.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Blazing Icon",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. Enemy units cannot use Snap shooting to target this unit.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Ordained Sacrifice",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. (Once per battle, per army) At the end of the phase in which this model is destroyed, roll one D6: on a 2+, return this model as close as possible to where it was destroyed, unengaged, with 3 wounds remaining.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Unto Death",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES model only. (Once per battle, per army) In your Command phase, this unit can re-roll advance rolls and charge rolls this turn.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Unto the Burning Skies",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One friendly THE SANGUINOR unit or one friendly unengaged ADEPTUS ASTARTES JUMP PACK unit.",
+          "effect": "Place your unit in strategic reserves.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One friendly THE SANGUINOR unit or one friendly unengaged ADEPTUS ASTARTES JUMP PACK unit.\nEFFECT: Place your unit in strategic reserves."
+        },
+        {
+          "name": "In the Shadow of Great Wings",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit targets a friendly ADEPTUS ASTARTES CHARACTER unit.",
+          "target": "That ADEPTUS ASTARTES CHARACTER unit.",
+          "effect": "Your unit has Stealth and -3″ detection range.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit targets a friendly ADEPTUS ASTARTES CHARACTER unit.\nTARGET: That ADEPTUS ASTARTES CHARACTER unit.\nEFFECT: Your unit has Stealth and -3″ detection range."
+        },
+        {
+          "name": "Strike Now for Glory",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s ranged attacks have [SUSTAINED HITS 1].",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s ranged attacks have [SUSTAINED HITS 1]."
+        },
+        {
+          "name": "Instant of Grace",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Until the start of your next Command phase, your unit has CHARACTER.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Until the start of your next Command phase, your unit has CHARACTER."
+        },
+        {
+          "name": "Focused Fury",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s melee attacks have [LETHAL HITS]. If your unit has CHARACTER, those attacks also have [LANCE].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s melee attacks have [LETHAL HITS]. If your unit has CHARACTER, those attacks also have [LANCE]."
+        },
+        {
+          "name": "Measured Strategist",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES CHARACTER unit.",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES CHARACTER unit.\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Blood Angels",
+      "name": "Encarmine Speartip",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Disruption"
+      ],
+      "rules": [
+        {
+          "name": "Wrath of Angels",
+          "description": "The tactical doctrine is active for friendly SANGUINARY GUARD units in addition to any other combat doctrine."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLOOD ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Shadow of Abomination",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES JUMP PACK model only. (Once per battle, per army) When this unit is selected to fight, this model’s melee attacks have +1D.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Angelic Executioner",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES JUMP PACK model only. When this unit is selected to fight, this unit’s melee attacks have [LETHAL HITS] or [SUSTAINED HITS 1].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Inexorable Valour",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit that was engaged with a friendly SANGUINARY GUARD unit ends a fall-back move.",
+          "target": "That SANGUINARY GUARD unit, if it is unengaged.",
+          "effect": "Your unit can make a normal move of up to D3+3″.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit that was engaged with a friendly SANGUINARY GUARD unit ends a fall-back move.\nTARGET: That SANGUINARY GUARD unit, if it is unengaged.\nEFFECT: Your unit can make a normal move of up to D3+3″."
+        },
+        {
+          "name": "Judgement of the Golden Host",
+          "cpCost": 1,
+          "when": "Your Charge phase, when a friendly SANGUINARY GUARD unit ends a charge move.",
+          "target": "That SANGUINARY GUARD unit.",
+          "effect": "Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 3+, that enemy unit suffers 1 mortal wound.",
+          "description": "WHEN: Your Charge phase, when a friendly SANGUINARY GUARD unit ends a charge move.\nTARGET: That SANGUINARY GUARD unit.\nEFFECT: Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 3+, that enemy unit suffers 1 mortal wound."
+        },
+        {
+          "name": "Blinding Blurs of Vengeance",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit targets a friendly SANGUINARY GUARD unit.",
+          "target": "That SANGUINARY GUARD unit.",
+          "effect": "Your unit has Stealth and -3″ detection range.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit targets a friendly SANGUINARY GUARD unit.\nTARGET: That SANGUINARY GUARD unit.\nEFFECT: Your unit has Stealth and -3″ detection range."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Blood Angels",
+      "name": "Wrath of the Doomed",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Sanguinius’ Fury",
+          "description": "At the start of every phase, the assault doctrine is active for friendly DEATH COMPANY units. The devastator doctrine and tactical doctrine cannot be active for those units, regardless of any other rules."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include BLOOD ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Instinctive Interception",
+          "points": 10,
+          "description": "DEATH COMPANY model only. When you target this unit with the Heroic Intervention stratagem, that use is -1CP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "On the Archtraitor’s Bridge",
+          "points": 20,
+          "description": "DEATH COMPANY model only. This model’s melee attacks have +2A.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "No Barrier to Retribution",
+          "cpCost": 1,
+          "when": "Your Movement/Charge phase, when a friendly DEATH COMPANY DREADNOUGHT unit makes a normal/advance/charge move.",
+          "target": "That DEATH COMPANY DREADNOUGHT unit.",
+          "effect": "Your unit has MOBILE.",
+          "description": "WHEN: Your Movement/Charge phase, when a friendly DEATH COMPANY DREADNOUGHT unit makes a normal/advance/charge move.\nTARGET: That DEATH COMPANY DREADNOUGHT unit.\nEFFECT: Your unit has MOBILE."
+        },
+        {
+          "name": "Death Begets Vengeance",
+          "cpCost": 1,
+          "when": "Any phase, when an enemy unit destroys a friendly DEATH COMPANY unit.",
+          "target": "That enemy unit.",
+          "effect": "That enemy unit is Hated until the end of the battle. Friendly DEATH COMPANY units’ attacks that target that enemy unit have +1 to wound rolls.",
+          "description": "WHEN: Any phase, when an enemy unit destroys a friendly DEATH COMPANY unit.\nTARGET: That enemy unit.\nEFFECT: That enemy unit is Hated until the end of the battle. Friendly DEATH COMPANY units’ attacks that target that enemy unit have +1 to wound rolls."
+        },
+        {
+          "name": "Rage-fuelled Response",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged DEATH COMPANY unit has shot.",
+          "target": "That DEATH COMPANY unit.",
+          "effect": "Your unit can make a surge move of up to D6″.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged DEATH COMPANY unit has shot.\nTARGET: That DEATH COMPANY unit.\nEFFECT: Your unit can make a surge move of up to D6″."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Dark Angels",
+      "name": "Darkflight Pursuit",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Reconnaissance"
+      ],
+      "rules": [
+        {
+          "name": "Black-winged Vigilance",
+          "description": "Friendly RAVENWING FLY units’ ranged attacks have [IGNORES COVER]. Friendly OUTRIDER SQUAD units have BATTLELINE."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include DARK ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Thundercowl Turbines (Upgrade)",
+          "points": 15,
+          "description": "RAVENWING FLY/MOUNTED unit only. In your first Movement phase, this unit can make an ingress move.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        },
+        {
+          "name": "Nightforged Battery (Upgrade)",
+          "points": 10,
+          "description": "LANDSPEEDER VENGEANCE unit only. This unit can re-roll rolls to determine its weapons’ A and hazard rolls.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Skyborne Surveillance",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly RAVENWING FLY unit has shot.",
+          "target": "That RAVENWING FLY unit.",
+          "effect": "Select one visible enemy unit within 6″ of your unit. That enemy unit has +3″ detection range.",
+          "description": "WHEN: Your Shooting phase, when a friendly RAVENWING FLY unit has shot.\nTARGET: That RAVENWING FLY unit.\nEFFECT: Select one visible enemy unit within 6″ of your unit. That enemy unit has +3″ detection range."
+        },
+        {
+          "name": "We Are Vengeance",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged RAVENWING FLY unit has shot.",
+          "target": "That RAVENWING FLY unit.",
+          "effect": "Your unit can make a normal move of up to D3+3″.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged RAVENWING FLY unit has shot.\nTARGET: That RAVENWING FLY unit.\nEFFECT: Your unit can make a normal move of up to D3+3″."
+        },
+        {
+          "name": "Wings of Shadow",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit targets a friendly RAVENWING FLY/MOUNTED unit.",
+          "target": "That RAVENWING FLY/MOUNTED unit.",
+          "effect": "Your unit has Stealth.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit targets a friendly RAVENWING FLY/MOUNTED unit.\nTARGET: That RAVENWING FLY/MOUNTED unit.\nEFFECT: Your unit has Stealth."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Dark Angels",
+      "name": "Inner Circle Task Force",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Priority Assets"
+      ],
+      "rules": [
+        {
+          "name": "Vowed Target",
+          "description": "In your Command phase, select one objective marker to be your Vowed Target until the start of your next Command phase. Friendly DEATHWING INFANTRY units’ attacks that target an enemy unit within range of that objective marker have +1 to wound rolls."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include DARK ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Singular Will",
+          "points": 20,
+          "description": "DEATHWING model only. This unit can make consolidation moves of up to D3+3″.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Champion of the Deathwing",
+          "points": 20,
+          "description": "DEATHWING model only. This unit’s attacks that target an enemy unit within range of your Vowed Target have [SUSTAINED HITS 1].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Relic Teleportarium",
+          "cpCost": 1,
+          "when": "Your Movement phase, when a friendly DEATHWING unit with Deep Strike makes an ingress move.",
+          "target": "That DEATHWING unit.",
+          "effect": "When setting up your unit, you can set it up more than 6″ horizontally from enemy units instead of more than 8″. Your unit is not eligible to declare a charge until the end of the turn.",
+          "description": "WHEN: Your Movement phase, when a friendly DEATHWING unit with Deep Strike makes an ingress move.\nTARGET: That DEATHWING unit.\nEFFECT: When setting up your unit, you can set it up more than 6″ horizontally from enemy units instead of more than 8″. Your unit is not eligible to declare a charge until the end of the turn."
+        },
+        {
+          "name": "Duty Unto Death",
+          "cpCost": 1,
+          "when": "Fight phase, when an enemy unit targets a friendly DEATHWING unit.",
+          "target": "That DEATHWING unit.",
+          "effect": "When a model in your unit is destroyed before it has fought, roll one D6, adding 1 if it is engaged with an enemy unit within range of your Vowed Target. On a 4+, retain that model until your unit has fought or until the end of the phase.",
+          "description": "WHEN: Fight phase, when an enemy unit targets a friendly DEATHWING unit.\nTARGET: That DEATHWING unit.\nEFFECT: When a model in your unit is destroyed before it has fought, roll one D6, adding 1 if it is engaged with an enemy unit within range of your Vowed Target. On a 4+, retain that model until your unit has fought or until the end of the phase."
+        },
+        {
+          "name": "Wrath of the Lion",
+          "cpCost": 1,
+          "when": "Your Charge phase, when a friendly DEATHWING unit ends a charge move.",
+          "target": "That DEATHWING unit.",
+          "effect": "Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 3+, that enemy unit suffers 1 mortal wound (maximum 6).",
+          "description": "WHEN: Your Charge phase, when a friendly DEATHWING unit ends a charge move.\nTARGET: That DEATHWING unit.\nEFFECT: Select one enemy unit engaged with your unit. Roll one D6 for each model in your unit engaged with that enemy unit: for each 3+, that enemy unit suffers 1 mortal wound (maximum 6)."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Dark Angels",
+      "name": "Wrath of the Rock",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Take and Hold"
+      ],
+      "rules": [
+        {
+          "name": "Dutiful Tenacity",
+          "description": "Attacks that target friendly ADEPTUS ASTARTES INFANTRY/MOUNTED units have -1 to wound rolls if their S is greater than your unit’s T."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include DARK ANGELS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Tempered in Battle (Aura)",
+          "points": 10,
+          "description": "ADEPTUS ASTARTES model only. Friendly ADEPTUS ASTARTES units within 6″ of this model can re-roll leadership rolls.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Lord of the Ravenwing",
+          "points": 15,
+          "description": "RAVENWING model only. This unit can re-roll charge rolls.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Deathwing Assault",
+          "points": 15,
+          "description": "DEATHWING model with the Deep Strike ability only. In your first Movement phase, this unit can make an ingress move.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false,
+          "eligibilityLimiter": "DEATHWING model only.",
+          "requiredAbility": "Deep Strike"
+        },
+        {
+          "name": "Ancient Weapons",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. This model’s melee attacks have +2S and +1AP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Sacrifice for Victory",
+          "cpCost": 1,
+          "when": "Any phase, when a friendly DEATHWING/RAVENWING unit within range of an objective marker is destroyed.",
+          "target": "That DEATHWING/RAVENWING unit. You can target it even though it is destroyed.",
+          "effect": "Select one objective marker your unit controlled in the previous phase that has no enemy units within range (excluding AIRCRAFT units). That objective marker is secured.",
+          "description": "WHEN: Any phase, when a friendly DEATHWING/RAVENWING unit within range of an objective marker is destroyed.\nTARGET: That DEATHWING/RAVENWING unit. You can target it even though it is destroyed.\nEFFECT: Select one objective marker your unit controlled in the previous phase that has no enemy units within range (excluding AIRCRAFT units). That objective marker is secured."
+        },
+        {
+          "name": "The Lion’s Will",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit.",
+          "effect": "While your unit is within range of an objective marker, your unit has +1OC this turn.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit.\nEFFECT: While your unit is within range of an objective marker, your unit has +1OC this turn."
+        },
+        {
+          "name": "Inescapable Justice",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s melee attacks have [PRECISION].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s melee attacks have [PRECISION]."
+        },
+        {
+          "name": "Tactical Mastery",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly DEATHWING/RAVENWING unit.",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly DEATHWING/RAVENWING unit.\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        },
+        {
+          "name": "Knights of Iron",
+          "cpCost": 1,
+          "when": "Your Movement/Charge phase, when a friendly RAVENWING unit is selected to move or declares a charge.",
+          "target": "That RAVENWING unit.",
+          "effect": "Your unit has MOBILE.",
+          "description": "WHEN: Your Movement/Charge phase, when a friendly RAVENWING unit is selected to move or declares a charge.\nTARGET: That RAVENWING unit.\nEFFECT: Your unit has MOBILE."
+        },
+        {
+          "name": "Relics of the Dark Age",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to shoot.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit’s ranged attacks have +2S.",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to shoot.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit’s ranged attacks have +2S."
+        }
+      ],
+      "uniqueTags": [
+        "TERMINATOR"
+      ]
+    },
+    {
+      "chapter": "Deathwatch",
+      "name": "Deathwatch Support",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Disruption"
+      ],
+      "rules": [
+        {
+          "name": "Mission Tactics",
+          "description": "Friendly KILL TEAM units with this ability have the following abilities:\nFuror Tactics: If the devastator doctrine is active for your unit, your unit’s attacks have [SUSTAINED HITS 1].\nMalleus Tactics: If the tactical doctrine is active for your unit, your unit’s attacks have [LETHAL HITS].\nPurgatus Tactics: If the assault doctrine is active for your unit, your unit’s attacks that target an enemy unit within 9″ have [PRECISION]."
+        },
+        {
+          "name": "DEATHWATCH ALLIES",
+          "description": "Your army can include DEATHWATCH units alongside units from another Chapter, to a combined maximum of 500 points. DEATHWATCH models cannot be your WARLORD unless otherwise stated. KILL TEAM units can only have enhancements from this detachment; this is an exception to the Space Marine Chapters rule."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Beacon Angelis",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. If this unit is a KILL TEAM unit, this unit has Deep Strike, and when you target this unit with the Rapid Ingress stratagem, that use is -1CP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Blackstar Extraction",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One unengaged KILL TEAM unit.",
+          "effect": "Place your unit in strategic reserves.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One unengaged KILL TEAM unit.\nEFFECT: Place your unit in strategic reserves."
+        },
+        {
+          "name": "Kraken Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks have +6″ R and +1S.",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks have +6″ R and +1S."
+        },
+        {
+          "name": "Dragonfire Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks can re-roll wound rolls of 1 and have [IGNORES COVER].",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks can re-roll wound rolls of 1 and have [IGNORES COVER]."
+        },
+        {
+          "name": "Hellfire Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks (excluding attacks with [DEVASTATING WOUNDS]) have [ANTI-non-VEHICLE 4+].",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks (excluding attacks with [DEVASTATING WOUNDS]) have [ANTI-non-VEHICLE 4+]."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Deathwatch",
+      "name": "Black Spear Task Force",
+      "detachmentPoints": 3,
+      "forceDispositions": [
+        "Priority Assets",
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Mission Tactics",
+          "description": "Friendly KILL TEAM units with this ability have the following abilities:\nFuror Tactics: If the devastator doctrine is active for your unit, your unit’s attacks have [SUSTAINED HITS 1].\nMalleus Tactics: If the tactical doctrine is active for your unit, your unit’s attacks have [LETHAL HITS].\nPurgatus Tactics: If the assault doctrine is active for your unit, your unit’s attacks that target an enemy unit within 9″ have [PRECISION]."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include DEATHWATCH units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        },
+        {
+          "name": "Agents of the Imperium",
+          "description": "Your army cannot include AGENTS OF THE IMPERIUM DEATHWATCH units, except KILL TEAM CASSIUS (Legends)."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Thief of Secrets",
+          "points": 10,
+          "description": "WATCH MASTER/CAPTAIN model only. This model has the following melee weapon.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false,
+          "weaponProfile": {
+            "name": "Thief of Secrets",
+            "typeName": "Melee Weapons",
+            "characteristics": {
+              "Range": "Melee",
+              "A": "6",
+              "WS": "2+",
+              "S": "6",
+              "AP": "-3",
+              "D": "2"
+            }
+          }
+        },
+        {
+          "name": "Beacon Angelis",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. If this unit is a KILL TEAM unit, this unit has Deep Strike, and when you target this unit with the Rapid Ingress stratagem, that use is -1CP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Tome of Ectoclades",
+          "points": 15,
+          "description": "WATCH MASTER/CAPTAIN model only. (Once per battle, per army) In your Command phase, the assault doctrine, devastator doctrine and tactical doctrine are active until the start of your next Command phase.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Osseus Key (Aura)",
+          "points": 20,
+          "description": "WATCH MASTER/TECHMARINE model only. Enemy VEHICLE units within 6″ of this model have -1A to their attacks.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Kraken Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks have +6″ R and +1S.",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks have +6″ R and +1S."
+        },
+        {
+          "name": "Dragonfire Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks can re-roll wound rolls of 1 and have [IGNORES COVER].",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks can re-roll wound rolls of 1 and have [IGNORES COVER]."
+        },
+        {
+          "name": "Hellfire Rounds",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.",
+          "target": "That KILL TEAM unit.",
+          "effect": "Your unit’s ranged attacks (excluding attacks with [DEVASTATING WOUNDS]) have [ANTI-non-VEHICLE 4+].",
+          "description": "WHEN: Your Shooting phase, when a friendly KILL TEAM unit is selected to shoot.\nTARGET: That KILL TEAM unit.\nEFFECT: Your unit’s ranged attacks (excluding attacks with [DEVASTATING WOUNDS]) have [ANTI-non-VEHICLE 4+]."
+        },
+        {
+          "name": "Adaptive Tactics",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit.",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit.\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        },
+        {
+          "name": "Site-to-Site Teleportation",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One unengaged ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Place your unit in strategic reserves. If your unit is a KILL TEAM unit, it has Deep Strike until the end of your next Movement phase.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One unengaged ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Place your unit in strategic reserves. If your unit is a KILL TEAM unit, it has Deep Strike until the end of your next Movement phase."
+        },
+        {
+          "name": "Armour of Contempt",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Attacks that target your unit have -1AP until that enemy unit has attacked.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Attacks that target your unit have -1AP until that enemy unit has attacked."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Iron Hands",
+      "name": "Medusa’s Wrath",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Armoured Wrath",
+          "description": "When a friendly ADEPTUS ASTARTES unit is selected to shoot or fight, if it is within 6″ of a friendly CANNOK VAR/IRON FATHER FEIRROS unit, its attacks can re-roll one hit roll, one wound roll and one damage roll. Otherwise, its attacks can re-roll one hit roll or one wound roll or one damage roll."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Target Augury Web",
+          "points": 30,
+          "description": "TECHMARINE model only. In your Movement phase, at the start or end of this unit’s move, select one friendly ADEPTUS ASTARTES VEHICLE model within 3″ of this model. That model has [LETHAL HITS] until the start of your next Command phase.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Adept of the Omnissiah",
+          "points": 25,
+          "description": "TECHMARINE model only. (Once per battle round, per army) When an enemy unit targets a friendly ADEPTUS ASTARTES VEHICLE unit within 6″ of this model, that friendly unit has Feel No Pain 5+ until that enemy unit has attacked.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Master of the Machine War",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. In your Movement phase, select one visible friendly ADEPTUS ASTARTES VEHICLE unit within 6″ of this model. The devastator doctrine or tactical doctrine is active for that unit until the start of your next Command phase.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "The Flesh is Weak",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES model only. This model has +1T and Feel No Pain 5+.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Unbowed Conviction",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit that is below starting strength.",
+          "effect": "Until the start of your next Command phase, your unit can ignore modifiers to your unit’s:\n• BS and WS.\n• Hit rolls and Wound rolls.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit that is below starting strength.\nEFFECT: Until the start of your next Command phase, your unit can ignore modifiers to your unit’s:\n• BS and WS.\n• Hit rolls and Wound rolls."
+        },
+        {
+          "name": "Spirits of Iron",
+          "cpCost": 1,
+          "when": "Any phase, when a friendly ADEPTUS ASTARTES unit suffers a mortal wound.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit has Feel no pain 5+ against mortal wounds.",
+          "description": "WHEN: Any phase, when a friendly ADEPTUS ASTARTES unit suffers a mortal wound.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit has Feel no pain 5+ against mortal wounds."
+        },
+        {
+          "name": "Vengeful Animus",
+          "cpCost": 1,
+          "when": "Any phase, when a friendly ADEPTUS ASTARTES VEHICLE unit is destroyed, before rolling for deadly demise.",
+          "target": "That friendly ADEPTUS ASTARTES VEHICLE unit.",
+          "effect": "Change any deadly demise rolls made for this unit to an unmodified 6.",
+          "description": "WHEN: Any phase, when a friendly ADEPTUS ASTARTES VEHICLE unit is destroyed, before rolling for deadly demise.\nTARGET: That friendly ADEPTUS ASTARTES VEHICLE unit.\nEFFECT: Change any deadly demise rolls made for this unit to an unmodified 6."
+        },
+        {
+          "name": "Methodical Brutality",
+          "cpCost": 1,
+          "when": "Your Shooting phase or the Fight phase when a friendly ADEPTUS ASTARTES unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s attacks have [SUSTAINED HITS 1].\n+ • If your unit is a VEHICLE unit, have +1 to wound rolls.",
+          "description": "WHEN: Your Shooting phase or the Fight phase when a friendly ADEPTUS ASTARTES unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s attacks have [SUSTAINED HITS 1].\n+ • If your unit is a VEHICLE unit, have +1 to wound rolls."
+        },
+        {
+          "name": "Ancient Fury",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES DREADNOUGHT unit.",
+          "effect": "Until the start of your next Command phase, your unit has:\n• +1″ M.\n• +1 T.\n• +1 Ld.\n• +1 OC.\n• +1 to hit rolls.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES DREADNOUGHT unit.\nEFFECT: Until the start of your next Command phase, your unit has:\n• +1″ M.\n• +1 T.\n• +1 Ld.\n• +1 OC.\n• +1 to hit rolls."
+        },
+        {
+          "name": "Power of the Machine Spirit",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES VEHICLE unit has shot.",
+          "target": "That ADEPTUS ASTARTES VEHICLE unit.",
+          "effect": "Your unit shoots using:\n• Snap shooting.\n• Or: If your unit is at half-strength/below half-strength, normal shooting.\nWhile doing so your unit can only target that enemy unit.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES VEHICLE unit has shot.\nTARGET: That ADEPTUS ASTARTES VEHICLE unit.\nEFFECT: Your unit shoots using:\n• Snap shooting.\n• Or: If your unit is at half-strength/below half-strength, normal shooting.\nWhile doing so your unit can only target that enemy unit."
+        }
+      ],
+      "uniqueTags": [
+        "IRONSTORM"
+      ]
+    },
+    {
+      "chapter": "Imperial Fists",
+      "name": "Ceramite Sentinels",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Take and Hold"
+      ],
+      "rules": [
+        {
+          "name": "Adaptive Defence",
+          "description": "Friendly ADEPTUS ASTARTES units within terrain can re-roll wound rolls of 1. Your unit is entrenched if it is within terrain, was not set up this turn, and no model in that unit has moved more than 3″ this turn.\nDefensive Mastery: At the start of a phase, friendly DARNATH LYSANDER/TOR GARADON units are entrenched regardless of those conditions."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include IMPERIAL FISTS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Honour Indefatigable",
+          "points": 10,
+          "description": "GRAVIS model only. (Once per battle, per army) At the end of the phase in which this model is destroyed, roll one D6: on a 2+, return this model as close as possible to where it was destroyed, unengaged, with 3 wounds remaining.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Castellum Omnivox",
+          "points": 10,
+          "description": "ADEPTUS ASTARTES unit only. When this unit is selected to make an advance/fall-back move, that advance/fall-back move does not prevent this unit from being eligible to start an action.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": true
+        },
+        {
+          "name": "Defensive Mastery",
+          "points": 10,
+          "description": "ADEPTUS ASTARTES model only. When both players have deployed their armies, you can redeploy up to three friendly ADEPTUS ASTARTES INFANTRY units. When doing so, you can set those units up in strategic reserves, regardless of how many units are already in strategic reserves.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Spy Skull Data Link",
+          "points": 10,
+          "description": "ADEPTUS ASTARTES unit only. This unit’s ranged weapons have [IGNORES COVER].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": true
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Unyielding Might",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit.",
+          "effect": "While your unit is within range of an objective marker, your unit has +1OC this turn.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit.\nEFFECT: While your unit is within range of an objective marker, your unit has +1OC this turn."
+        },
+        {
+          "name": "Stand Firm",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES (excluding MONSTER/VEHICLE units) unit.",
+          "target": "That ADEPTUS ASTARTES (excluding MONSTER/VEHICLE units) unit.",
+          "effect": "Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T. If your unit is entrenched, all attacks that target your unit have -1 to wound rolls.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES (excluding MONSTER/VEHICLE units) unit.\nTARGET: That ADEPTUS ASTARTES (excluding MONSTER/VEHICLE units) unit.\nEFFECT: Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T. If your unit is entrenched, all attacks that target your unit have -1 to wound rolls."
+        },
+        {
+          "name": "Augmented Targeting",
+          "cpCost": 1,
+          "when": "Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s attacks have [LETHAL HITS] or [SUSTAINED HITS 1]. If your unit is entrenched, those attacks have both.",
+          "description": "WHEN: Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s attacks have [LETHAL HITS] or [SUSTAINED HITS 1]. If your unit is entrenched, those attacks have both."
+        },
+        {
+          "name": "Establish Supremacy",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly entrenched ADEPTUS ASTARTES INFANTRY unit makes a consolidation move.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit can make an objective consolidation move, ignoring its Before Moving restrictions. It can leave engagement if the move’s conditions are met.",
+          "description": "WHEN: Fight phase, when a friendly entrenched ADEPTUS ASTARTES INFANTRY unit makes a consolidation move.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit can make an objective consolidation move, ignoring its Before Moving restrictions. It can leave engagement if the move’s conditions are met."
+        },
+        {
+          "name": "Priority Strike",
+          "cpCost": 1,
+          "when": "Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit’s attacks that target MONSTER/VEHICLE units have +1 to wound rolls.",
+          "description": "WHEN: Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit’s attacks that target MONSTER/VEHICLE units have +1 to wound rolls."
+        },
+        {
+          "name": "Evasive Repositioning",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit has shot and your unit lost a wound.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit can make a normal move of up to D6″, or up to D3+3″ if it is entrenched. Your unit cannot embark this turn.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit has shot and your unit lost a wound.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit can make a normal move of up to D6″, or up to D3+3″ if it is entrenched. Your unit cannot embark this turn."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Raven Guard",
+      "name": "Shadowmark Talon",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Disruption"
+      ],
+      "rules": [
+        {
+          "name": "Shadow Tactics",
+          "description": "Friendly ADEPTUS ASTARTES units have Stealth.\nFriendly PHOBOS/SCOUT SQUAD units have -3″ detection range.\nFriendly AETHON SHAAN units have the following ability:\nUnparalleled Tactician: (Once per battle round, per army) When you use the Into Darkness stratagem, that use is -1CP."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Blackwing Shroud",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES INFANTRY model only. This unit has Infiltrators.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Umbral Raptor",
+          "points": 15,
+          "description": "Adeptus Astartes infantry> model only. This model has:\n• Fights First.\n• Lone Operative.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Hunter’s Instincts",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. In your first Movement phase, this unit can make an ingress move.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Coronal Susurrant",
+          "points": 30,
+          "description": "PHOBOS model only. Each enemy unit (excluding MONSTER/VEHICLE UNITS) engaged with this unit cannot be targeted by controlling player stratagems.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Into Darkness",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One unengaged ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Place your unit in strategic reserves.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One unengaged ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Place your unit in strategic reserves."
+        },
+        {
+          "name": "Raptorial Vigilance",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY unit.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit can make a normal move of:\n• Up to D6″.\n• Or: If your unit is a PHOBOS/SCOUT SQUAD unit, up to 6″.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY unit.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit can make a normal move of:\n• Up to D6″.\n• Or: If your unit is a PHOBOS/SCOUT SQUAD unit, up to 6″."
+        },
+        {
+          "name": "Murderous Fusillade",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit that made an ingress move this turn is selected to shoot.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit’s ranged attacks have:\n• +1BS.\n• +1AP.",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit that made an ingress move this turn is selected to shoot.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit’s ranged attacks have:\n• +1BS.\n• +1AP."
+        },
+        {
+          "name": "Suppressed Weapons",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit has shot.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Those attacks do not prevent your unit from being hidden.",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit has shot.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Those attacks do not prevent your unit from being hidden."
+        },
+        {
+          "name": "Feint and Thrust",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "The tactical doctrine is active for your unit in addition to any other combat doctrine, until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: The tactical doctrine is active for your unit in addition to any other combat doctrine, until the start of your next Command phase."
+        },
+        {
+          "name": "Lay Low the Tyrants",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit’s melee attacks have [PRECISION].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit’s melee attacks have [PRECISION]."
+        }
+      ],
+      "uniqueTags": [
+        "PHOBOS"
+      ]
+    },
+    {
+      "chapter": "Salamanders",
+      "name": "Forgefather’s Seekers",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Priority Assets"
+      ],
+      "rules": [
+        {
+          "name": "Vulkan’s Quest",
+          "description": "• You can select the devastator doctrine one additional time per battle.\n• Friendly ADEPTUS ASTARTES units’ ranged attacks that target a unit within 12″, have +1 S.\nIf your army includes a VULKAN HE’STAN unit, friendly INFERNUS SQUAD units have the following:\n• When this unit is selected to make an advance/fall-back move, that advance/fall-back move does not prevent this unit from being eligible to start an action.\n• When this unit starts an action, that action does not prevent this unit from being eligible to shoot."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include SALAMANDERS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Forged in Battle",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This unit can ignore modifiers to:\n• BS.\n• WS.\n• Hit rolls.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Adamantine Mantle",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. Attacks allocated to this model have -1D.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "War Tempered Artifice",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This model’s melee attacks have:\n• +1S.\n• +1D.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Immolator",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. This unit’s [TORRENT] weapons have +1A.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Blazing Earth",
+          "cpCost": 1,
+          "when": "Start of your opponent’s Charge phase.",
+          "target": "One friendly unengaged ADEPTUS ASTARTES unit equipped with one or more TORRENT/MELTA weapons.",
+          "effect": "Select one visible enemy unit within 12″ of your unit. That enemy unit has -1 to charge rolls.",
+          "description": "WHEN: Start of your opponent’s Charge phase.\nTARGET: One friendly unengaged ADEPTUS ASTARTES unit equipped with one or more TORRENT/MELTA weapons.\nEFFECT: Select one visible enemy unit within 12″ of your unit. That enemy unit has -1 to charge rolls."
+        },
+        {
+          "name": "Wrath and Ruin",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "The assault doctrine or tactical doctrine is active for your unit, until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: The assault doctrine or tactical doctrine is active for your unit, until the start of your next Command phase."
+        },
+        {
+          "name": "Forged in Fire",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly engaged ADEPTUS ASTARTES unit is selected to shoot.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s TORRENT weapons:\n• Do not have [BLAST].\n• Have [CLOSE-QUARTERS].\n• Have +1 A.",
+          "description": "WHEN: Your Shooting phase, when a friendly engaged ADEPTUS ASTARTES unit is selected to shoot.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s TORRENT weapons:\n• Do not have [BLAST].\n• Have [CLOSE-QUARTERS].\n• Have +1 A."
+        },
+        {
+          "name": "Immolation Protocols",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES INFANTRY.",
+          "effect": "Your unit’s ranged [TORRENT] attacks have +1AP.",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES INFANTRY.\nEFFECT: Your unit’s ranged [TORRENT] attacks have +1AP."
+        },
+        {
+          "name": "Crucible of Battle",
+          "cpCost": 1,
+          "when": "Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack an enemy unit within 6″.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit’s attacks can re-roll hit rolls of 1 and wound rolls of 1.",
+          "description": "WHEN: Your Shooting phase or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack an enemy unit within 6″.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit’s attacks can re-roll hit rolls of 1 and wound rolls of 1."
+        },
+        {
+          "name": "Burning Vengeance",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit has shot a friendly ADEPTUS ASTARTES TRANSPORT unit.",
+          "target": "One friendly ADEPTUS ASTARTES unit embarked within that ADEPTUS ASTARTES TRANSPORT unit.",
+          "effect": "Your ADEPTUS ASTARTES unit can:\n• Make a disembark move.\n• Shoot using normal shooting, but when doing so your unit can only target that enemy unit.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit has shot a friendly ADEPTUS ASTARTES TRANSPORT unit.\nTARGET: One friendly ADEPTUS ASTARTES unit embarked within that ADEPTUS ASTARTES TRANSPORT unit.\nEFFECT: Your ADEPTUS ASTARTES unit can:\n• Make a disembark move.\n• Shoot using normal shooting, but when doing so your unit can only target that enemy unit."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Space Wolves",
+      "name": "Champions of Fenris",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Priority Assets"
+      ],
+      "rules": [
+        {
+          "name": "The Great Wolf Watches",
+          "description": "Friendly ADEPTUS ASTARTES CHARACTER units have the following ability:\nCountercharge: (Once per battle round, per unit) When you target this unit with the Heroic Intervention stratagem, that use is -1CP."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Preyslayer",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES INFANTRY model only. This unit can re-roll charge rolls.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "A Giant Amongst Giants",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES INFANTRY model only.\n• This model has +2W.\n• This model’s melee attacks have +1S.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Champion’s Guidance",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES CHARACTER unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES CHARACTER unit.",
+          "effect": "Your unit’s melee attacks can re-roll hit rolls of 1 and wound rolls of 1.",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES CHARACTER unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES CHARACTER unit.\nEFFECT: Your unit’s melee attacks can re-roll hit rolls of 1 and wound rolls of 1."
+        },
+        {
+          "name": "Birth of a Saga",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit (excluding MONSTER/VEHICLE units).",
+          "effect": "Until the start of your next Command phase, your unit has CHARACTER.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit (excluding MONSTER/VEHICLE units).\nEFFECT: Until the start of your next Command phase, your unit has CHARACTER."
+        },
+        {
+          "name": "Heroic Resolve",
+          "cpCost": 2,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES CHARACTER unit.",
+          "target": "That ADEPTUS ASTARTES CHARACTER unit.",
+          "effect": "Attacks that target your unit have -1 D until that enemy unit has attacked.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES CHARACTER unit.\nTARGET: That ADEPTUS ASTARTES CHARACTER unit.\nEFFECT: Attacks that target your unit have -1 D until that enemy unit has attacked."
+        }
+      ],
+      "uniqueTags": [
+        "TERMINATOR"
+      ]
+    },
+    {
+      "chapter": "Space Wolves",
+      "name": "Saga of the Beastslayer",
+      "detachmentPoints": 1,
+      "forceDispositions": [
+        "Purge the Foe"
+      ],
+      "rules": [
+        {
+          "name": "Legendary Slayers",
+          "description": "Attacks made by friendly BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN units have [LETHAL HITS: CHARACTER/MONSTER/VEHICLE]."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Hunter’s Guile",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. When both players have deployed their armies, you can redeploy up to three friendly BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN units. When doing so, you can set those units up in strategic reserves, regardless of how many units are already in strategic reserves.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Wolf-Touched",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES model only. This unit has:\n• WULFEN.\n• +2″M.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Co-ordinated Strike",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One unengaged BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit that is within 9″ of one or more battlefield edges.",
+          "effect": "Place your unit in strategic reserves.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One unengaged BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit that is within 9″ of one or more battlefield edges.\nEFFECT: Place your unit in strategic reserves."
+        },
+        {
+          "name": "Impetuosity",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit has shot.",
+          "target": "That BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit.",
+          "effect": "Your unit can make a surge move of up to D6″.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit has shot.\nTARGET: That BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit.\nEFFECT: Your unit can make a surge move of up to D6″."
+        },
+        {
+          "name": "Unbridled Ferocity",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit is selected to fight.",
+          "target": "That BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit.",
+          "effect": "Your unit’s melee attacks have [LANCE].",
+          "description": "WHEN: Fight phase, when a friendly BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit is selected to fight.\nTARGET: That BLOOD CLAWS/THUNDERWOLF CAVALRY/WULFEN unit.\nEFFECT: Your unit’s melee attacks have [LANCE]."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Space Wolves",
+      "name": "Saga of the Great Wolf",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Take and Hold"
+      ],
+      "rules": [
+        {
+          "name": "Master of Wolves",
+          "description": "Friendly ADEPTUS ASTARTES units (excluding MONSTER/VEHICLES units) with this ability have the following abilities:\nEncircling Jaws: If the assault doctrine is active for your unit, your unit has +1 to advance rolls and charge rolls.\nHunter’s Eye: If the devastator doctrine is active for your unit, your unit’s ranged attacks can re-roll hit rolls of 1.\nFerocious Strike: If the tactical doctrine is active for your unit, your unit’s attacks that target an enemy unit with 9″ have [SUSTAINED HITS 1].\nFriendly LOGAN GRIMNAR units have the following ability:\nHowling Onslaught: (Once per battle, per army) In your command phase, you can use this ability. If you do, friendly ADEPTUS ASTARTES MONSTER/VEHICLE units benefit from the Master of Wolves rule until the start of your next command phase."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include SPACE WOLVES units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Howlmaw",
+          "points": 15,
+          "description": "WOLF PRIEST model only. (Once per turn, per unit) At the start of the fight phase, you can select one enemy unit within 6″ of this model. That unit makes a battle-shock roll with -1 to that battle-shock roll.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Grimnar’s Mark",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES TERMINATOR CAPTAIN model only. (Once per battle round, per army) You can target this unit with the Rapid Ingress/Heroic Intervention stratagem, regardless of any other uses of that stratagem this phase. If you do:\n• That use is -1CP.\n• That use does not prevent any uses of that stratagem on other units this phase.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Chariots of the Storm",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. When both players have deployed their armies, you can redeploy up to three friendly ADEPTUS ASTARTES units. When doing so, you can set those units up in strategic reserves, regardless of how many units are already in strategic reserves.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Skjald’s Foretelling",
+          "points": 20,
+          "description": "WOLF GUARD BATTLE LEADER model only. This unit’s melee attacks have [LANCE].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Fenrisian Ferocity",
+          "cpCost": 1,
+          "when": "Your Movement/Charge phase, when a friendly ADEPTUS ASTARTES MOUNTED/WALKER unit is selected to move or declares a charge.",
+          "target": "That ADEPTUS ASTARTES MOUNTED/WALKER unit.",
+          "effect": "Your unit has MOBILE.",
+          "description": "WHEN: Your Movement/Charge phase, when a friendly ADEPTUS ASTARTES MOUNTED/WALKER unit is selected to move or declares a charge.\nTARGET: That ADEPTUS ASTARTES MOUNTED/WALKER unit.\nEFFECT: Your unit has MOBILE."
+        },
+        {
+          "name": "Eye of the Pack",
+          "cpCost": 1,
+          "when": "Your Shooting phase, or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack.",
+          "target": "That ADEPTUS ASTARTES INFANTRY unit.",
+          "effect": "Your unit’s attacks can re-roll wound rolls of 1 and 2.",
+          "description": "WHEN: Your Shooting phase, or the Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY unit is selected to attack.\nTARGET: That ADEPTUS ASTARTES INFANTRY unit.\nEFFECT: Your unit’s attacks can re-roll wound rolls of 1 and 2."
+        },
+        {
+          "name": "Battle Instincts",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit has shot.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit can make a normal move of up to D3+3″.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit has shot.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit can make a normal move of up to D3+3″."
+        },
+        {
+          "name": "Grimnar’s Command",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit (excluding MONSTER/VEHICLE units).",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit (excluding MONSTER/VEHICLE units).\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        },
+        {
+          "name": "Wolf Totems",
+          "cpCost": 1,
+          "when": "Any phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit suffers a mortal wound.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit has Feel No Pain 5+ against mortal wounds.",
+          "description": "WHEN: Any phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit suffers a mortal wound.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit has Feel No Pain 5+ against mortal wounds."
+        },
+        {
+          "name": "Fangs of the Pack",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit’s melee attacks have [PRECISION].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES INFANTRY/MOUNTED unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit’s melee attacks have [PRECISION]."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "Ultramarines",
+      "name": "Blade of Ultramar",
+      "detachmentPoints": 3,
+      "forceDispositions": [
+        "Priority Assets",
+        "Take and Hold"
+      ],
+      "rules": [
+        {
+          "name": "Mastered Doctrines",
+          "description": "If your army includes a MARNEUS CALGAR unit, you can select the assault doctrine/devastator doctrine/tactical doctrine each one additional time per battle."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Student of the Codex",
+          "points": 20,
+          "description": "CAPTAIN model only. The tactical doctrine is active for this unit in addition to any other combat doctrine.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Armour of Antoninus",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES model only. This model has 2+ Sv and Feel No Pain 5+.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Oath of Macragge",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. This model’s melee attacks have +1S and +1AP. If the assault doctrine is active for this unit, those attacks instead have +2S and +2AP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Veteran of Behemoth",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES model only. This unit’s ranged attacks have [SUSTAINED HITS 1].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Armour of Contempt",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Attacks that target your unit have -1AP until that enemy unit has attacked.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Attacks that target your unit have -1AP until that enemy unit has attacked."
+        },
+        {
+          "name": "Exemplary Vigilance",
+          "cpCost": 1,
+          "when": "Your Shooting phase, when a friendly ADEPTUS ASTARTES unit is selected to shoot.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s ranged attacks have [IGNORES COVER].",
+          "description": "WHEN: Your Shooting phase, when a friendly ADEPTUS ASTARTES unit is selected to shoot.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s ranged attacks have [IGNORES COVER]."
+        },
+        {
+          "name": "Ultramarian Adaptivity",
+          "cpCost": 1,
+          "when": "Your Command phase.",
+          "target": "One friendly ADEPTUS ASTARTES unit.",
+          "effect": "Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase.",
+          "description": "WHEN: Your Command phase.\nTARGET: One friendly ADEPTUS ASTARTES unit.\nEFFECT: Select one combat doctrine. That combat doctrine is active for your unit until the start of your next Command phase."
+        },
+        {
+          "name": "Courage and Honour",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s melee attacks have [LANCE].",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s melee attacks have [LANCE]."
+        },
+        {
+          "name": "Practical Tactics",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.",
+          "effect": "Your unit can make a normal move of up to D3+3″.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED unit.\nEFFECT: Your unit can make a normal move of up to D3+3″."
+        },
+        {
+          "name": "Tactical Foresight",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T.",
+          "description": "WHEN: Your opponent’s Shooting phase or the Fight phase, when an enemy unit targets a friendly ADEPTUS ASTARTES unit.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Attacks that target your unit have -1 to wound rolls if their S is greater than your unit’s T."
+        }
+      ],
+      "uniqueTags": []
+    },
+    {
+      "chapter": "White Scars",
+      "name": "Spearpoint Task Force",
+      "detachmentPoints": 2,
+      "forceDispositions": [
+        "Reconnaissance"
+      ],
+      "rules": [
+        {
+          "name": "Storm-swift Onslaught",
+          "description": "You can select the assault doctrine or tactical doctrine one additional time per battle. Friendly ADEPTUS ASTARTES MOUNTED/SPEEDER units have +1 to advance rolls.\nFriendly SUBODEN KHAN units have the following ability:\nWrath of the First Khan: At the end of the Fight phase, if this unit was eligible to fight this phase, this unit can make a normal move if it is unengaged, or a fall-back move if it is engaged."
+        },
+        {
+          "name": "Restrictions",
+          "description": "Your army can include WHITE SCARS units, but it cannot include any ADEPTUS ASTARTES units drawn from any other Chapter."
+        }
+      ],
+      "enhancements": [
+        {
+          "name": "Stormseer",
+          "points": 15,
+          "description": "ADEPTUS ASTARTES model only. This unit can re-roll advance rolls.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Chogorian Huntmaster (Upgrade)",
+          "points": 20,
+          "description": "ADEPTUS ASTARTES MOUNTED/SPEEDER unit only. When this unit makes an ingress move, treat the battle round number as one higher.",
+          "kind": "upgrade",
+          "allowNonCharacterBearer": true
+        },
+        {
+          "name": "Hunter’s Eye",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This unit’s ranged attacks have [IGNORES COVER] and [SUSTAINED HITS 1].",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        },
+        {
+          "name": "Spearpoint Paragon",
+          "points": 25,
+          "description": "ADEPTUS ASTARTES model only. This model’s melee attacks have +1S and +1AP. If this unit made a charge move this turn, those attacks instead have +2S and +2AP.",
+          "kind": "enhancement",
+          "allowNonCharacterBearer": false
+        }
+      ],
+      "stratagems": [
+        {
+          "name": "Evasive Manoeuvres",
+          "cpCost": 1,
+          "when": "Your opponent’s Shooting phase, when an enemy unit targets a friendly ADEPTUS ASTARTES MOUNTED/SPEEDER unit.",
+          "target": "That ADEPTUS ASTARTES MOUNTED/SPEEDER unit.",
+          "effect": "Ranged attacks that target your unit have -1 to wound rolls.",
+          "description": "WHEN: Your opponent’s Shooting phase, when an enemy unit targets a friendly ADEPTUS ASTARTES MOUNTED/SPEEDER unit.\nTARGET: That ADEPTUS ASTARTES MOUNTED/SPEEDER unit.\nEFFECT: Ranged attacks that target your unit have -1 to wound rolls."
+        },
+        {
+          "name": "Mobile Lethality",
+          "cpCost": 1,
+          "when": "Your Movement phase, when a friendly ADEPTUS ASTARTES unit makes an advance/fall-back move.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "That move does not prevent your unit from being eligible to shoot. The assault doctrine is active for your unit.",
+          "description": "WHEN: Your Movement phase, when a friendly ADEPTUS ASTARTES unit makes an advance/fall-back move.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: That move does not prevent your unit from being eligible to shoot. The assault doctrine is active for your unit."
+        },
+        {
+          "name": "Flawless Riders",
+          "cpCost": 1,
+          "when": "Your Movement/Charge phase, when a friendly ADEPTUS ASTARTES MOUNTED unit is selected to move or declares a charge.",
+          "target": "That ADEPTUS ASTARTES MOUNTED unit.",
+          "effect": "Your unit has MOBILE.",
+          "description": "WHEN: Your Movement/Charge phase, when a friendly ADEPTUS ASTARTES MOUNTED unit is selected to move or declares a charge.\nTARGET: That ADEPTUS ASTARTES MOUNTED unit.\nEFFECT: Your unit has MOBILE."
+        },
+        {
+          "name": "Spear Thrust, Sabre Swing",
+          "cpCost": 1,
+          "when": "Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.",
+          "target": "That ADEPTUS ASTARTES unit.",
+          "effect": "Your unit’s melee attacks have [LETHAL HITS] or [LANCE]. If your unit is MOUNTED, those attacks have both.",
+          "description": "WHEN: Fight phase, when a friendly ADEPTUS ASTARTES unit is selected to fight.\nTARGET: That ADEPTUS ASTARTES unit.\nEFFECT: Your unit’s melee attacks have [LETHAL HITS] or [LANCE]. If your unit is MOUNTED, those attacks have both."
+        },
+        {
+          "name": "Withdraw and Regroup",
+          "cpCost": 1,
+          "when": "End of your opponent’s Fight phase.",
+          "target": "One unengaged ADEPTUS ASTARTES MOUNTED/SPEEDER unit.",
+          "effect": "Place your unit in strategic reserves.",
+          "description": "WHEN: End of your opponent’s Fight phase.\nTARGET: One unengaged ADEPTUS ASTARTES MOUNTED/SPEEDER unit.\nEFFECT: Place your unit in strategic reserves."
+        },
+        {
+          "name": "Hunter’s Instinct",
+          "cpCost": 1,
+          "when": "Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED/SPEEDER unit.",
+          "target": "That ADEPTUS ASTARTES INFANTRY/MOUNTED/SPEEDER unit.",
+          "effect": "Your unit can make a normal move of up to D3+3″.",
+          "description": "WHEN: Your opponent’s Movement phase, when an enemy unit ends a move within 8″ of a friendly unengaged ADEPTUS ASTARTES INFANTRY/MOUNTED/SPEEDER unit.\nTARGET: That ADEPTUS ASTARTES INFANTRY/MOUNTED/SPEEDER unit.\nEFFECT: Your unit can make a normal move of up to D3+3″."
+        }
+      ],
+      "uniqueTags": []
+    }
+  ]
+}

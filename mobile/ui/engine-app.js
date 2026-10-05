@@ -1237,7 +1237,38 @@ function showBuilder() {
   render();
 }
 
+let rosterCalculationCache = null;
+let configurationPanelActive = false;
+
+// Reuse calculations only during one synchronous render or document snapshot.
+// Every subsequent edit starts with fresh results, including pricing contexts.
+function withRosterCalculationCache(action) {
+  if (rosterCalculationCache) return action();
+  rosterCalculationCache = new Map();
+  try { return action(); }
+  finally { rosterCalculationCache = null; }
+}
+
+function cachedRosterCalculation(key, calculate) {
+  if (!rosterCalculationCache) return calculate();
+  if (!rosterCalculationCache.has(key)) rosterCalculationCache.set(key, calculate());
+  return rosterCalculationCache.get(key);
+}
+
+function resetConfigurationDisclosures() {
+  for (const key of Object.keys(sidebarDisclosureState)) {
+    if (["armyRules", "detachments", "forceDispositions", "stratagems", "enhancements", "catalogueOptions"].includes(key)
+      || key === "coreStratagems" || key.startsWith("detachment-preview:") && key.endsWith(":detachmentToggle")) {
+      sidebarDisclosureState[key] = false;
+    }
+  }
+}
+
 function render() {
+  return withRosterCalculationCache(renderUncached);
+}
+
+function renderUncached() {
   setRosterLayoutModeButtons();
   renderRosterSaveBrowser();
   const currentPlayLabel = currentRosterSaveId && window.ArcadienPlayMode?.hasActive?.(currentRosterSaveId) ? "Resume" : "Play Mode";
@@ -1266,6 +1297,7 @@ function render() {
 }
 
 function selectRosterPanel(panel, instanceId = null) {
+  if (panel === "configuration") configurationPanelActive = false;
   selectedPanel = panel;
   selectedInstanceId = instanceId;
   refreshRosterSelectionState();
@@ -1926,13 +1958,7 @@ function renderNewRosterForm() {
             ${detachments.length ? detachmentGroups.map(group => `
               <div class="detachmentChoiceGroup">
                 <h3>${escapeHtml(group.label)}</h3>
-                ${group.detachments.map(detachment => `
-                  <label class="compactOptionRow detachmentOption">
-                    <span class="optionName">${escapeHtml(detachment.name)}</span>
-                    <span class="optionLimits">${Number(detachment.detachmentPoints || 0)}DP</span>
-                    <input class="newRosterDetachment" type="checkbox" data-detachment-id="${escapeHtml(detachment.id)}" ${selectedIds.has(detachment.id) ? "checked" : ""}>
-                  </label>
-                `).join("")}
+                ${group.detachments.map(detachment => renderDetachmentChoice(army, detachment, selectedIds, "newRosterDetachment")).join("")}
               </div>
             `).join("") : `<p class="muted">No detachment data found for this faction.</p>`}
           </div>
@@ -1969,6 +1995,7 @@ function renderNewRosterForm() {
       renderNewRosterForm();
     };
   }
+  bindDetachmentPreviews(newRosterForm);
   for (const input of newRosterForm.querySelectorAll(".newRosterDetachment")) {
     input.onchange = () => {
       newRosterDraft.detachmentIds = [...newRosterForm.querySelectorAll(".newRosterDetachment:checked")]
@@ -1978,6 +2005,68 @@ function renderNewRosterForm() {
   }
   document.getElementById("cancelNewRoster").onclick = closeNewRosterModal;
   document.getElementById("createNewRoster").onclick = createRosterFromDraft;
+}
+
+function detachmentDispositionNames(army, detachment) {
+  return [...new Set((detachment.forceDispositions?.length ? detachment.forceDispositions : [detachment.forceDisposition]).filter(Boolean).map(item => typeof item === "string" ? (army.forceDispositions || []).find(d => d.id === item)?.name || item : item.name).filter(Boolean))];
+}
+
+function renderDispositionIcons(army, detachment) {
+  const shapes = {
+    "Take and Hold": ['#23683e', '<path stroke="#d8dcd0" stroke-width="1" d="M4 2h24v22L16 31 4 24Z"/><path fill="#e2e5d6" d="M8.5 14a7.5 8 0 0 1 15 0l-1 4-3 1v4h-2v-3h-1v4h-2v-4h-1v3h-2v-4l-3-1Z"/><path fill="#23683e" d="M10 14q3-2 5 0l-1 3h-3Zm7 0q3-2 5 0l-1 3h-3Zm-1 2-2 3h4Z"/>'],
+    "Purge the Foe": ['#982820', '<path stroke="#d8dcd0" stroke-width="1" stroke-linejoin="round" d="M2 3h28L16 30Z"/><path fill="#e2e5d6" d="M14.5 6h3v2h-1v4h3v2h-3v10L16 26l-.5-2V14h-3v-2h3V8h-1Z"/>'],
+    "Priority Assets": ['#977d18', '<path stroke="#d8dcd0" stroke-width="1" stroke-linejoin="round" d="m16 1 15 15-15 15L1 16Z"/><circle fill="#e2e5d6" cx="16" cy="16" r="3.5"/><path fill="#e2e5d6" d="m16 11-3-5h2V4h2v2h2Zm0 10-3 5h2v2h2v-2h2ZM11 16l-5-3v2H4v2h2v2Zm10 0 5-3v2h2v2h-2v2Z"/>'],
+    "Disruption": ['#135872', '<path stroke="#d8dcd0" stroke-width="1" stroke-linejoin="round" d="M8 3h16l7 13-7 13H8L1 16Z"/><path stroke="#e2e5d6" stroke-width="4" stroke-linecap="square" d="m10 10 12 12m0-12L10 22"/>'],
+    "Reconnaissance": ['#08706b', '<circle stroke="#d8dcd0" stroke-width="1" cx="16" cy="16" r="15"/><path fill="none" stroke="#e2e5d6" stroke-width="2.5" stroke-linejoin="round" d="M5 16q11-13 22 0-11 13-22 0Z"/><circle fill="#e2e5d6" cx="16" cy="16" r="5"/><circle fill="#08706b" cx="16" cy="16" r="2.5"/><circle fill="#e2e5d6" cx="17" cy="14.5" r="1"/>']
+  };
+  return detachmentDispositionNames(army, detachment).map(name => {
+    const icon = shapes[name];
+    const id = "dispositionPopover" + (++rulePopupCounter);
+    const image = icon ? `<svg viewBox="0 0 32 32" aria-hidden="true" fill="${icon[0]}">${icon[1]}</svg>` : `<span aria-hidden="true">${escapeHtml(forceDispositionMark(name))}</span>`;
+    return `<button type="button" class="dispositionIconButton" popovertarget="${id}" aria-label="Disposition: ${escapeHtml(name)}" title="${escapeHtml(name)}">${image}</button><span id="${id}" popover="auto" class="dispositionPopover">${escapeHtml(name)}</span>`;
+  }).join("");
+}
+
+function bindDispositionIcons(container) {
+  for (const button of container.querySelectorAll(".dispositionIconButton")) {
+    const popup = container.querySelector("#" + button.getAttribute("popovertarget"));
+    const position = () => { const rect = button.getBoundingClientRect(); popup.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 190)) + "px"; popup.style.top = rect.bottom + 5 + "px"; };
+    button.onclick = event => { event.stopPropagation(); position(); };
+    button.onpointerenter = event => { if (event.pointerType === "mouse") { position(); popup.showPopover(); } };
+    button.onpointerleave = event => { if (event.pointerType === "mouse") popup.hidePopover(); };
+    button.onfocus = () => { if (button.matches(":focus-visible")) { position(); popup.showPopover(); } };
+    button.onblur = () => popup.hidePopover();
+  }
+}
+
+function renderDetachmentChoice(army, detachment, selectedIds, inputClass) {
+  const key = "detachment-preview:" + (army.id || army.faction) + ":" + detachment.id + ":" + inputClass;
+  const rules = detachment.rules || [];
+  return `
+    <div class="detachmentPickerRow">
+      <details class="detachmentPreview" data-disclosure-key="${escapeHtml(key)}" ${disclosureOpenAttribute(key)}>
+        <summary class="detachmentPreviewHeading">
+          <span class="detachmentPreviewMarker" aria-hidden="true">▸</span>
+          <span class="optionName">${escapeHtml(detachment.name)}</span>
+          <span class="detachmentRowMeta"><span class="dispositionIcons">${renderDispositionIcons(army, detachment)}</span><span class="optionLimits">${Number(detachment.detachmentPoints || 0)}DP</span></span>
+        </summary>
+        <div class="detachmentPreviewRules">
+          ${detachmentDispositionNames(army, detachment).length ? `<p class="detachmentDispositionNames"><b>Dispositions:</b> ${detachmentDispositionNames(army, detachment).map(escapeHtml).join(", ")}</p>` : ""}
+          ${rules.length ? rules.map(rule => `<section><b>${escapeHtml(rule.name)}</b><p>${formatDescription(rule.description)}</p></section>`).join("") : `<p class="muted">No detachment rule text found.</p>`}
+        </div>
+      </details>
+      <input class="${inputClass}" type="checkbox" aria-label="Select ${escapeHtml(detachment.name)}" data-detachment-id="${escapeHtml(detachment.id)}" ${selectedIds.has(detachment.id) ? "checked" : ""}>
+    </div>
+  `;
+}
+
+function bindDetachmentPreviews(container) {
+  bindDispositionIcons(container);
+  for (const details of container.querySelectorAll(".detachmentPreview")) {
+    details.ontoggle = event => {
+      if (event.target === details && details.isConnected) sidebarDisclosureState[details.dataset.disclosureKey] = details.open;
+    };
+  }
 }
 
 function groupDetachmentsForNewRoster(detachments) {
@@ -2133,17 +2222,15 @@ function renderArmyAssignments() {
 function renderArmyControls() {
   const armyRulesElement = document.getElementById("armyRules");
   const detachmentSelect = document.getElementById("detachmentSelect");
-  const detachmentRules = document.getElementById("detachmentRules");
   const forceDispositionsElement = document.getElementById("forceDispositions");
   const stratagemsElement = document.getElementById("stratagems");
   const enhancementsElement = document.getElementById("enhancements");
-  if (!detachmentSelect || !detachmentRules || !stratagemsElement || !enhancementsElement) return;
+  if (!detachmentSelect || !stratagemsElement || !enhancementsElement) return;
   const army = currentArmyDefinition();
   detachmentSelect.innerHTML = "";
   if (!army) {
     if (armyRulesElement) armyRulesElement.innerHTML = `<p class="muted">No army rule data in this catalogue.</p>`;
     detachmentSelect.innerHTML = `<p class="muted">No detachments available.</p>`;
-    detachmentRules.innerHTML = `<p class="muted">No detachment data in this catalogue.</p>`;
     if (forceDispositionsElement) forceDispositionsElement.innerHTML = `<p class="muted">No force disposition data in this catalogue.</p>`;
     stratagemsElement.innerHTML = `<p class="muted">No stratagem data in this catalogue.</p>`;
     enhancementsElement.innerHTML = "";
@@ -2153,7 +2240,7 @@ function renderArmyControls() {
   if (armyRulesElement) {
     armyRulesElement.innerHTML = (army.armyRules || []).length
       ? army.armyRules.map(rule => `
-        <details class="sidebarCard ruleDisclosure" open>
+        <details class="sidebarCard ruleDisclosure">
           <summary>${escapeHtml(rule.name)}</summary>
           <p>${formatDescription(rule.description)}</p>
           ${renderArmyRuleTables(rule)}
@@ -2168,17 +2255,11 @@ function renderArmyControls() {
     section.className = "detachmentChoiceGroup";
     section.innerHTML = `<h3>${escapeHtml(group.label)}</h3>`;
     for (const detachment of group.detachments) {
-      const label = document.createElement("label");
-      label.className = "compactOptionRow detachmentOption";
-      label.innerHTML = `
-        <span class="optionName">${escapeHtml(detachment.name)}</span>
-        <span class="optionLimits">${Number(detachment.detachmentPoints || 0)}DP</span>
-        <input class="detachmentToggle" type="checkbox" data-detachment-id="${escapeHtml(detachment.id)}" ${selectedDetachmentIds.has(detachment.id) ? "checked" : ""}>
-      `;
-      section.appendChild(label);
+      section.insertAdjacentHTML("beforeend", renderDetachmentChoice(army, detachment, selectedDetachmentIds, "detachmentToggle"));
     }
     detachmentSelect.appendChild(section);
   }
+  bindDetachmentPreviews(detachmentSelect);
   for (const input of detachmentSelect.querySelectorAll(".detachmentToggle")) {
     input.onchange = () => {
       const ids = [...detachmentSelect.querySelectorAll(".detachmentToggle:checked")].map(item => item.dataset.detachmentId);
@@ -2190,21 +2271,12 @@ function renderArmyControls() {
 
   const detachments = armyEngine.selectedDetachments?.(army, armyState) || [armyEngine.selectedDetachment(army, armyState)].filter(Boolean);
   if (!detachments.length) {
-    detachmentRules.innerHTML = `<p>Select one or more detachments to activate their rules and enhancements.</p>`;
     if (forceDispositionsElement) forceDispositionsElement.innerHTML = `<p class="muted">Select a detachment to choose its force disposition and mission.</p>`;
-    stratagemsElement.innerHTML = `<p class="muted">Select a detachment first.</p>`;
+    stratagemsElement.innerHTML = renderStratagems(army, []);
     enhancementsElement.innerHTML = "";
     return;
   }
 
-  const totalDp = detachments.reduce((sum, item) => sum + Number(item.detachmentPoints || 0), 0);
-  detachmentRules.innerHTML = `<p class="muted">${totalDp} Detachment Point${totalDp === 1 ? "" : "s"} selected.</p>` + detachments.flatMap(detachment =>
-    (detachment.rules || []).map(rule => `
-    <details class="sidebarCard ruleDisclosure">
-      <summary>${escapeHtml(detachment.name)} — ${escapeHtml(rule.name)}</summary>
-      <p>${formatDescription(rule.description)}</p>
-    </details>
-  `)).join("") || `<p class="muted">No detachment rule text found.</p>`;
   if (forceDispositionsElement) {
     forceDispositionsElement.innerHTML = renderForceDispositionPicker(army, detachments, armyState);
     bindForceDispositionControls(forceDispositionsElement, army);
@@ -2214,12 +2286,17 @@ function renderArmyControls() {
   const enhancementStates = armyEngine.getEnhancementStates(army, armyState, roster);
   enhancementsElement.innerHTML = enhancementStates.length
     ? enhancementStates.map(state => `
-      <div class="sidebarCard">
-        <b>${escapeHtml(state.name)}</b>${state.kind === "upgrade" ? ` <small>Upgrade</small>` : ""}${state.points ? ` — ${state.points} pts` : ""}
+      <div class="sidebarCard enhancementCard">
+        <div class="enhancementHeading"><b>${escapeHtml(state.name)}</b>${state.kind === "upgrade" ? ` <small>Upgrade</small>` : ""}${state.points ? ` — ${state.points} pts` : ""}${renderEnhancementSources(state, detachments)}</div>
         ${renderEnhancementDescription(state)}
       </div>
     `).join("")
     : `<p class="muted">No enhancements or upgrades are available for this detachment.</p>`;
+}
+
+function renderEnhancementSources(enhancement, detachments = armyEngine.selectedDetachments(currentArmyDefinition(), armyState)) {
+  const names = [...new Set(detachments.filter(detachment => (enhancement.detachmentIds || []).includes(detachment.id)).map(detachment => detachment.name))];
+  return names.length ? `<span class="enhancementSources">${names.map(name => `<small class="enhancementSource" title="Available through ${escapeHtml(name)}">${escapeHtml(name)}</small>`).join("")}</span>` : "";
 }
 
 function renderEnhancementDescription(enhancement) {
@@ -2245,9 +2322,13 @@ function renderStratagems(army, detachments) {
   }
 
   return `
-    ${core.length ? renderStratagemList("Core Stratagems", core, "core") : `<p class="muted">No Core stratagem records are present in the current stratagem source.</p>`}
     ${selected.length ? renderStratagemList("Detachment Stratagems", selected, "detachment") : `<p class="muted">Select a detachment with stratagem records.</p>`}
+    ${renderCoreStratagemDropdown(core, "coreStratagems")}
   `;
+}
+
+function renderCoreStratagemDropdown(core, key) {
+  return `<details class="coreStratagemDisclosure" data-disclosure-key="${escapeHtml(key)}" ${disclosureOpenAttribute(key, false)}><summary>Core Stratagems <small>${core.length}</small></summary>${core.length ? renderStratagemList("Core Stratagems", core, "core") : `<p class="muted">No Core stratagem records are present in this catalogue.</p>`}</details>`;
 }
 
 function renderStratagemList(title, stratagems, kind) {
@@ -2313,8 +2394,8 @@ function renderUnitStratagems(rosterEntry, groupEntries = []) {
     <details class="sidebarGroup stratagemsGroup unitStratagemsGroup" data-disclosure-key="${escapeHtml(disclosureKey)}" ${disclosureOpenAttribute(disclosureKey, false)}>
       <summary>Stratagems this unit can use <small>${eligible.length}</small></summary>
       <div class="unitStratagems">
-        ${core.length ? renderStratagemList("Core Stratagems", core, "core") : ""}
         ${detachment.length ? renderStratagemList("Detachment Stratagems", detachment, "detachment") : ""}
+        ${core.length ? renderCoreStratagemDropdown(core, disclosureKey + ":core") : ""}
         ${eligible.length ? "" : `<p class="muted">No stratagem with a verified target rule matches this unit.</p>`}
       </div>
     </details>
@@ -3365,6 +3446,10 @@ function refreshAssignmentSelectLabels() {
 }
 
 function rosterPresentation() {
+  return cachedRosterCalculation("rosterPresentation", rosterPresentationUncached);
+}
+
+function rosterPresentationUncached() {
   const legalityRoster = rosterWithPoints();
   return currentArmyDefinition()
     ? armyEngine.getRosterPresentation(currentArmyDefinition(), armyState, legalityRoster, { totalPoints: getTotalPoints(), pointsLimit: Number(pointsLimitInput.value || 0) })
@@ -3391,6 +3476,11 @@ function removeRosterEntry(instanceId) {
 }
 
 function renderSelectedDetails() {
+  return withRosterCalculationCache(renderSelectedDetailsUncached);
+}
+
+function renderSelectedDetailsUncached() {
+  if (selectedPanel !== "configuration") configurationPanelActive = false;
   if (selectedPanel === "configuration") {
     showConfigurationPanel();
     return;
@@ -3412,17 +3502,18 @@ function renderSelectedDetails() {
 }
 
 function showConfigurationPanel() {
+  if (!configurationPanelActive) resetConfigurationDisclosures();
+  configurationPanelActive = true;
   details.innerHTML = `
     <h3>Roster Configuration</h3>
     <details class="sidebarGroup" open><summary>Army-level Warnings</summary><div id="validation"></div></details>
-    <label class="sidebarGroup"><b>Points limit</b><input id="configurationPointsLimit" type="number" min="1" max="100000" step="50" value="${Number(pointsLimitInput.value || 1000)}"></label>
-    <details class="sidebarGroup" data-disclosure-key="armyRules" ${disclosureOpenAttribute("armyRules", true)}><summary>Army Rules</summary><div id="armyRules"></div></details>
-    <details class="sidebarGroup" data-disclosure-key="detachments" ${disclosureOpenAttribute("detachments", true)}><summary>Detachments</summary><div id="detachmentSelect" class="detachmentList"></div></details>
-    <details class="sidebarGroup" data-disclosure-key="detachmentRules" ${disclosureOpenAttribute("detachmentRules", true)}><summary>Detachment Rules</summary><div id="detachmentRules"></div></details>
-    <details class="sidebarGroup" data-disclosure-key="forceDispositions" ${disclosureOpenAttribute("forceDispositions", true)}><summary>Force Dispositions</summary><div id="forceDispositions"></div></details>
+    <label class="sidebarGroup configurationPointsLimit"><b>Points limit</b><input id="configurationPointsLimit" type="number" min="1" max="100000" step="50" value="${Number(pointsLimitInput.value || 1000)}"></label>
+    <details class="sidebarGroup" data-disclosure-key="armyRules" ${disclosureOpenAttribute("armyRules", false)}><summary>Army Rules</summary><div id="armyRules"></div></details>
+    <details class="sidebarGroup" data-disclosure-key="detachments" ${disclosureOpenAttribute("detachments", false)}><summary>Detachments</summary><div id="detachmentSelect" class="detachmentList"></div></details>
+    <details class="sidebarGroup" data-disclosure-key="forceDispositions" ${disclosureOpenAttribute("forceDispositions", false)}><summary>Force Dispositions</summary><div id="forceDispositions"></div></details>
     <details class="sidebarGroup stratagemsGroup" data-disclosure-key="stratagems" ${disclosureOpenAttribute("stratagems", false)}><summary>Stratagems</summary><div id="stratagems"></div></details>
-    <details class="sidebarGroup"><summary>Available Enhancements & Upgrades</summary><div id="enhancements"></div></details>
-    <details class="sidebarGroup"><summary>Show/Hide Options</summary><div id="catalogueOptions"></div></details>
+    <details class="sidebarGroup" data-disclosure-key="enhancements" ${disclosureOpenAttribute("enhancements", false)}><summary>Available Enhancements & Upgrades</summary><div id="enhancements"></div></details>
+    <details class="sidebarGroup" data-disclosure-key="catalogueOptions" ${disclosureOpenAttribute("catalogueOptions", false)}><summary>Show/Hide Options</summary><div id="catalogueOptions"></div></details>
   `;
   renderArmyControls();
   renderCatalogueOptions();
@@ -3821,12 +3912,13 @@ function renderEnhancementAssignmentDetails(state, bearer) {
     bearer?.eligible ? "" : "ineligible"
   ].filter(Boolean).join(" · ");
   const description = renderEnhancementDescription(state);
+  const sources = renderEnhancementSources(state);
   if (!description) {
-    return `<span><b>${escapeHtml(state.name)}</b>${meta ? ` <small>${escapeHtml(meta)}</small>` : ""}</span>`;
+    return `<span><b>${escapeHtml(state.name)}</b>${meta ? ` <small>${escapeHtml(meta)}</small>` : ""}${sources}</span>`;
   }
   return `
     <details class="assignmentDisclosure">
-      <summary><b>${escapeHtml(state.name)}</b>${meta ? ` <small>${escapeHtml(meta)}</small>` : ""}</summary>
+      <summary><b>${escapeHtml(state.name)}</b>${meta ? ` <small>${escapeHtml(meta)}</small>` : ""}${sources}</summary>
       ${description}
     </details>
   `;
@@ -3842,7 +3934,7 @@ function disclosureOpenAttribute(key, defaultOpen = false) {
 function bindSidebarDisclosureState() {
   for (const element of document.querySelectorAll("[data-disclosure-key]")) {
     element.ontoggle = event => {
-      if (event.target === element) sidebarDisclosureState[element.dataset.disclosureKey] = element.open;
+      if (event.target === element && element.isConnected) sidebarDisclosureState[element.dataset.disclosureKey] = element.open;
     };
   }
 }
@@ -5053,6 +5145,10 @@ function formatSheetTotalPoints(sheet) {
 }
 
 function rosterCopyContexts() {
+  return cachedRosterCalculation("rosterCopyContexts", rosterCopyContextsUncached);
+}
+
+function rosterCopyContextsUncached() {
   const seen = new Map();
   const contexts = new Map();
   const allModelsHaveImperiumKeyword = roster.length > 0 && roster.every(item =>
@@ -5093,11 +5189,19 @@ function entryPricing(rosterEntry, contexts = rosterCopyContexts()) {
 }
 
 function rosterWithPoints() {
+  return cachedRosterCalculation("rosterWithPoints", rosterWithPointsUncached);
+}
+
+function rosterWithPointsUncached() {
   const contexts = rosterCopyContexts();
   return roster.map(item => ({ ...item, points: entryPricing(item, contexts).points }));
 }
 
 function getTotalPoints() {
+  return cachedRosterCalculation("getTotalPoints", getTotalPointsUncached);
+}
+
+function getTotalPointsUncached() {
   const unitPoints = rosterWithPoints().reduce((sum, entry) => sum + entry.points, 0);
   const optionPoints = currentArmyDefinition()
     ? armyEngine.calculateArmyOptionPoints(currentArmyDefinition(), armyState)
@@ -5141,6 +5245,10 @@ function validateRoster() {
 }
 
 function currentRosterDocument() {
+  return withRosterCalculationCache(currentRosterDocumentUncached);
+}
+
+function currentRosterDocumentUncached() {
   return rosterDocument.createRosterDocument({
     name: rosterNameInput.value.trim() || null,
     engineData,
@@ -5610,6 +5718,8 @@ async function loadRosterById(id) {
 }
 
 async function loadRosterDocument(save, options = {}) {
+  configurationPanelActive = false;
+  resetConfigurationDisclosures();
   appMode = "loading";
   armyState = null;
   roster = [];

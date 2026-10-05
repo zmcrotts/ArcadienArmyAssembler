@@ -92,6 +92,7 @@ function summarizeDetachment(armyDefinition, armyState, services) {
     detachmentPoints: asNumber(detachment.detachmentPoints),
     uniqueTags: clone(detachment.uniqueTags || []),
     forceDisposition: clone(detachment.forceDisposition || null),
+    forceDispositions: clone(detachment.forceDispositions || []),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
   };
@@ -109,6 +110,7 @@ function summarizeDetachments(armyDefinition, armyState, services) {
     detachmentPoints: asNumber(detachment.detachmentPoints),
     uniqueTags: clone(detachment.uniqueTags || []),
     forceDisposition: clone(detachment.forceDisposition || null),
+    forceDispositions: clone(detachment.forceDispositions || []),
     rules: clone(detachment.rules || []),
     stratagems: clone(detachment.stratagems || [])
   }));

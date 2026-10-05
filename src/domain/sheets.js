@@ -59,7 +59,12 @@ function effectiveWeaponsFor(record, typeName, effects = [], context = {}) {
     unitName: record?.name || "",
     keywords: [...asArray(context.keywords), ...asArray(record?.keywords)]
   };
-  const configured = applyWeaponEffectsToConfigured(configuredFor(record), effects, recordContext);
+  const enhancementWeapons = effects.filter(effect => effect.bearerInstanceId === record?.instanceId)
+    .flatMap(effect => asArray(effect.profiles))
+    .filter(profile => ["Ranged Weapons", "Melee Weapons"].includes(profile.typeName))
+    .map(profile => ({ ...profile, count: 1 }));
+  const base = configuredFor(record);
+  const configured = applyWeaponEffectsToConfigured({ ...base, weapons: [...asArray(base.weapons), ...enhancementWeapons] }, effects, recordContext);
   return asArray(configured.weapons)
     .filter(item => !typeName || item.typeName === typeName)
     .map(normalizeWeapon);

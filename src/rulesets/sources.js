@@ -24,6 +24,8 @@ const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-p
 const { applyEnhancementEligibilityRestrictions } = require("./enhancement-eligibility");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 const { applyOrksCodex, readOrksCodex } = require("./orks-codex");
+const { readSpaceMarinesCodex } = require("./space-marines-codex");
+const { readSpaceMarineChapters, applySpaceMarineChapters } = require("./space-marine-chapters");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 
@@ -57,6 +59,8 @@ const RULESET_SOURCES = {
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
       mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
+      spaceMarinesCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marines-codex.json"),
+      spaceMarineChapters: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-chapters.json"),
       orksCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-orks-codex-v1.json"),
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
@@ -131,7 +135,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   );
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
   const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
-  const normalized = reconcileSelectableUnits(mfmPointResult.units, mfmPointResult.armies);
+  const spaceMarinesCodex = readSpaceMarinesCodex(source.auxiliarySources?.spaceMarinesCodex);
+  const chapters = readSpaceMarineChapters(source.auxiliarySources?.spaceMarineChapters);
+  const spaceMarinesResult = applySpaceMarineChapters(mfmPointResult.units, mfmPointResult.armies, spaceMarinesCodex, chapters);
+  const normalized = reconcileSelectableUnits(spaceMarinesResult.units, spaceMarinesResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -154,6 +161,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       generatedAt: mfmPoints.generatedAt,
       ...mfmPointResult.summary
     },
+    spaceMarinesCodexSource: spaceMarinesResult.summary,
     orksCodexSource: {
       source: orksCodex.source,
       version: orksCodex.version,
@@ -183,7 +191,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       source: manualDetachments.source,
       ...manualDetachmentResult.summary
     },
-    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(enhancementRestrictionResult.issues || []), ...(mfmPointResult.issues || []), ...(orksCodexResult.issues || [])],
+    sourceIssues: [...(armyRules.issues || []), ...(manualDetachmentResult.issues || []), ...(mfmDetachmentResult.issues || []), ...(factionPackUpdateResult.issues || []), ...(enhancementRestrictionResult.issues || []), ...(mfmPointResult.issues || []), ...(orksCodexResult.issues || []), ...(spaceMarinesResult.issues || [])],
     armyRuleSourceIssues: [...(armyRules.issues || [])],
     unresolved: unitsResult.unresolved
   };

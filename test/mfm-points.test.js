@@ -224,7 +224,7 @@ test("MFM v1.5 applies current unit schedules, wargear, and enhancements", () =>
   assert.equal(nodes.find(node => node.name === "Rupture cannon")?.points, 20);
 
   const expectedEnhancements = [
-    ["Imperium - Adeptus Astartes - Dark Angels", "Recon Hunter", 30],
+    ["Imperium - Adeptus Astartes - Dark Angels", "Deathwing Assault", 15],
     ["Chaos - Emperor's Children", "Possessed Blade", 35],
     ["Chaos - Emperor's Children", "Warp Walker", 35],
     ["Xenos - T'au Empire", "Strike Swiftly", 45],
@@ -237,16 +237,13 @@ test("MFM v1.5 applies current unit schedules, wargear, and enhancements", () =>
   }
 });
 
-test("Faction Pack v1.1 keeps the flagged Space Marine detachment", () => {
+test("Space Marine codex supersedes retired faction-pack detachments", () => {
   const marines = ruleset.armies.find(item => item.faction === "Imperium - Adeptus Astartes - Space Marines");
-  const vengeful = marines.detachments.find(item => item.name === "Vengeful Hosts");
-  assert.deepEqual(
-    { points: vengeful.detachmentPoints, disposition: vengeful.forceDisposition.name, rules: vengeful.rules.length, stratagems: vengeful.stratagems.length },
-    { points: 1, disposition: "Take and Hold", rules: 1, stratagems: 0 }
-  );
-  assert.equal(marines.enhancements.find(item => item.name === "Avenging Angel")?.points, 20);
-  assert.equal(marines.enhancements.find(item => item.name === "Orksbane")?.points, 20);
-
+  assert.equal(marines.detachments.some(item => item.name === "Vengeful Hosts"), false);
+  assert.equal(marines.enhancements.some(item => ["Avenging Angel", "Orksbane"].includes(item.name)), false);
+  const current = marines.detachments.find(item => item.name === "Terminator Storm Force");
+  assert.equal(current.detachmentPoints, 1);
+  assert.equal(current.stratagems.length, 3);
 });
 
 test("all available MFM v1.5 rows attach and unavailable catalogue entries are recorded", () => {

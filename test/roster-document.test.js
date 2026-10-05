@@ -657,6 +657,7 @@ test("desktop and mobile roster loading display recovery warnings without native
     const notices = [];
     const focused = [];
     const context = {
+      configurationPanelActive: true, sidebarDisclosureState: { armyRules: true },
       engineData: { factionNavigation: [] }, factionSelect: {}, rosterNameInput: {}, pointsLimitInput: {},
       renderSubfactionControl() {}, loadSelectedFactionData: async () => {},
       normalizeRosterDisplay: () => ({}), currentArmyDefinition: () => ({}), factionUnits: () => [],
@@ -667,8 +668,12 @@ test("desktop and mobile roster loading display recovery warnings without native
       alert() { assert.fail(`${filename} opened a native dialog`); }
     };
     vm.createContext(context);
-    vm.runInContext(source.slice(start, end), context);
+    const resetStart = source.indexOf("function resetConfigurationDisclosures(");
+    const resetEnd = source.indexOf("\n}\n", resetStart) + 3;
+    vm.runInContext(source.slice(resetStart, resetEnd) + source.slice(start, end), context);
     await context.loadRosterDocument({ faction: "Xenos - Orks" });
+    assert.equal(context.configurationPanelActive, false);
+    assert.equal(context.sidebarDisclosureState.armyRules, false);
     assert.equal(context.rosterRecoveryWarnings, loaded.warnings);
     assert.equal(notices.length, 1);
     assert.deepEqual(focused, [search]);

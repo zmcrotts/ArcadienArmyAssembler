@@ -34,7 +34,7 @@ function selectedDetachments(armyDefinition, armyState) {
 function availableForceDispositions(armyDefinition, armyState) {
   const byId = new Map((armyDefinition?.forceDispositions || []).map(item => [item.id, item]));
   return [...new Map(selectedDetachments(armyDefinition, armyState)
-    .map(detachment => detachment.forceDisposition)
+    .flatMap(detachment => detachment.forceDispositions?.length ? detachment.forceDispositions : [detachment.forceDisposition])
     .filter(Boolean)
     .map(disposition => {
       const full = byId.get(disposition.id) || disposition;
