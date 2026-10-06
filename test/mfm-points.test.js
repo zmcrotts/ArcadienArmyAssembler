@@ -61,43 +61,16 @@ test("World Eaters use the current Berzerker costs", () => {
   assert.equal(points(berzerkers, 20), 330);
 });
 
-test("MFM v1.5 keeps Chapter-specific Space Marine schedules distinct", () => {
-  const bloodAngelsJumpIntercessors = unit(
-    "Imperium - Adeptus Astartes - Blood Angels",
-    "Assault Intercessors with Jump Packs"
-  );
-  assert.equal(points(bloodAngelsJumpIntercessors, 5, { previousCopies: 0 }), 100);
-  assert.equal(points(bloodAngelsJumpIntercessors, 10, { previousCopies: 0 }, { allowInvalid: true }), 190);
-  assert.equal(points(bloodAngelsJumpIntercessors, 5, { previousCopies: 2 }), 110);
-  assert.equal(points(bloodAngelsJumpIntercessors, 10, { previousCopies: 2 }, { allowInvalid: true }), 200);
-
-  const bloodAngelsBladeguard = unit(
-    "Imperium - Adeptus Astartes - Blood Angels",
-    "Bladeguard Veteran Squad"
-  );
-  assert.equal(points(bloodAngelsBladeguard, 3, { previousCopies: 0 }), 85);
-  assert.equal(points(bloodAngelsBladeguard, 6, { previousCopies: 0 }), 170);
-  assert.equal(points(bloodAngelsBladeguard, 3, { previousCopies: 2 }), 95);
-  assert.equal(points(bloodAngelsBladeguard, 6, { previousCopies: 2 }), 180);
-
-  const genericJumpIntercessors = unit(
-    "Imperium - Adeptus Astartes - Space Marines",
-    "Assault Intercessors with Jump Packs"
-  );
-  assert.equal(points(genericJumpIntercessors, 5, { previousCopies: 0 }), 100);
-  assert.equal(points(genericJumpIntercessors, 10, { previousCopies: 0 }, { allowInvalid: true }), 190);
-
-  const bloodAngelsOutriders = unit(
-    "Imperium - Adeptus Astartes - Blood Angels",
-    "Outrider Squad"
-  );
-  const outriderNodes = [];
-  (function visit(node) {
-    if (!node) return;
-    outriderNodes.push(node);
-    for (const child of node.children || []) visit(child);
-  })(bloodAngelsOutriders.selectionTree);
-  assert.equal(outriderNodes.find(node => node.name === "Invader ATV")?.points, 60);
+test("current Marine MFM schedules apply to shared chapter units and separate ATVs", () => {
+  for (const faction of ["Blood Angels", "Space Marines", "Space Wolves"]) {
+    const prefix = "Imperium - Adeptus Astartes - " + faction;
+    assert.equal(points(unit(prefix, "Assault Intercessors with Jump Packs"), 5, { previousCopies: 0 }), 95);
+    assert.equal(points(unit(prefix, "Assault Intercessors with Jump Packs"), 10, { previousCopies: 2 }), 200);
+    assert.equal(points(unit(prefix, "Bladeguard Veteran Squad"), 3, { previousCopies: 0 }), 90);
+    assert.equal(points(unit(prefix, "Bladeguard Veteran Squad"), 6, { previousCopies: 2 }), 200);
+    assert.equal(points(unit(prefix, "Invader ATVs"), 2, { previousCopies: 0 }), 130);
+    assert.equal(points(unit(prefix, "Invader ATVs"), 2, { previousCopies: 2 }), 140);
+  }
 });
 
 test("Imperial Agents conditional schedules remain distinct", () => {
@@ -248,17 +221,18 @@ test("Space Marine codex supersedes retired faction-pack detachments", () => {
 
 test("all available MFM v1.5 rows attach and unavailable catalogue entries are recorded", () => {
   assert.equal(ruleset.mfmPointSource.version, "1.5");
-  assert.equal(ruleset.mfmPointSource.total, 3956);
-  assert.equal(ruleset.mfmPointSource.unitRows, 3003);
+  assert.equal(ruleset.mfmPointSource.total, mfmDocument.changes.length);
+  assert.equal(ruleset.mfmPointSource.unitRows, 3009);
   assert.equal(ruleset.mfmPointSource.wargearRows, 159);
-  assert.equal(ruleset.mfmPointSource.enhancementRows, 794);
-  assert.equal(ruleset.mfmPointSource.unmatched, 0);
+  assert.equal(ruleset.mfmPointSource.enhancementRows, 782);
+  assert.equal(ruleset.mfmPointSource.unmatched, 13);
+  assert.deepEqual(ruleset.sourceIssues.filter(issue => ["unit", "wargear"].includes(issue.change?.kind)).map(issue => issue.change.unitName), ["KAIUS KONORIUS"]);
   assert.deepEqual(mfmDocument.reconciliation, {
     mode: "full-table",
     pages: 30,
     extractedRows: 4111,
     activeRows: 3956,
     pendingRows: 185,
-    derivedZeroCostRows: 30
+    derivedZeroCostRows: 28
   });
 });

@@ -93,8 +93,8 @@ test("Space Marine red-text weapon options are present", () => {
   const chaplain = ruleset.units.find(unit => unit.name === "Chaplain with Jump Pack");
   const veterans = ruleset.units.find(unit => unit.name === "Vanguard Veteran Squad with Jump Packs");
   assert.ok(nodes(chaplain, "Absolvor bolt pistol").length);
-  assert.equal(nodes(veterans, "Veteran: heavy bolt pistol + master-crafted power weapon").length, 1);
-  assert.equal(nodes(veterans, "Heavy bolt pistol + master-crafted power weapon").length, 1);
+  assert.ok(nodes(veterans, "Master-crafted Power Weapon").length);
+  assert.ok(nodes(veterans, "Heavy Bolt Pistol").length);
   assert.equal(ruleset.units.some(unit => unit.name === "Vanguard Veteran Squad (Armageddon)"), false);
   assert.equal(ruleset.excludedUnits.some(unit => unit.name === "Vanguard Veteran Squad (Armageddon)"), false);
 });

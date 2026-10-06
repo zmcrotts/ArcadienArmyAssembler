@@ -147,6 +147,8 @@ function inferImperialAgentsContext(change, occurrence) {
 
 function copyBand(costBand) {
   const band = normalize(costBand);
+  const later = String(costBand || "").match(/^YOUR (\d+)(?:ST|ND|RD|TH)\s*\+\s*UNIT COSTS$/i);
+  if (later) return { min: Number(later[1]) - 1, max: null };
   if (band === "your 1st unit costs") return { min: 0, max: 0 };
   if (band === "your 2nd unit costs") return { min: 1, max: null };
   if (band === "your 1st to 2nd units cost") return { min: 0, max: 1 };

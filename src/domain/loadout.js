@@ -1152,6 +1152,7 @@ function containsModel(node) {
 
 function fixedModelCount(node) {
   if (!node) return 0;
+  if (Number.isFinite(node.modelBundleSize)) return node.modelBundleSize;
   if (node.kind === "model") {
     return constraintValue(node, "min", "parent")
       ?? constraintValue(node, "min")

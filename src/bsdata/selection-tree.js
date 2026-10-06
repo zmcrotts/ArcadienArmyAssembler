@@ -159,13 +159,15 @@ function normalizeModifier(modifier, indexes) {
 
 function modifiersFor(node) {
   const modifiers = [...asArray(node?.modifiers?.modifier)];
-  function visit(groups, inheritedConditions = [], inheritedGroups = []) {
+  function visit(groups, inheritedConditions = [], inheritedGroups = [], inheritedRepeats = []) {
     for (const group of asArray(groups?.modifierGroup)) {
       const conditions = [...inheritedConditions, ...asArray(group?.conditions?.condition)];
+      const repeats = [...inheritedRepeats, ...asArray(group?.repeats?.repeat)];
       const conditionGroups = [...inheritedGroups, ...asArray(group?.conditionGroups?.conditionGroup)];
       for (const modifier of asArray(group?.modifiers?.modifier)) {
         modifiers.push({
           ...modifier,
+          repeats: { repeat: [...repeats, ...asArray(modifier?.repeats?.repeat)] },
           conditions: {
             condition: [...conditions, ...asArray(modifier?.conditions?.condition)]
           },
@@ -174,7 +176,7 @@ function modifiersFor(node) {
           }
         });
       }
-      visit(group?.modifierGroups, conditions, conditionGroups);
+      visit(group?.modifierGroups, conditions, conditionGroups, repeats);
     }
   }
   visit(node?.modifierGroups);

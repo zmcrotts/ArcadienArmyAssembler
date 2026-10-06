@@ -262,6 +262,8 @@ function createRosterDocument(options) {
 function findUnitPackage(unitPackages, selectionKey, saved) {
   return (unitPackages || []).find(unit =>
     unit.selectionKey === selectionKey
+    || unit.definition?.previousSelectionKeys?.includes(selectionKey)
+    || unit.definition?.previousNames?.includes(saved?.name)
     || unit.id === saved?.unitId
     || unit.name === saved?.name
   ) || null;

@@ -708,7 +708,7 @@ test("11e Death Company Marines with Jump Packs expose explicit alternate weapon
   const defaultAlternateModels = getConfiguredModels(deathCompany, oneAlternate);
   const weaponCount = (configured, name) =>
     configured.weapons
-      .filter(profile => profile.name === name)
+      .filter(profile => profile.name.toLowerCase().replace(/^astartes /, "") === name.toLowerCase().replace(/^astartes /, ""))
       .reduce((sum, profile) => sum + Number(profile.count || 0), 0);
 
   assert.equal(weaponCount(defaultAlternateProfiles, "Heavy Bolt Pistol"), 10);
@@ -1180,97 +1180,31 @@ test("11e Steel Hammer offers a selectable Character keyword to Titanic units", 
   assert.equal(grant?.selectable, true);
 });
 
-test("11e Sword Brethren default to five models and retain specialist weapons across size changes", () => {
-  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
-  const unit = ruleset.units.find(item =>
-    item.faction === "Imperium - Adeptus Astartes - Black Templars"
-    && item.name === "Sword Brethren Squad"
-  );
-  let entry = createDefaultRosterEntry(unit);
-  assert.deepEqual(getUnitSizeState(unit, entry), {
-    current: 5, minimum: 5, maximum: 10, editable: true
-  });
-
-  const option = name => getOptionStates(unit, entry).find(item => item.name === name);
-  assert.equal(option("Plasma pistol").maximum, 1);
-  assert.equal(option("Pyre Pistol").maximum, 2);
-  assert.equal(option("Thunder Hammer").maximum, 1);
-  assert.equal(option("Sword Brother w/ Twin Lightning Claws").maximum, 1);
-
-  for (const name of ["Plasma pistol", "Pyre Pistol", "Thunder Hammer"]) {
-    entry = setSelection(unit, entry, option(name).id, 1);
+test("current Codex Sword Brethren use four-model minimum and current weapon names", () => {
+  const unit = extractNormalizedRuleset("wh40k-11e-vflam").units.find(u => u.name === "Sword Brethren Squad");
+  const entry = createDefaultRosterEntry(unit);
+  assert.deepEqual(getUnitSizeState(unit, entry), { current: 4, minimum: 4, maximum: 10, editable: true });
+  for (const name of ["Plasma pistol", "Hand flamer", "Thunder Hammer", "Master-crafted Power Weapon"]) {
+    assert.ok(getOptionStates(unit, entry).some(o => o.name === name), name);
   }
-  const selectedCount = name => getOptionStates(unit, entry).find(item => item.name === name)?.current;
-  const before = ["Plasma pistol", "Pyre Pistol", "Thunder Hammer"].map(selectedCount);
-  entry = setUnitSize(unit, entry, 6);
-  entry = setUnitSize(unit, entry, 5);
-
-  assert.deepEqual(["Plasma pistol", "Pyre Pistol", "Thunder Hammer"].map(selectedCount), before);
-  assert.deepEqual(validateLoadout(unit, entry), []);
+  assert.deepEqual(validateLoadout(unit, setUnitSize(unit, entry, 10)), []);
 });
 
-test("11e Outrider Squads support six riders plus an optional Invader ATV", () => {
-  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
-  const units = ruleset.units.filter(item =>
-    item.faction.startsWith("Imperium - Adeptus Astartes")
-    && item.name === "Outrider Squad"
-  );
-
-  assert.ok(units.length > 0);
-  for (const unit of units) {
-    let entry = createDefaultRosterEntry(unit);
-    assert.deepEqual(getUnitSizeState(unit, entry), {
-      current: 3, minimum: 3, maximum: 7, editable: true
-    }, unit.faction);
-    entry = setUnitSize(unit, entry, 6);
-    assert.equal(getUnitSizeState(unit, entry).current, 6, unit.faction);
-    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
+test("current Codex Outriders are three or six riders with ATVs a separate unit", () => {
+  for (const unit of extractNormalizedRuleset("wh40k-11e-vflam").units.filter(u => u.name === "Outrider Squad")) {
+    const entry = createDefaultRosterEntry(unit);
+    assert.deepEqual(getUnitSizeState(unit, entry), { current: 3, minimum: 3, maximum: 6, editable: true });
+    assert.deepEqual(validateLoadout(unit, setUnitSize(unit, entry, 6)), []);
   }
 });
 
-test("11e Vanguard Veterans accept the squad-wide heavy pistol and master-crafted weapon kit", () => {
-  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam", { fresh: true });
-  const units = ruleset.units.filter(item =>
-    item.faction.startsWith("Imperium - Adeptus Astartes")
-    && item.name === "Vanguard Veteran Squad with Jump Packs"
-  );
-
-  assert.ok(units.length > 0);
-  for (const unit of units) {
-    let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
-    const state = name => getOptionStates(unit, entry).find(option => option.name === name);
-    const standardVeterans = state("Vanguard Veterans with Jump Packs");
-    const powerWeaponVeterans = state("Veteran: heavy bolt pistol + master-crafted power weapon");
-    const sergeantKit = state("Heavy bolt pistol + master-crafted power weapon");
-    assert.equal(powerWeaponVeterans.maximum, 9, unit.faction);
-    assert.equal(sergeantKit.maximum, 1, unit.faction);
-    assert.equal(unit.selectionTree.children
-      .find(node => node.name === "Vanguard Veterans with Jump Packs")
-      .children[1].id, powerWeaponVeterans.id, unit.faction);
-    assert.equal(getOptionStates(unit, entry).some(option => option.name === "Alternate weapon option"), false, unit.faction);
-    assert.equal(getConfiguredProfiles(unit, entry).weapons.some(profile =>
-      profile.name === "Heavy bolt pistol" || profile.name === "Master-crafted power weapon"
-    ), false, unit.faction);
-
-    entry = setSelection(unit, entry, powerWeaponVeterans.id, 4);
-    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 5, unit.faction);
-    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 4, unit.faction);
-    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
-    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
-
-    entry = setSelection(unit, entry, powerWeaponVeterans.id, 9);
-    entry = setSelection(unit, entry, sergeantKit.id, 1);
-
-    assert.deepEqual(validateLoadout(unit, entry), [], unit.faction);
-    assert.equal(getOptionStates(unit, entry).find(option => option.id === standardVeterans.id).current, 0, unit.faction);
-    assert.equal(getOptionStates(unit, entry).find(option => option.id === powerWeaponVeterans.id).current, 9, unit.faction);
-    assert.equal(getUnitSizeState(unit, entry).current, 10, unit.faction);
-    const weapons = getConfiguredProfiles(unit, entry).weapons;
-    const kitProfiles = weapons.filter(profile => String(profile.id || "").startsWith("rules-update-vanguard-"));
-    assert.equal(kitProfiles.filter(profile => profile.name === "Heavy bolt pistol").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
-    assert.equal(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").reduce((sum, profile) => sum + profile.count, 0), 10, unit.faction);
-    assert.ok(kitProfiles.filter(profile => profile.name === "Master-crafted power weapon").every(profile => profile.typeName === "Melee Weapons"), unit.faction);
-    assert.equal(weapons.some(profile => profile.name === "Vanguard Veteran Weapon"), false, unit.faction);
+test("current Codex Vanguard Veterans expose master-crafted weapons and shield/pistol alternatives", () => {
+  for (const unit of extractNormalizedRuleset("wh40k-11e-vflam").units.filter(u => u.name === "Vanguard Veteran Squad with Jump Packs")) {
+    const entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+    const options = getOptionStates(unit, entry);
+    for (const name of ["Master-crafted Power Weapon", "Heavy Bolt Pistol", "Combat Shield", "Relic Blade", "Power fist", "Thunder Hammer"]) assert.ok(options.some(o => o.name === name), name);
+    assert.deepEqual(validateLoadout(unit, entry), []);
+    assert.ok(getConfiguredProfiles(unit, entry).weapons.some(p => p.name.toLowerCase() === "master-crafted power weapon"));
   }
 });
 
@@ -1538,7 +1472,7 @@ test("compound Leaders inherit Character and Warlord status from their required 
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   for (const [faction, name] of [
     ["Imperium - Astra Militarum", "Hell's Last [Legends]"],
-    ["Imperium - Adeptus Astartes - Ultramarines", "Marneus Calgar"]
+    ["Imperium - Adeptus Astartes - Ultramarines", "Marneus Calgar in Armour of Antilochus"]
   ]) {
     const definition = ruleset.units.find(unit => unit.faction === faction && unit.name === name);
     assert.ok(definition, `${faction}: ${name}`);

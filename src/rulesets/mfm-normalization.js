@@ -51,6 +51,7 @@ function canonicalUnitName(value) {
     "sicaran": "sicaran battle tank",
     "tarantula air defence battery": "tarantula air defense battery",
     "invader atvs": "invader atv",
+    "marneus calgar in armor of antilochus": "marneus calgar",
     "chaos reaver titan": "reaver titan",
     "chaos warbringer nemesis titan": "warbringer nemesis titan",
     "chaos warhound titan": "warhound titan",

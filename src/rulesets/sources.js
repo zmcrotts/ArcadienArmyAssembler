@@ -24,6 +24,7 @@ const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-p
 const { applyEnhancementEligibilityRestrictions } = require("./enhancement-eligibility");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 const { applyOrksCodex, readOrksCodex } = require("./orks-codex");
+const { readSpaceMarineUnits, applySpaceMarineUnits } = require("./space-marine-units");
 const { readSpaceMarinesCodex } = require("./space-marines-codex");
 const { readSpaceMarineChapters, applySpaceMarineChapters } = require("./space-marine-chapters");
 
@@ -59,6 +60,7 @@ const RULESET_SOURCES = {
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
       mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
+      spaceMarineUnits: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-units.json.gz"),
       spaceMarinesCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marines-codex.json"),
       spaceMarineChapters: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-chapters.json"),
       orksCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-orks-codex-v1.json"),
@@ -133,8 +135,15 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
     factionPackUpdateResult.armies,
     enhancementRestrictions
   );
+  const marineUnits = readSpaceMarineUnits(source.auxiliarySources?.spaceMarineUnits);
+  const marineUnitResult = applySpaceMarineUnits(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, marineUnits, source.id);
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
-  const mfmPointResult = applyMfmPoints(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, mfmPoints);
+  // Keep verified chapter attachment roles and the Blood Angels pack correction.
+  const marineAttachments = applyMfmAttachments(marineUnitResult.units, mfmAttachments);
+  const refreshedUnits = marineAttachments.definitions.map(unit =>
+    unit.faction === "Imperium - Adeptus Astartes - Blood Angels" && unit.name === "Death Company Marines with Jump Packs"
+      ? applyManualLoadoutCorrections([unit])[0] : unit);
+  const mfmPointResult = applyMfmPoints(refreshedUnits, marineUnitResult.armies, mfmPoints);
   const spaceMarinesCodex = readSpaceMarinesCodex(source.auxiliarySources?.spaceMarinesCodex);
   const chapters = readSpaceMarineChapters(source.auxiliarySources?.spaceMarineChapters);
   const spaceMarinesResult = applySpaceMarineChapters(mfmPointResult.units, mfmPointResult.armies, spaceMarinesCodex, chapters);
@@ -162,6 +171,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       ...mfmPointResult.summary
     },
     spaceMarinesCodexSource: spaceMarinesResult.summary,
+    spaceMarineUnitSource: marineUnitResult.summary,
     orksCodexSource: {
       source: orksCodex.source,
       version: orksCodex.version,
@@ -853,7 +863,9 @@ function profilesByOptionName(node, map = new Map()) {
 }
 
 function profilesFor(map, name) {
-  return (map.get(normalizeName(name)) || []).map(clone);
+  const key = normalizeName(name);
+  const aliases = { "astartes chainsword": "chainsword" };
+  return (map.get(key) || map.get(aliases[key]) || []).map(clone);
 }
 
 function pairedManualOption(id, name, profileMap, pistol, melee) {

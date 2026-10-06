@@ -107,7 +107,15 @@ def extract_page(path: Path, slug: str, helpers):
         if slug == "imperial-agents":
             context = "Every model has the Imperium keyword" if section == "EVERY MODEL HAS THE IMPERIUM KEYWORD" else "Imperial Agents army"
 
-        for group in card:
+        groups = []
+        for child in card:
+            if child.tag == "template" and (child.get("id") or "").startswith("P:"):
+                replacement = replacements.get(child.get("id"))
+                if replacement is not None:
+                    groups.extend(replacement.xpath(".//div[contains(concat(' ',normalize-space(@class),' '),' space-y-1 ')]"))
+            else:
+                groups.append(child)
+        for group in groups:
             if group.tag != "div" or not helpers.class_has(group, "space-y-1"):
                 continue
             heading = helpers.direct_heading(group, replacements)
