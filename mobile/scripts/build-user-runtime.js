@@ -132,7 +132,8 @@ function runtimeFiles(directory, prefix = "") {
 }
 
 function writeServiceWorker() {
-  const files = runtimeFiles(OUT_DIR);
+  // Publisher verification is hosted online and is not required to run offline.
+  const files = runtimeFiles(OUT_DIR).filter(relative => !relative.startsWith(".well-known/"));
   const hash = crypto.createHash("sha256");
   let totalBytes = 0;
   for (const relative of files) {

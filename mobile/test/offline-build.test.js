@@ -122,7 +122,7 @@ test("mobile build produces a complete installable offline package", () => {
 
   const generatedUrls = JSON.parse(fileMatch[1]);
   const expectedFiles = listFiles(DIST)
-    .filter(relative => !["README.txt", "service-worker.js"].includes(relative));
+    .filter(relative => !["README.txt", "service-worker.js"].includes(relative) && !relative.startsWith(".well-known/"));
   const expectedUrls = ["./", ...expectedFiles.map(relative => `./${relative}`)];
   assert.deepEqual(generatedUrls, expectedUrls);
 
@@ -155,3 +155,29 @@ function listFiles(directory, prefix = "") {
   }
   return files.sort();
 }
+
+test("offline setup completes when the host does not serve publisher verification", async () => {
+  const vm = require("node:vm");
+  const listeners = new Map(), stored = new Map(), messages = [], requested = [];
+  const base = "https://example.invalid/ArcadienArmyAssembler/";
+  const key = request => new URL(typeof request === "string" ? request : request.url, base).href;
+  const cache = { match: async request => stored.get(key(request)), put: async (request,response) => stored.set(key(request),response) };
+  const worker = fs.readFileSync(path.join(DIST, "service-worker.js"), "utf8");
+  vm.runInNewContext(worker, {
+    self: { location: new URL(base), addEventListener: (name,handler) => listeners.set(name,handler) },
+    caches: { open: async () => cache, keys: async () => [], delete: async () => true },
+    URL, Response,
+    Request: class extends Request { constructor(url,options) { super(new URL(url,base),options); } },
+    fetch: async request => {
+      requested.push(request.url);
+      return new Response("test asset", {status: request.url.includes("/.well-known/") ? 404 : 200});
+    }
+  });
+  let completion;
+  listeners.get("message")({data:{type:"DOWNLOAD_OFFLINE"}, source:{postMessage: message => messages.push(message)}, waitUntil: promise => { completion=promise; }});
+  await completion;
+  assert.ok(messages.some(message => message.type === "OFFLINE_READY"), "unavailable publisher verification must not block offline completion");
+  assert.ok(!messages.some(message => message.type === "OFFLINE_ERROR"));
+  assert.ok(!requested.some(url => url.includes("/.well-known/")));
+  assert.ok(fs.existsSync(path.join(DIST,".well-known","microsoft-identity-association.json")), "publisher verification remains available for online hosting");
+});
