@@ -8,6 +8,7 @@ const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
 
 const FILES = [
+  ["mobile/ui/roster-migration.js", "roster-migration.js"],
   ["mobile/ui/bootstrap-app.js", "bootstrap-app.js"],
   ["mobile/ui/styles.css", "styles.css"],
   ["mobile/ui/engine-app.js", "engine-app.js"],

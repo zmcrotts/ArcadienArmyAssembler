@@ -138,10 +138,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const marineUnits = readSpaceMarineUnits(source.auxiliarySources?.spaceMarineUnits);
   const marineUnitResult = applySpaceMarineUnits(enhancementRestrictionResult.units, enhancementRestrictionResult.armies, marineUnits, source.id);
   const mfmPoints = readMfmPoints(source.auxiliarySources?.mfmPoints);
-  // Keep verified chapter attachment roles and the Blood Angels pack correction.
+  // Current Codex trees supersede the old Blood Angels paired-option override.
   const marineAttachments = applyMfmAttachments(marineUnitResult.units, mfmAttachments);
   const refreshedUnits = marineAttachments.definitions.map(unit =>
-    unit.faction === "Imperium - Adeptus Astartes - Blood Angels" && unit.name === "Death Company Marines with Jump Packs"
+    unit.faction === "Imperium - Adeptus Astartes - Blood Angels" && unit.name === "Death Company Marines with Jump Packs" && !unit.spaceMarineUnitSource
       ? applyManualLoadoutCorrections([unit])[0] : unit);
   const mfmPointResult = applyMfmPoints(refreshedUnits, marineUnitResult.armies, mfmPoints);
   const spaceMarinesCodex = readSpaceMarinesCodex(source.auxiliarySources?.spaceMarinesCodex);

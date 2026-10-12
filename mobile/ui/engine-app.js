@@ -487,6 +487,8 @@ async function init() {
   });
 
   document.getElementById("saveRoster").onclick = saveRoster;
+  document.getElementById("duplicateRoster").onclick = duplicateRoster;
+  document.getElementById("mobileDuplicateRoster").onclick = duplicateRoster;
   document.getElementById("deleteRoster").onclick = deleteRoster;
   const headerImportShareCode = document.getElementById("importShareCode");
   if (headerImportShareCode) headerImportShareCode.onclick = openRosterShareCodeModal;
@@ -611,6 +613,15 @@ async function init() {
   });
   detailsPanel?.addEventListener("scroll", () => closeOpenWeaponPreview(), { passive: true });
   window.addEventListener("resize", () => closeOpenWeaponPreview());
+  for (const eventName of ["mouseover", "focusin"]) {
+    document.addEventListener(eventName, event => {
+      if (document.documentElement.dataset.mobileUi === "true"
+          || window.matchMedia("(max-width: 860px), (display-mode: standalone)").matches) return;
+      const token = event.target.closest?.(".weaponPreviewToken");
+      const wrap = token?.closest(".weaponPreviewWrap");
+      if (wrap) positionWeaponPreview(wrap, wrap.querySelector(".weaponPreviewPopover"), token);
+    });
+  }
   newRosterModal.addEventListener("click", event => {
     if (event.target === newRosterModal) closeNewRosterModal();
   });
@@ -631,6 +642,8 @@ async function init() {
   });
 
   connectRosterImportLinks();
+  rosterMigrationReady = true;
+  window.AndroidMigration?.signalReady();
 
   (async () => {
     try {
@@ -1419,6 +1432,7 @@ window.ArcadienApp = {
   handleNativeBack,
   hasUnsavedChanges: hasUnsavedRosterChanges,
   receiveRosterImportUrl,
+  receiveRosterMigration,
   receiveUpdateEvent
 };
 
@@ -1717,6 +1731,7 @@ function renderStartScreen() {
       <div class="startHeaderActions">
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
+        ${canMoveToNewApp() ? `<button id="startMoveToNewApp" title="Copy saved lists to the new app; originals stay here">Move to new app</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
         <button id="startCheckUpdates" title="Check for a newer app release"><span class="updateButtonWide">Check for Updates</span><span class="updateButtonNarrow">Updates</span></button>
       </div>
@@ -1759,6 +1774,8 @@ function renderStartScreen() {
   `;
   document.getElementById("startImportRoster").onclick = openRosterShareCodeModal;
   document.getElementById("startCheckUpdates").onclick = checkForAppUpdate;
+  const moveButton = document.getElementById("startMoveToNewApp");
+  if (moveButton) moveButton.onclick = moveRostersToNewApp;
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const manageSyncButton = document.getElementById("startManageSync");
@@ -4104,7 +4121,9 @@ function renderNestedOptionGroup(group, rosterEntry, stateById, depth) {
     .filter(child => child.kind === "group")
     .map(child => renderNestedOptionGroup(child, rosterEntry, stateById, depth + 1))
     .filter(Boolean);
-  const body = [...optionRows, ...childGroups].join("");
+  const squadHint = group.squadWeaponChoice && !(group.squadWeaponExceptions || []).length
+    ? '<p class="optionGroupHint">Choose one launcher for the whole squad. The Sergeant can take a Vengor instead.</p>' : "";
+  const body = squadHint + [...optionRows, ...childGroups].join("");
   if (!body) return "";
 
   const representative = children
@@ -4186,7 +4205,7 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
   }
 
   const max = displayOptionMaximum(option);
-  const inputType = max === 1 ? "checkbox" : "number";
+  const inputType = max === 1 || option.squadWideChoice ? "checkbox" : "number";
   const checked = current > 0 ? "checked" : "";
   const value = inputType === "number" ? `value="${current}" min="0" max="${Number.isFinite(max) ? max : 99}"` : "";
   const input = `
@@ -4412,7 +4431,7 @@ function setWeaponPreviewOpen(wrap, open) {
 
 function positionWeaponPreview(wrap, popover, token) {
   const nativeMobile = document.documentElement.dataset.mobileUi === "true";
-  if (!popover || !token || (!nativeMobile && !window.matchMedia("(max-width: 860px), (display-mode: standalone)").matches)) return;
+  if (!popover || !token) return;
   const viewport = window.visualViewport;
   const viewportLeft = viewport?.offsetLeft || 0;
   const viewportTop = viewport?.offsetTop || 0;
@@ -4436,7 +4455,9 @@ function positionWeaponPreview(wrap, popover, token) {
   const tokenRect = token.getBoundingClientRect();
   const margin = 12;
   const gap = 8;
-  const width = Math.max(260, Math.min(560, bounds.right - bounds.left - margin * 2));
+  const compactLayout = nativeMobile || window.matchMedia("(max-width: 860px), (display-mode: standalone)").matches;
+  const preferredWidth = compactLayout || popover.querySelector(".weaponPreviewStats") ? 560 : 280;
+  const width = Math.max(0, Math.min(preferredWidth, bounds.right - bounds.left - margin * 2));
   const left = Math.min(
     Math.max(tokenRect.left, bounds.left + margin),
     Math.max(bounds.left + margin, bounds.right - width - margin)
@@ -5468,6 +5489,49 @@ function validateImportedRosterDocument(document, index) {
   return factionRecord;
 }
 
+
+let rosterMigrationReady = false;
+let receivingRosterMigration = false;
+function canMoveToNewApp() {
+  try { return Boolean(window.AndroidMigration?.isLegacyApp()); } catch { return false; }
+}
+async function moveRostersToNewApp() {
+  const button = document.getElementById("startMoveToNewApp");
+  if (button) button.disabled = true;
+  try {
+    if (autosaveCurrentRoster({reportFailure:true}) === false) throw Error("The current list could not be saved. Nothing was transferred.");
+    await window.ArcadienRosterStorage?.flush();
+    const rosters = savedRosterLibrary();
+    if (rosterStorageReadFailed) throw Error("Saved rosters could not be read. Nothing was transferred.");
+    const payload = window.ArcadienRosterMigration.createPayload(rosters);
+    window.AndroidMigration.moveRosters(payload);
+  } catch (error) { alert("Could not move lists: " + error.message); }
+  finally { if (button) button.disabled = false; }
+}
+async function receiveRosterMigration() {
+  if (!rosterMigrationReady || receivingRosterMigration || !window.AndroidMigration) return;
+  const length = Number(window.AndroidMigration.incomingLength());
+  if (!length) return;
+  receivingRosterMigration = true;
+  try {
+    if (!Number.isInteger(length) || length < 0 || length > window.ArcadienRosterMigration.MAX_BYTES) throw Error("Invalid transfer size.");
+    const chunks = [];
+    for (let offset = 0; offset < length; offset += 65536) chunks.push(window.AndroidMigration.incomingChunk(offset));
+    const records = importedRosterRecords(window.ArcadienRosterMigration.readPayload(chunks.join("")));
+    for (let index = 0; index < records.length; index++) await validateImportedRosterHydration(records[index], index);
+    if (!confirm("Move " + records.length + " saved roster(s) into this app? Existing lists will be kept, and the old app will keep its originals.")) return;
+    if (autosaveCurrentRoster({reportFailure:true}) === false) throw Error("The current list could not be saved. Nothing was transferred.");
+    await window.ArcadienRosterStorage?.flush();
+    const existing = savedRosterLibrary();
+    if (rosterStorageReadFailed) throw Error("Existing lists could not be read, so nothing was imported.");
+    const result = window.ArcadienRosterMigration.merge(existing, records);
+    await saveRosterLibrary(result.rosters);
+    appMode = "library"; libraryTab = "lists"; render();
+    alert("Moved " + result.added + " roster(s). " + result.skipped + " already present. Your old app's originals are unchanged.");
+  } catch (error) { alert("Transfer failed: " + error.message + " Your old app still has its lists; you can try again."); }
+  finally { window.AndroidMigration.clearIncoming(); receivingRosterMigration = false; }
+}
+
 function normalizeImportedRosterRecord(input, index) {
   const document = input?.document || input;
   validateImportedRosterDocument(document, index);
@@ -5644,6 +5708,47 @@ function renderValidation() {
     ? `<div class="warningSummary">⚠ ${warningCount} warning${warningCount === 1 ? "" : "s"}. You can keep editing and save this roster.</div>` + results
       .map(result => `<div class="${result.ok ? "valid" : "warning"}">${result.ok ? "✓" : "⚠"} ${escapeHtml(result.text)}</div>`).join("")
     : results.map(result => `<div class="valid">✓ ${escapeHtml(result.text)}</div>`).join("") || `<div class="valid">✓ Roster is legal.</div>`;
+}
+
+let rosterDuplicationInFlight = false;
+
+async function duplicateRoster() {
+  if (rosterDuplicationInFlight || appMode !== "builder" || !armyState) return;
+  rosterDuplicationInFlight = true;
+  const buttons = [document.getElementById("duplicateRoster"), document.getElementById("mobileDuplicateRoster")];
+  buttons.forEach(button => { if (button) button.disabled = true; });
+  window.clearTimeout(rosterAutosaveTimer);
+  rosterAutosaveTimer = null;
+  try {
+    // Snapshot current edits, and persist the original and copy together before switching.
+    const original = structuredClone(currentRosterDocument());
+    const saves = structuredClone(savedRosterLibrary());
+    const activeIndex = saves.findIndex(save => save.id === currentRosterSaveId);
+    const now = new Date().toISOString();
+    const originalId = activeIndex >= 0 ? saves[activeIndex].id : newRosterSaveId();
+    const source = { id: originalId, savedAt: activeIndex >= 0 ? saves[activeIndex].savedAt : now, lastEditedAt: now, document: original };
+    if (activeIndex >= 0) saves[activeIndex] = source;
+    else saves.push(source);
+    const copy = structuredClone(original);
+    const baseName = original.name || "Unnamed list";
+    let number = 1;
+    do {
+      copy.name = baseName + (number === 1 ? " (Copy)" : " (Copy " + number + ")");
+      number += 1;
+    } while (saves.some(save => normalizedRosterName(save) === normalizedRosterName({ document: copy })));
+    const id = newRosterSaveId();
+    saves.push({ id, savedAt: now, lastEditedAt: now, document: copy });
+    await saveRosterLibrary(saves);
+    currentRosterSaveId = id;
+    await loadRosterDocument(copy);
+    showTransientMessage('✓ Created “' + copy.name + '”. You are editing the copy.');
+  } catch (error) {
+    alert('Could not duplicate this list: ' + error.message);
+    scheduleRosterAutosave();
+  } finally {
+    rosterDuplicationInFlight = false;
+    buttons.forEach(button => { if (button) button.disabled = false; });
+  }
 }
 
 async function saveRoster() {

@@ -11,6 +11,8 @@ const PROJECT_ROOT = path.resolve(ROOT, "..");
 const OUT_DIR = path.join(ROOT, "dist-user");
 
 const FILES = [
+  ["ui/roster-migration.js", "roster-migration.js"],
+  [".well-known/microsoft-identity-association.json", ".well-known/microsoft-identity-association.json"],
   ["ui/bootstrap-app.js", "bootstrap-app.js"],
   ["ui/styles.css", "styles.css"],
   ["ui/engine-app.js", "engine-app.js"],

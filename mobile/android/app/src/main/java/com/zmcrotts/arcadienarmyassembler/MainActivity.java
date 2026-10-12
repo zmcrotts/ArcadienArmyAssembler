@@ -69,6 +69,96 @@ public final class MainActivity extends Activity {
     private static final String UPDATE_MANIFEST_URL = "https://arcadienarmyassembler.pages.dev/public-release.json";
     private static final String UPDATE_RELEASE_API = "https://api.github.com/repos/zmcrotts/ArcadienArmyAssembler/releases/latest";
     private static final String UPDATE_ASSET_BASE = "https://github.com/zmcrotts/ArcadienArmyAssembler/releases/latest/download/";
+
+    private static final String NEW_APP_PACKAGE = "dev.arcadienarmyassembler.app";
+    private static final String MIGRATION_TYPE = "application/vnd.arcadien.roster-migration+json";
+    private static final int MAX_MIGRATION_BYTES = 50 * 1024 * 1024;
+    private volatile String incomingMigration;
+    private volatile boolean migrationReady;
+    private boolean migrationLoading;
+
+    private void deliverPendingMigration() {
+        if (!migrationReady || incomingMigration == null || webView == null) return;
+        webView.post(() -> webView.evaluateJavascript("window.ArcadienApp && window.ArcadienApp.receiveRosterMigration();", null));
+    }
+
+    private void handleMigrationIntent(Intent intent) {
+        if (!NEW_APP_PACKAGE.equals(getPackageName()) || intent == null || !Intent.ACTION_SEND.equals(intent.getAction()) || !MIGRATION_TYPE.equals(intent.getType())) return;
+        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (uri == null || !"content".equals(uri.getScheme())) return;
+        synchronized (this) {
+            if (incomingMigration != null || migrationLoading) {
+                Toast.makeText(this, "Finish the current list transfer before starting another.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            migrationLoading = true;
+        }
+        new Thread(() -> {
+            try (InputStream input = getContentResolver().openInputStream(uri); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                if (input == null) throw new IOException("Could not open the roster transfer.");
+                byte[] buffer = new byte[65536]; int count, total = 0;
+                while ((count = input.read(buffer)) != -1) {
+                    total += count;
+                    if (total > MAX_MIGRATION_BYTES) throw new IOException("The roster transfer exceeds 50 MB.");
+                    output.write(buffer, 0, count);
+                }
+                incomingMigration = new String(output.toByteArray(), StandardCharsets.UTF_8);
+                runOnUiThread(() -> deliverPendingMigration());
+            } catch (Exception error) {
+                runOnUiThread(() -> Toast.makeText(this, "Could not receive the lists. They remain in the old app; try again.", Toast.LENGTH_LONG).show());
+            } finally { synchronized (this) { migrationLoading = false; } }
+        }, "arcadien-roster-migration-read").start();
+    }
+
+    private void showNewAppDownload() {
+        new AlertDialog.Builder(this).setTitle("Install the new app first")
+            .setMessage("Install the new Arcadien Army Assembler app, then return here and tap Move to new app again. Your saved lists stay here.")
+            .setPositiveButton("Get new app", (dialog, which) -> {
+                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://arcadienarmyassembler.pages.dev/download"))); }
+                catch (Exception error) { Toast.makeText(this, "Open the Arcadien download page in your browser.", Toast.LENGTH_LONG).show(); }
+            }).setNegativeButton("Later", null).show();
+    }
+
+    private final class AndroidMigration {
+        @JavascriptInterface public boolean isLegacyApp() { return !NEW_APP_PACKAGE.equals(getPackageName()); }
+        @JavascriptInterface public void signalReady() { migrationReady = true; runOnUiThread(() -> deliverPendingMigration()); }
+        @JavascriptInterface public int incomingLength() { String value = incomingMigration; return value == null ? 0 : value.length(); }
+        @JavascriptInterface public String incomingChunk(int offset) {
+            String value = incomingMigration;
+            if (value == null || offset < 0 || offset >= value.length()) return "";
+            return value.substring(offset, Math.min(value.length(), offset + 65536));
+        }
+        @JavascriptInterface public void clearIncoming() { incomingMigration = null; }
+        @JavascriptInterface public void moveRosters(String payload) {
+            if (!isLegacyApp()) return;
+            new Thread(() -> {
+                try {
+                    byte[] bytes = payload == null ? new byte[0] : payload.getBytes(StandardCharsets.UTF_8);
+                    if (bytes.length == 0 || bytes.length > MAX_MIGRATION_BYTES) throw new IOException("Invalid migration size.");
+                    JSONObject document = new JSONObject(payload);
+                    if (!"arcadien.roster-migration".equals(document.optString("kind")) || document.optInt("version") != 1 || document.getJSONArray("rosters").length() == 0 || document.getJSONArray("rosters").length() > 500) throw new IOException("Invalid roster transfer.");
+                    try { getPackageManager().getPackageInfo(NEW_APP_PACKAGE, 0); }
+                    catch (android.content.pm.PackageManager.NameNotFoundException missing) { runOnUiThread(() -> showNewAppDownload()); return; }
+                    File file = MigrationFileProvider.migrationFile(MainActivity.this);
+                    File parent = file.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) throw new IOException("Could not prepare roster transfer.");
+                    try (FileOutputStream output = new FileOutputStream(file)) { output.write(bytes); }
+                    Uri uri = Uri.parse("content://" + getPackageName() + ".migration/" + MigrationFileProvider.FILE_NAME);
+                    Intent handoff = new Intent(Intent.ACTION_SEND).setPackage(NEW_APP_PACKAGE).setType(MIGRATION_TYPE)
+                        .putExtra(Intent.EXTRA_STREAM, uri)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    handoff.setClipData(ClipData.newRawUri("Saved rosters", uri));
+                    runOnUiThread(() -> {
+                        try { startActivity(handoff); }
+                        catch (Exception error) { Toast.makeText(MainActivity.this, "The new app could not accept the transfer. Your lists remain here.", Toast.LENGTH_LONG).show(); }
+                    });
+                } catch (Exception error) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Could not prepare the list transfer. Your saved lists remain here.", Toast.LENGTH_LONG).show());
+                }
+            }, "arcadien-roster-migration-write").start();
+        }
+    }
+
     private WebView webView;
     private ValueCallback<Uri[]> fileChooserCallback;
     private byte[] pendingExportBytes;
@@ -152,6 +242,7 @@ public final class MainActivity extends Activity {
         webView.addJavascriptInterface(new AndroidFiles(), "AndroidFiles");
         webView.addJavascriptInterface(new AndroidOneDrive(), "AndroidOneDrive");
         webView.addJavascriptInterface(new AndroidUpdates(), "AndroidUpdates");
+        webView.addJavascriptInterface(new AndroidMigration(), "AndroidMigration");
         webView.setWebViewClient(new LocalWebViewClient());
         webView.setWebChromeClient(new LocalWebChromeClient());
 
@@ -181,6 +272,7 @@ public final class MainActivity extends Activity {
     }
 
     private void handleRosterImportIntent(Intent intent) {
+        handleMigrationIntent(intent);
         Uri uri = intent == null ? null : intent.getData();
         if (uri == null || !"arcadien".equalsIgnoreCase(uri.getScheme()) || !"import".equalsIgnoreCase(uri.getHost())) return;
         String code = uri.getQueryParameter("code");
@@ -227,6 +319,7 @@ public final class MainActivity extends Activity {
             webView.removeJavascriptInterface("AndroidFiles");
             webView.removeJavascriptInterface("AndroidOneDrive");
             webView.removeJavascriptInterface("AndroidUpdates");
+            webView.removeJavascriptInterface("AndroidMigration");
             webView.destroy();
         }
         super.onDestroy();
@@ -280,6 +373,7 @@ public final class MainActivity extends Activity {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             deliverPendingRosterImport();
+            deliverPendingMigration();
         }
 
         @Override

@@ -167,6 +167,16 @@ button:hover {
   white-space: nowrap;
 }
 
+.headerDuplicateRoster {
+  grid-column: 3;
+  grid-row: 3;
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 32px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
 .headerFileActions {
   display: grid;
   gap: 6px;
@@ -1745,6 +1755,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 
   .mobileHeaderActions {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     margin-top: 2px;
   }
@@ -2603,10 +2614,10 @@ html[data-mobile-ui="false"] .savedRosterCards {
   display: none;
   left: 0;
   line-height: 1.25;
-  min-width: 400px;
-  max-width: min(560px, calc(100vw - 32px));
+  min-width: 0;
+  max-width: min(560px, calc(100vw - 24px));
   padding: 10px 12px;
-  position: absolute;
+  position: fixed;
   top: calc(100% + 6px);
   white-space: normal;
   z-index: 90;
@@ -2779,9 +2790,15 @@ html[data-mobile-ui="false"] .savedRosterCards {
   width: min(280px, calc(100vw - 32px));
 }
 
+.weaponPreviewPopover:has(.weaponPreviewStats) {
+  min-width: 0;
+  width: min(560px, calc(100vw - 24px));
+}
+
 .weaponPreviewStats {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 5px;
   margin-top: 8px;
 }

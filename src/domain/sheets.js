@@ -546,7 +546,10 @@ function bodyguardModelsOnly(text) {
 
 function applyWeaponEffectsToWeapon(weapon, effects, context = {}) {
   const next = clone(weapon) || {};
-  const characteristics = clone(next.characteristics || {});
+  // Roster snapshots already contain effective profiles. Recalculations in
+  // sheets and Play mode must start from the same underlying characteristics.
+  const characteristics = clone(next.weaponEffectBaseCharacteristics || next.characteristics || {});
+  next.weaponEffectBaseCharacteristics = clone(characteristics);
   const originalCharacteristics = clone(characteristics);
   for (const effect of effects) {
     if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;

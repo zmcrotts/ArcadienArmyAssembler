@@ -530,6 +530,7 @@
   }
 
   function modelWounds(entry, model = null) {
+    if (Number(model?.wounds) > 0) return Number(model.wounds);
     const profiles = entry.configured?.units || [];
     const modelName = normalize(model?.name);
     const unitProfile = modelName ? [...profiles].sort((a, b) => profileMatchScore(b, modelName) - profileMatchScore(a, modelName))[0] : profiles[0] || null;
@@ -1196,6 +1197,12 @@
     const unitNames = (group.members || []).map(member => member.name);
     const keywords = [...new Set((group.members || []).flatMap(member => member.keywords || []))];
     return (group.members || []).flatMap(member => {
+      // Older snapshots contain final modified profiles without their baseline.
+      // Preserve them when resuming a game instead of applying static bonuses again.
+      const savedWeapons = member.configured?.weapons || [];
+      if (savedWeapons.some(weapon => weapon.modifiedCharacteristics?.length && !weapon.weaponEffectBaseCharacteristics)) {
+        return savedWeapons;
+      }
       const configured = window.RosterSheets?.applyWeaponEffectsToConfigured
         ? window.RosterSheets.applyWeaponEffectsToConfigured(member.configured || {}, effects, {
             instanceId: member.instanceId,

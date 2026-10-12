@@ -349,6 +349,44 @@
     });
   }
 
+  function validateSquadWeaponChoices(unitDefinition, entry, index) {
+    const errors = [];
+    const choices = new Map();
+    for (const group of index.all.filter(node => node.squadWeaponChoice && nodeIsActive(node, entry, index, unitDefinition, true))) {
+      const selected = group.children.filter(child => Number(entry.selections[child.id] || 0) > 0);
+      const exceptions = group.squadWeaponExceptions || [];
+      const weapon = selected.find(child => !exceptions.includes(child.name));
+      const previous = choices.get(group.squadWeaponChoice);
+      if (selected.length > 1 || (weapon && previous && previous !== weapon.name)) {
+        errors.push({ nodeId: group.id, name: "All models must use the same squad launcher (except the Sergeant's Vengor)", type: "squad-weapon", actual: selected.length, limit: 1 });
+      }
+      if (weapon) choices.set(group.squadWeaponChoice, weapon.name);
+    }
+    return errors;
+  }
+
+  function synchronizeSquadWeaponChoice(node, entry, unitDefinition, index) {
+    const parent = index.parentById.get(node.id);
+    if (!parent?.squadWeaponChoice) return;
+    const groups = index.all.filter(group => group.squadWeaponChoice === parent.squadWeaponChoice);
+    const exceptions = parent.squadWeaponExceptions || [];
+    const selected = Number(entry.selections[node.id] || 0) > 0;
+    if (selected && exceptions.includes(node.name)) return;
+    const primary = groups.find(group => !(group.squadWeaponExceptions || []).length) || parent;
+    const reference = selected ? node : (parent === primary ? parent : primary).children.find(child => Number(entry.selections[child.id] || 0) > 0);
+    if (!reference) return;
+    for (const group of groups) {
+      if (group !== parent && group.children.some(child => (group.squadWeaponExceptions || []).includes(child.name) && Number(entry.selections[child.id] || 0) > 0)) continue;
+      const match = group.children.find(child => child.name === reference.name);
+      if (!match) continue;
+      for (const child of group.children) {
+        const count = child === match ? evaluatedLimits(group, entry, index, unitDefinition).minimum : 0;
+        entry.selections[child.id] = count;
+        refreshDescendants(child, count, entry.selections, unitDefinition, index);
+      }
+    }
+  }
+
   function validateLoadout(unitDefinition, entry) {
     const index = buildTreeIndex(unitDefinition);
     const errors = [];
@@ -393,7 +431,7 @@
       }
     }
 
-    return [...errors, ...validateKnownUnitRules(unitDefinition, entry, index)];
+    return [...errors, ...validateKnownUnitRules(unitDefinition, entry, index), ...validateSquadWeaponChoices(unitDefinition, entry, index)];
   }
 
   function constraintValue(node, type, scope = null) {
@@ -721,6 +759,13 @@
     const next = JSON.parse(JSON.stringify(rosterEntry || {}));
     next.selections = next.selections || {};
     const index = buildTreeIndex(unitDefinition);
+    // Migrate retired option IDs before pruning unknown saved selections.
+    for (const node of index.all) {
+      for (const oldId of node.previousSelectionIds || []) {
+        const count = Number(next.selections[oldId] || 0);
+        if (oldId !== node.id && count > 0) next.selections[node.id] = Number(next.selections[node.id] || 0) + count;
+      }
+    }
     for (const selectionId of Object.keys(next.selections)) {
       if (!index.byId.has(selectionId)) delete next.selections[selectionId];
     }
@@ -826,6 +871,7 @@
           groupMaximum: parentLimits.maximum,
           groupRequired,
           mutuallyExclusive,
+          squadWideChoice: Boolean(parent?.squadWeaponChoice),
           active,
           mandatory,
           fixed,
@@ -941,6 +987,7 @@
     if (newCount > 0) refreshDescendants(node, newCount, next.selections, unitDefinition, index);
     replaceNestedCompositionModel(node, newCount - oldCount, next, unitDefinition, index);
     rebalanceAncestorGroups(node, next, unitDefinition, index);
+    synchronizeSquadWeaponChoice(node, next, unitDefinition, index);
     return next;
   }
 
@@ -1328,7 +1375,7 @@
       index,
       [...profiles.values()].filter(profile => Number(profile.count || 0) > 0)
     );
-    const values = mergeDuplicateAbilityProfiles(corrected);
+    const values = mergeDuplicateAbilityProfiles(splitEquippedWoundsProfiles(corrected, index, entry, unitDefinition));
     return {
       profiles: [...values],
       weapons: values.filter(profile => /Weapons$/i.test(profile.typeName || "")),
@@ -1341,20 +1388,41 @@
     };
   }
 
-  function getConfiguredModels(unitDefinition, entry) {
-    const index = buildTreeIndex(unitDefinition);
-    return index.all
-      .filter(node => node.kind === "model" && nodeIsActive(node, entry, index, unitDefinition, true))
-      .map(node => ({
-        id: node.id,
-        name: node.name,
-        count: Number(entry?.selections?.[node.id] || 0),
-        equipment: selectedEquipmentLabels(node, entry, index, unitDefinition)
-      }))
-      .filter(model => model.count > 0);
-  }
+  function equippedWoundsCount(model, index, entry, unitDefinition) {
+  return index.all.filter(node => node.modelWoundsBonus && closestModelAncestor(node, index)?.id === model.id && nodeIsActive(node, entry, index, unitDefinition, true))
+    .reduce((total, node) => total + Number(entry.selections[node.id] || 0), 0);
+}
 
-  function selectedEquipmentLabels(node, entry, index, unitDefinition) {
+function splitEquippedWoundsProfiles(profiles, index, entry, unitDefinition) {
+  return profiles.flatMap(profile => {
+    if (profile.typeName !== "Unit") return [profile];
+    const models = index.all.filter(node => node.kind === "model" && (node.profiles || []).some(p => p.id === profile.id));
+    const count = Math.min(Number(profile.count || 0), models.reduce((total, model) => total + equippedWoundsCount(model, index, entry, unitDefinition), 0));
+    if (!count) return [profile];
+    return [
+      ...(profile.count > count ? [{ ...profile, count: profile.count - count }] : []),
+      { ...profile, id: profile.id + "-storm-shield", name: profile.name + " (Storm Shield)", count,
+        characteristics: { ...profile.characteristics, W: String(Number(profile.characteristics.W) + 1) } }
+    ];
+  });
+}
+
+function getConfiguredModels(unitDefinition, entry) {
+  const index = buildTreeIndex(unitDefinition);
+  return index.all.filter(node => node.kind === "model" && nodeIsActive(node, entry, index, unitDefinition, true)).flatMap(node => {
+    const count = Number(entry?.selections?.[node.id] || 0);
+    const shields = Math.min(count, equippedWoundsCount(node, index, entry, unitDefinition));
+    const equipment = selectedEquipmentLabels(node, entry, index, unitDefinition);
+    const baseWounds = Number((node.profiles || []).find(p => p.typeName === "Unit")?.characteristics?.W || 0);
+    if (!shields) return [{ id: node.id, name: node.name, count, equipment }];
+    return [
+      ...(count > shields ? [{ id: node.id, name: node.name, count: count - shields, equipment: equipment.filter(label => !/storm shield/i.test(label)), wounds: baseWounds }] : []),
+      { id: node.id + "-storm-shield", name: node.name + " (Storm Shield)", count: shields, equipment: equipment.filter(label => /storm shield/i.test(label)), wounds: baseWounds + 1 }
+    ];
+  }).filter(model => model.count > 0);
+}
+
+function selectedEquipmentLabels(node, entry, index, unitDefinition) {
     const records = collectEquipmentLabelRecords(node, entry, index, unitDefinition);
     const suppressFallbackMelee = modelHasSelectedReplacementMelee(node, entry, index, unitDefinition);
     const counts = new Map();

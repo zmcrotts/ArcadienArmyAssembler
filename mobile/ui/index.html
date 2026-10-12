@@ -42,6 +42,7 @@
           </span>
           <input id="rosterName" class="rosterNameInput" placeholder="List name" aria-label="List name">
           <div class="rosterPoints"><span id="pointsTotal">0</span> pts</div>
+          <button id="duplicateRoster" class="headerDuplicateRoster" type="button">Duplicate list</button>
         </div>
         <div class="builderSettings" hidden>
           <label>
@@ -143,6 +144,7 @@
           <div class="mobileHeaderActions">
             <button id="mobilePlayMode" class="mobilePlayButton" type="button">Play Mode</button>
             <button id="mobileSaveRoster" type="button">Save</button>
+            <button id="mobileDuplicateRoster" type="button">Duplicate list</button>
             <button id="mobileExportRoster" type="button">Share</button>
           </div>
         </div>
@@ -398,6 +400,7 @@
   <script defer src="../../ui/assets/11th/terrain-layouts/manifest.js?v=terrain1"></script>
   <script defer src="play-mode.js?v=play6"></script>
   <script defer src="roster-storage.js?v=idb1"></script>
+  <script defer src="roster-migration.js?v=1"></script>
   <script defer src="engine-app.js?v=mobile34"></script>
 </body>
 </html>

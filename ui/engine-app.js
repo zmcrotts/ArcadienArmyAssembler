@@ -3044,7 +3044,9 @@ function renderNestedOptionGroup(group, rosterEntry, stateById, depth) {
     .filter(child => child.kind === "group")
     .map(child => renderNestedOptionGroup(child, rosterEntry, stateById, depth + 1))
     .filter(Boolean);
-  const body = [...optionRows, ...childGroups].join("");
+  const squadHint = group.squadWeaponChoice && !(group.squadWeaponExceptions || []).length
+    ? '<p class="optionGroupHint">Choose one launcher for the whole squad. The Sergeant can take a Vengor instead.</p>' : "";
+  const body = squadHint + [...optionRows, ...childGroups].join("");
   if (!body) return "";
 
   const representative = children
@@ -3126,7 +3128,7 @@ function renderNestedOptionRow(node, rosterEntry, stateById, depth) {
   }
 
   const max = displayOptionMaximum(option);
-  const inputType = max === 1 ? "checkbox" : "number";
+  const inputType = max === 1 || option.squadWideChoice ? "checkbox" : "number";
   const checked = current > 0 ? "checked" : "";
   const value = inputType === "number" ? `value="${current}" min="0" max="${Number.isFinite(max) ? max : 99}"` : "";
 
