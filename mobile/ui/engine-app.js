@@ -204,6 +204,7 @@ let currentQrImportUrl = "";
 let currentQrRosterName = "";
 let pendingQrImport = null;
 let customThemeEditorPrevious = null;
+let customThemeEditorTrigger = null;
 let availableAppUpdate = null;
 const buttonFeedbackState = new WeakMap();
 
@@ -1070,6 +1071,11 @@ function applyTheme(theme) {
   if (lightTheme) lightTheme.classList.toggle("active", nextTheme === "light");
   if (darkTheme) darkTheme.classList.toggle("active", nextTheme === "dark");
   if (customTheme) customTheme.classList.toggle("active", nextTheme === "custom");
+  for (const button of startScreen.querySelectorAll("[data-home-theme]")) {
+    const active = button.dataset.homeTheme === nextTheme;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  }
 }
 
 function loadCustomThemePalette() {
@@ -1126,6 +1132,7 @@ function readCustomThemeForm() {
 }
 
 function openCustomThemeEditor() {
+  customThemeEditorTrigger = document.activeElement;
   customThemeEditorPrevious = {
     theme: activeThemeName(),
     palette: loadCustomThemePalette()
@@ -1148,7 +1155,7 @@ function cancelCustomThemeEditor() {
   applyTheme(customThemeEditorPrevious.theme);
   customThemeEditorPrevious = null;
   customThemeModal.hidden = true;
-  customTheme?.focus();
+  (customThemeEditorTrigger || customTheme)?.focus();
 }
 
 function saveCustomThemeEditor() {
@@ -1162,7 +1169,7 @@ function saveCustomThemeEditor() {
   setTheme("custom");
   customThemeEditorPrevious = null;
   customThemeModal.hidden = true;
-  customTheme?.focus();
+  (customThemeEditorTrigger || customTheme)?.focus();
 }
 
 function setExportMenuOpen(open) {
@@ -1737,10 +1744,15 @@ function renderStartScreen() {
       </div>
     </div>
     ${rosterStorageWarning ? `<p class="warning" role="alert">${escapeHtml(rosterStorageWarning)}</p>` : ""}
+    <div class="startLibraryToolbar">
     <nav class="startLibraryTabs" aria-label="Saved content">
       <button id="showListsTab" type="button" class="${libraryTab === "lists" ? "active" : ""}" aria-current="${libraryTab === "lists" ? "page" : "false"}">Lists <span>${saves.length}</span></button>
       <button id="showGamesTab" type="button" class="${libraryTab === "games" ? "active" : ""}" aria-current="${libraryTab === "games" ? "page" : "false"}">Games <span>${games.length}</span></button>
     </nav>
+      <div class="segmentedControl themeToggle startThemeToggle" role="group" aria-label="Color theme">
+        ${["light", "dark", "custom"].map(theme => `<button type="button" data-home-theme="${theme}" class="${activeThemeName() === theme ? "active" : ""}" aria-pressed="${activeThemeName() === theme}">${theme[0].toUpperCase() + theme.slice(1)}</button>`).join("")}
+      </div>
+    </div>
     ${libraryTab === "lists" ? `<details id="startRosterFilterPanel" class="startRosterFilterPanel" ${savedRosterFiltersOpen ? "open" : ""}>
       <summary>Search, filter &amp; sort <span id="savedRosterFilterSummary" class="muted"></span></summary>
       <div class="startRosterFilters">
@@ -1780,6 +1792,11 @@ function renderStartScreen() {
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const manageSyncButton = document.getElementById("startManageSync");
   if (manageSyncButton) manageSyncButton.onclick = openSyncDataManager;
+  for (const button of startScreen.querySelectorAll("[data-home-theme]")) {
+    button.onclick = button.dataset.homeTheme === "custom"
+      ? openCustomThemeEditor
+      : () => setTheme(button.dataset.homeTheme);
+  }
   document.getElementById("showListsTab").onclick = () => { libraryTab = "lists"; renderStartScreen(); };
   document.getElementById("showGamesTab").onclick = () => { libraryTab = "games"; renderStartScreen(); };
   const newRosterButton = document.getElementById("startNewRoster");

@@ -806,6 +806,22 @@ html[data-mobile-ui="false"] .startScreen {
 
 .startIntroTitleRow h2 { margin: 0; }
 
+.startLibraryToolbar {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.startLibraryToolbar .startLibraryTabs {
+  flex: 1 1 auto;
+}
+
+.startThemeToggle {
+  flex: 0 0 auto;
+  margin: 8px 0 5px auto;
+}
+
 .startLibraryTabs {
   border-bottom: 1px solid #aebbc0;
   display: flex;
@@ -4119,3 +4135,10 @@ label:has(> #pointsLimit) { display: inline-flex; align-items: center; gap: 8px;
 .coreStratagemDisclosure { margin-top: 12px; border: 1px solid #9aa; }
 .coreStratagemDisclosure > summary { padding: 8px; cursor: pointer; font-weight: bold; }
 .coreStratagemDisclosure > .stratagemList { padding: 8px; margin-bottom: 0; }
+
+@media (max-width: 860px) {
+  .startThemeToggle button {
+    min-height: 44px;
+    min-width: 56px;
+  }
+}
