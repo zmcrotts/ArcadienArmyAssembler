@@ -807,6 +807,7 @@ html[data-mobile-ui="false"] .startScreen {
 .startIntroTitleRow h2 { margin: 0; }
 
 .startLibraryToolbar {
+  border-bottom: 1px solid #aebbc0;
   align-items: flex-end;
   display: flex;
   flex-wrap: wrap;
@@ -823,7 +824,6 @@ html[data-mobile-ui="false"] .startScreen {
 }
 
 .startLibraryTabs {
-  border-bottom: 1px solid #aebbc0;
   display: flex;
   gap: 4px;
   margin-top: 16px;
@@ -3452,7 +3452,7 @@ html[data-theme="dark"] .startScreen {
   border-color: #34454c;
 }
 
-html[data-theme="dark"] .startLibraryTabs { border-bottom-color: #42535a; }
+html[data-theme="dark"] .startLibraryToolbar { border-bottom-color: #42535a; }
 html[data-theme="dark"] .startLibraryTabs button { color: #89969b; }
 html[data-theme="dark"] .startLibraryTabs button.active { border-bottom-color: #26b8c5; color: #9ee8f0; }
 html[data-theme="dark"] .startLibraryTabs button span { background: #263238; }
