@@ -616,10 +616,13 @@ function weaponNameMatches(effectName, weaponName) {
 
 function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
   const unitEffects = extractUnitEffects(effects);
-  if (!unitEffects.length) return clone(profiles);
   return asArray(profiles).map(profile => {
     const next = clone(profile) || {};
     const characteristics = clone(next.characteristics || {});
+    // Printed data and older snapshots use mixed-case stat abbreviations.
+    // Canonical fields must exist before rendering or applying stat effects.
+    if (characteristics.SV == null && characteristics.Sv != null) characteristics.SV = characteristics.Sv;
+    if (characteristics.LD == null && characteristics.Ld != null) characteristics.LD = characteristics.Ld;
     const originalCharacteristics = clone(characteristics);
     for (const effect of unitEffects) {
       if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;

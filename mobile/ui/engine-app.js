@@ -4687,9 +4687,9 @@ function renderUnitProfiles(units) {
               <td>${escapeHtml(profile.name)}</td>
               <td>${renderCharacteristicValue(profile, "M", c.M)}</td>
               <td>${renderCharacteristicValue(profile, "T", c.T)}</td>
-              <td>${renderCharacteristicValue(profile, "SV", c.SV)}</td>
+              <td>${renderCharacteristicValue(profile, "SV", c.SV ?? c.Sv)}</td>
               <td>${renderCharacteristicValue(profile, "W", c.W)}</td>
-              <td>${renderCharacteristicValue(profile, "LD", c.LD)}</td>
+              <td>${renderCharacteristicValue(profile, "LD", c.LD ?? c.Ld)}</td>
               <td>${renderCharacteristicValue(profile, "OC", c.OC)}</td>
               <td>${renderCharacteristicValue(profile, "InSv", c.InSv ?? c["Invulnerable Save"])}</td>
             </tr>
@@ -6762,7 +6762,7 @@ function renderCrusadeSheetPage(sheet) {
       <h2>Unit Stats</h2>
       <table>
         <thead><tr><th>M</th><th>T</th><th>SV</th><th>W</th><th>LD</th><th>OC</th><th>InSv</th></tr></thead>
-        <tbody><tr><td>${escapeHtml(c.M || "")}</td><td>${escapeHtml(c.T || "")}</td><td>${escapeHtml(c.SV || "")}</td><td>${escapeHtml(c.W || "")}</td><td>${escapeHtml(c.LD || "")}</td><td>${escapeHtml(c.OC || "")}</td><td>${escapeHtml(displayStatValue(c.InSv || c["Invulnerable Save"]))}</td></tr></tbody>
+        <tbody><tr><td>${escapeHtml(c.M || "")}</td><td>${escapeHtml(c.T || "")}</td><td>${escapeHtml(c.SV ?? c.Sv ?? "")}</td><td>${escapeHtml(c.W || "")}</td><td>${escapeHtml(c.LD ?? c.Ld ?? "")}</td><td>${escapeHtml(c.OC || "")}</td><td>${escapeHtml(displayStatValue(c.InSv || c["Invulnerable Save"]))}</td></tr></tbody>
       </table>
       <div class="grid2">
         <div>
@@ -6798,7 +6798,7 @@ function renderSheetStatlines(statlines) {
       <tbody>
         ${statlines.map(profile => {
           const c = profile.characteristics || {};
-          return `<tr><td>${escapeHtml(profile.name)}</td><td>${escapeHtml(profile.count || 1)}</td><td>${escapeHtml(c.M || "")}</td><td>${escapeHtml(c.T || "")}</td><td>${escapeHtml(c.SV || "")}</td><td>${escapeHtml(c.W || "")}</td><td>${escapeHtml(c.LD || "")}</td><td>${escapeHtml(c.OC || "")}</td><td>${escapeHtml(displayStatValue(c.InSv || c["Invulnerable Save"]))}</td></tr>`;
+          return `<tr><td>${escapeHtml(profile.name)}</td><td>${escapeHtml(profile.count || 1)}</td><td>${escapeHtml(c.M || "")}</td><td>${escapeHtml(c.T || "")}</td><td>${escapeHtml(c.SV ?? c.Sv ?? "")}</td><td>${escapeHtml(c.W || "")}</td><td>${escapeHtml(c.LD ?? c.Ld ?? "")}</td><td>${escapeHtml(c.OC || "")}</td><td>${escapeHtml(displayStatValue(c.InSv || c["Invulnerable Save"]))}</td></tr>`;
         }).join("")}
       </tbody>
     </table>
