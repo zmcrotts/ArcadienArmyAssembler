@@ -1,5 +1,5 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const source=fs.readFileSync('mobile/ui/play-mode.js','utf8');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../ui/play-mode.js'),'utf8');
 const codex=require('../../data/manual-rules/wh40k-11e-custodes-codex.json');
 const martial=codex.armyRules.find(x=>x.name==="Martial Ka'tah");
 function harness(first='you'){
