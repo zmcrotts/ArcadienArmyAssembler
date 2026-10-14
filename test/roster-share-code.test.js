@@ -40,7 +40,7 @@ function record(unit, index, changes = {}) {
 
 test("Custodes share codes round-trip roster decisions without rules or profiles", () => {
   const context = loadContext();
-  const guard = context.unitPackages.find(unit => unit.name === "Custodian Guard");
+  const guard = context.unitPackages.find(unit => unit.name === "Custodian Guard Sodality");
   const captain = context.unitPackages.find(unit => unit.name === "Shield-Captain");
   const changedOption = Object.keys(guard.defaultEntry.selections)[0];
   const detachment = context.armyDefinition.detachments[0];
@@ -129,11 +129,8 @@ test("the encoder rejects a roster that does not match its loaded faction dictio
   assert.throws(() => encodeRoster({ faction: "Xenos - Orks", subfaction: "Xenos - Orks", rosterEntries: [{}] }, context), /not supported|different faction/);
 });
 
-test("AAA1 Custodes pilot codes remain importable", () => {
+test("AAA1 Custodes pilot codes reject the retired rules dictionary", () => {
   const context = loadContext();
   const code = "AAA1-MXyyT9APE0kgS25vdyBLdW5nIEZ1LVRFU1QCBgUEAAsCBQADAQMCAwMDBgMZABkACwUEAQUFDQEOARABDQQABQEFAgUFBQ0EAAUBBQIFBQUGAAYAFAAXAAcCAAAMAQAEBwMJBQgABgQBFwgA2qn4lQ";
-  const decoded = decodeRoster(code, context);
-  assert.equal(decoded.name, "I Know Kung Fu-TEST");
-  assert.equal(decoded.faction, SUPPORTED_FACTION);
-  assert.equal(decoded.rosterEntries.length, 11);
+  assert.throws(() => decodeRoster(code, context), /different rules dictionary|unavailable Custodes unit/);
 });

@@ -1738,7 +1738,7 @@ function renderStartScreen() {
       <div class="startHeaderActions">
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
-        ${canMoveToNewApp() ? `<button id="startMoveToNewApp" title="Copy saved lists to the new app; originals stay here">Move to new app</button>` : ""}
+        ${canMoveToNewApp() ? `<button id="startMoveToNewApp" title="Copy saved lists and completed game history to the new app; originals stay here">Move to new app</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
         <button id="startCheckUpdates" title="Check for a newer app release"><span class="updateButtonWide">Check for Updates</span><span class="updateButtonNarrow">Updates</span></button>
       </div>
@@ -3867,7 +3867,7 @@ function renderUnitAssignments(rosterEntry) {
       <summary>Unit Assignments</summary>
       <div>
         ${assignment.showWarlord ? `<label class="assignmentRow">
-          <span><b>Warlord</b><small>${armyEngine.canSelectWarlord({ roles: definition.roles, rosterRules: definition.rosterRules, alliedFor: unit.alliedFor }) ? "Eligible" : "Selection will produce a warning"}</small></span>
+          <span><b>Warlord</b><small>${armyEngine.canSelectWarlord({ roles: definition.roles, rosterRules: definition.rosterRules, alliedFor: unit.alliedFor }, armyState) ? "Eligible" : "Selection will produce a warning"}</small></span>
           <input class="warlordToggle" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${assignment.isWarlord ? "checked" : ""}>
         </label>` : ""}
         ${definition.roles?.leader ? `
@@ -5520,9 +5520,10 @@ async function moveRostersToNewApp() {
     await window.ArcadienRosterStorage?.flush();
     const rosters = savedRosterLibrary();
     if (rosterStorageReadFailed) throw Error("Saved rosters could not be read. Nothing was transferred.");
-    const payload = window.ArcadienRosterMigration.createPayload(rosters);
+    const games = await window.ArcadienPlayMode.exportMigrationHistory();
+    const payload = window.ArcadienRosterMigration.createPayload(rosters, games);
     window.AndroidMigration.moveRosters(payload);
-  } catch (error) { alert("Could not move lists: " + error.message); }
+  } catch (error) { alert("Could not move lists and history: " + error.message); }
   finally { if (button) button.disabled = false; }
 }
 async function receiveRosterMigration() {
@@ -5534,18 +5535,28 @@ async function receiveRosterMigration() {
     if (!Number.isInteger(length) || length < 0 || length > window.ArcadienRosterMigration.MAX_BYTES) throw Error("Invalid transfer size.");
     const chunks = [];
     for (let offset = 0; offset < length; offset += 65536) chunks.push(window.AndroidMigration.incomingChunk(offset));
-    const records = importedRosterRecords(window.ArcadienRosterMigration.readPayload(chunks.join("")));
+    const transfer = window.ArcadienRosterMigration.readTransfer(chunks.join(""));
+    const records = importedRosterRecords(transfer.rosters);
     for (let index = 0; index < records.length; index++) await validateImportedRosterHydration(records[index], index);
-    if (!confirm("Move " + records.length + " saved roster(s) into this app? Existing lists will be kept, and the old app will keep its originals.")) return;
+    const games = transfer.games.length ? await window.ArcadienPlayMode.validateMigrationHistory(transfer.games) : [];
+    if (!confirm("Move " + records.length + " saved roster(s) and " + games.length + " completed game(s) into this app? Existing lists and history will be kept, and the old app will keep its originals.")) return;
     if (autosaveCurrentRoster({reportFailure:true}) === false) throw Error("The current list could not be saved. Nothing was transferred.");
     await window.ArcadienRosterStorage?.flush();
     const existing = savedRosterLibrary();
     if (rosterStorageReadFailed) throw Error("Existing lists could not be read, so nothing was imported.");
     const result = window.ArcadienRosterMigration.merge(existing, records);
-    await saveRosterLibrary(result.rosters);
-    appMode = "library"; libraryTab = "lists"; render();
-    alert("Moved " + result.added + " roster(s). " + result.skipped + " already present. Your old app's originals are unchanged.");
-  } catch (error) { alert("Transfer failed: " + error.message + " Your old app still has its lists; you can try again."); }
+    const history = games.length ? await window.ArcadienPlayMode.prepareMigrationImport(games, result.idMap) : {games:[],added:0,skipped:0};
+    const restoreHistory = games.length ? window.ArcadienPlayMode.saveMigrationHistory(history.games) : null;
+    try {
+      if (records.length) await saveRosterLibrary(result.rosters);
+    } catch (error) {
+      try { restoreHistory?.(); }
+      catch { throw Error("The list save failed and game history could not be restored. Some games may already be copied; retrying will skip duplicates. " + error.message); }
+      throw error;
+    }
+    appMode = "library"; libraryTab = records.length ? "lists" : "games"; render();
+    alert("Moved " + result.added + " roster(s) and " + history.added + " completed game(s). " + result.skipped + " roster(s) and " + history.skipped + " game(s) already present or previously deleted here were skipped. Your old app's originals are unchanged.");
+  } catch (error) { alert("Transfer failed: " + error.message + " Your old app still has its lists and game history; you can try again."); }
   finally { window.AndroidMigration.clearIncoming(); receivingRosterMigration = false; }
 }
 

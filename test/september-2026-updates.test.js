@@ -27,9 +27,9 @@ test("reviewed GK correction and Custodes complete profiles preserve their inten
   const gk = unit("Imperium - Grey Knights", "Interceptor Squad");
   assert.ok(profiles(gk.selectionTree).some(p => p.typeName === "Unit" && p.characteristics.T === "5"));
   const vertus = unit("Imperium - Adeptus Custodes", "Vertus Praetors");
-  const bolter = profiles(vertus.selectionTree).find(p => p.name === "Vertus hurricane bolter");
+  const bolter = profiles(vertus.selectionTree).find(p => p.name === "Hurricane Bolter");
   assert.equal(bolter.characteristics.S, "5"); assert.equal(bolter.characteristics.AP, "-1"); assert.equal(bolter.characteristics.D, "2");
-  assert.ok(profiles(vertus.selectionTree).some(p => p.typeName === "Melee Weapons" && p.characteristics.S === "7"));
+  assert.ok(profiles(vertus.selectionTree).some(p => p.typeName === "Melee Weapons" && p.characteristics.S === "8"));
   const masters = unit("Chaos - Chaos Space Marines", "Masters of the Maelstrom");
   for (const name of ["Captain Sargotta", "The Enforcer"]) assert.ok(profiles(masters.selectionTree).some(p => p.name === name && p.characteristics.T === "3"));
 });

@@ -148,87 +148,6 @@
       ]
     },
     {
-      "name": "Adeptus Custodes",
-      "slug": "adeptus-custodes",
-      "url": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "attachments": [
-        {
-          "unitName": "ALEYA",
-          "role": "LEADER",
-          "targets": [
-            "PROSECUTORS",
-            "VIGILATORS",
-            "WITCHSEEKERS"
-          ]
-        },
-        {
-          "unitName": "BLADE CHAMPION",
-          "role": "LEADER",
-          "targets": [
-            "CUSTODIAN GUARD",
-            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
-            "CUSTODIAN WARDENS",
-            "SAGITTARUM CUSTODIANS"
-          ]
-        },
-        {
-          "unitName": "KNIGHT-CENTURA",
-          "role": "LEADER",
-          "targets": [
-            "PROSECUTORS",
-            "VIGILATORS",
-            "WITCHSEEKERS"
-          ]
-        },
-        {
-          "unitName": "SHIELD-CAPTAIN",
-          "role": "LEADER",
-          "targets": [
-            "CUSTODIAN GUARD",
-            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
-            "CUSTODIAN WARDENS",
-            "SAGITTARUM CUSTODIANS"
-          ]
-        },
-        {
-          "unitName": "SHIELD-CAPTAIN IN ALLARUS TERMINATOR ARMOUR",
-          "role": "LEADER",
-          "targets": [
-            "ALLARUS CUSTODIANS",
-            "AQUILON CUSTODIANS"
-          ]
-        },
-        {
-          "unitName": "SHIELD-CAPTAIN ON DAWNEAGLE JETBIKE",
-          "role": "LEADER",
-          "targets": [
-            "AGAMATUS CUSTODIANS",
-            "VERTUS PRAETORS"
-          ]
-        },
-        {
-          "unitName": "TRAJANN VALORIS",
-          "role": "LEADER",
-          "targets": [
-            "CUSTODIAN GUARD",
-            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
-            "CUSTODIAN WARDENS",
-            "SAGITTARUM CUSTODIANS"
-          ]
-        },
-        {
-          "unitName": "VALERIAN",
-          "role": "LEADER",
-          "targets": [
-            "CUSTODIAN GUARD",
-            "CUSTODIAN GUARD WITH ADRASITE AND PYRITHITE SPEARS",
-            "CUSTODIAN WARDENS",
-            "SAGITTARUM CUSTODIANS"
-          ]
-        }
-      ]
-    },
-    {
       "name": "Adeptus Mechanicus",
       "slug": "adeptus-mechanicus",
       "url": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
@@ -4313,6 +4232,75 @@
           "targets": [
             "EIGHTBOUND",
             "EXALTED EIGHTBOUND"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Adeptus Custodes",
+      "slug": "adeptus-custodes",
+      "url": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "attachments": [
+        {
+          "unitName": "BLADE CHAMPION",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD SODALITY",
+            "CUSTODIAN WARDENS",
+            "SENTINEL GUARD SODALITY"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN",
+          "role": "LEADER",
+          "targets": [
+            "CUSTODIAN GUARD SODALITY",
+            "CUSTODIAN GUARD SODALITY WITH ADRASITE SPEARS",
+            "CUSTODIAN GUARD SODALITY WITH PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS SODALITY",
+            "SENTINEL GUARD SODALITY"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN IN ALLARUS TERMINATOR ARMOUR",
+          "role": "LEADER",
+          "targets": [
+            "ALLARUS CUSTODIANS",
+            "AQUILON TERMINATORS WITH SOLARITE POWER GAUNTLETS",
+            "AQUILON TERMINATORS WITH SOLARITE POWER TALONS"
+          ]
+        },
+        {
+          "unitName": "SHIELD-CAPTAIN ON DAWNEAGLE JETBIKE",
+          "role": "LEADER",
+          "targets": [
+            "GYRFALCON JETBIKE SODALITY",
+            "VERTUS PRAETORS"
+          ]
+        },
+        {
+          "unitName": "TRAJANN VALORIS",
+          "role": "LEADER",
+          "targets": [
+            "ALLARUS CUSTODIANS",
+            "AQUILON TERMINATORS WITH SOLARITE POWER GAUNTLETS",
+            "AQUILON TERMINATORS WITH SOLARITE POWER TALONS",
+            "CUSTODIAN GUARD SODALITY",
+            "CUSTODIAN GUARD SODALITY WITH ADRASITE SPEARS",
+            "CUSTODIAN GUARD SODALITY WITH PYRITHITE SPEARS",
+            "CUSTODIAN WARDENS",
+            "SAGITTARUM CUSTODIANS SODALITY",
+            "SENTINEL GUARD SODALITY"
+          ]
+        },
+        {
+          "unitName": "KNIGHT-CENTURA",
+          "role": "SUPPORT",
+          "targets": [
+            "PROSECUTOR SQUAD",
+            "VIGILATOR SQUAD",
+            "WITCHSEEKER SQUAD"
           ]
         }
       ]

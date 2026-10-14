@@ -78,7 +78,7 @@
   const nav = document.getElementById("playModeNav");
   const undoButton = document.getElementById("playModeUndo");
   const MAX_UNDO_ACTIONS = 5;
-  const UNDO_FIELDS = ["round", "turn", "phase", "cp", "cpAwarded", "cpHistory", "ledger", "stratagemUses", "abilityUses", "battleShockedGroups", "decks", "modelState", "notes"];
+  const UNDO_FIELDS = ["round", "turn", "phase", "cp", "cpAwarded", "cpHistory", "ledger", "stratagemUses", "abilityUses", "battleShockedGroups", "katahState", "katahCommandPhases", "decks", "modelState", "notes"];
   let session = null;
   let currentView = "battle";
   let missionPlayer = "you";
@@ -156,6 +156,59 @@
     filtered.push({ resultId: game.resultId, gameHash: game.gameHash, deletedAt: new Date().toISOString() });
     writeStore(TOMBSTONE_KEY, filtered);
     return true;
+  }
+
+
+  function readMigrationStore(key) {
+    const records = JSON.parse(localStorage.getItem(key) || "[]");
+    if (!Array.isArray(records)) throw new Error("Saved game history could not be read. Nothing was transferred.");
+    return records;
+  }
+
+  async function normalizeMigrationHistory(records, requireIntegrity = true) {
+    if (!Array.isArray(records) || records.length > 500) throw new Error("Move at most 500 completed games at a time.");
+    const games = [];
+    for (const value of records) {
+      if (!value || value.status !== "final" || !Array.isArray(value.ledger) || !value.setup || typeof value.setup !== "object" || Array.isArray(value.setup) || !Number.isFinite(Date.parse(value.endedAt || "")) || (value.notes != null && typeof value.notes !== "string")) throw new Error("A completed game is invalid and was not imported.");
+      const prepared = await prepareGameRecord(value, requireIntegrity);
+      games.push({ ...structuredClone(value), resultId: prepared.resultId, gameHash: prepared.gameHash });
+    }
+    return games;
+  }
+
+  async function exportMigrationHistory() {
+    const deleted = new Set(readMigrationStore(TOMBSTONE_KEY).filter(validTombstone).map(item => item.resultId));
+    const games = await normalizeMigrationHistory(readMigrationStore(RESULT_KEY), false);
+    return games.filter(item => !deleted.has(item.resultId));
+  }
+
+  async function prepareMigrationImport(records, rosterIds = new Map()) {
+    const incoming = await normalizeMigrationHistory(records);
+    const games = await exportMigrationHistory();
+    const deleted = new Set(readMigrationStore(TOMBSTONE_KEY).filter(validTombstone).map(item => item.resultId));
+    const ids = new Set(games.map(item => item.resultId));
+    let added = 0, skipped = 0;
+    for (const original of incoming) {
+      let game = structuredClone(original);
+      const mappedId = rosterIds.get(game.rosterId);
+      if (mappedId && mappedId !== game.rosterId) {
+        game.rosterId = mappedId;
+        const identity = await prepareGameRecord(game);
+        game.resultId = identity.resultId; game.gameHash = identity.gameHash;
+      }
+      if (ids.has(game.resultId) || deleted.has(original.resultId) || deleted.has(game.resultId)) { skipped++; continue; }
+      games.push(game); ids.add(game.resultId); added++;
+    }
+    return { games, added, skipped };
+  }
+
+  function saveMigrationHistory(games) {
+    const previous = localStorage.getItem(RESULT_KEY);
+    writeStore(RESULT_KEY, games);
+    return () => {
+      if (previous == null) localStorage.removeItem(RESULT_KEY);
+      else localStorage.setItem(RESULT_KEY, previous);
+    };
   }
 
   async function exportSyncState() {
@@ -488,6 +541,8 @@
       stratagemUses: [],
       abilityUses: [],
       battleShockedGroups: {},
+      katahState: {},
+      katahCommandPhases: [],
       decks: {
         you: createDeck(setup.yourMissionMode, [setup.yourFixedOne, setup.yourFixedTwo]),
         opponent: createDeck(setup.opponentMissionMode, [setup.opponentFixedOne, setup.opponentFixedTwo])
@@ -563,6 +618,17 @@
     session.decks ||= { you: createDeck(), opponent: createDeck() };
     session.stratagemUses ||= [];
     session.abilityUses ||= [];
+    const migratingKatah = !session.katahState;
+    session.katahState ||= {};
+    session.katahCommandPhases ||= [];
+    if (migratingKatah && PLAYERS.includes(session.setup.firstTurn)) {
+      // Existing games have no historical Ka'tah selections. Start ready after
+      // the first own Command phase; the correction control handles prior uses.
+      if (session.round > 1 || session.turn === "you" || session.setup.firstTurn === "you") {
+        for (const group of playRosterGroups().filter(hasKatah)) session.katahState[group.id] = { ready: true };
+        session.katahCommandPhases.push(String(session.turn === "you" || session.setup.firstTurn === "you" ? session.round : session.round - 1));
+      }
+    }
     session.battleShockedGroups ||= {};
     session.undoHistory = Array.isArray(session.undoHistory) ? session.undoHistory : [];
     session.setup.missionMode ||= { you: session.decks.you?.mode || "tactical", opponent: session.decks.opponent?.mode || "tactical" };
@@ -618,6 +684,8 @@
     const remaining = session.undoHistory;
     for (const field of UNDO_FIELDS) session[field] = structuredClone(entry.state[field]);
     session.undoHistory = remaining;
+    session.katahState ||= {};
+    session.katahCommandPhases ||= [];
     persist();
     closeModal();
     render();
@@ -710,6 +778,7 @@
     session.turn = player;
     session.phase = "Command";
     session.cpAwarded = [`1:${player}`];
+    refreshKatah();
     session.cpHistory = PLAYERS.map(cpPlayer => ({ id: uid(), round: 1, turn: player, player: cpPlayer, amount: 1, reason: "Starting CP" }));
     persist();
     render();
@@ -757,7 +826,7 @@
     if (field === "round") session.round = nextValue;
     if (field === "turn") session.turn = nextValue;
     if (field === "phase") session.phase = nextValue;
-    if (session.phase === "Command") awardCommandCp();
+    if (session.phase === "Command") { awardCommandCp(); refreshKatah(); }
     persist();
     render();
   }
@@ -772,6 +841,7 @@
       session.turn = next.turn;
       session.round = next.round;
       awardCommandCp();
+      refreshKatah();
     }
     persist();
     render();
@@ -1136,6 +1206,85 @@
     return left.every(id => expected.has(id));
   }
 
+  function hasKatah(group) {
+    return unitRules(group).some(item => normalize(item.name) === "martial ka tah");
+  }
+
+  function katahReady(group) {
+    return hasKatah(group) && session.katahState?.[group.id]?.ready === true;
+  }
+
+  function refreshKatah() {
+    if (session.turn !== "you" || session.phase !== "Command") return;
+    session.katahState ||= {};
+    session.katahCommandPhases ||= [];
+    const key = String(session.round);
+    if (session.katahCommandPhases.includes(key)) return;
+    session.katahCommandPhases.push(key);
+    for (const group of playRosterGroups().filter(hasKatah)) session.katahState[group.id] = { ready: true };
+  }
+
+  function katahChoices(group) {
+    const rule = unitRules(group).find(item => normalize(item.name) === "martial ka tah");
+    if (!rule) return [];
+    return [...rule.description.matchAll(/(?:^|\n\n)(DACATARAI|KAPTARIS|RENDAX|CONSERVAI|CALISTUS|SALVUS)\nWHEN: ([\s\S]*?)(?=\n\n[A-Z]+\nWHEN:|$)/g)]
+      .map(match => {
+        const name = match[1];
+        const description = `WHEN: ${match[2]}`;
+        const when = match[2].split("TARGET:")[0].trim();
+        const phase = name === "CONSERVAI" ? "Command" : name === "CALISTUS" ? "Movement" : name === "SALVUS" ? "Shooting" : "Fight";
+        const available = session.phase === phase && (phase === "Fight" || session.turn === "you");
+        const detachments = session.roster.detachments || (session.roster.detachment ? [session.roster.detachment] : []);
+        const bonuses = detachments.flatMap(detachment => (detachment.rules || [])
+          .filter(item => normalize(item.name).includes("favoured ka tah") && normalize(item.name).endsWith(normalize(name)))
+          .map(item => ({ source: detachment.name, description: ruleDescription(item) })));
+        return { name, description, when, available, bonuses };
+      });
+  }
+
+  function renderKatahBadge(group) {
+    if (!hasKatah(group)) return "";
+    const state = session.katahState?.[group.id];
+    return `<span class="playKatahBadge ${state?.ready ? "ready" : "spent"}">${state?.ready ? "● READY" : "○ NOT READY"}${state?.used ? ` · ${escapeHtml(state.used)}` : ""}</span>`;
+  }
+
+  function renderKatah(group) {
+    if (!hasKatah(group)) return "";
+    const ready = katahReady(group);
+    const choices = katahChoices(group);
+    return `<section class="playKatah"><h3>Martial Ka’tah ${renderKatahBadge(group)}</h3><p>Readied at the start of your Command phase. Using a Ka’tah consumes READY.</p><small>Use start-of-phase abilities before proceeding with that phase; use selection abilities when the unit is selected.</small>${choices.map(item => `<details class="playKatahChoice ${item.available ? "current" : ""}" ${item.available ? "open" : ""}><summary><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.when)}</small></summary><div>${formatStratagemDescription(item.description)}${item.bonuses.map(bonus => `<p><b>${escapeHtml(bonus.source)} · Favoured Ka’tah</b><br>${formatRuleDescription(bonus.description)}</p>`).join("")}<button type="button" class="playPrimaryButton" data-use-katah="${item.name}" ${!ready || !item.available || session.status !== "active" || groupStrengthState(group) === "destroyed" ? "disabled" : ""}>${!item.available ? "Outside this timing" : !ready ? "Not ready" : `Use ${item.name} · spend READY`}</button></div></details>`).join("")}<button type="button" class="playTextButton" data-correct-katah ${session.status !== "active" ? "disabled" : ""}>Correct flag: mark ${ready ? "not ready" : "READY"}</button></section>`;
+  }
+
+  function useKatah(group, name) {
+    const choice = katahChoices(group).find(item => item.name === name);
+    if (session.status !== "active" || !katahReady(group) || !choice?.available || groupStrengthState(group) === "destroyed") return;
+    recordUndo(`Use ${name}`);
+    session.katahState[group.id] = { ready: false, used: name, round: session.round, turn: session.turn, phase: session.phase };
+    persist();
+    if (currentView === "army") renderArmy();
+    openUnit(group.id);
+  }
+
+  function correctKatah(group) {
+    if (session.status !== "active" || !hasKatah(group)) return;
+    recordUndo("Correct READY flag");
+    session.katahState[group.id] = { ready: !katahReady(group) };
+    persist();
+    if (currentView === "army") renderArmy();
+    openUnit(group.id);
+  }
+
+  function isKatahRefresh(item) {
+    return normalize(item?.name).startsWith("master of ka tahs") || normalize(item?.name) === "superhuman focus";
+  }
+
+  function canRefreshKatah(group, item) {
+    if (!isKatahRefresh(item)) return true;
+    if (!hasKatah(group) || katahReady(group)) return false;
+    return normalize(item.name) !== "superhuman focus" || !session.stratagemUses.some(use =>
+      use.groupId === group.id && normalize(use.stratagemName) === "superhuman focus" && use.round === session.round);
+  }
+
   function renderArmyGroup(group) {
     const models = groupModels(group);
     const enhancements = enhancementsForGroup(group);
@@ -1152,7 +1301,7 @@
     const strengthFlag = strengthState === "halfStrength" ? `<span class="playStrengthFlag">AT OR BELOW HALF STRENGTH</span>` : "";
     const statusBar = strengthState === "destroyed" ? "" : `<div class="playArmyStatusBar"><button type="button" class="playBattleShockToggle ${battleShocked ? "active" : ""}" data-battleshock-toggle="${escapeHtml(group.id)}" aria-pressed="${battleShocked}" aria-label="${battleShocked ? "Clear Battleshocked" : "Mark Battleshocked"}"><span aria-hidden="true">ϟ</span>${battleShocked ? `<b>BATTLESHOCKED</b>` : ""}</button>${quickWounds}</div>`;
     const enhancementBadges = enhancements.length ? `<span class="playEnhancementBadges">${enhancements.map(item => `<span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.memberName)}</small></span>`).join("")}</span>` : "";
-    return `<article class="playArmyUnit ${strengthState} ${battleShocked ? "battleShocked" : ""}"><button type="button" class="playArmyUnitOpen" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em>${enhancementBadges}${strengthFlag}</span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>${statusBar}</article>`;
+    return `<article class="playArmyUnit ${strengthState} ${battleShocked ? "battleShocked" : ""}"><button type="button" class="playArmyUnitOpen" data-group="${escapeHtml(group.id)}"><span class="playArmyIdentity"><small>${group.kind === "attached" ? "COMBINED UNIT" : "UNIT"}</small><b>${escapeHtml(group.title)}</b><em>${models.length ? `${alive}/${models.length} models` : "Profile ready"}</em>${enhancementBadges}${renderKatahBadge(group)}${strengthFlag}</span><span class="playArmyReference">${stats}<span class="playArmyWounds"><small>W</small><b>${escapeHtml(groupWoundSummary(group, models))}</b></span></span><strong class="playArmyPoints">${group.totalPoints || 0}<small>PTS</small></strong></button>${statusBar}</article>`;
   }
 
   function enhancementsForGroup(group) {
@@ -1315,9 +1464,11 @@
     const battleShocked = isGroupBattleShocked(group.id);
     const modelTrackers = groupModelTrackers(models);
     modal.hidden = false;
-    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2></div><button data-close>Close</button></header>${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}${enhancements.length ? `<section class="playUnitEnhancements"><h3>Enhancements</h3>${enhancements.map(item => renderUnitRule(item, group)).join("")}</section>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${modelTrackers.length ? modelTrackers.map(renderModelTracker).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
+    modal.innerHTML = `<div class="playUnitPanel ${battleShocked ? "battleShocked" : ""}"><header><div><small>${group.kind === "attached" ? "COMBINED UNIT · LOADOUT LOCKED" : "LOADOUT LOCKED"}</small><h2>${escapeHtml(group.title)}</h2>${renderKatahBadge(group)}</div><button data-close>Close</button></header>${renderKatah(group)}${battleShocked ? `<aside class="playUnitBattleShockNotice"><span aria-hidden="true">ϟ</span><div><b>BATTLESHOCKED</b><small>This unit cannot be targeted with Stratagems until the condition is cleared.</small></div></aside>` : ""}${enhancements.length ? `<section class="playUnitEnhancements"><h3>Enhancements</h3>${enhancements.map(item => renderUnitRule(item, group)).join("")}</section>` : ""}<section class="playUnitStatlines"><h3>Full statline</h3>${renderUnitStatlines(group)}</section><section class="playModelTracker"><h3>Models & wounds</h3>${modelTrackers.length ? modelTrackers.map(renderModelTracker).join("") : `<p>No individual model records are available for this unit.</p>`}</section><section class="playWeapons"><h3>Weapons</h3>${weapons.length ? `${renderWeaponGroup("Ranged Weapons", rangedWeapons, models, "ranged")}${renderWeaponGroup("Melee Weapons", meleeWeapons, models, "melee")}` : `<p>No weapon profiles.</p>`}</section><section class="playUnitRules"><h3>Rules & abilities</h3>${rules.map(item => renderUnitRule(item, group)).join("") || `<p>No rule text is available for this unit.</p>`}</section><section class="playUnitStratagems"><h3>${escapeHtml(session.phase)} phase stratagems</h3>${stratagems.map(item => renderStratagem(item, group)).join("") || `<p>No eligible stratagems for this unit in the current phase and turn.</p>`}</section></div>`;
     modal.querySelector(".playUnitPanel").scrollTop = previousScrollTop;
     modal.querySelector("[data-close]").onclick = closeModal;
+    for (const button of modal.querySelectorAll("[data-use-katah]")) button.onclick = () => useKatah(group, button.dataset.useKatah);
+    modal.querySelector("[data-correct-katah]")?.addEventListener("click", () => correctKatah(group));
     for (const button of modal.querySelectorAll("[data-model-delta]")) button.onclick = () => changeModelWounds(button.dataset.modelId, Number(button.dataset.modelDelta));
     for (const button of modal.querySelectorAll("[data-model-toggle]")) button.onclick = () => toggleModel(button.dataset.modelToggle, Number(button.dataset.maxWounds));
     for (const button of modal.querySelectorAll("[data-model-count-delta]")) button.onclick = () => changeModelCount(modelTrackers[Number(button.dataset.modelTracker)], Number(button.dataset.modelCountDelta));
@@ -1518,11 +1669,11 @@
   function renderUnitRule(item, group) {
     const tracker = item.tracker;
     const used = tracker ? abilityUseCount(group, item) : 0;
-    const exhausted = tracker?.max != null && used >= tracker.max;
+    const exhausted = (tracker?.max != null && used >= tracker.max) || !canRefreshKatah(group, item);
     const status = tracker ? `${used}${tracker.max == null ? " used" : `/${tracker.max}`} · ${tracker.label}` : "Always available";
     const enhancement = item.sourceKind === "enhancement";
     const source = enhancement ? `ENHANCEMENT · ${item.memberName}${item.points ? ` · +${item.points} PTS` : ""}` : item.memberName;
-    return `<details class="playUnitRule ${enhancement ? "playEnhancement" : ""} ${exhausted ? "exhausted" : ""}" ${enhancement ? "open" : ""}><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(source)}</small></span><strong>${escapeHtml(status)}</strong></summary><div class="playUnitRuleBody"><p>${formatRuleDescription(item.description)}</p>${tracker ? `<div class="playAbilityActions">${used ? `<button data-restore-ability="${escapeHtml(item.key)}">Restore use</button>` : ""}<button class="playPrimaryButton" data-use-ability="${escapeHtml(item.key)}" ${exhausted ? "disabled" : ""}>${exhausted ? "Fully used ✓" : "Use ability"}</button></div>` : ""}</div></details>`;
+    return `<details class="playUnitRule ${enhancement ? "playEnhancement" : ""} ${exhausted ? "exhausted" : ""}" ${enhancement ? "open" : ""}><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(source)}</small></span><strong>${escapeHtml(status)}</strong></summary><div class="playUnitRuleBody"><p>${formatRuleDescription(item.description)}</p>${tracker ? `<div class="playAbilityActions">${used ? `<button data-restore-ability="${escapeHtml(item.key)}">Restore use</button>` : ""}<button class="playPrimaryButton" data-use-ability="${escapeHtml(item.key)}" ${exhausted ? "disabled" : ""}>${!canRefreshKatah(group, item) ? "Already ready" : exhausted ? "Fully used ✓" : "Use ability"}</button></div>` : ""}</div></details>`;
   }
 
   function formatRuleDescription(description) {
@@ -1533,12 +1684,14 @@
   }
 
   function useAbility(group, item) {
-    if (!item?.tracker) return;
+    if (!item?.tracker || !canRefreshKatah(group, item)) return;
     const used = abilityUseCount(group, item);
     if (item.tracker.max != null && used >= item.tracker.max) return;
     recordUndo(`Use ${item.name}`);
     session.abilityUses.push({ id: uid(), groupId: group.id, unitName: group.title, abilityKey: item.key, abilityName: item.name, scope: item.tracker.scope, scopeKey: abilityScopeKey(item.tracker), round: session.round, turn: session.turn, phase: session.phase, createdAt: new Date().toISOString() });
+    if (isKatahRefresh(item)) session.katahState[group.id] = { ready: true };
     persist();
+    if (currentView === "army") renderArmy();
     openUnit(group.id);
     showAbilityFeedback(group, item);
   }
@@ -1575,7 +1728,7 @@
       name: group.title
     };
     const candidates = window.ArmyEngine?.eligibleStratagemsForEntry?.(army, state, entry) || [...army.coreStratagems, ...army.detachments.flatMap(item => item.stratagems || [])];
-    return candidates.filter(stratagem => stratagemMatchesWindow(stratagem));
+    return candidates.filter(stratagem => stratagemMatchesWindow(stratagem) && canRefreshKatah(group, stratagem));
   }
 
   function stratagemMatchesWindow(stratagem) {
@@ -1641,9 +1794,10 @@
   function useStratagem(group, item, paidCost = stratagemCost(item)) {
     const printedCost = stratagemCost(item);
     const cost = Math.max(0, Math.min(printedCost, Number.isFinite(paidCost) ? paidCost : printedCost));
-    if (isGroupBattleShocked(group.id) || stratagemUsedThisPhase(group.id, item) || session.cp.you < cost) return;
+    if (isGroupBattleShocked(group.id) || stratagemUsedThisPhase(group.id, item) || session.cp.you < cost || !canRefreshKatah(group, item)) return;
     recordUndo(`Use ${item.name}`);
     session.cp.you -= cost;
+    if (isKatahRefresh(item)) session.katahState[group.id] = { ready: true };
     session.stratagemUses.push({ id: uid(), groupId: group.id, unitName: group.title, stratagemKey: stratagemKey(item), stratagemName: item.name, cost, printedCost, discount: printedCost - cost, round: session.round, turn: session.turn, phase: session.phase, createdAt: new Date().toISOString() });
     if (cost) session.cpHistory.push({ id: uid(), round: session.round, turn: session.turn, player: "you", amount: -cost, reason: `${item.name} · ${group.title}${printedCost > cost ? " · discounted" : ""}` });
     persist();
@@ -1995,5 +2149,5 @@
     if (fullscreenClose) fullscreenClose.click();
   });
 
-  window.ArcadienPlayMode = { open, close, handleNativeBack, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, openLatestResult };
+  window.ArcadienPlayMode = { open, close, handleNativeBack, hasActive, hasResult, listResults, openResult, deleteResult, exportSyncState, importSyncState, exportMigrationHistory, validateMigrationHistory: normalizeMigrationHistory, prepareMigrationImport, saveMigrationHistory, openLatestResult };
 })();

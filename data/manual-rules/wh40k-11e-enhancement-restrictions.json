@@ -27,61 +27,6 @@
       "source": "Faction Pack - Adepta Sororitas v1.1, page 3"
     },
     {
-      "id": "restriction-imperium-adeptus-custodes-encircling-hunter",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Imperium - Adeptus Custodes"
-      },
-      "detachmentName": "Silent Hunters",
-      "enhancementName": "Encircling Hunter",
-      "restriction": "ANATHEMA PSYKANA model only.",
-      "source": "Faction Pack - Adeptus Custodes v1.1, page 3"
-    },
-    {
-      "id": "restriction-imperium-adeptus-custodes-efficient-aggression",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Imperium - Adeptus Custodes"
-      },
-      "detachmentName": "Tharanatoi Hammerblow",
-      "enhancementName": "Efficient Aggression",
-      "restriction": "ADEPTUS CUSTODES TERMINATOR model only.",
-      "source": "Faction Pack - Adeptus Custodes v1.1, page 4"
-    },
-    {
-      "id": "restriction-imperium-adeptus-custodes-mnemo-locked-shrine-cipher",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Imperium - Adeptus Custodes"
-      },
-      "detachmentName": "Tharanatoi Hammerblow",
-      "enhancementName": "Mnemo-locked Shrine Cipher",
-      "restriction": "ADEPTUS CUSTODES TERMINATOR model only.",
-      "source": "Faction Pack - Adeptus Custodes v1.1, page 4"
-    },
-    {
-      "id": "restriction-imperium-adeptus-custodes-praesidius",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Imperium - Adeptus Custodes"
-      },
-      "detachmentName": "Lions of the Emperor",
-      "enhancementName": "Praesidius",
-      "restriction": "ADEPTUS CUSTODES model only.",
-      "source": "Faction Pack - Adeptus Custodes v1.1, page 5"
-    },
-    {
-      "id": "restriction-imperium-adeptus-custodes-fierce-conqueror",
-      "kind": "enhancement-restriction",
-      "target": {
-        "faction": "Imperium - Adeptus Custodes"
-      },
-      "detachmentName": "Lions of the Emperor",
-      "enhancementName": "Fierce Conqueror",
-      "restriction": "SHIELD-CAPTAIN model only.",
-      "source": "Faction Pack - Adeptus Custodes v1.1, page 5"
-    },
-    {
       "id": "restriction-imperium-adeptus-mechanicus-explorator-dispensation",
       "kind": "enhancement-restriction",
       "target": {

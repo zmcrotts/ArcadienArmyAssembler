@@ -66,8 +66,10 @@ function enhancementAvailable(enhancement, armyState) {
   return selected.some(detachmentId => (enhancement.detachmentIds || []).includes(detachmentId));
 }
 
-function canSelectWarlord(entry) {
-  return Boolean(entry?.rosterRules?.canBeWarlord && entry?.roles?.character && !entry?.alliedFor);
+function canSelectWarlord(entry, armyState = null) {
+  const rules = entry?.rosterRules || {};
+  const conditional = (rules.warlordDetachmentIds || []).some(id => selectedDetachmentIds(armyState).includes(id));
+  return Boolean((rules.canBeWarlord || conditional) && entry?.roles?.character && !entry?.alliedFor);
 }
 
 function normalizeTargetName(value) {
@@ -351,7 +353,7 @@ function getUnitAssignmentState(armyDefinition, armyState, rosterEntries, roster
     }));
 
   return {
-    showWarlord: Boolean(canSelectWarlord(selected) || armyState?.warlordInstanceId === selectedId),
+    showWarlord: Boolean(canSelectWarlord(selected, armyState) || armyState?.warlordInstanceId === selectedId),
     isWarlord: armyState?.warlordInstanceId === selectedId,
     leaderAssignment,
     leaderTargets: selected.roles?.leader
@@ -670,8 +672,14 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
     if (!warlord) warnings.push(warning("WARLORD_REQUIRED", "Select one unit to be your Warlord."));
     else if (warlord.alliedFor) {
       warnings.push(warning("ALLY_CANNOT_BE_WARLORD", `${warlord.name} is an allied unit and cannot be your Warlord.`, [warlord.instanceId]));
-    } else if (!canSelectWarlord(warlord)) {
+    } else if (!canSelectWarlord(warlord, armyState)) {
       warnings.push(warning("WARLORD_INELIGIBLE", `${warlord.name} cannot be selected as Warlord.`, [warlord.instanceId]));
+    }
+  }
+
+  for (const entry of entries.filter(item => item.rosterRules?.mustBeWarlord && !item.alliedFor)) {
+    if (armyState?.warlordInstanceId !== entry.instanceId) {
+      warnings.push(warning("SUPREME_COMMANDER_WARLORD", `${entry.name} must be your Warlord.`, [entry.instanceId]));
     }
   }
 

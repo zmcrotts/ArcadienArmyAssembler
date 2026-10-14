@@ -24,6 +24,7 @@ const { applyFactionPackUpdates, readFactionPackUpdates } = require("./faction-p
 const { applyEnhancementEligibilityRestrictions } = require("./enhancement-eligibility");
 const { applyManualDetachments, readManualDetachments } = require("./manual-detachments");
 const { applyOrksCodex, readOrksCodex } = require("./orks-codex");
+const { readCustodesCodex, applyCustodesCodex } = require("./custodes-codex");
 const { readSpaceMarineUnits, applySpaceMarineUnits } = require("./space-marine-units");
 const { readSpaceMarinesCodex } = require("./space-marines-codex");
 const { readSpaceMarineChapters, applySpaceMarineChapters } = require("./space-marine-chapters");
@@ -64,6 +65,7 @@ const RULESET_SOURCES = {
       spaceMarinesCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marines-codex.json"),
       spaceMarineChapters: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-chapters.json"),
       orksCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-orks-codex-v1.json"),
+      custodesCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-custodes-codex.json"),
       stratagems: path.join(ROOT, "data", "rulesets", "wh40k-11e-newrecruit", "stratagems.json")
     },
     primary: true,
@@ -121,14 +123,16 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
     ...unit,
     rulesetId: source.id
   }))), armiesWithRules);
+  const custodesCodex = readCustodesCodex(source.auxiliarySources?.custodesCodex);
+  const initialCustodesResult = applyCustodesCodex(correctedUnitDefinitions, armiesWithRules, custodesCodex, source.id);
   const orksCodex = readOrksCodex(source.auxiliarySources?.orksCodex);
-  const orksCodexResult = applyOrksCodex(correctedUnitDefinitions, armiesWithRules, orksCodex);
+  const orksCodexResult = applyOrksCodex(initialCustodesResult.units, initialCustodesResult.armies, orksCodex);
   const manualDetachments = readManualDetachments(source.auxiliarySources?.manualDetachments);
   const manualDetachmentResult = applyManualDetachments(orksCodexResult.units, orksCodexResult.armies, manualDetachments);
   const mfmDetachments = readMfmDetachments(source.auxiliarySources?.mfmDetachments);
   const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
   const factionPackUpdates = readFactionPackUpdates(source.auxiliarySources?.factionPackUpdates);
-  const factionPackUpdateResult = applyFactionPackUpdates(correctedUnitDefinitions, mfmDetachmentResult.definitions, factionPackUpdates);
+  const factionPackUpdateResult = applyFactionPackUpdates(initialCustodesResult.units, mfmDetachmentResult.definitions, factionPackUpdates);
   const enhancementRestrictions = readFactionPackUpdates(source.auxiliarySources?.enhancementRestrictions);
   const enhancementRestrictionResult = applyFactionPackUpdates(
     factionPackUpdateResult.units,
@@ -147,7 +151,8 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const spaceMarinesCodex = readSpaceMarinesCodex(source.auxiliarySources?.spaceMarinesCodex);
   const chapters = readSpaceMarineChapters(source.auxiliarySources?.spaceMarineChapters);
   const spaceMarinesResult = applySpaceMarineChapters(mfmPointResult.units, mfmPointResult.armies, spaceMarinesCodex, chapters);
-  const normalized = reconcileSelectableUnits(spaceMarinesResult.units, spaceMarinesResult.armies);
+  const custodesResult = applyCustodesCodex(spaceMarinesResult.units, spaceMarinesResult.armies, custodesCodex, source.id);
+  const normalized = reconcileSelectableUnits(custodesResult.units, custodesResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -171,6 +176,7 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
       ...mfmPointResult.summary
     },
     spaceMarinesCodexSource: spaceMarinesResult.summary,
+    custodesCodexSource: custodesResult.summary,
     spaceMarineUnitSource: marineUnitResult.summary,
     orksCodexSource: {
       source: orksCodex.source,

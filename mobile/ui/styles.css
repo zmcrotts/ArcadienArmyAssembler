@@ -1631,7 +1631,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 }
 
 .qrRosterName {
-  color: var(--muted);
+  color: var(--muted, #a9a4b6);
   font-weight: 700;
 }
 
@@ -1653,7 +1653,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 .qrShareHelp {
   max-width: 34rem;
   margin-inline: auto;
-  color: var(--muted);
+  color: var(--muted, #a9a4b6);
 }
 
 .shareCodeInput {
@@ -4142,3 +4142,19 @@ label:has(> #pointsLimit) { display: inline-flex; align-items: center; gap: 8px;
     min-width: 56px;
   }
 }
+
+/* Custodes Ka'tah readiness and phase actions. */
+.playKatahBadge{display:inline-flex;align-items:center;width:fit-content;max-width:100%;padding:5px 9px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:.04em;white-space:normal}
+.playKatahBadge.ready{color:#bdffd8;background:#163f2b;border:1px solid #4bbd80}
+.playKatahBadge.spent{color:#ddd0b7;background:#35312b;border:1px solid #776c59}
+.playKatah h3{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.playKatah>p,.playKatah>small{color:var(--muted, #a9a4b6);line-height:1.5}
+.playKatahChoice{margin:12px 0;border:1px solid var(--border, #44404f);border-radius:8px;overflow:hidden}
+.playKatahChoice.current{border-color:#b89b54}
+.playKatahChoice summary{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;cursor:pointer;padding:12px}
+.playKatahChoice summary small{font-size:12px;max-width:100%;color:var(--muted, #a9a4b6)}
+.playKatahChoice>div{padding:0 12px 12px;line-height:1.5}
+.playKatahChoice section{margin:8px 0;display:grid;grid-template-columns:65px 1fr;gap:8px;font-size:13px}
+.playKatahChoice button{margin-top:10px;white-space:normal;min-height:44px}
+.playKatahChoice button:disabled{opacity:.5;cursor:default}
+.playArmyIdentity .playKatahBadge{margin-top:6px}

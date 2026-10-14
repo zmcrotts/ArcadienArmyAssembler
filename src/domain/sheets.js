@@ -206,26 +206,12 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
 
 function modelAttackCharacteristicEffects(text) {
   const effects = [];
-  for (const match of normalizeText(text).matchAll(/\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s)\s+(?:(melee|ranged)\s+)?attacks?\s+have\s+([+-]\d+)\s+(A|S|D|Attacks?|Strength|Damage)\b/ig)) {
-    const weaponType = match[1]
-      ? `${match[1].charAt(0).toUpperCase()}${match[1].slice(1).toLowerCase()} Weapons`
-      : null;
-    const characteristic = ({
-      a: "A",
-      attack: "A",
-      attacks: "A",
-      s: "S",
-      strength: "S",
-      d: "D",
-      damage: "D"
-    })[match[3].toLowerCase()];
-    if (characteristic) effects.push({
-      kind: "characteristic",
-      weaponType,
-      characteristic,
-      delta: Number(match[2]),
-      scope: "bearer"
-    });
+  const pattern = /\b(this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(melee|ranged)\s+)?attacks?\s+have\s+([+-]\d+)\s+((?:A|S|D|Attacks?|Strength|Damage)(?:\s*(?:,|and)\s*(?:A|S|D|Attacks?|Strength|Damage))*)\b/ig;
+  for (const match of normalizeText(text).matchAll(pattern)) {
+    const weaponType = match[2] ? `${match[2].charAt(0).toUpperCase()}${match[2].slice(1).toLowerCase()} Weapons` : null;
+    for (const characteristic of characteristicNames(match[4], true)) {
+      effects.push({ kind: "characteristic", weaponType, characteristic, delta: Number(match[3]), scope: /unit/i.test(match[1]) ? "unit" : "bearer" });
+    }
   }
   return effects;
 }
@@ -338,7 +324,7 @@ function characteristicNames(value, weapon = false) {
     ? [
         ["Armour Penetration", "AP"], ["Armor Penetration", "AP"], ["Ballistic Skill", "BS"],
         ["Weapon Skill", "WS"], ["Objective Control", "OC"], ["Attacks", "A"], ["Attack", "A"],
-        ["Strength", "S"], ["Damage", "D"], ["Range", "Range"], ["AP", "AP"], ["BS", "BS"], ["WS", "WS"]
+        ["Strength", "S"], ["Damage", "D"], ["Range", "Range"], ["AP", "AP"], ["BS", "BS"], ["WS", "WS"], ["A", "A"], ["S", "S"], ["D", "D"]
       ]
     : [
         ["Objective Control", "OC"], ["Leadership", "LD"], ["Toughness", "T"], ["Movement", "M"], ["Wounds", "W"],
@@ -432,7 +418,8 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\bthe\s+bearer\s+has\s+(?:an?|their)\s+.+?\s+characteristics?\b/i.test(text)
     || /\bthe\s+bearer\s+has\b.*\bcharacteristics?\b/i.test(text)
     || /\bthis\s+model['’]s\s+.+?\s+characteristics?\b/i.test(text)
-    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s)\s+(?:(?:melee|ranged)\s+)?attacks?\s+have\s+[+-]\d+\s+(?:A|S|D|Attacks?|Strength|Damage)\b/i.test(text)
+    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(?:melee|ranged)\s+)?attacks?\s+have\s+[+-]\d+\s+(?:A|S|D|Attacks?|Strength|Damage)\b/i.test(text)
+    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:melee|ranged)\s+attacks?\s+have\s+\[[^\]]+\]/i.test(text)
     || /\bthis\s+model\s+has\s+[+-]\d+\s+(?:M|T|SV|W|LD|OC|Move|Movement|Toughness|Wounds?|Leadership|Objective\s+Control|Save)\b/i.test(text)
     || /\bcharacteristics?\s+of\s+this\s+model['’]s\b/i.test(text)
     || /\bcharacteristic\s+of\s+(?:the\s+)?bearer\b/i.test(text)

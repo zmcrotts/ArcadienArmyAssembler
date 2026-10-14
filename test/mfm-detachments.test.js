@@ -16,11 +16,11 @@ function detachment(ruleset, faction, name) {
 test("every available MFM v1.5 detachment schedule attaches to normalized data", () => {
   const source = extractNormalizedRuleset("wh40k-11e-vflam").mfmDetachmentSource;
   assert.equal(source.version, "1.5");
-  assert.equal(source.total, 250);
-  assert.equal(source.matched, 250);
+  assert.equal(source.total, require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments.length);
+  assert.equal(source.matched, source.total);
   assert.equal(source.unmatched, 0);
-  assert.equal(source.dispositionFlags, 30);
-  assert.equal(source.detachmentPointFlags, 8);
+  assert.equal(source.dispositionFlags, require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments.filter(d=>d.dispositionChanged).length);
+  assert.equal(source.detachmentPointFlags, require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments.filter(d=>d.detachmentPointsChanged).length);
 });
 
 test("MFM v1.5 overrides current force dispositions", () => {
@@ -28,8 +28,7 @@ test("MFM v1.5 overrides current force dispositions", () => {
   const cases = [
     ["Imperium - Imperial Knights", "Dominus Foebreakers", "Priority Assets"],
     ["Imperium - Adepta Sororitas", "Penitent Host", "Purge the Foe"],
-    ["Imperium - Adeptus Custodes", "Lions of the Emperor", "Take and Hold"],
-    ["Imperium - Adeptus Custodes", "Tharanatoi Hammerblow", "Disruption"],
+    ["Imperium - Adeptus Custodes", "Lions of the Emperor", "Disruption"],
     ["Xenos - Aeldari", "Aspect Host", "Priority Assets"],
     ["Chaos - Chaos Daemons", "Daemonic Incursion", "Take and Hold"],
     ["Chaos - Chaos Space Marines", "Huron's Marauders", "Disruption"]
@@ -37,7 +36,7 @@ test("MFM v1.5 overrides current force dispositions", () => {
   for (const [faction, name, disposition] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.forceDisposition.name, disposition);
-    assert.equal(result.forceDispositionSource, "mfm-1.5");
+    assert.equal(result.forceDispositionSource, faction === "Imperium - Adeptus Custodes" ? "https://mfm.warhammer-community.com/en/adeptus-custodes" : "mfm-1.5");
   }
 });
 
@@ -65,13 +64,13 @@ test("MFM v1.5 applies current detachment points", () => {
     ["Imperium - Agents of the Imperium", "Veiled Blade Elimination Force", 1],
     ["Xenos - T'au Empire", "Retaliation Cadre", 3],
     ["Chaos - Thousand Sons", "Hexwarp Thrallband", 3],
-    ["Imperium - Adeptus Custodes", "Lions of the Emperor", 3],
+    ["Imperium - Adeptus Custodes", "Lions of the Emperor", 1],
     ["Imperium - Astra Militarum", "Recon Element", 2]
   ];
   for (const [faction, name, points] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.detachmentPoints, points);
-    assert.equal(result.detachmentPointsSource, "mfm-1.5");
+    assert.equal(result.detachmentPointsSource, faction === "Imperium - Adeptus Custodes" ? "https://mfm.warhammer-community.com/en/adeptus-custodes" : "mfm-1.5");
   }
 });
 

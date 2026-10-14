@@ -77,87 +77,6 @@
       "detachmentPointsChanged": false
     },
     {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "AURIC CHAMPIONS",
-      "detachmentPoints": 2,
-      "forceDisposition": "Priority Assets",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "LIONS OF THE EMPEROR",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "MIGHT OF THE MORITOI",
-      "detachmentPoints": 1,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "NULL MAIDEN VIGIL",
-      "detachmentPoints": 2,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "SHIELD HOST",
-      "detachmentPoints": 2,
-      "forceDisposition": "Purge the Foe",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "SILENT HUNTERS",
-      "detachmentPoints": 1,
-      "forceDisposition": "Reconnaissance",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "SOLAR SPEARHEAD",
-      "detachmentPoints": 2,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "TALONS OF THE EMPEROR",
-      "detachmentPoints": 3,
-      "forceDisposition": "Take and Hold",
-      "dispositionChanged": true,
-      "detachmentPointsChanged": false
-    },
-    {
-      "factionSlug": "adeptus-custodes",
-      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
-      "detachmentName": "THARANATOI HAMMERBLOW",
-      "detachmentPoints": 1,
-      "forceDisposition": "Disruption",
-      "dispositionChanged": false,
-      "detachmentPointsChanged": false
-    },
-    {
       "factionSlug": "adeptus-mechanicus",
       "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-mechanicus",
       "detachmentName": "COHORT ACQUISITUS",
@@ -2257,6 +2176,162 @@
       "forceDisposition": "Priority Assets",
       "dispositionChanged": false,
       "detachmentPointsChanged": false
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "AQUILAN SHIELD",
+      "detachmentPoints": 1,
+      "forceDisposition": "TAKE AND HOLD",
+      "forceDispositions": [
+        "TAKE AND HOLD"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "AURIC CHAMPIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "PURGE THE FOE",
+      "forceDispositions": [
+        "PURGE THE FOE"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "DREAD HOST",
+      "detachmentPoints": 1,
+      "forceDisposition": "PURGE THE FOE",
+      "forceDispositions": [
+        "PURGE THE FOE"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "EMISSARIES IMPERATUS",
+      "detachmentPoints": 1,
+      "forceDisposition": "PRIORITY ASSETS",
+      "forceDispositions": [
+        "PRIORITY ASSETS"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "EMPEROR’S CHOSEN",
+      "detachmentPoints": 1,
+      "forceDisposition": "PRIORITY ASSETS",
+      "forceDispositions": [
+        "PRIORITY ASSETS"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "GRAV‑ASSAULT FORCE",
+      "detachmentPoints": 1,
+      "forceDisposition": "RECONNAISSANCE",
+      "forceDispositions": [
+        "RECONNAISSANCE"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "GUARDIANS OF THE THRONE",
+      "detachmentPoints": 3,
+      "forceDisposition": "PRIORITY ASSETS",
+      "forceDispositions": [
+        "PRIORITY ASSETS",
+        "PURGE THE FOE"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "HONOURED COMPANIONS",
+      "detachmentPoints": 1,
+      "forceDisposition": "TAKE AND HOLD",
+      "forceDispositions": [
+        "TAKE AND HOLD"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "LIONS OF THE EMPEROR",
+      "detachmentPoints": 1,
+      "forceDisposition": "DISRUPTION",
+      "forceDispositions": [
+        "DISRUPTION"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "MIGHT OF THE MORITOI",
+      "detachmentPoints": 1,
+      "forceDisposition": "TAKE AND HOLD",
+      "forceDispositions": [
+        "TAKE AND HOLD"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "NULL MAIDEN VIGIL",
+      "detachmentPoints": 1,
+      "forceDisposition": "DISRUPTION",
+      "forceDispositions": [
+        "DISRUPTION"
+      ],
+      "uniqueTags": []
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "SHADOWKEEPERS",
+      "detachmentPoints": 1,
+      "forceDisposition": "PURGE THE FOE",
+      "forceDispositions": [
+        "PURGE THE FOE"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
+    },
+    {
+      "factionSlug": "adeptus-custodes",
+      "sourceUrl": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+      "detachmentName": "SOLAR WATCH",
+      "detachmentPoints": 1,
+      "forceDisposition": "RECONNAISSANCE",
+      "forceDispositions": [
+        "RECONNAISSANCE"
+      ],
+      "uniqueTags": [
+        "SHIELD HOST"
+      ]
     }
   ],
   "pendingDetachments": [
@@ -2980,5 +3055,9 @@
       "dispositionChanged": false,
       "detachmentPointsChanged": false
     }
-  ]
+  ],
+  "custodesUpdated": {
+    "date": "2026-10-14",
+    "version": "v1.6"
+  }
 }

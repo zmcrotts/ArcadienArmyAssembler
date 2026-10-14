@@ -26,8 +26,33 @@
     },
     {
       "faction": "Imperium - Adeptus Custodes",
+      "name": "Aegis of the Emperor",
+      "description": "Friendly ADEPTUS CUSTODES units with this ability have Feel No Pain 5+ against mortal wounds."
+    },
+    {
+      "faction": "Imperium - Adeptus Custodes",
+      "name": "Aquila Commander",
+      "description": "At the start of the battle round, if a model with this ability is your WARLORD, gain 1CP."
+    },
+    {
+      "faction": "Imperium - Adeptus Custodes",
+      "name": "Daughters of the Abyss",
+      "description": "Friendly ANATHEMA PSYKANA units with this ability have Feel No Pain 3+ against psychic attacks.\nPsychic Null (Aura): Friendly ADEPTUS CUSTODES units within 6\" of this unit have Feel No Pain 5+ against psychic attacks."
+    },
+    {
+      "faction": "Imperium - Adeptus Custodes",
       "name": "Martial Ka'tah",
-      "description": "Each time a unit with this ability is selected to fight, select one of the Ka'tah stances below. Until that unit has finished making its attacks, the selected Stance is active for it and it gains the relevant ability.\n\n■ DACATARAI STANCE\nMelee weapons equipped by models in this unit have the [SUSTAINED HITS 1] ability.\n■ RENDAX STANCE\nMelee weapons equipped by models in this unit have the [LETHAL HITS] ability."
+      "description": "Units with this ability become readied at the start of their Command phase. A readied unit can use one of the following Ka'tah abilities at its stated timing. After using the Ka'tah ability, the unit is no longer readied.\n\nDACATARAI\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Its melee attacks against enemy units excluding MONSTER/VEHICLE units can re-roll hit rolls of 1.\n\nKAPTARIS\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Melee attacks targeting your unit have -1 to hit rolls.\n\nRENDAX\nWHEN: Fight phase, when a friendly readied unit is selected to fight. TARGET: One friendly readied unit. EFFECT: Its melee attacks have [LETHAL HITS: MONSTER/VEHICLE].\n\nCONSERVAI\nWHEN: Your Command phase. TARGET: One friendly readied unit. EFFECT: Until the end of the turn, being engaged/battle-shocked does not prevent starting an action, and starting an action does not prevent being eligible to shoot.\n\nCALISTUS\nWHEN: Your Movement phase, when a friendly readied unit is selected to move. TARGET: That readied unit. EFFECT: When making a normal/advance/fall-back move, it can move through all types of model.\n\nSALVUS\nWHEN: Your Shooting phase, when a friendly readied unit is selected to shoot. TARGET: That readied unit. EFFECT: It can ignore modifiers to its BS, hit rolls and wound rolls."
+    },
+    {
+      "faction": "Imperium - Adeptus Custodes",
+      "name": "Anathema Psykana",
+      "description": "You can include ANATHEMA PSYKANA units in your army even though they do not have the ADEPTUS CUSTODES faction keyword. Unless otherwise stated, you cannot select ANATHEMA PSYKANA as your army faction or select an ANATHEMA PSYKANA model as your WARLORD."
+    },
+    {
+      "faction": "Imperium - Adeptus Custodes",
+      "name": "Shock Disembark Move",
+      "description": "Maximum distance: 3\". Eligible if permitted by a rule, embarked within a TRANSPORT model on the battlefield, and did not embark within that TRANSPORT this phase. Set up the unit as described in Set Up (Core Rules, 03.02), with each model wholly within the set-up distance of that TRANSPORT. After moving, the unit is not eligible to declare a charge until the end of the turn."
     }
   ]
 }

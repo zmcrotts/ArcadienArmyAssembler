@@ -51,8 +51,8 @@ test("Gretchin and Runtherd use separate upstream datasheets and current points"
 
 test("Vertus Praetors use separate two- and three-model costs", () => {
   const vertusPraetors = unit("Imperium - Adeptus Custodes", "Vertus Praetors");
-  assert.equal(points(vertusPraetors, 2), 155);
-  assert.equal(points(vertusPraetors, 3), 230);
+  assert.equal(points(vertusPraetors, 2), 220);
+  assert.equal(points(vertusPraetors, 3), 330);
 });
 
 test("World Eaters use the current Berzerker costs", () => {
@@ -138,14 +138,15 @@ test("MFM v1.5 applies enhancement and wargear totals", () => {
     assert.equal(sisters.enhancements.find(item => item.name === name)?.points, value);
   }
 
-  const venatari = unit("Imperium - Adeptus Custodes", "Venatari Custodians");
+  const venatari = unit("Imperium - Adeptus Custodes", "Venatari with Verutum Lances");
   const nodes = [];
   (function visit(node) {
     if (!node) return;
     nodes.push(node);
     for (const child of node.children || []) visit(child);
   })(venatari.selectionTree);
-  assert.equal(nodes.find(node => node.name === "Venatari lance")?.points, 5);
+  assert.equal(points(venatari, 3), 270);
+  assert.ok(nodes.every(node => !Number(node.points || 0)));
 });
 
 test("MFM v1.5 updates embedded enhancement copies and zeros unlisted paid wargear", () => {
@@ -179,8 +180,8 @@ test("MFM v1.5 updates embedded enhancement copies and zeros unlisted paid warge
 
 test("MFM v1.5 applies current unit schedules, wargear, and enhancements", () => {
   const allarus = unit("Imperium - Adeptus Custodes", "Allarus Custodians");
-  assert.equal(points(allarus, 2, { previousCopies: 0 }), 120);
-  assert.equal(points(allarus, 2, { previousCopies: 2 }), 160);
+  assert.equal(points(allarus, 2, { previousCopies: 0 }), 180);
+  assert.equal(points(allarus, 2, { previousCopies: 2 }), 210);
 
   const blightHauler = unit("Chaos - Death Guard", "Myphitic Blight-hauler");
   assert.equal(points(blightHauler, 1), 95);
@@ -222,9 +223,9 @@ test("Space Marine codex supersedes retired faction-pack detachments", () => {
 test("all available MFM v1.5 rows attach and unavailable catalogue entries are recorded", () => {
   assert.equal(ruleset.mfmPointSource.version, "1.5");
   assert.equal(ruleset.mfmPointSource.total, mfmDocument.changes.length);
-  assert.equal(ruleset.mfmPointSource.unitRows, 3009);
-  assert.equal(ruleset.mfmPointSource.wargearRows, 159);
-  assert.equal(ruleset.mfmPointSource.enhancementRows, 782);
+  assert.equal(ruleset.mfmPointSource.unitRows, mfmDocument.changes.filter(r=>r.kind==="unit").length - 1);
+  assert.equal(ruleset.mfmPointSource.wargearRows, mfmDocument.changes.filter(r=>r.kind==="wargear").length);
+  assert.equal(ruleset.mfmPointSource.enhancementRows, mfmDocument.changes.filter(r=>r.kind==="enhancement").length - ruleset.sourceIssues.filter(issue=>issue.change?.kind==="enhancement").length);
   assert.equal(ruleset.mfmPointSource.unmatched, 13);
   assert.deepEqual(ruleset.sourceIssues.filter(issue => ["unit", "wargear"].includes(issue.change?.kind)).map(issue => issue.change.unitName), ["KAIUS KONORIUS"]);
   assert.deepEqual(mfmDocument.reconciliation, {

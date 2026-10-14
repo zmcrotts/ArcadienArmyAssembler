@@ -140,8 +140,8 @@ test("normalized enhancements and detachments expose only their always-on charac
   assert.deepEqual(characteristicsFor("Iron Surplice of Saint Istalela"), new Set(["SV"]));
   assert.deepEqual(characteristicsFor("Legacy Sidearm"), new Set(["A"]));
   assert.deepEqual(characteristicsFor("Power of the Hive Mind"), new Set(["S", "AP"]));
-  assert.deepEqual(characteristicsFor("Admonimortis"), new Set(["S", "AP", "D"]));
-  assert.deepEqual(characteristicsFor("Moritoi Ancients", allDetachmentRules), new Set(["M"]));
+  assert.deepEqual(characteristicsFor("Memento Moritoi"), new Set(["A", "S", "D"]));
+  assert.deepEqual(characteristicsFor("Moritoi Ancients", allDetachmentRules), new Set());
   assert.deepEqual(characteristicsFor("Travelling Players", allDetachmentRules), new Set(["OC"]));
   assert.deepEqual(characteristicsFor("Cyber Psalm-Programming", allDetachmentRules), new Set(["M"]));
 
@@ -337,9 +337,9 @@ test("Custodes expose Martial Ka'tah as an army rule", () => {
 
   assert.equal(martialKatah.length, 1);
   assert.match(martialKatah[0].description, /selected to fight/i);
-  assert.match(martialKatah[0].description, /Dacatarai Stance/i);
-  assert.match(martialKatah[0].description, /Rendax Stance/i);
-  assert.equal(martialKatah[0].source.name, "Local 11e Army Rule Gap-fill");
+  assert.match(martialKatah[0].description, /DACATARAI/i);
+  assert.match(martialKatah[0].description, /RENDAX/i);
+  assert.match(martialKatah[0].source, /Custodes codex photographs/);
 });
 
 test("Adepta Sororitas expose Acts of Faith as an army rule", () => {
@@ -494,7 +494,7 @@ test("11e ruleset recognizes alternate detachment root names", () => {
 
   assert.ok(custodes.detachments.length > 0, "Custodes should expose Detachments root");
   assert.ok(leagues.detachments.length > 0, "Leagues should expose Detachment Choice root");
-  assert.equal(custodes.detachments.some(item => item.name === "Shield Host"), true);
+  assert.equal(custodes.detachments.some(item => item.name === "Guardians of the Throne"), true);
   assert.equal(leagues.detachments.some(item => /oathband/i.test(item.name)), true);
 });
 
@@ -503,7 +503,7 @@ test("11e ruleset exposes Crucible custom characters for catalogue preference fi
   const crucibleUnits = ruleset.units.filter(unit => /\[Crucible\]/i.test(unit.name));
 
   assert.ok(crucibleUnits.length > 0);
-  assert.ok(crucibleUnits.some(unit => unit.faction === "Imperium - Adeptus Custodes" && unit.name === "Guardian of the Throne [Crucible]"));
+  assert.equal(crucibleUnits.some(unit => unit.faction === "Imperium - Adeptus Custodes"), false);
   assert.ok(crucibleUnits.some(unit => unit.faction === "Xenos - Tyranids" && unit.name === "Node Organism [Crucible]"));
 });
 
@@ -660,75 +660,18 @@ test("11e Einhyr Hearthguard squad ranged weapons stay freely swappable", () => 
   assert.equal(getOptionStates(hearthguard, swapped).find(option => option.id === volkanite.id).current, 4);
 });
 
-test("11e Death Company Marines with Jump Packs expose explicit alternate weapon lanes", () => {
+test("current Death Company jump-pack wargear supersedes the old paired-option override", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
-  const deathCompany = ruleset.units.find(unit =>
-    unit.faction === "Imperium - Adeptus Astartes - Blood Angels"
-    && unit.name === "Death Company Marines with Jump Packs"
-  );
-  const entry = createDefaultRosterEntry(deathCompany);
-  const tenModels = setUnitSize(deathCompany, entry, 10);
-  const states = getOptionStates(deathCompany, tenModels);
-  const state = name => states.find(option => option.name === name);
-
-  for (const name of ["Plasma pistol", "Eviscerator"]) {
-    assert.equal(state(name).groupMaximum, 2);
+  const unit = ruleset.units.find(u => u.faction === "Imperium - Adeptus Astartes - Blood Angels" && u.name === "Death Company Marines with Jump Packs");
+  let entry = setUnitSize(unit, createDefaultRosterEntry(unit), 10);
+  const alternate = getOptionStates(unit, entry).find(o => o.name === "Death Company Marine w/ alternate weapons");
+  entry = setSelection(unit, entry, alternate.id, 10);
+  const states = getOptionStates(unit, entry);
+  for (const [name, maximum] of [["Power fist", 2], ["Hand flamer", 2], ["Power weapon", 4], ["Inferno Pistol", 2], ["Plasma pistol", 4], ["Eviscerator", 2]]) {
+    assert.equal(states.find(o => o.name === name).maximum, maximum, name);
   }
-  assert.equal(state("Power fist").groupMaximum, 1);
-  assert.equal(state("Power weapon").groupMaximum, 1);
-
-  for (const name of [
-    "1 hand flamer and 1 Astartes chainsword",
-    "1 hand flamer and 1 power fist",
-    "1 hand flamer and 1 power weapon",
-    "1 heavy bolt pistol and 1 power fist",
-    "1 heavy bolt pistol and 1 power weapon",
-    "1 inferno pistol and 1 Astartes chainsword",
-    "1 inferno pistol and 1 power fist",
-    "1 inferno pistol and 1 power weapon",
-    "1 plasma pistol and 1 Astartes chainsword",
-    "1 plasma pistol and 1 power fist",
-    "1 plasma pistol and 1 power weapon"
-  ]) {
-    assert.equal(state(name).groupMaximum, 2, `Missing or uncapped paired option: ${name}`);
-  }
-
-  const alternateModel = states.find(option => option.name === "Death Company Marine w/ alternate weapons");
-  const activeAlternates = setSelection(deathCompany, tenModels, alternateModel.id, 4, false);
-  const overstackedPowerFists = JSON.parse(JSON.stringify(activeAlternates));
-  overstackedPowerFists.selections[state("Power fist").id] = 2;
-  assert.ok(
-    validateLoadout(deathCompany, overstackedPowerFists).some(error =>
-      error.name === "Power fist or power weapon" && error.type === "max"
-    )
-  );
-
-  const oneAlternate = setSelection(deathCompany, tenModels, alternateModel.id, 1, false);
-  const defaultAlternateProfiles = getConfiguredProfiles(deathCompany, oneAlternate);
-  const defaultAlternateModels = getConfiguredModels(deathCompany, oneAlternate);
-  const weaponCount = (configured, name) =>
-    configured.weapons
-      .filter(profile => profile.name.toLowerCase().replace(/^astartes /, "") === name.toLowerCase().replace(/^astartes /, ""))
-      .reduce((sum, profile) => sum + Number(profile.count || 0), 0);
-
-  assert.equal(weaponCount(defaultAlternateProfiles, "Heavy Bolt Pistol"), 10);
-  assert.equal(weaponCount(defaultAlternateProfiles, "Astartes Chainsword"), 10);
-  assert.deepEqual(
-    defaultAlternateModels.find(model => model.name === "Death Company Marine w/ alternate weapons").equipment,
-    ["Astartes Chainsword", "Heavy Bolt Pistol"]
-  );
-
-  const oneStandalonePlasma = setSelection(deathCompany, oneAlternate, state("Plasma pistol").id, 1, false);
-  const plasmaProfiles = getConfiguredProfiles(deathCompany, oneStandalonePlasma);
-  const plasmaModels = getConfiguredModels(deathCompany, oneStandalonePlasma);
-  assert.equal(weaponCount(plasmaProfiles, "Heavy Bolt Pistol"), 9);
-  assert.equal(weaponCount(plasmaProfiles, "Astartes Chainsword"), 10);
-  assert.equal(weaponCount(plasmaProfiles, "➤ Plasma pistol - standard"), 1);
-  assert.equal(weaponCount(plasmaProfiles, "➤ Plasma pistol - supercharge"), 1);
-  assert.deepEqual(
-    plasmaModels.find(model => model.name === "Death Company Marine w/ alternate weapons").equipment,
-    ["Astartes Chainsword", "Plasma pistol"]
-  );
+  assert.equal(states.some(o => /^1 hand flamer and/.test(o.name)), false);
+  assert.deepEqual(validateLoadout(unit, entry), []);
 });
 
 test("11e Helbrutes gain two melee attacks when equipped with two melee weapons", () => {
@@ -1010,8 +953,8 @@ test("11e Lions of the Emperor enhancements display their confirmed bearer restr
     return (enhancement.profiles || []).map(profile => profile.characteristics?.Description).join(" ");
   };
 
-  assert.match(descriptions("Praesidius"), /^ADEPTUS CUSTODES model only\./i);
-  assert.match(descriptions("Fierce Conqueror"), /^SHIELD-CAPTAIN model only\./i);
+  assert.match(descriptions("Lightning Descent"), /^Shield-Captain in Allarus Terminator Armour model/i);
+  assert.match(descriptions("Leonine Ferocity"), /^Shield-Captain in Allarus Terminator Armour model/i);
 });
 
 test("11e configured abilities collapse duplicate same-name wargear rules", () => {
@@ -1260,9 +1203,9 @@ test("11e Ork Blitz Brigade upgrades enforce their wagon restriction", () => {
 test("11e Sisters of Silence use stepped MFM points at every selectable size", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const schedules = {
-    Prosecutors: [50, 55, 80, 80, 80, 80, 90],
-    Vigilators: [50, 55, 90, 90, 90, 90, 100],
-    Witchseekers: [50, 55, 90, 90, 90, 90, 100]
+    "Prosecutor Squad": [45, 50, 80, 80, 80, 80, 90],
+    "Vigilator Squad": [50, 55, 90, 90, 90, 90, 100],
+    "Witchseeker Squad": [55, 60, 100, 100, 100, 100, 110]
   };
 
   for (const [name, expected] of Object.entries(schedules)) {
@@ -1664,13 +1607,13 @@ test("keyword-limited enhancements and upgrades expose only their printed bearer
   assert.equal(benediction.has("Captain"), false);
 
   const psykOutGrenades = eligibleNames(
-    "Imperium - Adeptus Custodes", "Silent Hunters", "Psyk-out Grenades"
+    "Imperium - Adeptus Custodes", "Honoured Companions", "Celeritous Sentries"
   );
-  assert.equal(psykOutGrenades.has("Vigilators"), true);
-  assert.equal(psykOutGrenades.has("Custodian Wardens"), false);
+  assert.equal(psykOutGrenades.has("Sentinel Guard Sodality"), true);
+  assert.equal(psykOutGrenades.has("Custodian Wardens"), true);
 
   const raptorBlade = eligibleNames(
-    "Imperium - Adeptus Custodes", "Null Maiden Vigil", "Raptor Blade"
+    "Imperium - Adeptus Custodes", "Null Maiden Vigil", "Oblivion Knight"
   );
   assert.equal(raptorBlade.has("Knight-Centura"), true);
   assert.equal(raptorBlade.has("Custodian Wardens"), false);

@@ -189,6 +189,12 @@ test("every copied valid roster round-trips decisions, relationships, nicknames,
       ...document,
       armyState: normalizeArmyStateForDefinition(context.armyDefinition, document.armyState)
     };
+    if (document.faction === "Imperium - Adeptus Custodes" && document.rosterEntries.some(record => !context.unitPackages.some(unit => unit.selectionKey === record.selectionKey))) {
+      // Old split/retired Custodes datasheets require roster review; never export
+      // a code that silently substitutes a different new datasheet or loadout.
+      assert.throws(() => share.encodeRoster(migrated, context), /not available/);
+      continue;
+    }
     const code = share.encodeRoster(migrated, context);
     const decoded = share.decodeRoster(code, context);
     assert.match(code, /^AAA2-[A-Za-z0-9_-]+$/);

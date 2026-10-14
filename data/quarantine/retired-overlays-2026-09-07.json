@@ -160,6 +160,607 @@
       ],
       "ruleName": "Heroes of Ultramar",
       "source": "Faction Pack - Space Marines v1.2"
+    },
+    {
+      "id": "custodes-frame",
+      "kind": "keywords-add",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "unitNames": [
+        "Anathema Psykana Rhino",
+        "Venerable Land Raider"
+      ],
+      "keywords": [
+        "Frame"
+      ],
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "custodes-salvo-launcher",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike",
+        "Vertus Praetors"
+      ],
+      "profileName": "Salvo launcher",
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "24\"",
+        "A": "1",
+        "BS": "2+",
+        "S": "10",
+        "AP": "-3",
+        "D": "D6+1",
+        "Keywords": "Twin-linked"
+      },
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "custodes-hurricane-bolter",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike",
+        "Vertus Praetors"
+      ],
+      "profileName": "Vertus hurricane bolter",
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "18\"",
+        "A": "3",
+        "BS": "2+",
+        "S": "4",
+        "AP": "-1",
+        "D": "2",
+        "Keywords": "Rapid Fire 3, Twin-linked"
+      },
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 35"
+    },
+    {
+      "id": "audit-custodes-interred-expertise",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Might of the Moritoi",
+      "enhancementName": "Interred Expertise",
+      "restriction": "ADEPTUS CUSTODES WALKER unit only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1"
+    },
+    {
+      "id": "audit-custodes-auramite-sarcophagus",
+      "kind": "enhancement-restriction",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Might of the Moritoi",
+      "enhancementName": "Auramite Sarcophagus",
+      "restriction": "ADEPTUS CUSTODES WALKER unit only.",
+      "source": "Faction Pack - Adeptus Custodes v1.1"
+    },
+    {
+      "id": "missing-custodes-psyk-out-grenades",
+      "kind": "enhancement-add",
+      "enhancementKind": "upgrade",
+      "maxSelections": 3,
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "detachmentName": "Silent Hunters",
+      "enhancementName": "Psyk-out Grenades",
+      "points": 10,
+      "unitKeywordsAll": [
+        "Anathema Psykana"
+      ],
+      "description": "ANATHEMA PSYKANA unit only. This unit has [EXPLOSIVES]. When you target this unit with the Explosives stratagem, if you select an enemy PSYKER unit, you can re-roll rolls to determine whether that enemy unit suffers a mortal wound.",
+      "source": "Faction Pack - Adeptus Custodes v1.1, page 3; MFM v1.1"
+    },
+    {
+      "id": "sep2026-1",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Prosecutors"
+      ],
+      "profileNames": [
+        "Boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-2",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Allarus Custodians"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-3",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Wardens"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-4",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-5",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain in Allarus Terminator Armour"
+      ],
+      "profileNames": [
+        "Castellan axe"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-6",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Venerable Contemptor Dreadnought"
+      ],
+      "profileNames": [
+        "Combi-bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-7",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Valerian"
+      ],
+      "profileNames": [
+        "Gnosis"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-8",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Allarus Custodians"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-9",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Guard"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-10",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Wardens"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-11",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-12",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain in Allarus Terminator Armour"
+      ],
+      "profileNames": [
+        "Guardian Spear"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-13",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Knight-Centura"
+      ],
+      "profileNames": [
+        "Master-crafted boltgun"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-14",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Custodian Guard"
+      ],
+      "profileNames": [
+        "Sentinel Blade"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-15",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain"
+      ],
+      "profileNames": [
+        "Sentinel Blade"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5"
+      }
+    },
+    {
+      "id": "sep2026-16",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Anathema Psykana Rhino"
+      ],
+      "profileNames": [
+        "Storm Bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-17",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Venerable Land Raider"
+      ],
+      "profileNames": [
+        "Storm bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-18",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-19",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "S": "5",
+        "AP": "-1"
+      }
+    },
+    {
+      "id": "sep2026-249",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Orion Assault Dropship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-250",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Ares Gunship"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-251",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-252",
+      "kind": "keywords-remove",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 29",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "keywords": [
+        "Frame"
+      ]
+    },
+    {
+      "id": "sep2026-260",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Salvo launcher"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "24\"",
+        "A": "1",
+        "BS": "2+",
+        "S": "10",
+        "AP": "-3",
+        "D": "D6+1",
+        "Keywords": "Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-261",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Shield-Captain on Dawneagle Jetbike"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "18\"",
+        "A": "3",
+        "BS": "2+",
+        "S": "5",
+        "AP": "-1",
+        "D": "2",
+        "Keywords": "Rapid Fire 3, Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-262",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Salvo launcher"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "24\"",
+        "A": "1",
+        "BS": "2+",
+        "S": "10",
+        "AP": "-3",
+        "D": "D6+1",
+        "Keywords": "Twin-linked"
+      }
+    },
+    {
+      "id": "sep2026-263",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Adeptus Custodes"
+      },
+      "source": "Faction Pack - Adeptus Custodes legal 30 September 2026, page 35",
+      "unitNames": [
+        "Vertus Praetors"
+      ],
+      "profileNames": [
+        "Vertus hurricane bolter"
+      ],
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "18\"",
+        "A": "3",
+        "BS": "2+",
+        "S": "5",
+        "AP": "-1",
+        "D": "2",
+        "Keywords": "Rapid Fire 3, Twin-linked"
+      }
     }
   ],
   "mfmPointRows": [
@@ -793,5 +1394,9 @@
       "restrictEligibility": true,
       "source": "Faction Pack - Orks v1.1"
     }
-  ]
+  ],
+  "custodesRetirement": {
+    "date": "2026-10-14",
+    "reason": "Superseded by complete new Custodes codex; historical audit only, never applied to active definitions."
+  }
 }

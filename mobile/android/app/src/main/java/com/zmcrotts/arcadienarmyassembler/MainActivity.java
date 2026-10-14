@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -136,7 +137,10 @@ public final class MainActivity extends Activity {
                     byte[] bytes = payload == null ? new byte[0] : payload.getBytes(StandardCharsets.UTF_8);
                     if (bytes.length == 0 || bytes.length > MAX_MIGRATION_BYTES) throw new IOException("Invalid migration size.");
                     JSONObject document = new JSONObject(payload);
-                    if (!"arcadien.roster-migration".equals(document.optString("kind")) || document.optInt("version") != 1 || document.getJSONArray("rosters").length() == 0 || document.getJSONArray("rosters").length() > 500) throw new IOException("Invalid roster transfer.");
+                    int version = document.optInt("version");
+                    JSONArray rosters = document.optJSONArray("rosters");
+                    JSONArray games = version == 2 ? document.optJSONArray("games") : new JSONArray();
+                    if (!"arcadien.roster-migration".equals(document.optString("kind")) || (version != 1 && version != 2) || rosters == null || games == null || rosters.length() > 500 || games.length() > 500 || rosters.length() + games.length() == 0) throw new IOException("Invalid list and game-history transfer.");
                     try { getPackageManager().getPackageInfo(NEW_APP_PACKAGE, 0); }
                     catch (android.content.pm.PackageManager.NameNotFoundException missing) { runOnUiThread(() -> showNewAppDownload()); return; }
                     File file = MigrationFileProvider.migrationFile(MainActivity.this);
@@ -147,13 +151,13 @@ public final class MainActivity extends Activity {
                     Intent handoff = new Intent(Intent.ACTION_SEND).setPackage(NEW_APP_PACKAGE).setType(MIGRATION_TYPE)
                         .putExtra(Intent.EXTRA_STREAM, uri)
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    handoff.setClipData(ClipData.newRawUri("Saved rosters", uri));
+                    handoff.setClipData(ClipData.newRawUri("Saved rosters and game history", uri));
                     runOnUiThread(() -> {
                         try { startActivity(handoff); }
-                        catch (Exception error) { Toast.makeText(MainActivity.this, "The new app could not accept the transfer. Your lists remain here.", Toast.LENGTH_LONG).show(); }
+                        catch (Exception error) { Toast.makeText(MainActivity.this, "The new app could not accept the transfer. Your lists and game history remain here.", Toast.LENGTH_LONG).show(); }
                     });
                 } catch (Exception error) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Could not prepare the list transfer. Your saved lists remain here.", Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Could not prepare the transfer. Your lists and game history remain here.", Toast.LENGTH_LONG).show());
                 }
             }, "arcadien-roster-migration-write").start();
         }
