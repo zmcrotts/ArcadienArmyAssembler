@@ -123,7 +123,7 @@ function normalizeWeapon(weapon) {
 
 function applyWeaponEffectsToConfigured(configured = {}, effects = [], context = {}) {
   const weaponEffects = extractWeaponEffects(effects);
-  if (!weaponEffects.length) return clone(configured);
+  if (!asArray(effects).length) return clone(configured);
   const next = clone(configured) || {};
   next.weapons = asArray(next.weapons).map(weapon => applyWeaponEffectsToWeapon(weapon, weaponEffects, context));
   return next;
@@ -358,7 +358,12 @@ function bracketedWeaponKeywordEffects(text) {
   for (const match of normalizeText(text).matchAll(/\[([^\]]+)\]/g)) {
     if (!bracketBelongsToWeaponEffect(text, match.index)) continue;
     const keyword = normalizeWeaponKeywordName(match[1]);
-    if (keyword) effects.push({ kind: "keyword", weaponType: scopedWeaponTypeBefore(text.slice(0, match.index), effectWeaponType(text)), keyword });
+    if (keyword) {
+      const prefix = text.slice(0, match.index);
+      const clause = prefix.slice(Math.max(prefix.lastIndexOf("."), prefix.lastIndexOf(";")) + 1);
+      const scope = /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|weapons?\s+equipped\s+by\s+(?:the\s+)?(?:bearer|wearer))\b/i.test(clause) ? "bearer" : "";
+      effects.push({ kind: "keyword", weaponType: scopedWeaponTypeBefore(prefix, effectWeaponType(text)), keyword, ...(scope ? { scope } : {}) });
+    }
   }
   const seen = new Set();
   return effects.filter(effect => {
@@ -438,7 +443,10 @@ function effectAppliesAutomatically(text, sourceKind = "") {
 function effectRecordRequiresBattleState(effect) {
   if (!effect || typeof effect !== "object") return false;
   const label = normalizeText([effect.name, effect.type, effect.kind].filter(Boolean).join(" "));
-  if (/\bAura\b/i.test(label)) return true;
+  if (/\bAura\b|\bka['’\s-]*tahs?\b/i.test(label)) return true;
+  // WHEN/TARGET/EFFECT cards are activated rules. Splitting them into
+  // sentences must not detach their payload from the activation timing.
+  if (effectTextParts(effect).some(text => /\bWHEN\s*:/i.test(text))) return true;
   const description = normalizeText(effect.description || effect.characteristics?.Description || "");
   const payloadIndex = firstStaticEffectPayloadIndex(description);
   if (payloadIndex > 0 && effectRequiresBattleState(description.slice(0, payloadIndex))) return true;
