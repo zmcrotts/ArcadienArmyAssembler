@@ -160,7 +160,16 @@ function trustedUpdateDownload(value) {
   return url;
 }
 
-async function downloadWindowsUpdate(event) {
+let windowsUpdateInFlight = null;
+
+function downloadWindowsUpdate(event) {
+  if (!windowsUpdateInFlight) {
+    windowsUpdateInFlight = performWindowsUpdate(event).finally(() => { windowsUpdateInFlight = null; });
+  }
+  return windowsUpdateInFlight;
+}
+
+async function performWindowsUpdate(event) {
   if (TEST_PROFILE || !app.isPackaged) throw new Error("Installer launch is disabled in test builds.");
   const update = await fetchWindowsUpdate();
   const result = updateResult(update);
@@ -172,7 +181,10 @@ async function downloadWindowsUpdate(event) {
   if (declaredBytes > MAX_UPDATE_BYTES) throw new Error("The installer is larger than the 350 MB safety limit.");
   const updateDir = path.join(app.getPath("temp"), "arcadien-army-assembler-update");
   fs.mkdirSync(updateDir, { recursive: true });
-  const target = path.join(updateDir, `Arcadien-Army-Assembler-${update.version}.exe`);
+  // A previous installer may still be running or locked by Windows. Never
+  // overwrite or unlink it: each attempt owns a new directory and file.
+  const attemptDir = fs.mkdtempSync(path.join(updateDir, "download-"));
+  const target = path.join(attemptDir, `Arcadien-Army-Assembler-${update.version}.exe`);
   const partial = `${target}.partial`;
   const hash = crypto.createHash("sha256");
   let received = 0;
@@ -186,15 +198,18 @@ async function downloadWindowsUpdate(event) {
     }
   });
   try {
-    await pipeline(Readable.fromWeb(response.body), meter, fs.createWriteStream(partial, { flags: "w" }));
+    await pipeline(Readable.fromWeb(response.body), meter, fs.createWriteStream(partial, { flags: "wx" }));
     if (hash.digest("hex") !== update.sha256) throw new Error("The installer checksum did not match the published release. Nothing was opened.");
-    try { fs.unlinkSync(target); } catch (error) { if (error?.code !== "ENOENT") throw error; }
     fs.renameSync(partial, target);
   } catch (error) {
     try { fs.unlinkSync(partial); } catch {}
     throw error;
   }
-  spawn(target, [], { detached: true, stdio: "ignore" }).unref();
+  await new Promise((resolve, reject) => {
+    const installer = spawn(target, [], { detached: true, stdio: "ignore" });
+    installer.once("error", error => reject(new Error(`Windows could not open the installer (${error.message}). Download the Windows installer from https://arcadienarmyassembler.pages.dev/download and run it directly.`)));
+    installer.once("spawn", () => { installer.unref(); resolve(); });
+  });
   setTimeout(() => app.quit(), 500);
   return { ...result, state: "installing" };
 }

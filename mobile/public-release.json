@@ -1,8 +1,8 @@
 {
   "windows": {
-    "version": "1.0.36",
+    "version": "1.0.37",
     "asset": "Arcadien-Army-Assembler-Windows.exe",
-    "sha256": "2BDFD2A01A11EF682D8322C44E4B4AC00A27F87C1A206A89327412C259704F72"
+    "sha256": "C5B962E8A41FED08CC57D2B75D0F141396EA8774D1C197AB8AE41C3BF499AF96"
   },
   "android": {
     "version": "0.1.75",
