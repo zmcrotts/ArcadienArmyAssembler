@@ -8350,6 +8350,28 @@
         "value": "Terminator Squad"
       },
       "source": "World Eaters: Butchers of Khorne TARGET clause (TERMINATOR SQUAD keyword); corrected cached unit-name target"
+    },
+    {
+      "id": "callidus-neural-shredder-user-datasheet",
+      "kind": "profile-patch",
+      "target": {
+        "faction": "Imperium - Agents of the Imperium"
+      },
+      "unitNames": [
+        "Callidus Assassin"
+      ],
+      "profileName": "Neural shredder",
+      "typeName": "Ranged Weapons",
+      "characteristics": {
+        "Range": "12\"",
+        "A": "D6",
+        "BS": "-",
+        "S": "5",
+        "AP": "-2",
+        "D": "1",
+        "Keywords": "Anti-Infantry 2+, Blast 2, Torrent"
+      },
+      "source": "User-supplied Callidus Assassin datasheet screenshot; visible unit and weapon profiles only"
     }
   ],
   "audit": {
