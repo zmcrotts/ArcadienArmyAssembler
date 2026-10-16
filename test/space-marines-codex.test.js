@@ -66,7 +66,8 @@ test('Chapter army restrictions exclude prohibited units and Dark Angels gain ar
   const a=r.armies.find(a=>a.faction.endsWith(' - '+chapter));const config=chapterDoc.chapters[chapter];
   const selected=a.allowedSelectionKeys.map(k=>unitByKey.get(k));
   for(const banned of config.excludedKeywords)assert(!selected.some(u=>(u.keywords||[]).some(k=>k.toLowerCase()===banned.toLowerCase())));
-  for(const banned of config.excludedCoreDatasheets||[])assert(!selected.some(u=>u.name===banned));
+  // Chapter-specific vehicle sheets can share names with prohibited Codex: Space Marines sheets.
+  for(const banned of config.excludedCoreDatasheets||[])assert(!selected.some(u=>u.name===banned && u.source?.importedFromFaction));
  }
  const da=r.armies.find(a=>a.faction.endsWith(' - Dark Angels'));const units=r.units.filter(u=>u.faction===da.faction);
  for(const name of ['Bladeguard Veteran Squad','Sternguard Veteran Squad','Land Raider','Repulsor','Redemptor Dreadnought'])assert(units.find(u=>u.name===name).keywords.includes('Deathwing'),name);

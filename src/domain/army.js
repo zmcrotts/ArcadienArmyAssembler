@@ -804,7 +804,7 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
     const allowsMultiple = Boolean(target?.rosterRules?.allowsMultipleLeadersAsBodyguard)
       || targetAttachments.some(item => {
         const leader = byInstance.get(item.leaderInstanceId);
-        return Boolean(leader?.rosterRules?.allowsAdditionalLeader || leader?.roles?.support);
+        return allowsAdditionalLeaderInRoster(leader, [...byInstance.values()]);
       });
     if (count > 1 && !allowsMultiple) warnings.push(warning("BODYGUARD_HAS_MULTIPLE_LEADERS", `${target?.name || "A unit"} has ${count} Leaders attached.`, [targetId, ...targetAttachments.map(item => item.leaderInstanceId)], { count }));
   }
@@ -935,7 +935,15 @@ function getRosterPresentation(armyDefinition, armyState, rosterEntries, options
     });
 }
 
+function allowsAdditionalLeaderInRoster(leader, roster = []) {
+  const definition = leader?.unitPackage?.definition || leader;
+  if (definition?.rosterRules?.allowsAdditionalLeader || definition?.roles?.support) return true;
+  const required = definition?.rosterRules?.supportWhenUnitNames || [];
+  return roster.some(item => required.includes(item.name || item.unitPackage?.name || item.unitPackage?.definition?.name));
+}
+
 const armyApi = {
+  allowsAdditionalLeaderInRoster,
   calculateArmyOptionPoints,
   canAddUnitForSelectedDetachment,
   canSelectWarlord,

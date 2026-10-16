@@ -29,6 +29,14 @@ const { readSpaceMarineUnits, applySpaceMarineUnits } = require("./space-marine-
 const { readSpaceMarinesCodex } = require("./space-marines-codex");
 const { readSpaceMarineChapters, applySpaceMarineChapters } = require("./space-marine-chapters");
 
+const { correctCrisisModelProfiles } = require("./tau-model-profiles");
+
+const { bindModelEquipmentEffects } = require('./model-equipment-scope');
+const { readMarineChaptersWebsite, applyMarineChaptersWebsite } = require('./marine-chapters-website');
+const { readBloodAngelsWebsite, applyBloodAngelsWebsite } = require('./blood-angels-website');
+
+const { correctMarineInfantryToughness } = require("./marine-infantry-toughness");
+
 const ROOT = path.resolve(__dirname, "..", "..");
 
 const RULESET_SOURCES = {
@@ -61,6 +69,8 @@ const RULESET_SOURCES = {
       mfmAttachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-attachments.json"),
       mfmDetachments: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-detachments.json"),
       mfmPoints: path.join(ROOT, "data", "manual-rules", "wh40k-11e-mfm-points.json"),
+      marineChaptersWebsite: path.join(ROOT, 'data', 'manual-rules', 'wh40k-11e-marine-chapters-website.json'),
+      bloodAngelsWebsite: path.join(ROOT, 'data', 'manual-rules', 'wh40k-11e-blood-angels-website.json'),
       spaceMarineUnits: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-units.json.gz"),
       spaceMarinesCodex: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marines-codex.json"),
       spaceMarineChapters: path.join(ROOT, "data", "manual-rules", "wh40k-11e-space-marine-chapters.json"),
@@ -152,7 +162,13 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const chapters = readSpaceMarineChapters(source.auxiliarySources?.spaceMarineChapters);
   const spaceMarinesResult = applySpaceMarineChapters(mfmPointResult.units, mfmPointResult.armies, spaceMarinesCodex, chapters);
   const custodesResult = applyCustodesCodex(spaceMarinesResult.units, spaceMarinesResult.armies, custodesCodex, source.id);
-  const normalized = reconcileSelectableUnits(custodesResult.units, custodesResult.armies);
+  const bloodAngelsResult = source.auxiliarySources?.bloodAngelsWebsite
+    ? applyBloodAngelsWebsite(custodesResult.units.map(correctMarineInfantryToughness), custodesResult.armies, readBloodAngelsWebsite(source.auxiliarySources.bloodAngelsWebsite))
+    : { units: custodesResult.units.map(correctMarineInfantryToughness), armies: custodesResult.armies, summary: null };
+  const marineWebsiteResult = source.auxiliarySources?.marineChaptersWebsite
+    ? applyMarineChaptersWebsite(bloodAngelsResult.units, bloodAngelsResult.armies, readMarineChaptersWebsite(source.auxiliarySources.marineChaptersWebsite), source.id)
+    : bloodAngelsResult;
+  const normalized = reconcileSelectableUnits(marineWebsiteResult.units.map(bindModelEquipmentEffects), marineWebsiteResult.armies);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -177,6 +193,8 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
     },
     spaceMarinesCodexSource: spaceMarinesResult.summary,
     custodesCodexSource: custodesResult.summary,
+    bloodAngelsWebsiteSource: bloodAngelsResult.summary,
+    marineChaptersWebsiteSource: marineWebsiteResult.summary,
     spaceMarineUnitSource: marineUnitResult.summary,
     orksCodexSource: {
       source: orksCodex.source,
@@ -385,7 +403,8 @@ function sameRuleName(left, right) {
 }
 
 function applyManualLoadoutCorrections(definitions) {
-  return definitions.map(definition => {
+  return definitions.map(original => {
+    const definition = correctCrisisModelProfiles(original);
     if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction.startsWith("Imperium - Adeptus Astartes") && definition.name === "Chaplain with Jump Pack") {
       return fixChaplainJumpPackRulesUpdate(definition);
     }

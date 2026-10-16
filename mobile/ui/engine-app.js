@@ -3871,7 +3871,7 @@ function renderUnitAssignments(rosterEntry) {
           <input class="warlordToggle" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${assignment.isWarlord ? "checked" : ""}>
         </label>` : ""}
         ${definition.roles?.leader ? `
-          <label class="assignmentSelect"><span><b>${definition.roles?.support ? "Supports" : "Leads"}</b><small>Bodyguard unit</small></span>
+          <label class="assignmentSelect"><span><b>${armyEngine.allowsAdditionalLeaderInRoster(definition, roster) ? "Supports" : "Leads"}</b><small>Bodyguard unit</small></span>
             <select class="leaderTarget" data-leader-id="${escapeHtml(rosterEntry.instanceId)}">
               <option value="">Not attached</option>
               ${renderRosterUnitOptions(assignment.leaderTargets
@@ -3934,7 +3934,7 @@ function leaderAssignmentLabel(unit, assignment) {
       const leader = roster.find(entry => entry.instanceId === item.leaderInstanceId);
       const roles = leader?.unitPackage?.definition?.roles || {};
       const rules = leader?.unitPackage?.definition?.rosterRules || {};
-      return Boolean(roles.support || rules.allowsAdditionalLeader);
+      return armyEngine.allowsAdditionalLeaderInRoster(leader, roster);
     });
   return allowsMultiple ? `${count} Leaders assigned` : `${count} Leaders assigned - warning`;
 }

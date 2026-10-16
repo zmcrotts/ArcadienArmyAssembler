@@ -76,6 +76,12 @@ function compactDefinition(definition) {
     faction: definition.faction,
     source: definition.source,
     sourceDisposition: definition.sourceDisposition,
+    ...((definition.bloodAngelsWebsiteSource || definition.marineChaptersWebsiteSource) ? {
+      bloodAngelsWebsiteSource: definition.bloodAngelsWebsiteSource,
+      marineChaptersWebsiteSource: definition.marineChaptersWebsiteSource,
+      previousSelectionKeys: definition.previousSelectionKeys || [],
+      previousNames: definition.previousNames || []
+    } : {}),
     categories: definition.categories,
     categoryIds: definition.categoryIds || [],
     keywords: definition.keywords || definition.categories || [],

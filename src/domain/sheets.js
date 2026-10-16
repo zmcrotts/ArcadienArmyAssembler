@@ -56,15 +56,11 @@ function weaponsFor(record, typeName) {
 function effectiveWeaponsFor(record, typeName, effects = [], context = {}) {
   const recordContext = {
     ...context,
-    unitName: record?.name || "",
+    instanceId: record?.instanceId || context.instanceId,
+    unitName: record?.name || '',
     keywords: [...asArray(context.keywords), ...asArray(record?.keywords)]
   };
-  const enhancementWeapons = effects.filter(effect => effect.bearerInstanceId === record?.instanceId)
-    .flatMap(effect => asArray(effect.profiles))
-    .filter(profile => ["Ranged Weapons", "Melee Weapons"].includes(profile.typeName))
-    .map(profile => ({ ...profile, count: 1 }));
-  const base = configuredFor(record);
-  const configured = applyWeaponEffectsToConfigured({ ...base, weapons: [...asArray(base.weapons), ...enhancementWeapons] }, effects, recordContext);
+  const configured = applyWeaponEffectsToConfigured(configuredFor(record), effects, recordContext);
   return asArray(configured.weapons)
     .filter(item => !typeName || item.typeName === typeName)
     .map(normalizeWeapon);
@@ -125,7 +121,16 @@ function applyWeaponEffectsToConfigured(configured = {}, effects = [], context =
   const weaponEffects = extractWeaponEffects(effects);
   if (!asArray(effects).length) return clone(configured);
   const next = clone(configured) || {};
-  next.weapons = asArray(next.weapons).map(weapon => applyWeaponEffectsToWeapon(weapon, weaponEffects, context));
+  const weapons = asArray(next.weapons);
+  for (const effect of asArray(effects)) {
+    if (!context.instanceId || effect.bearerInstanceId !== context.instanceId) continue;
+    for (const profile of asArray(effect.profiles)) {
+      if (!['Ranged Weapons', 'Melee Weapons'].includes(profile.typeName)) continue;
+      const id = profile.id || (effect.id || effect.name) + '-weapon-' + profile.name;
+      if (!weapons.some(weapon => weapon.id === id)) weapons.push({...clone(profile), id, count:1});
+    }
+  }
+  next.weapons = weapons.map(weapon => applyWeaponEffectsToWeapon(weapon, weaponEffects, context));
   return next;
 }
 

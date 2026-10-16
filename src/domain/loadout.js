@@ -796,6 +796,10 @@ function normalizeRosterEntry(unitDefinition, rosterEntry) {
   const next = JSON.parse(JSON.stringify(rosterEntry || {}));
   next.selections = next.selections || {};
   const index = buildTreeIndex(unitDefinition);
+  // Newly introduced optional containers must retain selected saved equipment.
+  for (const node of index.all.filter(node => node.activateWhenDescendantSelected)) {
+    if (index.all.some(child => child.id !== node.id && nodeContains(node, child.id) && Number(next.selections[child.id] || 0) > 0)) next.selections[node.id] = 1;
+  }
   // Migrate retired option IDs before pruning unknown saved selections.
   for (const node of index.all) {
     for (const oldId of node.previousSelectionIds || []) {
@@ -1059,6 +1063,7 @@ function setSelection(unitDefinition, entry, nodeId, count, enforceOptionState =
   replaceNestedCompositionModel(node, newCount - oldCount, next, unitDefinition, index);
   rebalanceAncestorGroups(node, next, unitDefinition, index);
   synchronizeSquadWeaponChoice(node, next, unitDefinition, index);
+  if (node.activateWhenDescendantSelected) return repairDefaultLoadout(unitDefinition, next);
   return next;
 }
 
@@ -1279,6 +1284,24 @@ function setSwordBrethrenCountPreservingWeapons(unitDefinition, entry, node, cou
   return next;
 }
 
+function setWebsiteCrusaderSize(unitDefinition, entry, target, index) {
+  const next = JSON.parse(JSON.stringify(entry));
+  for (const [name, desired] of [['Initiates', target - 1 - Math.floor(target * 0.4)], ['Neophytes', Math.floor(target * 0.4)]]) {
+    const group = index.all.find(node => node.kind === 'group' && node.name === name);
+    if (!group) throw new Error('Missing Crusader composition group: ' + name);
+    const models = index.all.filter(node => node.kind === 'model' && nodeContains(group, node.id));
+    const preferred = models.find(node => nodeReferencesId(node, group.defaultSelectionId)) || models[0];
+    let current = models.reduce((total, node) => total + Number(next.selections[node.id] || 0), 0);
+    if (current < desired) next.selections[preferred.id] = Number(next.selections[preferred.id] || 0) + desired - current;
+    else for (const model of [preferred, ...models.filter(node => node !== preferred)]) {
+      const removed = Math.min(current - desired, Number(next.selections[model.id] || 0));
+      next.selections[model.id] = Number(next.selections[model.id] || 0) - removed;
+      current -= removed;
+    }
+  }
+  return repairDefaultLoadout(unitDefinition, next);
+}
+
 function setUnitSize(unitDefinition, entry, requestedSize) {
   const state = getUnitSizeState(unitDefinition, entry);
   if (!state.editable) return JSON.parse(JSON.stringify(entry));
@@ -1289,6 +1312,7 @@ function setUnitSize(unitDefinition, entry, requestedSize) {
   if (!Number.isFinite(target)) throw new Error("Unit size must be a number.");
 
   const index = buildTreeIndex(unitDefinition);
+  if (unitDefinition.marineChaptersWebsiteSource && unitDefinition.name === 'Crusader Squad') return setWebsiteCrusaderSize(unitDefinition, entry, target, index);
   const bundleSized = trySetBundleUnitSize(unitDefinition, entry, target, index);
   if (bundleSized) return bundleSized;
 
