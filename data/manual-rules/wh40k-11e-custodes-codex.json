@@ -15253,6 +15253,615 @@
         ]
       },
       "rulesetId": "wh40k-11e-vflam"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "6f9f-e6aa-ba13-aab1",
+      "selectionKey": "1f19-6509-d906-ca10:a6f7-e352-b6b3-dfe8",
+      "name": "Sagittarum Custodians Sodality [Legends]",
+      "faction": "Imperium - Adeptus Custodes",
+      "rulesetId": "wh40k-11e-vflam",
+      "rosterSelectable": true,
+      "sourceDisposition": "legends-roster-unit",
+      "source": {
+        "catalogueId": "1f19-6509-d906-ca10",
+        "selectionCatalogueId": "1f19-6509-d906-ca10",
+        "sourceFile": "wh40k-11e-custodes-codex.json",
+        "linkId": "a6f7-e352-b6b3-dfe8",
+        "targetId": "6f9f-e6aa-ba13-aab1",
+        "name": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+      },
+      "categories": [
+        "IMPERIUM",
+        "INFANTRY",
+        "TRUSTED SENTINEL",
+        "Faction: ADEPTUS CUSTODES",
+        "Legends"
+      ],
+      "categoryIds": [],
+      "keywords": [
+        "IMPERIUM",
+        "INFANTRY",
+        "TRUSTED SENTINEL",
+        "Faction: ADEPTUS CUSTODES",
+        "Legends"
+      ],
+      "conditionalKeywords": [],
+      "roles": {
+        "battleline": false,
+        "dedicatedTransport": false,
+        "epicHero": false,
+        "character": false,
+        "leader": false,
+        "support": false
+      },
+      "rosterRules": {
+        "canBeWarlord": false,
+        "maxCopies": 3,
+        "leaderTargetNames": [],
+        "leaderTargetSelectionKeys": [],
+        "leaderTargetPredicates": [],
+        "allowsAdditionalLeader": false,
+        "allowsMultipleLeadersAsBodyguard": false,
+        "mfmAttachmentRole": null,
+        "mfmAttachmentSource": null
+      },
+      "composition": [
+        {
+          "id": "6f9f-e6aa-ba13-aab1-model",
+          "name": "Sagittarum Custodian",
+          "min": 3,
+          "max": 3,
+          "defaultCount": 3,
+          "points": 0,
+          "source": "custodes-legends"
+        }
+      ],
+      "compositionConstraints": [],
+      "selectionTree": {
+        "id": "a6f7-e352-b6b3-dfe8",
+        "sourceId": "a6f7-e352-b6b3-dfe8",
+        "definitionId": "a6f7-e352-b6b3-dfe8",
+        "targetId": null,
+        "name": "Sagittarum Custodians Sodality [Legends]",
+        "kind": "unit",
+        "points": 0,
+        "collective": false,
+        "hidden": false,
+        "forceVisible": true,
+        "defaultSelectionId": null,
+        "constraints": [],
+        "modifiers": [],
+        "profiles": [
+          {
+            "id": "6f9f-e6aa-ba13-aab1-ability-disintegration-beams-once-per-battle-per-unit-",
+            "name": "Disintegration Beams (Once per battle, per unit)",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "In your Shooting phase, you can use this ability. If you do, this unit's ranged attacks have [DEVASTATING WOUNDS]."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "6f9f-e6aa-ba13-aab1-ability-saturation-volleys",
+            "name": "Saturation Volleys",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "In your Shooting phase, after this unit has shot, you can select one enemy NON-MONSTER/VEHICLE unit hit by those attacks. That unit is suppressed until the start of your next turn:\nWhile a unit is suppressed, that unit's attacks have -1 to hit rolls."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "6f9f-e6aa-ba13-aab1-ability-deep-strike",
+            "name": "Deep Strike",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Deep Strike."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "6f9f-e6aa-ba13-aab1-ability-martial-ka-tah",
+            "name": "Martial Ka'tah",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Units with this ability become readied at the start of their Command phase. A readied unit can use one of the following Ka'tah abilities at its stated timing. After using the Ka'tah ability, the unit is no longer readied.\n\nDACATARAI\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Its melee attacks against enemy units excluding MONSTER/VEHICLE units can re-roll hit rolls of 1.\n\nKAPTARIS\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Melee attacks targeting your unit have -1 to hit rolls.\n\nRENDAX\nWHEN: Fight phase, when a friendly readied unit is selected to fight. TARGET: One friendly readied unit. EFFECT: Its melee attacks have [LETHAL HITS: MONSTER/VEHICLE].\n\nCONSERVAI\nWHEN: Your Command phase. TARGET: One friendly readied unit. EFFECT: Until the end of the turn, being engaged/battle-shocked does not prevent starting an action, and starting an action does not prevent being eligible to shoot.\n\nCALISTUS\nWHEN: Your Movement phase, when a friendly readied unit is selected to move. TARGET: That readied unit. EFFECT: When making a normal/advance/fall-back move, it can move through all types of model.\n\nSALVUS\nWHEN: Your Shooting phase, when a friendly readied unit is selected to shoot. TARGET: That readied unit. EFFECT: It can ignore modifiers to its BS, hit rolls and wound rolls."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "6f9f-e6aa-ba13-aab1-ability-aegis-of-the-emperor",
+            "name": "Aegis of the Emperor",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Friendly ADEPTUS CUSTODES units with this ability have Feel No Pain 5+ against mortal wounds."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          }
+        ],
+        "rules": [],
+        "children": [
+          {
+            "id": "6f9f-e6aa-ba13-aab1-models",
+            "sourceId": "6f9f-e6aa-ba13-aab1-models",
+            "definitionId": "6f9f-e6aa-ba13-aab1-models",
+            "targetId": null,
+            "name": "Sagittarum Custodians Sodality models",
+            "kind": "group",
+            "points": 0,
+            "collective": false,
+            "hidden": false,
+            "forceVisible": false,
+            "defaultSelectionId": "6f9f-e6aa-ba13-aab1-model",
+            "constraints": [
+              {
+                "id": "6f9f-e6aa-ba13-aab1-models-min",
+                "type": "min",
+                "field": "selections",
+                "scope": "unit",
+                "value": 3,
+                "childId": null,
+                "includeChildSelections": false,
+                "includeChildForces": false
+              },
+              {
+                "id": "6f9f-e6aa-ba13-aab1-models-max",
+                "type": "max",
+                "field": "selections",
+                "scope": "unit",
+                "value": 3,
+                "childId": null,
+                "includeChildSelections": false,
+                "includeChildForces": false
+              }
+            ],
+            "modifiers": [],
+            "profiles": [],
+            "rules": [],
+            "children": [
+              {
+                "id": "6f9f-e6aa-ba13-aab1-model",
+                "sourceId": "6f9f-e6aa-ba13-aab1-model",
+                "definitionId": "6f9f-e6aa-ba13-aab1-model",
+                "targetId": null,
+                "name": "Sagittarum Custodian",
+                "kind": "model",
+                "points": 0,
+                "collective": false,
+                "hidden": false,
+                "forceVisible": false,
+                "defaultSelectionId": null,
+                "constraints": [
+                  {
+                    "id": "6f9f-e6aa-ba13-aab1-model-min",
+                    "type": "min",
+                    "field": "selections",
+                    "scope": "unit",
+                    "value": 0,
+                    "childId": null,
+                    "includeChildSelections": false,
+                    "includeChildForces": false
+                  },
+                  {
+                    "id": "6f9f-e6aa-ba13-aab1-model-max",
+                    "type": "max",
+                    "field": "selections",
+                    "scope": "unit",
+                    "value": 3,
+                    "childId": null,
+                    "includeChildSelections": false,
+                    "includeChildForces": false
+                  }
+                ],
+                "modifiers": [],
+                "profiles": [
+                  {
+                    "id": "6f9f-e6aa-ba13-aab1-statline",
+                    "name": "Sagittarum Custodians Sodality",
+                    "typeName": "Unit",
+                    "characteristics": {
+                      "M": "8\"",
+                      "T": "7",
+                      "SV": "2+",
+                      "W": "5",
+                      "LD": "5+",
+                      "OC": "3",
+                      "InSv": "4+"
+                    },
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+                  },
+                  {
+                    "name": "Adrastus Bolt Caliver",
+                    "typeName": "Ranged Weapons",
+                    "characteristics": {
+                      "Range": "36\"",
+                      "A": "3",
+                      "BS": "2+",
+                      "S": "7",
+                      "AP": "-2",
+                      "D": "2",
+                      "Keywords": "SUSTAINED HITS 1"
+                    },
+                    "id": "6f9f-e6aa-ba13-aab1-weapon-0",
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+                    "countMultiplier": 1
+                  },
+                  {
+                    "name": "Misericordia",
+                    "typeName": "Melee Weapons",
+                    "characteristics": {
+                      "Range": "Melee",
+                      "A": "4",
+                      "WS": "2+",
+                      "S": "6",
+                      "AP": "-2",
+                      "D": "1",
+                      "Keywords": "-"
+                    },
+                    "id": "6f9f-e6aa-ba13-aab1-weapon-1",
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+                    "countMultiplier": 1
+                  }
+                ],
+                "rules": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "pricing": {
+        "base": 185,
+        "baseSource": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+        "modifiers": [],
+        "mfmRows": [
+          {
+            "source": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+            "context": null,
+            "costBand": "YOUR UNIT COSTS",
+            "label": "3 models",
+            "points": 185,
+            "copies": {
+              "min": 0,
+              "max": null
+            },
+            "modelCount": 3,
+            "composition": null
+          }
+        ]
+      },
+      "previousNames": [
+        "Sagittarum Custodians Sodality",
+        "Sagittarum Custodians"
+      ],
+      "custodesLegendsSource": {
+        "date": "2026-10-15",
+        "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+        "mfmVersion": "v1.6"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "8103-2e01-5d6a-b761",
+      "selectionKey": "1f19-6509-d906-ca10:1fd5-8cf0-bef3-3970",
+      "name": "Valerian [Legends]",
+      "faction": "Imperium - Adeptus Custodes",
+      "rulesetId": "wh40k-11e-vflam",
+      "rosterSelectable": true,
+      "sourceDisposition": "legends-roster-unit",
+      "source": {
+        "catalogueId": "1f19-6509-d906-ca10",
+        "selectionCatalogueId": "1f19-6509-d906-ca10",
+        "sourceFile": "wh40k-11e-custodes-codex.json",
+        "linkId": "1fd5-8cf0-bef3-3970",
+        "targetId": "8103-2e01-5d6a-b761",
+        "name": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+      },
+      "categories": [
+        "CHARACTER",
+        "EPIC HERO",
+        "IMPERIUM",
+        "INFANTRY",
+        "SHIELD-CAPTAIN",
+        "Faction: ADEPTUS CUSTODES",
+        "Legends"
+      ],
+      "categoryIds": [],
+      "keywords": [
+        "CHARACTER",
+        "EPIC HERO",
+        "IMPERIUM",
+        "INFANTRY",
+        "SHIELD-CAPTAIN",
+        "Faction: ADEPTUS CUSTODES",
+        "Legends"
+      ],
+      "conditionalKeywords": [],
+      "roles": {
+        "battleline": false,
+        "dedicatedTransport": false,
+        "epicHero": true,
+        "character": true,
+        "leader": true,
+        "support": false
+      },
+      "rosterRules": {
+        "canBeWarlord": true,
+        "maxCopies": 1,
+        "leaderTargetNames": [
+          "CUSTODIAN GUARD SODALITY",
+          "CUSTODIAN GUARD SODALITY WITH ADRASITE SPEARS",
+          "CUSTODIAN GUARD SODALITY WITH PYRITHITE SPEARS",
+          "CUSTODIAN WARDENS",
+          "SAGITTARUM CUSTODIANS SODALITY",
+          "SENTINEL GUARD SODALITY"
+        ],
+        "leaderTargetSelectionKeys": [],
+        "leaderTargetPredicates": [],
+        "allowsAdditionalLeader": false,
+        "allowsMultipleLeadersAsBodyguard": false,
+        "mfmAttachmentRole": "LEADER",
+        "mfmAttachmentSource": "https://mfm.warhammer-community.com/en/adeptus-custodes"
+      },
+      "composition": [
+        {
+          "id": "8103-2e01-5d6a-b761-model",
+          "name": "Valerian",
+          "min": 1,
+          "max": 1,
+          "defaultCount": 1,
+          "points": 0,
+          "source": "custodes-legends"
+        }
+      ],
+      "compositionConstraints": [],
+      "selectionTree": {
+        "id": "1fd5-8cf0-bef3-3970",
+        "sourceId": "1fd5-8cf0-bef3-3970",
+        "definitionId": "1fd5-8cf0-bef3-3970",
+        "targetId": null,
+        "name": "Valerian [Legends]",
+        "kind": "unit",
+        "points": 0,
+        "collective": false,
+        "hidden": false,
+        "forceVisible": true,
+        "defaultSelectionId": null,
+        "constraints": [],
+        "modifiers": [],
+        "profiles": [
+          {
+            "id": "8103-2e01-5d6a-b761-ability-golden-laurels",
+            "name": "Golden Laurels",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Attacks that target this unit have -1 AP."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-hero-of-lion-s-gate-once-per-battle-per-unit-",
+            "name": "Hero of Lion's Gate (Once per battle, per unit)",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "After making a hit roll, wound roll or save roll for this model, you can change the result to an unmodified 6."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-deep-strike",
+            "name": "Deep Strike",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Deep Strike."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-feel-no-pain-6-",
+            "name": "Feel No Pain 6+",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Feel No Pain 6+."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-aegis-of-the-emperor",
+            "name": "Aegis of the Emperor",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Friendly ADEPTUS CUSTODES units with this ability have Feel No Pain 5+ against mortal wounds."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-aquila-commander",
+            "name": "Aquila Commander",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "At the start of the battle round, if a model with this ability is your WARLORD, gain 1CP."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-martial-ka-tah",
+            "name": "Martial Ka'tah",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "Units with this ability become readied at the start of their Command phase. A readied unit can use one of the following Ka'tah abilities at its stated timing. After using the Ka'tah ability, the unit is no longer readied.\n\nDACATARAI\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Its melee attacks against enemy units excluding MONSTER/VEHICLE units can re-roll hit rolls of 1.\n\nKAPTARIS\nWHEN: Start of the Fight phase. TARGET: One friendly readied unit. EFFECT: Melee attacks targeting your unit have -1 to hit rolls.\n\nRENDAX\nWHEN: Fight phase, when a friendly readied unit is selected to fight. TARGET: One friendly readied unit. EFFECT: Its melee attacks have [LETHAL HITS: MONSTER/VEHICLE].\n\nCONSERVAI\nWHEN: Your Command phase. TARGET: One friendly readied unit. EFFECT: Until the end of the turn, being engaged/battle-shocked does not prevent starting an action, and starting an action does not prevent being eligible to shoot.\n\nCALISTUS\nWHEN: Your Movement phase, when a friendly readied unit is selected to move. TARGET: That readied unit. EFFECT: When making a normal/advance/fall-back move, it can move through all types of model.\n\nSALVUS\nWHEN: Your Shooting phase, when a friendly readied unit is selected to shoot. TARGET: That readied unit. EFFECT: It can ignore modifiers to its BS, hit rolls and wound rolls."
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          },
+          {
+            "id": "8103-2e01-5d6a-b761-ability-leader",
+            "name": "Leader",
+            "typeName": "Abilities",
+            "characteristics": {
+              "Description": "This unit can be attached as Leader to the following units:\n■ CUSTODIAN GUARD SODALITY\n■ CUSTODIAN GUARD SODALITY WITH ADRASITE SPEARS\n■ CUSTODIAN GUARD SODALITY WITH PYRITHITE SPEARS\n■ CUSTODIAN WARDENS\n■ SAGITTARUM CUSTODIANS SODALITY\n■ SENTINEL GUARD SODALITY"
+            },
+            "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+          }
+        ],
+        "rules": [],
+        "children": [
+          {
+            "id": "8103-2e01-5d6a-b761-models",
+            "sourceId": "8103-2e01-5d6a-b761-models",
+            "definitionId": "8103-2e01-5d6a-b761-models",
+            "targetId": null,
+            "name": "Valerian models",
+            "kind": "group",
+            "points": 0,
+            "collective": false,
+            "hidden": false,
+            "forceVisible": false,
+            "defaultSelectionId": "8103-2e01-5d6a-b761-model",
+            "constraints": [
+              {
+                "id": "8103-2e01-5d6a-b761-models-min",
+                "type": "min",
+                "field": "selections",
+                "scope": "unit",
+                "value": 1,
+                "childId": null,
+                "includeChildSelections": false,
+                "includeChildForces": false
+              },
+              {
+                "id": "8103-2e01-5d6a-b761-models-max",
+                "type": "max",
+                "field": "selections",
+                "scope": "unit",
+                "value": 1,
+                "childId": null,
+                "includeChildSelections": false,
+                "includeChildForces": false
+              }
+            ],
+            "modifiers": [],
+            "profiles": [],
+            "rules": [],
+            "children": [
+              {
+                "id": "8103-2e01-5d6a-b761-model",
+                "sourceId": "8103-2e01-5d6a-b761-model",
+                "definitionId": "8103-2e01-5d6a-b761-model",
+                "targetId": null,
+                "name": "Valerian",
+                "kind": "model",
+                "points": 0,
+                "collective": false,
+                "hidden": false,
+                "forceVisible": false,
+                "defaultSelectionId": null,
+                "constraints": [
+                  {
+                    "id": "8103-2e01-5d6a-b761-model-min",
+                    "type": "min",
+                    "field": "selections",
+                    "scope": "unit",
+                    "value": 0,
+                    "childId": null,
+                    "includeChildSelections": false,
+                    "includeChildForces": false
+                  },
+                  {
+                    "id": "8103-2e01-5d6a-b761-model-max",
+                    "type": "max",
+                    "field": "selections",
+                    "scope": "unit",
+                    "value": 1,
+                    "childId": null,
+                    "includeChildSelections": false,
+                    "includeChildForces": false
+                  }
+                ],
+                "modifiers": [],
+                "profiles": [
+                  {
+                    "id": "8103-2e01-5d6a-b761-statline",
+                    "name": "Valerian",
+                    "typeName": "Unit",
+                    "characteristics": {
+                      "M": "8\"",
+                      "T": "7",
+                      "SV": "2+",
+                      "W": "8",
+                      "LD": "5+",
+                      "OC": "2",
+                      "InSv": "4+"
+                    },
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15"
+                  },
+                  {
+                    "name": "Gnosis",
+                    "typeName": "Ranged Weapons",
+                    "characteristics": {
+                      "Range": "24\"",
+                      "A": "3",
+                      "BS": "2+",
+                      "S": "6",
+                      "AP": "-1",
+                      "D": "2",
+                      "Keywords": "ASSAULT, RAPID FIRE 2"
+                    },
+                    "id": "8103-2e01-5d6a-b761-weapon-0",
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+                    "countMultiplier": 1
+                  },
+                  {
+                    "name": "Gnosis",
+                    "typeName": "Melee Weapons",
+                    "characteristics": {
+                      "Range": "Melee",
+                      "A": "7",
+                      "WS": "2+",
+                      "S": "8",
+                      "AP": "-3",
+                      "D": "3",
+                      "Keywords": "-"
+                    },
+                    "id": "8103-2e01-5d6a-b761-weapon-1",
+                    "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+                    "countMultiplier": 1
+                  }
+                ],
+                "rules": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "pricing": {
+        "base": 130,
+        "baseSource": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+        "modifiers": [],
+        "mfmRows": [
+          {
+            "source": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+            "context": null,
+            "costBand": "YOUR UNIT COSTS",
+            "label": "1 model",
+            "points": 130,
+            "copies": {
+              "min": 0,
+              "max": null
+            },
+            "modelCount": 1,
+            "composition": null
+          }
+        ]
+      },
+      "previousNames": [
+        "Valerian"
+      ],
+      "custodesLegendsSource": {
+        "date": "2026-10-15",
+        "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+        "mfmVersion": "v1.6"
+      }
     }
   ]
 }

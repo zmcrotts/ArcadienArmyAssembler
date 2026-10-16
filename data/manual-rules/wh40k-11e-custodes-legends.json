@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "status": "confirmed",
+  "source": "User-supplied Warhammer 40,000 app screenshots, 2026-10-15",
+  "pointsSource": "https://mfm.warhammer-community.com/en/adeptus-custodes",
+  "mfmVersion": "v1.6",
+  "mfmVerifiedDate": "2026-10-15",
+  "mfmLegendsEnabled": true,
+  "notes": [
+    "Confirmed from supplied screenshots and official MFM with Show Legends enabled.",
+    "No unstated duration has been added to Disintegration Beams."
+  ],
+  "units": [
+    {
+      "name": "Sagittarum Custodians Sodality",
+      "legends": true,
+      "models": 3,
+      "points": 185,
+      "baseSizeMm": 40,
+      "characteristics": {
+        "M": "8\"",
+        "T": "7",
+        "SV": "2+",
+        "W": "5",
+        "LD": "5+",
+        "OC": "3",
+        "InSv": "4+"
+      },
+      "weapons": [
+        {
+          "name": "Adrastus Bolt Caliver",
+          "typeName": "Ranged Weapons",
+          "characteristics": {
+            "Range": "36\"",
+            "A": "3",
+            "BS": "2+",
+            "S": "7",
+            "AP": "-2",
+            "D": "2",
+            "Keywords": "SUSTAINED HITS 1"
+          }
+        },
+        {
+          "name": "Misericordia",
+          "typeName": "Melee Weapons",
+          "characteristics": {
+            "Range": "Melee",
+            "A": "4",
+            "WS": "2+",
+            "S": "6",
+            "AP": "-2",
+            "D": "1",
+            "Keywords": "-"
+          }
+        }
+      ],
+      "coreAbilities": [
+        "Deep Strike"
+      ],
+      "armyAbilities": [
+        "Martial Ka'tah",
+        "Aegis of the Emperor"
+      ],
+      "abilities": [
+        {
+          "name": "Disintegration Beams (Once per battle, per unit)",
+          "description": "In your Shooting phase, you can use this ability. If you do, this unit's ranged attacks have [DEVASTATING WOUNDS]."
+        },
+        {
+          "name": "Saturation Volleys",
+          "description": "In your Shooting phase, after this unit has shot, you can select one enemy NON-MONSTER/VEHICLE unit hit by those attacks. That unit is suppressed until the start of your next turn:\nWhile a unit is suppressed, that unit's attacks have -1 to hit rolls."
+        }
+      ],
+      "keywords": [
+        "IMPERIUM",
+        "INFANTRY",
+        "TRUSTED SENTINEL"
+      ]
+    },
+    {
+      "name": "Valerian",
+      "legends": true,
+      "models": 1,
+      "points": 130,
+      "characteristics": {
+        "M": "8\"",
+        "T": "7",
+        "SV": "2+",
+        "W": "8",
+        "LD": "5+",
+        "OC": "2",
+        "InSv": "4+"
+      },
+      "weapons": [
+        {
+          "name": "Gnosis",
+          "typeName": "Ranged Weapons",
+          "characteristics": {
+            "Range": "24\"",
+            "A": "3",
+            "BS": "2+",
+            "S": "6",
+            "AP": "-1",
+            "D": "2",
+            "Keywords": "ASSAULT, RAPID FIRE 2"
+          }
+        },
+        {
+          "name": "Gnosis",
+          "typeName": "Melee Weapons",
+          "characteristics": {
+            "Range": "Melee",
+            "A": "7",
+            "WS": "2+",
+            "S": "8",
+            "AP": "-3",
+            "D": "3",
+            "Keywords": "-"
+          }
+        }
+      ],
+      "coreAbilities": [
+        "Deep Strike",
+        "Feel No Pain 6+",
+        "Leader"
+      ],
+      "armyAbilities": [
+        "Aegis of the Emperor",
+        "Aquila Commander",
+        "Martial Ka'tah"
+      ],
+      "abilities": [
+        {
+          "name": "Golden Laurels",
+          "description": "Attacks that target this unit have -1 AP."
+        },
+        {
+          "name": "Hero of Lion's Gate (Once per battle, per unit)",
+          "description": "After making a hit roll, wound roll or save roll for this model, you can change the result to an unmodified 6."
+        }
+      ],
+      "mfmAttachmentRole": "LEADER",
+      "leaderTargetNames": [
+        "CUSTODIAN GUARD SODALITY",
+        "CUSTODIAN GUARD SODALITY WITH ADRASITE SPEARS",
+        "CUSTODIAN GUARD SODALITY WITH PYRITHITE SPEARS",
+        "CUSTODIAN WARDENS",
+        "SAGITTARUM CUSTODIANS SODALITY",
+        "SENTINEL GUARD SODALITY"
+      ],
+      "keywords": [
+        "CHARACTER",
+        "EPIC HERO",
+        "IMPERIUM",
+        "INFANTRY",
+        "SHIELD-CAPTAIN"
+      ]
+    }
+  ]
+}

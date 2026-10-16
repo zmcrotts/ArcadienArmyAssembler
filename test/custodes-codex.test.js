@@ -14,9 +14,9 @@ const unit=name=>{const u=result.units.find(u=>u.name===name);assert.ok(u,name);
 const nodes=u=>loadout.buildTreeIndex(u).all;
 const option=(u,name)=>{const n=nodes(u).find(n=>n.name===name && n.kind==="upgrade");assert.ok(n,name);return n;};
 const record=(u,id)=>({instanceId:id,selectionKey:u.selectionKey,name:u.name,definition:u,roles:u.roles,rosterRules:u.rosterRules,entry:loadout.createDefaultRosterEntry(u,id)});
-test("Custodes fully replace the active range and retain only the confirmed Legends aircraft",()=>{
- assert.equal(result.units.filter(u=>u.faction===army.faction).length,29);
- assert.equal(result.units.filter(u=>/\[Legends\]/.test(u.name)).length,2);
+test("Custodes fully replace the active range and retain the confirmed Legends units",()=>{
+ assert.equal(result.units.filter(u=>u.faction===army.faction).length,31);
+ assert.equal(result.units.filter(u=>/\[Legends\]/.test(u.name)).length,4);
  assert.equal(result.units[0],other);
  assert.equal(army.detachments.length,13);
  assert.equal(army.enhancements.length,29);
@@ -108,4 +108,30 @@ test("Permanent Custodes stat changes update sheets without applying battle-stat
  assert.equal(sheets.extractUnitEffects(army.detachments.find(d=>d.name==="Might of the Moritoi").rules).length,0);
  const leonine=enhancement("Leonine Ferocity");
  assert.deepEqual(leonine.eligibleSelectionKeys,[unit("Shield-Captain in Allarus Terminator Armour").selectionKey]);
+});
+
+test('confirmed Legends units have fixed MFM costs, printed profiles and conditional abilities',()=>{
+ const sheets=require('../src/domain/sheets');
+ for(const [name,size,points] of [['Sagittarum Custodians Sodality [Legends]',3,185],['Valerian [Legends]',1,130]]){
+  const u=unit(name),e=loadout.createDefaultRosterEntry(u),p=loadout.getConfiguredProfiles(u,e);
+  assert.deepEqual(loadout.validateLoadout(u,e),[],name);
+  assert.equal(u.composition[0].min,size);assert.equal(u.composition[0].max,size);
+  for(const previousCopies of [0,1,2,3])assert.equal(calculateEntryPoints(u,{...e,context:{previousCopies}}).points,points);
+  assert.equal(p.units[0].characteristics.SV,'2+');assert.equal(p.units[0].characteristics.LD,'5+');assert.equal(p.units[0].characteristics.InSv,'4+');
+  assert.ok(p.abilities.some(x=>x.name==="Martial Ka'tah"));assert.ok(p.abilities.some(x=>x.name==='Aegis of the Emperor'));
+  assert.ok(p.weapons.every(w=>w.count===size));
+  assert.deepEqual(sheets.extractWeaponEffects(p.abilities),[],name+' has no permanent ability weapon buffs');
+  assert.ok(u.keywords.includes('Legends'));assert.ok(!u.roles.battleline);
+ }
+ const s=unit('Sagittarum Custodians Sodality [Legends]'),v=unit('Valerian [Legends]');
+ assert.ok(s.keywords.includes('TRUSTED SENTINEL'));assert.ok(v.keywords.includes('SHIELD-CAPTAIN'));assert.ok(v.roles.epicHero);assert.equal(v.rosterRules.maxCopies,1);
+ assert.ok(army.enhancements.every(x=>!x.eligibleSelectionKeys.includes(v.selectionKey)));
+ const sp=loadout.getConfiguredProfiles(s,loadout.createDefaultRosterEntry(s));
+ assert.deepEqual(sp.weapons.map(x=>[x.name,x.characteristics.Keywords]),[['Adrastus Bolt Caliver','SUSTAINED HITS 1'],['Misericordia','-']]);
+ assert.doesNotMatch(sp.abilities.find(x=>x.name.startsWith('Disintegration Beams')).characteristics.Description,/until|end of/i);
+ const vp=loadout.getConfiguredProfiles(v,loadout.createDefaultRosterEntry(v));
+ assert.deepEqual(vp.weapons.map(x=>[x.typeName,x.characteristics.A,x.characteristics.S,x.characteristics.Keywords]),[['Ranged Weapons','3','6','ASSAULT, RAPID FIRE 2'],['Melee Weapons','7','8','-']]);
+ for(const leader of [v,unit('Shield-Captain'),unit('Trajann Valoris')])assert.ok(armyEngine.leaderCanTarget(record(leader,'l'),record(s,'s')),leader.name);
+ for(const name of ['Custodian Guard Sodality','Custodian Wardens','Sentinel Guard Sodality'])assert.ok(armyEngine.leaderCanTarget(record(v,'v'),record(unit(name),'b')));
+ assert.equal(armyEngine.leaderCanTarget(record(v,'v'),record(unit('Allarus Custodians'),'a')),false);
 });

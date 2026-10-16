@@ -28,3 +28,15 @@ test('Master of Ka’tahs and Superhuman Focus restore readiness and enforce rou
 test('existing sessions migrate without skipping the upcoming own Command refresh',()=>{
  const {api,s,group}=harness('opponent');s.round=2;delete s.katahState;delete s.katahCommandPhases;api.normalizeSession();api.correctKatah(group);assert.equal(api.katahReady(group),false);s.turn='you';api.refreshKatah();assert.equal(api.katahReady(group),true);
 });
+
+test('new Legends units participate in READY and once-per-battle ability tracking',()=>{
+ const loadout=require('../../src/domain/loadout');
+ for(const name of ['Sagittarum Custodians Sodality [Legends]','Valerian [Legends]']){
+  const {api,s}=harness(),u=codex.units.find(x=>x.name===name);
+  const configured=loadout.getConfiguredProfiles(u,loadout.createDefaultRosterEntry(u));
+  s.roster.rosterEntries=[{instanceId:'legends',name,configured,unitSize:{current:u.composition[0].defaultCount}}];s.roster.armyState.attachments=[];
+  const group=api.groups()[0];assert.equal(api.hasKatah(group),true);api.refreshKatah();assert.equal(api.katahReady(group),true);
+  const ability=configured.abilities.find(x=>/Once per battle, per unit/.test(x.name));assert.ok(ability);
+  const tracker=api.abilityTracker(ability.name,ability.characteristics.Description);assert.equal(tracker.max,1);assert.equal(tracker.scope,'game');
+ }
+});

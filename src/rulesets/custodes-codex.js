@@ -2,11 +2,12 @@
 const fs = require("node:fs");
 const FACTION = "Imperium - Adeptus Custodes";
 const normalize = value => String(value || "").toLowerCase().replace(/^faction:\s*/, "").replace(/[^a-z0-9]+/g, " ").trim();
+const unitName = value => normalize(String(value || "").replace(/\[Legends\]/gi, ""));
 const slug = value => normalize(value).replace(/ /g, "-");
 function readCustodesCodex(file) {
   if (!file) return null;
   const data = JSON.parse(fs.readFileSync(file, "utf8"));
-  if (data.schemaVersion !== 1 || data.units?.length !== 29 || data.detachments?.length !== 13 || data.detachments.reduce((n,d)=>n+d.stratagems.length,0)!==41 || data.detachments.reduce((n,d)=>n+d.enhancements.length,0)!==29) throw new Error("Incomplete Custodes codex source");
+  if (data.schemaVersion !== 1 || data.units?.length !== 31 || data.detachments?.length !== 13 || data.detachments.reduce((n,d)=>n+d.stratagems.length,0)!==41 || data.detachments.reduce((n,d)=>n+d.enhancements.length,0)!==29) throw new Error("Incomplete Custodes codex source");
   return data;
 }
 function eligible(unit, enhancement) {
@@ -22,9 +23,9 @@ function eligible(unit, enhancement) {
 function applyCustodesCodex(units, armies, source, rulesetId) {
   if (!source) return {units, armies, summary:{applied:false}};
   const definitions = structuredClone(source.units).map(u=>({...u,rulesetId}));
-  const byName = new Map(definitions.map(u=>[normalize(u.name),u]));
+  const byName = new Map(definitions.map(u=>[unitName(u.name),u]));
   for (const unit of definitions) {
-    unit.rosterRules.leaderTargetSelectionKeys = (unit.rosterRules.leaderTargetNames || []).map(n=>byName.get(normalize(n))?.selectionKey).filter(Boolean);
+    unit.rosterRules.leaderTargetSelectionKeys = (unit.rosterRules.leaderTargetNames || []).map(n=>byName.get(unitName(n))?.selectionKey).filter(Boolean);
   }
   const armiesNext = armies.map(army=> {
     if (army.faction !== FACTION) return army;
@@ -45,6 +46,6 @@ function applyCustodesCodex(units, armies, source, rulesetId) {
     }));
     return {...army,allowedSelectionKeys:definitions.map(u=>u.selectionKey),detachments,enhancements,armyRules:source.armyRules.map(r=>({...r,id:"custodes-army-"+slug(r.name),source:source.source})),armyRuleSource:source.source,custodesCodexSource:{date:source.lastUpdated,mfmVersion:source.mfmVersion,source:source.source,pointsSource:source.pointsSource}};
   });
-  return {units:[...units.filter(u=>u.faction!==FACTION),...definitions],armies:armiesNext,summary:{applied:true,units:27,legends:2,detachments:13,enhancements:29,stratagems:41,date:source.lastUpdated}};
+  return {units:[...units.filter(u=>u.faction!==FACTION),...definitions],armies:armiesNext,summary:{applied:true,units:definitions.filter(u=>!/\[Legends\]/i.test(u.name)).length,legends:definitions.filter(u=>/\[Legends\]/i.test(u.name)).length,detachments:13,enhancements:29,stratagems:41,date:source.lastUpdated}};
 }
 module.exports = {readCustodesCodex,applyCustodesCodex};
