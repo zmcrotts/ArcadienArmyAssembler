@@ -379,6 +379,8 @@ function encodeRoster(document, context) {
     writer.string(item.keyword);
   }
 
+  const splitRecords = records.flatMap((record, index) => record.entry?.split ? [{ index, ...record.entry.split, groupId: rosterEntryIndex(byInstanceId, record.entry.split.groupId, "A split squad"), transportId: rosterEntryIndex(byInstanceId, record.entry.split.transportId, "A split transport") }] : []);
+  if (splitRecords.length) { writer.varuint(0x53504c); writer.string(JSON.stringify(splitRecords)); }
   const payload = writer.output();
   const complete = new Writer();
   for (const byte of payload) complete.byte(byte);
@@ -649,6 +651,17 @@ function decodeRoster(code, context) {
   if (keywordCount > unitCount * 4) throw new Error("The share code has too many keyword assignments.");
   for (let index = 0; index < keywordCount; index += 1) {
     keywordAssignments.push({ instanceId: entryAt(reader.varuint(), "keyword"), keyword: reader.string(480) });
+  }
+  if (!reader.done()) {
+    if (reader.varuint() !== 0x53504c) throw new Error("The share code contains unsupported trailing data.");
+    const splits = JSON.parse(reader.string(24000));
+    if (!Array.isArray(splits) || splits.length > unitCount) throw new Error("Invalid split squad data.");
+    for (const split of splits) {
+      const record = rosterEntries[split.index];
+      if (!record || !["A", "B"].includes(split.half) || !Number.isInteger(split.label) || !Array.isArray(split.aModels) || split.aModels.some(i => !Number.isInteger(i) || i < 0 || i > 100)) throw new Error("Invalid split squad allocation.");
+      const { index, ...metadata } = split;
+      record.entry.split = { ...metadata, groupId: entryAt(split.groupId, "split squad"), transportId: entryAt(split.transportId, "split transport") };
+    }
   }
   if (!reader.done()) throw new Error("The share code contains unsupported trailing data.");
   const armyDefinition = context.armyDefinition;

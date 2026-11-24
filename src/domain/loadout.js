@@ -1,4 +1,71 @@
 "use strict";
+function getSplitModelPool(unitDefinition, entry) {
+  const base = { ...entry }; delete base.split;
+  const index = buildTreeIndex(unitDefinition);
+  const pool = [];
+  for (const model of index.all.filter(n => n.kind === "model" && nodeIsActive(n, base, index, unitDefinition, true))) {
+    const count = Number(base.selections[model.id] || 0);
+    const slots = Array.from({ length: count }, (_, i) => ({ id: model.id + ":" + i, name: model.name, selections: { [model.id]: 1 } }));
+    function distribute(node, targets) {
+      const children = (node.children || []).filter(n => n.kind !== "model" && nodeIsActive(n, base, index, unitDefinition, true));
+      const exclusive = node.kind === "group" && children.every(n => n.kind !== "group")
+        && children.reduce((s, n) => s + Number(base.selections[n.id] || 0), 0) === targets.length;
+      let cursor = 0;
+      for (const child of children) {
+        if (child.kind === "group") { distribute(child, targets); continue; }
+        const amount = Number(base.selections[child.id] || 0);
+        for (let i = 0; i < amount; i++) {
+          if (!targets.length) break;
+          const slot = targets[(exclusive ? cursor + i : i) % targets.length];
+          slot.selections[child.id] = (slot.selections[child.id] || 0) + 1;
+        }
+        const chosen = targets.filter(s => s.selections[child.id]);
+        if (exclusive) cursor += amount;
+        distribute(child, chosen);
+      }
+    }
+    distribute(model, slots);
+    for (const slot of slots) {
+      const projected = { ...base, selections: { ...base.selections } };
+      for (const n of index.all) if (n.kind !== "unit" && n.kind !== "group") projected.selections[n.id] = 0;
+      Object.assign(projected.selections, slot.selections);
+      const equipment = selectedEquipmentLabels(model, projected, index, unitDefinition);
+      slot.equipment = equipment;
+      pool.push(slot);
+    }
+  }
+  return pool;
+}
+
+function splitFormationEntry(unitDefinition, entry) {
+  if (!entry?.split) return entry;
+  const pool = getSplitModelPool(unitDefinition, entry);
+  const selected = new Set(entry.split.aModels || []);
+  const index = buildTreeIndex(unitDefinition);
+  const selections = { ...entry.selections };
+  for (const n of index.all) {
+    if (n.kind === "model" || closestModelAncestor(n, index)) selections[n.id] = 0;
+  }
+  pool.forEach((slot, i) => {
+    if (selected.has(i) !== (entry.split.half === "A")) return;
+    for (const [id, count] of Object.entries(slot.selections)) selections[id] = Number(selections[id] || 0) + count;
+  });
+  const next = { ...entry, selections }; delete next.split;
+  return next;
+}
+
+function splitFormationErrors(unitDefinition, entry) {
+  if (!entry?.split) return [];
+  const pool = getSplitModelPool(unitDefinition, entry);
+  const ids = entry.split.aModels || [];
+  if (new Set(ids).size !== ids.length || ids.some(i => !Number.isInteger(i) || i < 0 || i >= pool.length)
+      || Math.abs(ids.length - (pool.length - ids.length)) > 1) {
+    return [{ code: "SPLIT_SIZE_INVALID", message: "Split squad halves must contain as equal a number of models as possible." }];
+  }
+  return [];
+}
+
+
 
 function asArray(value) {
   if (!value) return [];
@@ -50,6 +117,7 @@ function buildTreeIndex(unitDefinition) {
 }
 
 function getConfiguredUnitName(unitDefinition, rosterEntry, baseName = unitDefinition?.name || "Unknown unit") {
+  if (rosterEntry?.split) return String(baseName) + " · Squad " + rosterEntry.split.label + rosterEntry.split.half;
   const name = String(baseName || unitDefinition?.name || "Unknown unit");
   if (!/^Heretic Astartes Daemon Prince(?: with wings)?$/i.test(name)) return name;
 
@@ -344,7 +412,38 @@ function constraintActualCount(node, constraint, entry, index, unitDefinition) {
   }, 0);
 }
 
+
+function validateChaosTerminatorWeapons(unitDefinition, entry, index) {
+  const perFive = Math.floor(selectionCount(entry, index, "model") / 5);
+  const rules = [
+    { id: "power-fists", name: "Power fist", names: ["power fist"], perFive: 3 },
+    { id: "chainfists", name: "Chainfist", names: ["chainfist"], perFive: 1 },
+    { id: "paired-accursed-weapons", name: "Paired accursed weapons", names: ["paired accursed weapons"], perFive: 1 },
+    { id: "heavy-weapons", name: "Heavy flamer / reaper autocannon", names: ["heavy flamer", "reaper autocannon"], perFive: 1 }
+  ];
+  return rules.flatMap(rule => {
+    const equipped = index.all.filter(node => nodeIsActive(node, entry, index, unitDefinition, true))
+      .map(node => ({
+        node,
+        count: Number(entry.selections[node.id] || 0) * (node.profiles || [])
+          .filter(profile => /Weapons$/i.test(profile.typeName || "") && rule.names.includes(String(profile.name || "").trim().toLowerCase()))
+          .reduce((sum, profile) => sum + Number(profile.countMultiplier ?? 1), 0)
+      })).filter(record => record.count > 0);
+    const actual = equipped.reduce((sum, record) => sum + record.count, 0);
+    const limit = rule.perFive * perFive;
+    if (actual <= limit) return [];
+    // Each equipped branch reports the violation so every model/weapon
+    // control sees the shared limit, including Champion and heavy-weapon options.
+    return equipped.map(({ node }) => ({
+      nodeId: node.id, name: rule.name, type: "max", actual, limit,
+      constraintId: "arcadien-chaos-terminators-" + rule.id,
+      message: rule.name + ": " + actual + " selected; this squad allows " + limit + " (" + rule.perFive + " per 5 models)."
+    }));
+  });
+}
+
 function validateKnownUnitRules(unitDefinition, entry, index) {
+  if (/^Chaos Terminators?(?: Squad)?$/i.test(unitDefinition?.name || "")) return validateChaosTerminatorWeapons(unitDefinition, entry, index);
   if (unitDefinition?.name !== "Khorne Berzerkers") return [];
 
   const modelCount = selectionCount(entry, index, "model");
@@ -408,6 +507,7 @@ function synchronizeSquadWeaponChoice(node, entry, unitDefinition, index) {
 }
 
 function validateLoadout(unitDefinition, entry) {
+  if (entry?.split) { const base = { ...entry }; delete base.split; return [...validateLoadout(unitDefinition, base), ...splitFormationErrors(unitDefinition, entry)]; }
   const index = buildTreeIndex(unitDefinition);
   const errors = [];
   const checkedScopedConstraints = new Set();
@@ -814,6 +914,19 @@ function normalizeRosterEntry(unitDefinition, rosterEntry) {
     if (["unit", "group"].includes(node.kind) || Number(next.selections[node.id] || 0) <= 0) continue;
     if (!nodeIsActive(node, next, index, unitDefinition)) clearSubtree(node, next.selections);
   }
+  // A saved legal configuration is already complete. Applying defaults again
+  // can reset optional equipment on mandatory models and specialist choices.
+  if (!validateLoadout(unitDefinition, next).length) return next;
+  // Reconcile saved specialist bearers against their fixed model pool before
+  // default repair, which would otherwise discard the specialist as overflow.
+  for (const group of index.all.filter(node => Number.isFinite(node.fixedModelPoolSize))) {
+    const ordinary = defaultChild(group);
+    if (!ordinary) continue;
+    const specialists = groupCount(group, next) - Number(next.selections[ordinary.id] || 0);
+    const count = Math.max(0, group.fixedModelPoolSize - specialists);
+    next.selections[ordinary.id] = count;
+    refreshDescendants(ordinary, count, next.selections, unitDefinition, index);
+  }
   applyDefaults(unitDefinition.selectionTree, 1, next.selections, unitDefinition, index);
   return repairDefaultLoadout(unitDefinition, next);
 }
@@ -1099,6 +1212,7 @@ function unitSizeCompositionModelRecords(unitDefinition, entry) {
 }
 
 function getUnitSizeState(unitDefinition, entry) {
+  if (entry?.split) { const projected = splitFormationEntry(unitDefinition, entry); return { ...getUnitSizeState(unitDefinition, projected), current: getConfiguredModels(unitDefinition, projected).reduce((s, m) => s + m.count, 0), editable: false }; }
   const index = buildTreeIndex(unitDefinition);
   // Optional add-on models without a local selection limit (for example an
   // Invader ATV in an Outrider Squad) are not part of the unit's size band.
@@ -1420,6 +1534,15 @@ function applyKnownConfiguredProfileCorrections(unitDefinition, entry, index, pr
 }
 
 function getConfiguredProfiles(unitDefinition, entry) {
+  if (entry?.split) {
+    const configured = getConfiguredProfiles(unitDefinition, splitFormationEntry(unitDefinition, entry));
+    if (entry.split.cherubHalf !== entry.split.half) {
+      for (const key of ["profiles", "abilities", "rules"]) configured[key] = configured[key].filter(p => !/cherub/i.test(p.name || ""));
+    }
+    const split = entry.split;
+    configured.rules.push({ id: "split-formation", name: "Split formation", description: "Squad " + split.label + split.half + " is paired with " + split.label + (split.half === "A" ? "B" : "A") + ". Purchased as one squad; points are recorded on half A." + (split.embarkedHalf === split.half ? " Starts embarked in the assigned Immolator." : " Deploys separately.") + (split.cherubHalf === split.half ? " Cherub is assigned to this half." : "") });
+    return configured;
+  }
   const index = buildTreeIndex(unitDefinition);
   const profiles = new Map();
   const rules = new Map();
@@ -1500,6 +1623,7 @@ function splitEquippedWoundsProfiles(profiles, index, entry, unitDefinition) {
 }
 
 function getConfiguredModels(unitDefinition, entry) {
+  if (entry?.split) return getConfiguredModels(unitDefinition, splitFormationEntry(unitDefinition, entry));
   const index = buildTreeIndex(unitDefinition);
   return index.all.filter(node => node.kind === "model" && nodeIsActive(node, entry, index, unitDefinition, true)).flatMap(node => {
     const count = Number(entry?.selections?.[node.id] || 0);
@@ -1606,6 +1730,9 @@ function listSelectableOptions(unitDefinition) {
 }
 
 module.exports = {
+    getSplitModelPool,
+    splitFormationEntry,
+    splitFormationErrors,
   buildTreeIndex,
   createDefaultRosterEntry,
   getConfiguredUnitName,

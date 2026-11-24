@@ -1548,8 +1548,12 @@ button:hover {
   display: none;
   left: 0;
   line-height: 1.25;
-  min-width: 400px;
+  min-width: 0;
+  width: min(560px, calc(100vw - 32px));
   max-width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  overflow-wrap: anywhere;
   padding: 10px 12px;
   position: absolute;
   top: calc(100% + 6px);
@@ -1606,7 +1610,7 @@ button:hover {
 }
 
 .optionDetailsPopover {
-  min-width: min(280px, calc(100vw - 32px));
+  min-width: 0;
   width: min(280px, calc(100vw - 32px));
 }
 
@@ -2440,3 +2444,14 @@ label:has(> #pointsLimit) { display: inline-flex; align-items: center; gap: 8px;
 .coreStratagemDisclosure { margin-top: 12px; border: 1px solid #9aa; }
 .coreStratagemDisclosure > summary { padding: 8px; cursor: pointer; font-weight: bold; }
 .coreStratagemDisclosure > .stratagemList { padding: 8px; margin-bottom: 0; }
+
+/* The border and persistent squad badges identify both formation halves. */
+.splitSquadPanel { border: 2px solid var(--accent, #0f8290); border-radius: 6px; margin: 8px 0; padding: 8px; }
+.splitSquadHeader { display: block; margin-bottom: 8px; }
+.splitSquadBadge { display: block; color: var(--accent, #0f8290); font-weight: 600; font-size: .85em; }
+.splitSquadEditor { padding: 10px; }
+.splitSquadEditor > label { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.splitModelRow { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border, #41515a); }
+.splitModelRow span { flex: 1; min-width: 0; }
+.splitModelRow small { display: block; font-size: .8em; }
+.splitModelRow select { width: auto; min-width: 64px; }

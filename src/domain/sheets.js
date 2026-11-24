@@ -211,11 +211,11 @@ function extractWeaponEffectsFromText(text, sourceKind = "") {
 
 function modelAttackCharacteristicEffects(text) {
   const effects = [];
-  const pattern = /\b(this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(melee|ranged)\s+)?attacks?\s+have\s+([+-]\d+)\s+((?:A|S|D|Attacks?|Strength|Damage)(?:\s*(?:,|and)\s*(?:A|S|D|Attacks?|Strength|Damage))*)\b/ig;
+  const pattern = /\b(this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(melee|ranged)\s+)?attacks?\s+have\s+([+-]\d+)\s+((?:WS|BS|AP|A|S|D|Weapon\s+Skill|Ballistic\s+Skill|Armou?r\s+Penetration|Attacks?|Strength|Damage)(?:\s*(?:,|and)\s*(?:WS|BS|AP|A|S|D|Weapon\s+Skill|Ballistic\s+Skill|Armou?r\s+Penetration|Attacks?|Strength|Damage))*)\b/ig;
   for (const match of normalizeText(text).matchAll(pattern)) {
     const weaponType = match[2] ? `${match[2].charAt(0).toUpperCase()}${match[2].slice(1).toLowerCase()} Weapons` : null;
     for (const characteristic of characteristicNames(match[4], true)) {
-      effects.push({ kind: "characteristic", weaponType, characteristic, delta: Number(match[3]), scope: /unit/i.test(match[1]) ? "unit" : "bearer" });
+      effects.push({ kind: "characteristic", weaponType, characteristic, delta: characteristicOperationDelta(characteristic, Number(match[3]), "add"), scope: /unit/i.test(match[1]) ? "unit" : "bearer" });
     }
   }
   return effects;
@@ -428,7 +428,7 @@ function effectAppliesAutomatically(text, sourceKind = "") {
     || /\bthe\s+bearer\s+has\s+(?:an?|their)\s+.+?\s+characteristics?\b/i.test(text)
     || /\bthe\s+bearer\s+has\b.*\bcharacteristics?\b/i.test(text)
     || /\bthis\s+model['’]s\s+.+?\s+characteristics?\b/i.test(text)
-    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(?:melee|ranged)\s+)?attacks?\s+have\s+[+-]\d+\s+(?:A|S|D|Attacks?|Strength|Damage)\b/i.test(text)
+    || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:(?:melee|ranged)\s+)?attacks?\s+have\s+[+-]\d+\s+(?:WS|BS|AP|A|S|D|Weapon\s+Skill|Ballistic\s+Skill|Armou?r\s+Penetration|Attacks?|Strength|Damage)\b/i.test(text)
     || /\b(?:this\s+model['’]s|(?:the\s+)?bearer['’]s|this\s+unit['’]s)\s+(?:melee|ranged)\s+attacks?\s+have\s+\[[^\]]+\]/i.test(text)
     || /\bthis\s+model\s+has\s+[+-]\d+\s+(?:M|T|SV|W|LD|OC|Move|Movement|Toughness|Wounds?|Leadership|Objective\s+Control|Save)\b/i.test(text)
     || /\bcharacteristics?\s+of\s+this\s+model['’]s\b/i.test(text)
@@ -623,11 +623,12 @@ function applyUnitEffectsToProfiles(profiles = [], effects = [], context = {}) {
   const unitEffects = extractUnitEffects(effects);
   return asArray(profiles).map(profile => {
     const next = clone(profile) || {};
-    const characteristics = clone(next.characteristics || {});
+    const characteristics = clone(next.unitEffectBaseCharacteristics || next.characteristics || {});
     // Printed data and older snapshots use mixed-case stat abbreviations.
     // Canonical fields must exist before rendering or applying stat effects.
     if (characteristics.SV == null && characteristics.Sv != null) characteristics.SV = characteristics.Sv;
     if (characteristics.LD == null && characteristics.Ld != null) characteristics.LD = characteristics.Ld;
+    next.unitEffectBaseCharacteristics = clone(characteristics);
     const originalCharacteristics = clone(characteristics);
     for (const effect of unitEffects) {
       if (effect.bearerInstanceId && effect.bearerInstanceId !== context.instanceId) continue;
@@ -1107,7 +1108,7 @@ function effectTextParts(item) {
     description,
     ...(item?.profiles || []).flatMap(effectTextParts),
     ...(item?.rules || []).flatMap(effectTextParts)
-  ].filter(Boolean);
+  ].filter(Boolean).map(text => String(text).replace(/\*\*|\^\^/g, " "));
 }
 
 function invulnerableEffectTextParts(item) {

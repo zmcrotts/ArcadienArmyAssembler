@@ -13,9 +13,9 @@ function detachment(ruleset, faction, name) {
   return result;
 }
 
-test("every available MFM v1.5 detachment schedule attaches to normalized data", () => {
+test("every available MFM v1.6 detachment schedule attaches to normalized data", () => {
   const source = extractNormalizedRuleset("wh40k-11e-vflam").mfmDetachmentSource;
-  assert.equal(source.version, "1.5");
+  assert.equal(source.version, "1.6");
   assert.equal(source.total, require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments.length);
   assert.equal(source.matched, source.total);
   assert.equal(source.unmatched, 0);
@@ -23,7 +23,7 @@ test("every available MFM v1.5 detachment schedule attaches to normalized data",
   assert.equal(source.detachmentPointFlags, require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments.filter(d=>d.detachmentPointsChanged).length);
 });
 
-test("MFM v1.5 overrides current force dispositions", () => {
+test("MFM v1.6 overrides current force dispositions", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Imperium - Imperial Knights", "Dominus Foebreakers", "Priority Assets"],
@@ -36,7 +36,7 @@ test("MFM v1.5 overrides current force dispositions", () => {
   for (const [faction, name, disposition] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.forceDisposition.name, disposition);
-    assert.equal(result.forceDispositionSource, faction === "Imperium - Adeptus Custodes" ? "https://mfm.warhammer-community.com/en/adeptus-custodes" : "mfm-1.5");
+    assert.equal(result.forceDispositionSource, "mfm-1.6");
   }
 });
 
@@ -52,7 +52,7 @@ test("MFM unique detachment tags are preserved for legality checks", () => {
   );
 });
 
-test("MFM v1.5 applies current detachment points", () => {
+test("MFM v1.6 applies current detachment points", () => {
   const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
   const cases = [
     ["Imperium - Adepta Sororitas", "Bringers of Flame", 2],
@@ -70,7 +70,7 @@ test("MFM v1.5 applies current detachment points", () => {
   for (const [faction, name, points] of cases) {
     const result = detachment(ruleset, faction, name);
     assert.equal(result.detachmentPoints, points);
-    assert.equal(result.detachmentPointsSource, faction === "Imperium - Adeptus Custodes" ? "https://mfm.warhammer-community.com/en/adeptus-custodes" : "mfm-1.5");
+    assert.equal(result.detachmentPointsSource, "mfm-1.6");
   }
 });
 
@@ -96,4 +96,23 @@ test("MFM removes obsolete tag prose while preserving retained restrictions and 
   assert.equal(descriptionFor([]), "Friendly units have Stealth.");
   assert.equal(descriptionFor(["ACROBATIC"]), description);
   assert.equal(descriptionFor(undefined), description);
+});
+
+test("every live 3DP detachment retains all MFM disposition choices after Codex overrides", () => {
+  const ruleset = extractNormalizedRuleset("wh40k-11e-vflam");
+  const { availableForceDispositions, createArmyState, setSelectedDetachments } = require("../src/domain/army");
+  const records = require("../data/manual-rules/wh40k-11e-mfm-detachments.json").detachments;
+  assert.ok(records.filter(row => row.detachmentPoints === 3).every(row => row.forceDispositions.length > 1));
+  const normalize = value => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+    .replace("haloscreed battle clade", "haloscreed battleclade");
+  for (const army of ruleset.armies) {
+    for (const item of army.detachments.filter(d => d.detachmentPointsSource === "mfm-1.6" && d.detachmentPoints === 3)) {
+      assert.ok(item.forceDispositions.length > 1, army.faction + " / " + item.name);
+      const state = setSelectedDetachments(army, createArmyState(army), [item.id]);
+      assert.deepEqual(availableForceDispositions(army, state).map(d => d.name), item.forceDispositions.map(d => d.name));
+      const row = records.find(row => normalize(row.detachmentName) === normalize(item.name));
+      assert.ok(row, item.name);
+      assert.deepEqual(item.forceDispositions.map(d => d.name), row.forceDispositions);
+    }
+  }
 });

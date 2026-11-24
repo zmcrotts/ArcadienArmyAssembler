@@ -120,8 +120,12 @@ function applyMfmDetachments(armies, document) {
       if (!match) return detachment;
       matchedRecords.add(match.index);
       const points = Number(match.record.detachmentPoints);
-      const disposition = (army.forceDispositions || []).find(item => normalize(item.name) === normalize(match.record.forceDisposition));
-      if (!disposition) {
+      const names = match.record.forceDispositions?.length
+        ? match.record.forceDispositions : [match.record.forceDisposition];
+      const dispositions = [...new Set(names)].map(name =>
+        (army.forceDispositions || []).find(item => normalize(item.name) === normalize(name))
+      );
+      if (dispositions.some(item => !item)) {
         issues.push({
           code: "mfm-detachment-disposition-unmatched",
           severity: "error",
@@ -130,7 +134,9 @@ function applyMfmDetachments(armies, document) {
         });
       }
       if (Number(detachment.detachmentPoints) !== points) summary.dpMismatches += 1;
-      if (normalize(detachment.forceDisposition?.name) !== normalize(match.record.forceDisposition)) summary.dispositionMismatches += 1;
+      const previousNames = (detachment.forceDispositions?.length ? detachment.forceDispositions : [detachment.forceDisposition])
+        .filter(Boolean).map(item => normalize(item.name)).sort();
+      if (JSON.stringify(previousNames) !== JSON.stringify(names.map(normalize).sort())) summary.dispositionMismatches += 1;
       return {
         ...detachment,
         detachmentPoints: points,
@@ -139,7 +145,10 @@ function applyMfmDetachments(armies, document) {
         uniqueTags: Array.isArray(match.record.uniqueTags)
           ? [...new Set(match.record.uniqueTags.map(String).filter(Boolean))]
           : detachment.uniqueTags || [],
-        forceDisposition: disposition ? { id: disposition.id, name: disposition.name } : detachment.forceDisposition,
+        ...(dispositions.every(Boolean) ? {
+          forceDisposition: { id: dispositions[0].id, name: dispositions[0].name },
+          forceDispositions: dispositions.map(item => ({ id: item.id, name: item.name }))
+        } : {}),
         forceDispositionSource: `mfm-${document.version || "current"}`
       };
     });

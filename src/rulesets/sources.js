@@ -140,9 +140,8 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const manualDetachments = readManualDetachments(source.auxiliarySources?.manualDetachments);
   const manualDetachmentResult = applyManualDetachments(orksCodexResult.units, orksCodexResult.armies, manualDetachments);
   const mfmDetachments = readMfmDetachments(source.auxiliarySources?.mfmDetachments);
-  const mfmDetachmentResult = applyMfmDetachments(manualDetachmentResult.definitions, mfmDetachments);
   const factionPackUpdates = readFactionPackUpdates(source.auxiliarySources?.factionPackUpdates);
-  const factionPackUpdateResult = applyFactionPackUpdates(initialCustodesResult.units, mfmDetachmentResult.definitions, factionPackUpdates);
+  const factionPackUpdateResult = applyFactionPackUpdates(initialCustodesResult.units, manualDetachmentResult.definitions, factionPackUpdates);
   const enhancementRestrictions = readFactionPackUpdates(source.auxiliarySources?.enhancementRestrictions);
   const enhancementRestrictionResult = applyFactionPackUpdates(
     factionPackUpdateResult.units,
@@ -168,7 +167,10 @@ function extractNormalizedRuleset(id = DEFAULT_RULESET_SOURCE_ID, options = {}) 
   const marineWebsiteResult = source.auxiliarySources?.marineChaptersWebsite
     ? applyMarineChaptersWebsite(bloodAngelsResult.units, bloodAngelsResult.armies, readMarineChaptersWebsite(source.auxiliarySources.marineChaptersWebsite), source.id)
     : bloodAngelsResult;
-  const normalized = reconcileSelectableUnits(marineWebsiteResult.units.map(bindModelEquipmentEffects), marineWebsiteResult.armies);
+  // Codex/website layers can replace detachments. Apply the current MFM schedule
+  // after those layers too, so every final detachment keeps all live choices.
+  const mfmDetachmentResult = applyMfmDetachments(marineWebsiteResult.armies, mfmDetachments);
+  const normalized = reconcileSelectableUnits(marineWebsiteResult.units.map(bindModelEquipmentEffects), mfmDetachmentResult.definitions);
   const unitDefinitions = normalized.units;
   const enhancementEligibilityResult = applyEnhancementEligibilityRestrictions(unitDefinitions, normalized.armies);
   const reconciledArmies = enhancementEligibilityResult.armies;
@@ -405,6 +407,10 @@ function sameRuleName(left, right) {
 function applyManualLoadoutCorrections(definitions) {
   return definitions.map(original => {
     const definition = correctCrisisModelProfiles(original);
+    if (definition.rulesetId === "wh40k-11e-vflam" && ["Skitarii Rangers", "Skitarii Vanguard"].includes(definition.name)) {
+      return fixSkitariiInfantryLoadout(definition);
+    }
+
     if (definition.rulesetId === "wh40k-11e-vflam" && definition.faction.startsWith("Imperium - Adeptus Astartes") && definition.name === "Chaplain with Jump Pack") {
       return fixChaplainJumpPackRulesUpdate(definition);
     }
@@ -431,8 +437,8 @@ function applyManualLoadoutCorrections(definitions) {
 
     if (
       definition.rulesetId === "wh40k-11e-vflam"
-      && definition.faction === "Chaos - Chaos Space Marines"
-      && definition.name === "Chaos Terminator Squad"
+      && definition.faction.startsWith("Chaos - ")
+      && /^Chaos Terminators?(?: Squad)?$/i.test(definition.name)
     ) {
       return fixChaosTerminatorPowerFistLoadout(definition);
     }
@@ -519,18 +525,50 @@ function applyManualLoadoutCorrections(definitions) {
 
 function fixChaosTerminatorPowerFistLoadout(definition) {
   const unit = clone(definition);
-  const powerFistCombiWeapon = findNodeByName(unit.selectionTree, "Power fist and combi-weapon");
-  const combiWeapon = findNodeByName(powerFistCombiWeapon, "Combi-weapon");
-  if (!combiWeapon) return unit;
+  // Every model may replace its bolter with a combi-weapon. Retain each
+  // model's mandatory one-weapon constraints, but remove the retired squad cap.
+  function visit(node) {
+    if (!node) return;
+    if (node.name === "Combi-weapon") {
+      node.constraints = (node.constraints || []).filter(c => c.id !== "d995-46ca-b85a-764");
+      node.modifiers = (node.modifiers || []).filter(m => m.field !== "d995-46ca-b85a-764");
+    }
+    for (const child of node.children || []) visit(child);
+  }
+  visit(unit.selectionTree);
+  return unit;
+}
 
-  // This paired model is governed by the shared six-power-fist constraint.
-  // The inherited combi-weapon cap otherwise limits this lane to two models.
-  combiWeapon.constraints = (combiWeapon.constraints || []).filter(constraint =>
-    constraint.id !== "d995-46ca-b85a-764"
-  );
-  combiWeapon.modifiers = (combiWeapon.modifiers || []).filter(modifier =>
-    modifier.field !== "d995-46ca-b85a-764"
-  );
+function fixSkitariiInfantryLoadout(definition) {
+  const unit = clone(definition);
+  const isVanguard = unit.name === "Skitarii Vanguard";
+  const bearerName = isVanguard ? "Skitarii Vanguard" : "Skitarii Ranger";
+  const options = findNodeByName(unit.selectionTree, unit.name + " Options");
+  const rifle = findNodeByName(unit.selectionTree, bearerName + " w/ " + (isVanguard ? "radium carbine" : "galvanic rifle"));
+  if (!options || !rifle) return definition;
+
+  // Specialist bearers replace ordinary troopers in the same nine-model pool.
+  // Preserve node IDs so saved rosters retain their weapon selections.
+  unit.selectionTree.children = unit.selectionTree.children.filter(node => node.id !== rifle.id);
+  options.children.unshift(rifle);
+  options.defaultSelectionId = rifle.definitionId;
+  options.fixedModelPoolSize = 9;
+  options.constraints = ["min", "max"].map(type => ({
+    id: "local-skitarii-" + (isVanguard ? "vanguard-" : "rangers-") + type,
+    type, field: "selections", scope: "parent", value: 9
+  }));
+  rifle.constraints = rifle.constraints.map(constraint =>
+    constraint.field === "selections" && constraint.type === "min"
+      ? { ...constraint, value: 0 } : constraint);
+  rifle.modifiers = [];
+  unit.composition = unit.composition.map(item => item.id === rifle.definitionId
+    ? { ...item, min: 0, max: 9, defaultCount: 9 } : item);
+  unit.compositionConstraints = [{
+    id: options.definitionId,
+    name: options.name,
+    min: 9, max: 9,
+    selectionIds: unit.composition.filter(item => item.name !== bearerName + " Alpha").map(item => item.id)
+  }];
   return unit;
 }
 

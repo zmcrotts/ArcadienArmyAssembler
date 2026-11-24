@@ -1,17 +1,17 @@
 {
   "windows": {
-    "version": "1.0.39",
+    "version": "1.0.40",
     "asset": "Arcadien-Army-Assembler-Windows.exe",
-    "sha256": "AB1B24E800642A69DB317949B8F253E51945C52B82D6009434AE4A9944F04902"
+    "sha256": "FD07966CD50866C866FBB88911F87B9825AEA500396883E7360674DC3E809AAD"
   },
   "android": {
-    "version": "0.1.77",
+    "version": "0.1.78",
     "asset": "Arcadien-Army-Assembler-Android.apk",
-    "sha256": "EEEB66CB4B5E0F1A5B811A0F61929821C97EA93DDFBF630E052C838CBC4241A4"
+    "sha256": "D46B973EA47E549B6A1CF7853A4C0F2466053BAA171D5E5F99AF064907F5BB19"
   },
   "ios": {
-    "version": "0.1.77",
+    "version": "0.1.78",
     "asset": "Arcadien-Army-Assembler-iOS-Web-App.zip",
-    "sha256": "525B1B161187B7F3DA4A06C97BD6A3BC0501FCD583703C3FB4ED14B678ECC3CA"
+    "sha256": "5EE3EC07046CAD4511B469107926A3AFFDF404FFB08F5C558FED1D849E9DE94F"
   }
 }

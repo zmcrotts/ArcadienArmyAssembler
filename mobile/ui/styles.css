@@ -2632,6 +2632,9 @@ html[data-mobile-ui="false"] .savedRosterCards {
   line-height: 1.25;
   min-width: 0;
   max-width: min(560px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  overflow-wrap: anywhere;
   padding: 10px 12px;
   position: fixed;
   top: calc(100% + 6px);
@@ -2802,7 +2805,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 }
 
 .optionDetailsPopover {
-  min-width: min(280px, calc(100vw - 32px));
+  min-width: 0;
   width: min(280px, calc(100vw - 32px));
 }
 
@@ -2813,8 +2816,7 @@ html[data-mobile-ui="false"] .savedRosterCards {
 
 .weaponPreviewStats {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
   gap: 5px;
   margin-top: 8px;
 }
@@ -4158,3 +4160,34 @@ label:has(> #pointsLimit) { display: inline-flex; align-items: center; gap: 8px;
 .playKatahChoice button{margin-top:10px;white-space:normal;min-height:44px}
 .playKatahChoice button:disabled{opacity:.5;cursor:default}
 .playArmyIdentity .playKatahBadge{margin-top:6px}
+
+/* The border and persistent squad badges identify both formation halves. */
+.splitSquadPanel { border: 2px solid var(--accent, #0f8290); border-radius: 6px; margin: 8px 0; padding: 8px; }
+.splitSquadHeader { display: block; margin-bottom: 8px; }
+.splitSquadBadge { display: block; color: var(--accent, #0f8290); font-weight: 600; font-size: .85em; }
+.splitSquadEditor { padding: 10px; }
+.splitSquadEditor > label { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.splitModelRow { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border, #41515a); }
+.splitModelRow span { flex: 1; min-width: 0; }
+.splitModelRow small { display: block; font-size: .8em; }
+.splitModelRow select { width: auto; min-width: 64px; }
+
+.playModeNav { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+.playModeNav button { min-width: 0; margin: 0; }
+.playStratagemReview { display: grid; gap: 16px; max-width: 960px; margin: 0 auto; }
+.playStratagemReview h2, .playStratagemReview h3 { margin: 0; }
+.playStratagemReview header p { color: #aeb9c1; line-height: 1.5; }
+.playStratagemSearch { display: grid; gap: 6px; font-size: 13px; }
+.playStratagemSearch input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid #52616d; border-radius: 10px; background: #19242c; color: #f5f1e8; font: inherit; }
+.playStratagemSearch input::placeholder { color: #aeb9c1; }
+.playStratagemReviewControls { display: flex; flex-wrap: wrap; gap: 8px; }
+.playStratagemReviewControls button { padding: 8px 14px; }
+.playStratagemReferenceSection { display: grid; gap: 10px; margin: 0 0 24px; }
+.playStratagemReferenceSection h3 { color: #e5aa35; font-size: 15px; }
+.playStratagemReview .playStratagem { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) {
+  .playModeNav button { padding-left: 2px; padding-right: 2px; font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .playModeNav button { font-size: 10px; }
+}

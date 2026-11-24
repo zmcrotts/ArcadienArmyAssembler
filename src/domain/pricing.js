@@ -190,6 +190,11 @@ function matchingMfmRow(unitDefinition, rosterEntry) {
 }
 
 function calculateEntryPoints(unitDefinition, rosterEntry, options = {}) {
+  if (rosterEntry?.split) {
+    const base = { ...rosterEntry }; delete base.split;
+    const result = calculateEntryPoints(unitDefinition, base);
+    return { ...result, points: rosterEntry.split.half === "B" ? 0 : result.points };
+  }
   const validationErrors = validateRosterEntry(unitDefinition, rosterEntry);
   if (validationErrors.length && options.allowInvalid !== true) {
     const error = new Error(validationErrors.join(" "));

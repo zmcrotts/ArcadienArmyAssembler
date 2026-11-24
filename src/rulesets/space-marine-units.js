@@ -21,9 +21,20 @@ function readSpaceMarineUnits(file) {
 }
 // These repairs address malformed upstream structure, without inventing weapon rules.
 function repairMarineTree(tree, unitName) {
-  if (!["Ancient in Terminator Armour", "Victrix Honour Guard", "Inner Circle Companions", "Wolf Scouts", "Eradicator Squad with Heavy Bolters", "Desolation Squad", "Death Company Marines with Jump Packs", "Deathwatch Terminator Squad"].includes(unitName)) return tree;
+  if (!["Intercessor Squad", "Ancient in Terminator Armour", "Victrix Honour Guard", "Inner Circle Companions", "Wolf Scouts", "Eradicator Squad with Heavy Bolters", "Desolation Squad", "Death Company Marines with Jump Packs", "Deathwatch Terminator Squad"].includes(unitName)) return tree;
   function visit(node) {
     const next = { ...node, children: (node.children || []).map(visit) };
+    if (unitName === "Intercessor Squad") {
+      // The squad's 5-10 model constraint includes its launcher bearers.
+      // Selecting one exchanges an ordinary Intercessor from the same pool.
+      if (node.kind === "group" && node.name === "Intercessors") {
+        next.defaultSelectionId = node.children.find(child => child.name === "Intercessor")?.definitionId;
+      }
+      if (node.kind === "model" && node.name === "Intercessor") {
+        next.constraints = node.constraints.map(c => c.type === "min" && c.field === "selections"
+          ? { ...c, value: 0, ...(c.raw ? { raw: { ...c.raw, value: 0 } } : {}) } : c);
+      }
+    }
     if (unitName === "Ancient in Terminator Armour" && node.kind === "group" && node.name === "Wargear"
         && node.children?.length === 2 && node.children.every(child => child.constraints?.some(c => c.type === "min" && Number(c.value) === 1))) {
       next.defaultSelectionId = null;

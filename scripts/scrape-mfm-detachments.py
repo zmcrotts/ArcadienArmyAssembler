@@ -64,16 +64,27 @@ def extract_document(document, url: str, helpers):
         if not dp_match:
             continue
         name = helpers.resolved_text(header[0], replacements)
-        disposition = helpers.resolved_text(card[1], replacements)
-        if not name or not disposition:
+        dispositions = [
+            DISPOSITION_NAMES[text.upper()]
+            for child in card[1:]
+            if (text := helpers.resolved_text(child, replacements)).upper() in DISPOSITION_NAMES
+        ]
+        if not name or not dispositions:
             continue
         card_text = helpers.resolved_text(card, replacements)
+        unique_tags = [
+            text.split(":", 1)[1].strip()
+            for child in card[1:]
+            if (text := helpers.resolved_text(child, replacements)).upper().startswith("UNIQUE:")
+        ]
         rows.append({
             "factionSlug": faction_slug,
             "sourceUrl": url,
             "detachmentName": name,
             "detachmentPoints": int(dp_match.group(1)),
-            "forceDisposition": DISPOSITION_NAMES.get(disposition.upper(), disposition),
+            "forceDisposition": dispositions[0],
+            "forceDispositions": list(dict.fromkeys(dispositions)),
+            "uniqueTags": unique_tags,
             "dispositionChanged": "FORCE DISPOSITION(S) CHANGED" in card_text,
             "detachmentPointsChanged": "▲" in dp_text or "▼" in dp_text,
         })

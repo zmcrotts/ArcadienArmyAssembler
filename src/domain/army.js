@@ -232,6 +232,8 @@ function normalizeRosterEntries(rosterEntries, armyState = null) {
     if (keywords.some(keyword => normalizeTargetName(keyword) === "battleline")) roles.battleline = true;
     if (keywords.some(keyword => normalizeTargetName(keyword) === "character")) roles.character = true;
     return {
+      split: item.entry?.split || item.split || null,
+      displayName: (item.name || item.unitPackage?.name || definition.name || "Unknown unit") + (item.entry?.split ? " · Squad " + item.entry.split.label + item.entry.split.half + " (paired with " + item.entry.split.label + (item.entry.split.half === "A" ? "B" : "A") + ")" : ""),
       instanceId: item.instanceId || item.entry?.instanceId,
       selectionKey: item.selectionKey || item.unitPackage?.selectionKey || definition.selectionKey,
       name: item.name || item.unitPackage?.name || definition.name || "Unknown unit",
@@ -277,7 +279,8 @@ function getEnhancementStates(armyDefinition, armyState, rosterEntries) {
         bearerInstanceId: selectedAssignments[0]?.bearerInstanceId || null,
         bearerOptions: entries.map(entry => ({
           ...entry,
-          eligible: canBearEnhancement(enhancement, entry)
+          eligible: canBearEnhancement(enhancement, entry),
+          blockedByEnhancementId: assignments.find(item => item.bearerInstanceId === entry.instanceId && item.enhancementId !== enhancement.id)?.enhancementId || null
         })),
         selectable: selectedDetachmentIds(armyState).length > 0 && entries.length > 0
       };
@@ -490,6 +493,9 @@ function pruneArmyStateForRoster(armyState, rosterEntries) {
 function setEnhancement(armyDefinition, armyState, rosterEntries, enhancementId, bearerInstanceId, enabled = undefined) {
   const next = structuredClone(armyState);
   const enhancement = (armyDefinition?.enhancements || []).find(item => item.id === enhancementId);
+  const occupied = (next.enhancements || []).some(item => item.bearerInstanceId === bearerInstanceId && item.enhancementId !== enhancementId);
+  const alreadyOnBearer = (next.enhancements || []).some(item => item.bearerInstanceId === bearerInstanceId && item.enhancementId === enhancementId);
+  if (bearerInstanceId && enabled !== false && !alreadyOnBearer && occupied) return next;
   const repeatable = Number(enhancement?.maxSelections || 1) > 1 || enhancement?.kind === "upgrade";
   if (repeatable) {
     const alreadySelected = (next.enhancements || []).some(item =>
@@ -686,13 +692,14 @@ function validateRosterLegality(armyDefinition, armyState, rosterEntries, option
   const counts = new Map();
   for (const entry of entries) {
     if (!counts.has(entry.selectionKey)) counts.set(entry.selectionKey, []);
-    counts.get(entry.selectionKey).push(entry);
+    if (entry.split?.half !== "B") counts.get(entry.selectionKey).push(entry);
     if (!(armyDefinition?.allowedSelectionKeys || []).includes(entry.selectionKey)) {
       warnings.push(warning("ALLY_NOT_ALLOWED", `${entry.name} is not an allowed unit or ally for this army.`, [entry.instanceId]));
     }
   }
   for (const copies of counts.values()) {
     const unit = copies[0];
+    if (!unit) continue;
     const limit = unit.roles.epicHero ? 1 : (unit.roles.battleline || unit.roles.dedicatedTransport)
       ? 6
       : Number(unit.rosterRules.maxCopies || 3);
@@ -905,7 +912,7 @@ function getRosterPresentation(armyDefinition, armyState, rosterEntries, options
         return {
           id: entry.instanceId,
           kind: "unit",
-          title: entry.name,
+          title: entry.displayName || entry.name,
           totalPoints: displayPoints(entry),
           basePoints: entry.points,
           enhancementPoints: Number(enhancementPoints.get(entry.instanceId) || 0),
@@ -922,7 +929,7 @@ function getRosterPresentation(armyDefinition, armyState, rosterEntries, options
       return {
         id: `attached:${entry.instanceId}`,
         kind: "attached",
-        title: `${entry.name} + ${leaders.map(item => item.name).join(" + ")}`,
+        title: `${entry.displayName || entry.name} + ${leaders.map(item => item.name).join(" + ")}`,
         totalPoints: [entry, ...leaders].reduce((sum, item) => sum + displayPoints(item), 0),
         basePoints: [entry, ...leaders].reduce((sum, item) => sum + Number(item.points || 0), 0),
         enhancementPoints: memberInstanceIds.reduce((sum, instanceId) => sum + Number(enhancementPoints.get(instanceId) || 0), 0),

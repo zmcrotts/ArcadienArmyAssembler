@@ -53,7 +53,7 @@ test('Chapter sources completely replace retired detachments and enhancement lis
   assert.deepEqual(a.armyRules.map(r=>r.name).sort(),[...doc.armyRules,...config.armyRules].map(r=>r.name).sort(),chapter);
   for(const d of chapterDoc.detachments.filter(d=>d.chapter===chapter)){
    const actual=a.detachments.find(x=>x.name===d.name);assert.equal(actual.detachmentPoints,d.detachmentPoints);
-   assert.deepEqual(actual.forceDispositions.map(x=>x.name),d.forceDispositions);
+   assert.deepEqual(actual.forceDispositions.map(x=>x.name).sort(),[...d.forceDispositions].sort());
    assert.deepEqual(actual.stratagems.map(x=>[x.name,x.cpCost,x.when,x.targetText,x.effect]),d.stratagems.map(x=>[x.name,String(x.cpCost),x.when,x.target,x.effect]));
    const enhancements=a.enhancements.filter(e=>e.detachmentIds.includes(actual.id));assert.equal(enhancements.length,d.enhancements.length,d.name);
    for(const e of d.enhancements){const found=enhancements.find(x=>x.name===e.name);assert(found,e.name);assert.equal(found.points,e.points);assert.equal(found.profiles[0].characteristics.Description,e.description);assert(found.eligibleSelectionKeys.length,e.name);}

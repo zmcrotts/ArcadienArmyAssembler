@@ -1,4 +1,139 @@
 "use strict";
+function renderMobileLinkedGroups(groups) {
+  const seen = new Set();
+  return groups.map(group => {
+    const item = roster.find(r => r.instanceId === (group.bodyguard?.instanceId || group.entries[0]?.instanceId));
+    const split = group.displayKind === "attached-leader" ? null : item?.entry.split;
+    if (!split) return renderMobileRosterGroup(group);
+    if (seen.has(split.groupId)) return "";
+    seen.add(split.groupId);
+    const members = groups.filter(g => g.displayKind !== "attached-leader" && roster.find(r => r.instanceId === (g.bodyguard?.instanceId || g.entries[0]?.instanceId))?.entry.split?.groupId === split.groupId);
+    const parent = splitSquadMembers(item).find(r => r.entry.split.half === "A") || item;
+    return '<section class="splitSquadPanel"><b class="splitSquadHeader">' + escapeHtml(item.unitPackage.name) + " · Squad " + split.label + " · " + entryPoints(parent) + " pts · Split via Immolator</b>" + members.map(renderMobileRosterGroup).join("") + "</section>";
+  }).join("");
+}
+
+
+function splitSquadEligible(item) {
+  return /adepta sororitas/i.test(item.unitPackage.faction || "")
+    && /^(Battle Sisters Squad|Dominion Squad|Sisters Novitiate Squad|Novitiate Squad)$/i.test(item.unitPackage.name);
+}
+
+function splitSquadTransports(item) {
+  const groupId = item.entry.split?.groupId;
+  return roster.filter(r => /^Immolator$/i.test(r.unitPackage.name)
+    && !roster.some(other => other.entry.split?.half === "A" && other.entry.split.groupId !== groupId && other.entry.split.transportId === r.instanceId));
+}
+
+function createSplitSquad(item, transportId) {
+  if (!splitSquadEligible(item) || item.entry.split) return;
+  if (!splitSquadTransports(item).some(t => t.instanceId === transportId)) throw new Error("Choose an available Immolator.");
+  if (engine.validateLoadout(item.unitPackage.definition, item.entry).length) throw new Error("Finish the purchased squad's loadout before splitting it.");
+  const pool = engine.getSplitModelPool(item.unitPackage.definition, item.entry);
+  if (pool.length < 2) throw new Error("This squad cannot be divided.");
+  const used = new Set(roster.map(r => r.entry.split?.label));
+  let label = 1; while (used.has(label)) label++;
+  const partner = createRosterEntry(item.unitPackage);
+  const split = { groupId: item.instanceId, label, half: "A", aModels: pool.map((_, i) => i).slice(0, Math.ceil(pool.length / 2)), cherubHalf: [...engine.getConfiguredProfiles(item.unitPackage.definition, item.entry).abilities, ...engine.getConfiguredProfiles(item.unitPackage.definition, item.entry).rules].some(p => /cherub/i.test(p.name)) ? "A" : null, embarkedHalf: "B", transportId };
+  item.entry.split = split;
+  partner.entry = JSON.parse(JSON.stringify(item.entry));
+  partner.entry.instanceId = partner.instanceId;
+  partner.entry.split.half = "B";
+  roster.splice(roster.indexOf(item) + 1, 0, partner);
+}
+
+function splitSquadMembers(item) {
+  return roster.filter(r => r.entry.split?.groupId === item.entry.split?.groupId && r.entry.split);
+}
+
+function updateSplitSquad(item, update) {
+  for (const member of splitSquadMembers(item)) member.entry.split = { ...member.entry.split, ...JSON.parse(JSON.stringify(update)) };
+}
+
+function reuniteSplitSquad(item) {
+  const members = splitSquadMembers(item);
+  const first = members.find(r => r.entry.split.half === "A");
+  if (!first) return;
+  const memberIds = new Set(members.map(r => r.instanceId));
+  armyState.attachments = (armyState.attachments || []).filter(a => !memberIds.has(a.targetInstanceId));
+  roster = roster.filter(r => !memberIds.has(r.instanceId) || r === first);
+  delete first.entry.split;
+  armyState = armyEngine.pruneArmyStateForRoster(armyState, roster);
+  selectedInstanceId = first.instanceId; selectedPanel = "unit";
+}
+
+function splitSquadNotes(item) {
+  const s = item.entry.split;
+  if (!s) return "";
+  const transport = roster.find(r => r.instanceId === s.transportId);
+  return "Squad " + s.label + s.half + " · paired with " + s.label + (s.half === "A" ? "B" : "A")
+    + (s.embarkedHalf === s.half ? " · Embarked in " + (transport ? rosterUnitPlainTextLabel(transport) : "missing Immolator") : " · Deployed separately")
+    + (s.cherubHalf === s.half ? " · Cherub assigned here" : "");
+}
+
+function renderSplitSquadControl(item) {
+  if (!splitSquadEligible(item) && !item.entry.split) return "";
+  const s = item.entry.split;
+  const transports = splitSquadTransports(item);
+  if (!s) return '<section class="sidebarGroup splitSquadEditor"><b>Split squad</b><p>Divide this purchased squad into two linked formation units.</p>'
+    + '<select id="splitTransport" aria-label="Immolator for split squad">' + transports.map(t => '<option value="' + escapeHtml(t.instanceId) + '">' + escapeHtml(rosterUnitPlainTextLabel(t)) + '</option>').join("") + '</select>'
+    + '<button type="button" data-create-split="' + escapeHtml(item.instanceId) + '"' + (transports.length ? "" : " disabled") + '>Split via Immolator</button>'
+    + (transports.length ? "" : '<p>Add an available Immolator to enable splitting.</p>') + '</section>';
+  const pool = engine.getSplitModelPool(item.unitPackage.definition, item.entry);
+  const inA = new Set(s.aModels);
+  const base = { ...item.entry }; delete base.split;
+  const hasCherub = [...engine.getConfiguredProfiles(item.unitPackage.definition, base).abilities, ...engine.getConfiguredProfiles(item.unitPackage.definition, base).rules].some(p => /cherub/i.test(p.name));
+  return '<section class="sidebarGroup splitSquadEditor" data-split-editor="' + escapeHtml(item.instanceId) + '">'
+    + '<b>' + escapeHtml(item.unitPackage.name) + ' · Squad ' + s.label + ' · ' + entryPoints(splitSquadMembers(item).find(r => r.entry.split.half === "A") || item) + ' pts purchased once</b>'
+    + '<p>' + escapeHtml(splitSquadNotes(item)) + '</p><p>Allocate each equipped model to A or B. Reunite to change the purchased loadout; leaders will be detached.</p>'
+    + '<p><b>' + s.label + 'A: ' + inA.size + ' models · ' + s.label + 'B: ' + (pool.length - inA.size) + ' models</b></p>'
+    + pool.map((model, i) => '<label class="splitModelRow"><span>' + escapeHtml(model.name) + '<small>' + escapeHtml(model.equipment.join(", ")) + '</small></span><select data-split-model="' + i + '" aria-label="Half for ' + escapeHtml(model.name) + ' ' + (i + 1) + '"><option value="A"' + (inA.has(i) ? " selected" : "") + '>' + s.label + 'A</option><option value="B"' + (!inA.has(i) ? " selected" : "") + '>' + s.label + 'B</option></select></label>').join("")
+    + '<label>Immolator <select data-split-field="transportId">' + (transports.some(t => t.instanceId === s.transportId) ? "" : '<option value="">Choose an Immolator</option>') + transports.map(t => '<option value="' + escapeHtml(t.instanceId) + '"' + (t.instanceId === s.transportId ? " selected" : "") + '>' + escapeHtml(rosterUnitPlainTextLabel(t)) + '</option>').join("") + '</select></label>'
+    + '<label>Starts embarked <select data-split-field="embarkedHalf">' + ["A", "B"].map(h => '<option' + (s.embarkedHalf === h ? " selected" : "") + '>' + h + '</option>').join("") + '</select></label>'
+    + (hasCherub ? '<label>Cherub <select data-split-field="cherubHalf">' + ["A", "B"].map(h => '<option' + (s.cherubHalf === h ? " selected" : "") + '>' + h + '</option>').join("") + '</select></label>' : "")
+    + '<button type="button" data-reunite-split="' + escapeHtml(item.instanceId) + '">Reunite squad</button></section>';
+}
+
+function bindSplitSquadInputs() {
+  for (const button of document.querySelectorAll("[data-create-split]")) button.onclick = () => {
+    const item = roster.find(r => r.instanceId === button.dataset.createSplit);
+    try { createSplitSquad(item, document.getElementById("splitTransport").value); render(); } catch (e) { alert(e.message); }
+  };
+  for (const button of document.querySelectorAll("[data-reunite-split]")) button.onclick = () => {
+    reuniteSplitSquad(roster.find(r => r.instanceId === button.dataset.reuniteSplit)); render();
+  };
+  for (const editor of document.querySelectorAll("[data-split-editor]")) {
+    const item = roster.find(r => r.instanceId === editor.dataset.splitEditor);
+    for (const select of editor.querySelectorAll("[data-split-model]")) select.onchange = () => {
+      const aModels = [...editor.querySelectorAll("[data-split-model]")].filter(s => s.value === "A").map(s => Number(s.dataset.splitModel));
+      updateSplitSquad(item, { aModels }); render();
+    };
+    for (const select of editor.querySelectorAll("[data-split-field]")) select.onchange = () => {
+      updateSplitSquad(item, { [select.dataset.splitField]: select.value }); render();
+    };
+  }
+}
+
+function splitSquadWarnings() {
+  const warnings = [];
+  for (const item of roster.filter(r => r.entry.split?.half === "A")) {
+    const s = item.entry.split, pair = splitSquadMembers(item);
+    const warn = text => warnings.push({ ok: false, code: "SPLIT_FORMATION", text: item.unitPackage.name + " · Squad " + s.label + ": " + text });
+    if (pair.length !== 2) warn("A linked half is missing.");
+    const transport = roster.find(r => r.instanceId === s.transportId && /^Immolator$/i.test(r.unitPackage.name));
+    if (!transport) warn("Choose an Immolator for the embarked half.");
+    const embarked = pair.find(r => r.entry.split.half === s.embarkedHalf);
+    if (embarked) {
+      const leaders = (armyState.attachments || []).filter(a => a.targetInstanceId === embarked.instanceId).map(a => roster.find(r => r.instanceId === a.leaderInstanceId)).filter(Boolean);
+      const capacity = [embarked, ...leaders].reduce((n, r) => n + engine.getConfiguredModels(r.unitPackage.definition, r.entry).reduce((v, m) => v + m.count, 0), 0);
+      if (capacity > 6) warn("The embarked half and its leaders total " + capacity + " models; the Immolator holds 6.");
+    }
+    if (roster.some(r => r !== item && r.entry.split?.half === "A" && r.entry.split.transportId === s.transportId)) warn("This Immolator is already enabling another split.");
+  }
+  return warnings;
+}
+
+
 
 const engineData = window.ROSTER_ENGINE_DATA;
 const engine = window.RosterEngine;
@@ -956,6 +1091,7 @@ function createRosterEntry(unitPackage) {
 }
 
 function duplicateRosterEntry(sourceEntry) {
+  if (sourceEntry.entry.split) { const plain = JSON.parse(JSON.stringify(sourceEntry.entry)); delete plain.split; return duplicateRosterEntry({ ...sourceEntry, entry: plain }); }
   const entry = JSON.parse(JSON.stringify(sourceEntry.entry));
   entry.instanceId = `${sourceEntry.unitPackage.id}-${Date.now()}-${Math.random()}`;
   const duplicate = {
@@ -1544,7 +1680,7 @@ function renderMobileRosterSection(section) {
         <button class="mobileSectionAdd" type="button" data-section-key="${escapeHtml(section.key)}">+ Add</button>
       </header>
       <div class="mobileRosterSectionContents" ${open ? "" : "hidden"}>
-        ${section.groups.map(renderMobileRosterGroup).join("")}
+        ${renderMobileLinkedGroups(section.groups)}
       </div>
     </section>
   `;
@@ -1574,7 +1710,7 @@ function renderMobileRosterGroup(group) {
     ? `${bodyguard.unitPackage.name} attached unit`
     : primary.unitPackage.name;
   const secondaryAction = attachedLeaderReference ? "detach" : group.kind === "attached" ? "split" : "remove";
-  const secondaryLabel = attachedLeaderReference ? "Detach Leader" : group.kind === "attached" ? "Detach attached unit" : `Remove ${actionLabel}`;
+  const secondaryLabel = attachedLeaderReference ? "Detach Leader" : group.kind === "attached" ? "Detach attached unit" : primary.entry.split ? "Remove both halves of this squad" : `Remove ${actionLabel}`;
   const secondaryIcon = attachedLeaderReference || group.kind === "attached" ? "Detach" : "×";
   return `
     <article class="mobileRosterUnit${selected}${group.kind === "attached" ? " attached" : ""}${attachedLeaderReference ? " attachedLeaderReference" : ""}"
@@ -1586,11 +1722,12 @@ function renderMobileRosterGroup(group) {
         <span>${escapeHtml(points)}</span>
       </div>
       <h3>${title}</h3>
+      ${primary.entry.split ? '<small class="splitSquadBadge">' + escapeHtml(splitSquadNotes(primary)) + "</small>" : ""}
       ${group.kind === "attached" ? `<div class="mobileAttachedBreakdown">${loadout}</div>` : loadout}
       ${group.warnings?.length ? `<div class="mobileWarning">⚠ ${escapeHtml(group.warnings[0].message)}</div>` : ""}
       <div class="mobileUnitActions">
         <button class="mobileUnitPrimaryAction" type="button" data-mobile-action="configure" data-instance-id="${escapeHtml(primary.instanceId)}">Configure</button>
-        <button class="mobileUnitIconAction" type="button" data-mobile-action="duplicate" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="Duplicate ${escapeHtml(actionLabel)}" title="Duplicate"><span aria-hidden="true">⧉</span></button>
+        <button ${primary.entry.split ? "hidden" : ""} class="mobileUnitIconAction" type="button" data-mobile-action="duplicate" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="Duplicate ${escapeHtml(actionLabel)}" title="Duplicate"><span aria-hidden="true">⧉</span></button>
         <button class="mobileUnitIconAction ${secondaryAction === "remove" ? "danger" : "split"}" type="button" data-mobile-action="${secondaryAction}" data-instance-id="${escapeHtml(primary.instanceId)}" aria-label="${escapeHtml(secondaryLabel)}" title="${secondaryAction === "remove" ? "Remove" : "Detach"}"><span aria-hidden="true">${secondaryIcon}</span></button>
       </div>
     </article>
@@ -2920,6 +3057,7 @@ function renderRoster() {
 
     const action = document.createElement("button");
     action.textContent = attachedLeaderReference || group.kind === "attached" ? "Detach" : "Remove";
+    if (primary.entry.split && !attachedLeaderReference && group.kind !== "attached") action.textContent = "Remove squad";
     action.onclick = event => {
       event.stopPropagation();
       if (attachedLeaderReference) {
@@ -2935,7 +3073,7 @@ function renderRoster() {
       }
       render();
     };
-    actions.appendChild(duplicate);
+    if (!primary.entry.split) actions.appendChild(duplicate);
     actions.appendChild(action);
 
     div.onclick = () => {
@@ -2944,7 +3082,12 @@ function renderRoster() {
 
     div.appendChild(label);
     div.appendChild(actions);
-    contents.appendChild(div);
+    if (primary.entry.split && !attachedLeaderReference) {
+      const split = primary.entry.split;
+      let panel = [...contents.querySelectorAll(".splitSquadPanel")].find(p => p.dataset.splitId === split.groupId);
+      if (!panel) { panel = document.createElement("section"); panel.className = "splitSquadPanel"; panel.dataset.splitId = split.groupId; const parent = splitSquadMembers(primary).find(r => r.entry.split.half === "A") || primary; panel.innerHTML = '<b class="splitSquadHeader">' + escapeHtml(primary.unitPackage.name) + " · Squad " + split.label + " · " + entryPoints(parent) + " pts · Split via Immolator</b>"; contents.appendChild(panel); }
+      const badge = document.createElement("small"); badge.className = "splitSquadBadge"; badge.textContent = splitSquadNotes(primary); label.prepend(badge); panel.appendChild(div);
+    } else contents.appendChild(div);
     }
 
     details.appendChild(contents);
@@ -3501,6 +3644,8 @@ function rosterPresentationUncached() {
 }
 
 function removeRosterEntry(instanceId) {
+  const splitItem = roster.find(r => r.instanceId === instanceId && r.entry.split);
+  if (splitItem) { const ids = new Set(splitSquadMembers(splitItem).map(r => r.instanceId)); roster = roster.filter(r => !ids.has(r.instanceId)); }
   roster = roster.filter(item => item.instanceId !== instanceId);
   armyState = armyEngine.pruneArmyStateForRoster(armyState, roster);
   if (selectedInstanceId === instanceId || !roster.some(item => item.instanceId === selectedInstanceId)) {
@@ -3609,6 +3754,7 @@ function showRosterEntry(rosterEntry) {
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
     ${renderKeywords(effectiveKeywords, ruleLookup)}
+    ${renderSplitSquadControl(rosterEntry)}
     ${renderUnitAssignments(rosterEntry)}
     ${renderUnitStratagems(rosterEntry, attachedRosterEntries)}
     ${renderUnitSizeControl(rosterEntry, unitSize)}
@@ -3651,6 +3797,7 @@ function showAttachedRosterGroup(group) {
     <div class="attachedMembers">
       ${[bodyguard, ...leaders].filter(Boolean).map(item => renderAttachedMemberCard(item, item === bodyguard)).join("")}
     </div>
+    ${bodyguard ? renderSplitSquadControl(bodyguard) : ""}
     ${bodyguard ? renderUnitAssignments(bodyguard) : ""}
     ${bodyguard ? renderUnitStratagems(bodyguard, groupEntries) : ""}
     ${renderAttachedConfigured(groupEntries)}
@@ -3913,10 +4060,11 @@ function renderUnitAssignments(rosterEntry) {
             ${assignment.enhancements.map(state => {
               const bearer = state.bearerOptions.find(item => item.instanceId === rosterEntry.instanceId);
               const selectedHere = (state.bearerInstanceIds || [state.bearerInstanceId]).includes(rosterEntry.instanceId);
+              const blockedHere = !selectedHere && Boolean(bearer?.blockedByEnhancementId);
               const takenElsewhere = state.kind !== "upgrade" && Number(state.maxSelections || 1) <= 1 && state.selected && !selectedHere;
               return `<div class="assignmentRow">
                 ${renderEnhancementAssignmentDetails(state, bearer)}
-                <input class="enhancementToggle" data-enhancement-id="${escapeHtml(state.id)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${selectedHere ? "checked" : ""} ${takenElsewhere ? "disabled title=\"Already assigned to another unit\"" : ""}>
+                <input class="enhancementToggle" data-enhancement-id="${escapeHtml(state.id)}" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="checkbox" ${selectedHere ? "checked" : ""} ${blockedHere ? "disabled title=\"This unit already has an Enhancement or Upgrade; remove it first\"" : takenElsewhere ? "disabled title=\"Already assigned to another unit\"" : ""}>
               </div>`;
             }).join("")}
           </div>
@@ -3974,6 +4122,7 @@ function bindSidebarDisclosureState() {
 }
 
 function bindUnitAssignmentInputs() {
+  bindSplitSquadInputs();
   for (const input of document.querySelectorAll(".warlordToggle")) {
     input.onchange = event => {
       armyState = armyEngine.setWarlord(armyState, event.target.checked ? event.target.dataset.instanceId : null);
@@ -4032,6 +4181,7 @@ function bindUnitAssignmentInputs() {
 }
 
 function renderUnitSizeControl(rosterEntry, state) {
+  if (rosterEntry.entry.split) return "<p><b>Formation size:</b> " + state.current + " models</p>";
   const currentComposition = configuredModelCompositionLabel(rosterEntry.unitPackage.definition, rosterEntry.entry);
   const currentSummary = currentComposition
     ? `<small class="unitCompositionSummary"><b>Current:</b> ${escapeHtml(currentComposition)} (${state.current} model${state.current === 1 ? "" : "s"})</small>`
@@ -4099,6 +4249,7 @@ function bindUnitSizeInputs() {
 }
 
 function renderOptionControls(rosterEntry) {
+  if (rosterEntry.entry.split) return "";
   const unit = rosterEntry.unitPackage;
 
   const optionStates = engine.getOptionStates(unit.definition, rosterEntry.entry);
@@ -4275,6 +4426,7 @@ function renderOptionNameWithPoints(option, node = null) {
 
 function renderOptionNamePreview(name, node = null) {
   const weaponProfiles = weaponProfilesForOptionNode(node);
+  if (weaponProfiles.length) return renderWeaponOptionName(name, weaponProfiles);
   const abilityProfiles = collectProfilesForOptionNode(node)
     .filter(profile => profile?.name && profile.typeName === "Abilities" && profile.characteristics?.Description);
   const rules = collectRulesForOptionNode(node)
@@ -4345,7 +4497,7 @@ function renderWeaponOptionName(name, profiles = []) {
   if (!profiles.length) return escapeHtml(name);
 
   const parts = splitWeaponOptionName(name, profiles);
-  if (!parts) return renderWeaponOptionPreview(name, profiles);
+  if (!parts) return renderWeaponOptionPreview(name, matchingWeaponPreviewProfiles(name, profiles));
 
   return parts.map(part =>
     part.profiles.length
@@ -4355,28 +4507,26 @@ function renderWeaponOptionName(name, profiles = []) {
 }
 
 function splitWeaponOptionName(name, profiles = []) {
-  if (profiles.length < 2 || !/\s+and\s+/i.test(name)) return null;
+  if (profiles.length < 2 || !/\s+and\s+|\s*&\s*|,\s*/i.test(name)) return null;
 
-  const sourceParts = String(name).split(/(\s+and\s+)/i);
-  const usedProfiles = new Set();
+  const sourceParts = String(name).split(/(\s+and\s+|\s*&\s*|,\s*)/i);
   const parts = sourceParts.map(text => {
-    if (/^\s+and\s+$/i.test(text)) return { text, profiles: [] };
-
-    const label = normalizeWeaponLabel(text);
-    const matches = profiles.filter(profile => {
-      if (usedProfiles.has(profile)) return false;
-      const profileName = normalizeWeaponLabel(profile.name);
-      return profileName === label
-        || profileName.includes(label)
-        || label.includes(profileName);
-    });
-    matches.forEach(profile => usedProfiles.add(profile));
-    return { text, profiles: matches };
+    if (/^(?:\s+and\s+|\s*&\s*|,\s*)$/i.test(text)) return { text, profiles: [] };
+    return { text, profiles: matchingWeaponPreviewProfiles(text, profiles, false) };
   });
 
-  return usedProfiles.size === profiles.length && parts.some(part => part.profiles.length)
-    ? parts
-    : null;
+  return parts.some(part => part.profiles.length) ? parts : null;
+}
+
+function matchingWeaponPreviewProfiles(name, profiles, fallback = true) {
+  const label = normalizeWeaponLabel(String(name).replace(/^.*?\bw\s*\/\s*/i, ""));
+  const exact = profiles.filter(profile => normalizeWeaponLabel(profile.name) === label);
+  if (exact.length) return exact;
+  const qualified = profiles.filter(profile => {
+    const weapon = normalizeWeaponLabel(profile.name);
+    return label && weapon.endsWith(" " + label);
+  });
+  return qualified.length ? qualified : fallback ? profiles : [];
 }
 
 function normalizeWeaponLabel(value) {
@@ -4484,14 +4634,15 @@ function positionWeaponPreview(wrap, popover, token) {
   popover.style.left = `${left - originLeft}px`;
   popover.style.right = "auto";
   popover.style.top = `${bounds.top + margin - originTop}px`;
-  popover.style.maxHeight = `${Math.max(160, Math.min(viewportHeight * 0.7, bounds.bottom - bounds.top - margin * 2))}px`;
+  const maximumHeight = Math.max(0, Math.min(viewportHeight * 0.7, bounds.bottom - bounds.top - margin * 2));
+  popover.style.maxHeight = `${maximumHeight}px`;
 
   const naturalHeight = popover.getBoundingClientRect().height;
   const availableBelow = bounds.bottom - tokenRect.bottom - gap - margin;
   const availableAbove = tokenRect.top - bounds.top - gap - margin;
   const openBelow = availableBelow >= Math.min(naturalHeight, 260) || availableBelow >= availableAbove;
-  const available = Math.max(160, openBelow ? availableBelow : availableAbove);
-  popover.style.maxHeight = `${Math.min(viewportHeight * 0.7, available)}px`;
+  const available = Math.max(0, openBelow ? availableBelow : availableAbove);
+  popover.style.maxHeight = `${Math.min(maximumHeight, available)}px`;
   const height = popover.getBoundingClientRect().height;
   const top = openBelow ? tokenRect.bottom + gap : tokenRect.top - height - gap;
   popover.style.top = `${Math.max(bounds.top + margin, Math.min(top, bounds.bottom - height - margin)) - originTop}px`;
@@ -5152,6 +5303,7 @@ function formatPointsBreakdown(totalPoints, basePoints, enhancementPoints) {
 }
 
 function formatEntryPoints(rosterEntry) {
+  if (rosterEntry.entry.split) return "Included in Squad " + rosterEntry.entry.split.label;
   return formatPointsBreakdown(entryDisplayPoints(rosterEntry), entryPoints(rosterEntry), entryEnhancementPoints(rosterEntry));
 }
 
@@ -5161,6 +5313,10 @@ function formatGroupPoints(group) {
 
 function formatAttachedGroupPoints(group, groupEntries) {
   const bodyguard = groupEntries.find(item => item.instanceId === group?.bodyguard?.instanceId) || groupEntries[0];
+  if (bodyguard?.entry.split) {
+    const leaders = groupEntries.filter(r => r !== bodyguard).reduce((sum, r) => sum + entryDisplayPoints(r), 0);
+    return "Included in Squad " + bodyguard.entry.split.label + (leaders ? " + " + leaders + " pts leaders" : "");
+  }
   return `${Number(group?.totalPoints || 0)} pts (${formatAttachedMemberPoints(bodyguard)})`;
 }
 
@@ -5254,9 +5410,9 @@ function renderTotal() {
 function validateRoster() {
   const total = getTotalPoints();
   const limit = Number(pointsLimitInput.value || 0);
-  const messages = rosterRecoveryWarnings
+  const messages = [...splitSquadWarnings(), ...rosterRecoveryWarnings]
     .filter(item => item.code !== "SAVED_SELECTION_UNRESOLVED" || !item.affectedInstanceIds?.length || item.affectedInstanceIds.some(id => roster.some(entry => entry.instanceId === id)))
-    .map(item => ({ ok: false, code: item.code, text: item.message }));
+    .map(item => ({ ok: false, code: item.code, text: item.message || item.text }));
 
   if (currentArmyDefinition()) {
     const legalityRoster = rosterWithPoints();

@@ -86,6 +86,7 @@
   let previousVisibility = null;
   let openedFromHistory = false;
   let armyReferenceOpen = false;
+  let stratagemReviewQuery = "";
 
   const FIXED_CARDS = CARDS.filter(item => item.fixedScores.length);
 
@@ -345,6 +346,7 @@
       if (data.get("yourMissionMode") === "fixed" && data.get("yourFixedOne") === data.get("yourFixedTwo")) return alert("Choose two different Fixed missions for yourself.");
       if (data.get("opponentMissionMode") === "fixed" && data.get("opponentFixedOne") === data.get("opponentFixedTwo")) return alert("Choose two different Fixed missions for your opponent.");
       localStorage.setItem("arcadienPlayerName", String(data.get("yourName")));
+      stratagemReviewQuery = "";
       currentView = "battle";
       session = createSession(rosterId, roster, Object.fromEntries(data));
       const ownMission = missionFor(roster, session.setup.yourDispositionId, session.setup.opponentDispositionId);
@@ -715,6 +717,7 @@
     if (currentView === "battle") renderBattle();
     if (currentView === "missions") renderMissions();
     if (currentView === "army") renderArmy();
+    if (currentView === "stratagems") renderStratagemReview();
     if (currentView === "ledger") renderLedger();
   }
 
@@ -1103,8 +1106,11 @@
         <header class="playSectionHeading"><div><small>DETACHMENT REFERENCE</small><h2>Detachment Rules</h2></div><span>${detachmentRules.length} ${detachmentRules.length === 1 ? "rule" : "rules"}</span></header>
         <section class="playArmyRules playDetachmentRules">${detachmentRules.length ? detachmentRules.map(renderPlayDetachmentRule).join("") : `<p class="playArmyRulesEmpty">No detachment rule text is available for this roster.</p>`}</section>
       </section>
-      <header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>Combined Units</h2></div><span>${groups.length} units</span></header>
-      <section class="playArmyList">${groups.map(renderArmyGroup).join("")}</section>`;
+      ${[...new Set(groups.map(group => group.playCategory))].map(category => {
+        const units = groups.filter(group => group.playCategory === category);
+        return `<header class="playSectionHeading"><div><small>LOCKED LOADOUTS</small><h2>${escapeHtml(category === "Character" ? "Solo Characters" : category)}</h2></div><span>${units.length} ${units.length === 1 ? "unit" : "units"}</span></header>
+          <section class="playArmyList">${units.map(renderArmyGroup).join("")}</section>`;
+      }).join("")}`;
     content.querySelector("[data-rules-toggle]").onclick = () => {
       armyReferenceOpen = !armyReferenceOpen;
       renderArmy();
@@ -1155,7 +1161,7 @@
   function playRosterGroups() {
     const roster = session.roster;
     const entries = roster.rosterEntries || [];
-    if (!entries.length) return roster.groupedPresentation || [];
+    if (!entries.length) return orderPlayRosterGroups(roster.groupedPresentation || []);
     const byId = new Map(entries.map(entry => [entry.instanceId, entry]));
     const attachments = (roster.armyState?.attachments || []).filter(item => byId.has(item.leaderInstanceId) && byId.has(item.targetInstanceId));
     const presentation = roster.groupedPresentation || [];
@@ -1190,7 +1196,46 @@
       });
       used.add(entry.instanceId);
     }
-    return output;
+    return orderPlayRosterGroups(output);
+  }
+
+  function orderPlayRosterGroups(groups) {
+    const categories = window.CatalogueSections?.SECTION_ORDER || [];
+    const entries = session.roster.rosterEntries?.length
+      ? session.roster.rosterEntries : groups.flatMap(group => group.members || []);
+    const byId = new Map(entries.map(entry => [entry.instanceId, entry]));
+    const counts = new Map();
+    for (const entry of byId.values()) {
+      const key = normalize(entry.name);
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+    const seen = new Map();
+    const labels = new Map();
+    const numbers = new Map();
+    for (const entry of byId.values()) {
+      const key = normalize(entry.name);
+      const number = (seen.get(key) || 0) + 1;
+      seen.set(key, number);
+      if (counts.get(key) > 1) numbers.set(entry.instanceId, number);
+      labels.set(entry.instanceId, `${entry.name}${counts.get(key) > 1 ? ` #${number}` : ""}`);
+    }
+    return groups.map(group => {
+      const members = group.members?.length ? group.members
+        : (group.memberInstanceIds || []).map(id => byId.get(id)).filter(Boolean);
+      const combined = group.kind === "attached" || members.length > 1;
+      const member = members[0] || {};
+      const category = combined ? "Combined Units"
+        : window.CatalogueSections?.sectionForUnit(member, member.keywords || member.categories || []) || "Units";
+      const repeated = members.some(item => numbers.has(item.instanceId));
+      const title = combined && repeated
+        ? members.map(item => labels.get(item.instanceId) || item.name).join(" + ")
+        : `${group.title || member.name || "Unit"}${!combined && numbers.has(member.instanceId) ? ` #${numbers.get(member.instanceId)}` : ""}`;
+      return { ...group, title, baseTitle: group.baseTitle || group.title || member.name, playCategory: category };
+    }).sort((left, right) => {
+      const rank = group => group.playCategory === "Combined Units" ? -1
+        : categories.includes(group.playCategory) ? categories.indexOf(group.playCategory) : categories.length;
+      return rank(left) - rank(right) || left.title.localeCompare(right.title, undefined, { numeric: true, sensitivity: "base" });
+    });
   }
 
   function enhancementPointsForMembers(roster, memberIds) {
@@ -1718,6 +1763,62 @@
     setTimeout(() => { toast.classList.remove("visible"); setTimeout(() => toast.remove(), 220); }, 2600);
   }
 
+  function stratagemReferenceSections() {
+    const roster = session.roster || {};
+    const detachments = roster.detachments?.length ? roster.detachments : roster.detachment ? [roster.detachment] : [];
+    return [
+      { name: "Core stratagems", items: roster.coreStratagems || [] },
+      ...detachments.map(item => ({ name: item.name || "Detachment stratagems", items: item.stratagems || [] }))
+    ].map(section => ({
+      ...section,
+      items: [...new Map(section.items.map(item => [stratagemKey(item), item])).values()]
+    })).filter(section => section.items.length);
+  }
+
+  function stratagemReferenceDescription(item) {
+    return item.description || [
+      item.when && `WHEN: ${item.when}`,
+      (item.targetText || item.target) && `TARGET: ${item.targetText || item.target}`,
+      item.effect && `EFFECT: ${item.effect}`
+    ].filter(Boolean).join("\n\n");
+  }
+
+  function renderStratagemReview() {
+    content.innerHTML = `<section class="playStratagemReview">
+      <header><h2>All stratagems</h2><p>Review every core and selected-detachment stratagem, across all phases and units.</p></header>
+      <label class="playStratagemSearch">Search stratagems<input type="search" data-stratagem-search placeholder="Name, phase, target or effect" value="${escapeHtml(stratagemReviewQuery)}"></label>
+      <div class="playStratagemReviewControls"><button type="button" data-expand-stratagems>Expand all</button><button type="button" data-collapse-stratagems>Collapse all</button></div>
+      <div data-stratagem-results></div>
+    </section>`;
+    content.querySelector("[data-stratagem-search]").oninput = event => {
+      stratagemReviewQuery = event.target.value;
+      renderStratagemReviewResults();
+    };
+    for (const [selector, open] of [["[data-expand-stratagems]", true], ["[data-collapse-stratagems]", false]]) {
+      content.querySelector(selector).onclick = () => {
+        for (const item of content.querySelectorAll(".playStratagemReview .playStratagem")) item.open = open;
+      };
+    }
+    renderStratagemReviewResults();
+  }
+
+  function renderStratagemReviewResults() {
+    const sections = stratagemReferenceSections();
+    const query = normalize(stratagemReviewQuery);
+    const total = sections.reduce((sum, section) => sum + section.items.length, 0);
+    const matches = sections.map(section => ({ ...section, items: section.items.filter(item =>
+      normalize([section.name, item.name, item.phase, item.turn, stratagemReferenceDescription(item)].join(" ")).includes(query)
+    ) })).filter(section => section.items.length);
+    const count = matches.reduce((sum, section) => sum + section.items.length, 0);
+    content.querySelector("[data-stratagem-results]").innerHTML = `
+      <p role="status">${count} of ${total} stratagems</p>
+      ${matches.map(section => `<section class="playStratagemReferenceSection"><h3>${escapeHtml(section.name)}</h3>
+        ${section.items.map(item => `<details class="playStratagem"><summary><span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.turn || "Any turn")} · ${escapeHtml(item.phase || "See timing below")}</small></span><strong>${stratagemCost(item)} CP</strong></summary>
+          <div class="playStratagemText">${formatStratagemDescription(stratagemReferenceDescription(item)) || "<p>No rule text available.</p>"}</div>
+        </details>`).join("")}</section>`).join("")
+        || `<p>${total ? "No stratagems match your search." : "No stratagem rules are included in this saved roster."}</p>`}`;
+  }
+
   function eligibleStratagems(group) {
     const document = session.roster;
     const army = { coreStratagems: document.coreStratagems || [], detachments: document.detachments || (document.detachment ? [document.detachment] : []) };
@@ -1725,7 +1826,7 @@
     const entry = {
       keywords: [...new Set((group.members || []).flatMap(item => item.keywords || []))],
       targetUnitNames: (group.members || []).map(item => item.name),
-      name: group.title
+      name: group.baseTitle || group.title
     };
     const candidates = window.ArmyEngine?.eligibleStratagemsForEntry?.(army, state, entry) || [...army.coreStratagems, ...army.detachments.flatMap(item => item.stratagems || [])];
     return candidates.filter(stratagem => stratagemMatchesWindow(stratagem) && canRefreshKatah(group, stratagem));
