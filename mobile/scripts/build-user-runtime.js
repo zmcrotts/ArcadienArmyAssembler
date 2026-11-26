@@ -20,6 +20,12 @@ const FILES = [
   ["ui/offline-app.js", "offline-app.js"],
   ["ui/play-mode.js", "play-mode.js"],
   ["ui/roster-storage.js", "roster-storage.js"],
+  ["ui/crusades.js", "crusades.js"],
+  ["ui/crusade-trackers-ui.js", "crusade-trackers-ui.js"],
+  ["ui/crusade-death-guard-ui.js", "crusade-death-guard-ui.js"],
+  ["ui/view-state.js", "view-state.js"],
+  ["ui/crusade-bookkeeping-ui.js", "crusade-bookkeeping-ui.js"],
+  ["ui/crusades.css", "crusades.css"],
   ["ui/app.webmanifest", "app.webmanifest"],
   ["ui/download.html", "download.html"],
   ["ui/download-redirect.js", "download-redirect.js"],
@@ -52,6 +58,13 @@ function buildIndex() {
 
   const appVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
   html = html
+    .replace('../../src/domain/crusade.js?v=1', 'domain/crusade.js?v=1')
+    .replace('../../src/domain/crusade-trackers.js?v=1', 'domain/crusade-trackers.js?v=1')
+    .replace('../../src/domain/crusade-death-guard.js?v=1', 'domain/crusade-death-guard.js?v=1')
+    .replace('../../src/domain/crusade-bookkeeping.js?v=1', 'domain/crusade-bookkeeping.js?v=1')
+    .replace('../../src/domain/crusade-eligibility.js?v=1', 'domain/crusade-eligibility.js?v=1')
+    .replace('../../src/domain/crusade-weapons.js?v=1', 'domain/crusade-weapons.js?v=1')
+    .replace('../../ui/crusade-data.js?v=1', 'crusade-data.js?v=1')
     .replaceAll("{{APP_VERSION}}", appVersion)
     .replace(/<script(?:\s+defer)? src="engine-data-milestone15\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
@@ -300,6 +313,7 @@ async function serveRequest(request) {
 }
 
 function main() {
+  require("../../scripts/build-crusade-data").buildCrusadeData();
   fs.rmSync(OUT_DIR, { recursive: true, force: true });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   for (const [source, target] of FILES) copyFile(source, target);

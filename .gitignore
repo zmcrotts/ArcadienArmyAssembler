@@ -14,6 +14,7 @@ ui/army-builder-data.js
 ui/engine-data.js
 ui/engine-data-*.js
 ui/engine-data/
+ui/crusade-data.js
 
 # Generated user-facing desktop/runtime builds
 dist-user/

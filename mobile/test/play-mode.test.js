@@ -54,6 +54,11 @@ test("Army and detachment references tuck behind one collapsed Rules control", (
 
 test("Play Mode packages all 45 disposition-paired terrain layouts", () => {
   assert.equal(terrainManifest.schemaVersion, 1);
+  assert.equal(terrainManifest.sourceVersion, "1.3");
+  assert.equal(terrainManifest.sourceUpdatedAt, "2026-10-14");
+  assert.equal(terrainManifest.sourceDocument, "eng_14-10_wh40k_event_companion-rdwnqprl4c-nj8oqogadv.pdf");
+  assert.equal(terrainManifest.sourceUrl, `https://assets.warhammer-community.com/${terrainManifest.sourceDocument}`);
+  assert.match(terrainManifest.sourceSha256, /^[a-f0-9]{64}$/);
   assert.deepEqual(terrainManifest.sourcePageRange, { first: 9, last: 53 });
   assert.deepEqual(terrainManifest.imageEncoding, { format: "webp", quality: 85, method: 6 });
   assert.equal(terrainManifest.layouts.length, 45);
@@ -413,7 +418,7 @@ test("game setup keeps both player columns aligned without an orphan detachment 
   const opponentSecondaries = source.indexOf('name="opponentMissionMode"');
   assert.ok(yourSecondaries > -1);
   assert.ok(opponentSecondaries > yourSecondaries);
-  assert.match(source, /class="playSetupYou">Your secondaries/);
+  assert.match(source, /class="playSetupYou">Your missions/);
   assert.match(source, /class="playSetupOpponent">Opponent secondaries/);
   assert.match(css, /\.playSetupYou\{grid-column:1\}\.playSetupOpponent\{grid-column:2\}/);
 });

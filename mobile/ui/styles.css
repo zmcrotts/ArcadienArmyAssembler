@@ -890,6 +890,22 @@ html[data-mobile-ui="false"] .gameHistoryCards { flex: 1 1 auto; min-height: 0; 
 }
 
 .startRosterFilterPanel > summary span { font-weight: 400; }
+.startRosterFilterPanel > summary > b { flex: 0 0 auto; }
+.startFilterThemeToggle,.startMobileSettingsPanel { display: none; }
+
+@media (max-width: 860px), (display-mode: standalone) {
+  .startLibraryToolbar .startThemeToggle { display: none; }
+  .startRosterFilterPanel .startFilterThemeToggle { display: inline-flex; margin: 0 10px 12px; }
+  .startFilterThemeToggle button { min-height: 44px; min-width: 56px; }
+  .startMobileSettingsPanel { display: block; }
+  .startLibraryToolbar .startLibraryTabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; margin-top: 8px; width: 100%; min-width: 0; }
+  .startLibraryTabs button { min-height: 44px; min-width: 0; padding: 8px 3px; font-size: 13px; white-space: nowrap; }
+  .startLibraryTabs button span { font-size: 10px; margin-left: 3px; padding: 2px 4px; }
+  .startRosterFilterPanel { margin-top: 8px; }
+  .startRosterFilterPanel > summary { flex-wrap: nowrap; justify-content: space-between; gap: 8px; min-width: 0; min-height: 44px; box-sizing: border-box; white-space: nowrap; }
+  .startRosterFilterPanel > summary > b { font-size: 13px; }
+  .startRosterFilterPanel > summary > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+}
 
 .startRosterFilters {
   align-items: end;

@@ -1,6 +1,10 @@
 {
   "schemaVersion": 1,
-  "sourceDocument": "eng_12-06_warhammer40000_event_companion-s3bfb5f9s1-ivswuij3fo.pdf",
+  "sourceDocument": "eng_14-10_wh40k_event_companion-rdwnqprl4c-nj8oqogadv.pdf",
+  "sourceVersion": "1.3",
+  "sourceUrl": "https://assets.warhammer-community.com/eng_14-10_wh40k_event_companion-rdwnqprl4c-nj8oqogadv.pdf",
+  "sourceUpdatedAt": "2026-10-14",
+  "sourceSha256": "187253a9b6ea377f5e44d1148454bd042b165b03bb5c45c51a5880762bf56dc2",
   "sourcePageRange": {
     "first": 9,
     "last": 53
@@ -56,7 +60,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_take_and_hold_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "4a229d0a10641dfea8cc53c1f16084d6ffa4074b9e3ac69464feb826d3d2f4d9"
+      "sha256": "140071c75b75464f7c797276047564566f0ecb1e45e01e6d4391f26dfb913e0e"
     },
     {
       "id": "take_and_hold_x_take_and_hold_option_c",
@@ -75,7 +79,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_take_and_hold_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "c054135f9d743c7750c4e5d53ec44649cf663574af449c91f325815d4abf0cdd"
+      "sha256": "938e71a075ae442e1d1556cecb8da5e11201e91d9928ba5379cd4c0baae6a7ef"
     },
     {
       "id": "take_and_hold_x_purge_the_foe_option_a",
@@ -94,7 +98,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_purge_the_foe_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "4e94c5fd90a8b736115c134e405b5f393d35d0267a440544a7f7742cb01d46e9"
+      "sha256": "2b93cf935246b5f99462e7300cb4fbee0843859387d591586e94b9a1d6f9d5d5"
     },
     {
       "id": "take_and_hold_x_purge_the_foe_option_b",
@@ -113,7 +117,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_purge_the_foe_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "a05f0945b75349734345daf738c402553659e8d4da6422a3aa4755e55bf84112"
+      "sha256": "fee0c402e163693dd999a02431bdc26a9dd74d6224a381dc4d102341d4d182b3"
     },
     {
       "id": "take_and_hold_x_purge_the_foe_option_c",
@@ -132,7 +136,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_purge_the_foe_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "2fbefd5a82330f8dfbd67f0033614da82a1dec122907ace47bdf4fa4ec9d6d53"
+      "sha256": "ca7e688f32af228104425ecdddccfb875b55a987e201d8793454387215523137"
     },
     {
       "id": "take_and_hold_x_disruption_option_a",
@@ -151,7 +155,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_disruption_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "84fb6fe6b27f72c0d932706f8258a489bec65a8228d2bfd6a13be6b06d78cada"
+      "sha256": "1441b7b2bfca383acf2ad9fc73bfa9ac64e075382001d5664df30e71c92ff476"
     },
     {
       "id": "take_and_hold_x_disruption_option_b",
@@ -170,7 +174,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_disruption_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "156d8b2b5bf936c057b901e9d36629973e40453e69f6187f25acef1854912862"
+      "sha256": "f8c90cff6bdca6f0776cde4c816a93c9198be230334ed6040577fcd7869d3da7"
     },
     {
       "id": "take_and_hold_x_disruption_option_c",
@@ -189,7 +193,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_disruption_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "62be781004f68bce850434fa2badb33aab9b8e477bbb9265c2efcb5015fa0cd4"
+      "sha256": "a0d0eec1a0e34836be7b609112eb99e3c7baa1502c3a5f63278cbcf8f22ac54c"
     },
     {
       "id": "take_and_hold_x_reconnaissance_option_a",
@@ -208,7 +212,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_reconnaissance_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "fdb8488e39d1268073b899c05aa64c75a58c36fb698fd60b02b25de2139ba19b"
+      "sha256": "558b5f9894dbb0a9ef318031ee43fb4ae980269c8d20c9912246406e8e33ca56"
     },
     {
       "id": "take_and_hold_x_reconnaissance_option_b",
@@ -246,7 +250,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_reconnaissance_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "c41f461769763ec3923afdfe17bb605ee233d205918419c26a279b8fc230bd8e"
+      "sha256": "a1eec9007e196a36518a9005e3a963b464de56cf302354f1dbc51cfb0312eddd"
     },
     {
       "id": "take_and_hold_x_priority_assets_option_a",
@@ -284,7 +288,7 @@
       "image": "assets/11th/terrain-layouts/take_and_hold_x_priority_assets_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "c9c3cf9ef3313647738c40d7c69d2ac8ae54291019561f1d8a0a5d2922f1caa9"
+      "sha256": "1878bd1b6c30bcd88f26ba892c0beddfadd0a18dda891b0b34ad78d1d3d2d63a"
     },
     {
       "id": "take_and_hold_x_priority_assets_option_c",
@@ -322,7 +326,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_purge_the_foe_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "15c605ba3db86a8bb12d4712fd49c879c3a016b28468183ff18185b78cf6a0bf"
+      "sha256": "1ea6d8ce731485fa1dce9469425952ec118cd4550c18b43340c9423a8b662132"
     },
     {
       "id": "purge_the_foe_x_purge_the_foe_option_b",
@@ -341,7 +345,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_purge_the_foe_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "9206d764c38fd3812452c7e45b7c96cd326c59588ba568c219b0da46ffe7b41b"
+      "sha256": "5db9b66895e52b0d6542f054c59f1c1cad240cd6245b8ed4ea29d03fa6b85503"
     },
     {
       "id": "purge_the_foe_x_purge_the_foe_option_c",
@@ -360,7 +364,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_purge_the_foe_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "ab1f695aa6bc6b999ad3819e2efd68ced793b6cb74637060e4f36397b21fa30b"
+      "sha256": "ae38b4599e21bc2b2c448c8bca26f307a5ed9284b924d250a044c814c47cec6a"
     },
     {
       "id": "purge_the_foe_x_disruption_option_a",
@@ -379,7 +383,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_disruption_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "aa393738a683649d5b0a6c25f449512e717dd669cd548b5430e0998887f6edcf"
+      "sha256": "0b987f69f10a74c0e3300cc0d25639b527cc29a95abb6cb2a8991a2045c052e0"
     },
     {
       "id": "purge_the_foe_x_disruption_option_b",
@@ -398,7 +402,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_disruption_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "6318fef6cf2078b442b7b90c7f264b510d8bd89d6b47a373300c0f9260f18e15"
+      "sha256": "123525678a8316d4779836f2d40a80b5f24728380b001ebb9e238fd92800ad7b"
     },
     {
       "id": "purge_the_foe_x_disruption_option_c",
@@ -417,7 +421,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_disruption_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "6d693e7f939d9eb598f13d56d60ff48e9e90acb76896ea4d470a5803d8ef1e05"
+      "sha256": "5c9f7c7f7b0da314692c6f5e22a836b10f345860573227204ea722253d2cf893"
     },
     {
       "id": "purge_the_foe_x_reconnaissance_option_a",
@@ -436,7 +440,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_reconnaissance_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "5f24053ef1d7fb6d12d203168af193449c337ed719f692a9b9c24293e3640c4e"
+      "sha256": "6f982a99269802ec4cd909c5e7142f4451b8ca4f18efe2b37d4dd38bb6c154e9"
     },
     {
       "id": "purge_the_foe_x_reconnaissance_option_b",
@@ -474,7 +478,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_reconnaissance_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "ecf74e821331cb0dd251d0210817b689ea1bcef93b61674a641df343c72d3403"
+      "sha256": "85bace34837cdd4cbf2e1a9b5cc59fdf8f1908c83eddd44fd3bf03942c7a3e5c"
     },
     {
       "id": "purge_the_foe_x_priority_assets_option_a",
@@ -512,7 +516,7 @@
       "image": "assets/11th/terrain-layouts/purge_the_foe_x_priority_assets_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "921955a02cfb43ff3c1625318e2b1939a7b8b3faf6576a4fe0c29cd2c2f0eda0"
+      "sha256": "b91ea97c4ddf1d53cb0a77b8cd1aac3e783d3d56b71953925a18f4a6d9ad3e32"
     },
     {
       "id": "purge_the_foe_x_priority_assets_option_c",
@@ -550,7 +554,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_disruption_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "371e78bce1b99782894f828fee3c763145e343bc28911a3c0bcde1bdfb4b780c"
+      "sha256": "f25e7888e61130175cc7679a3963d63b036c70a90c8e091763b425d7ba3a5b7b"
     },
     {
       "id": "disruption_x_disruption_option_b",
@@ -569,7 +573,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_disruption_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "49dc1b6d8622e5e24c2b03ec4bddad2db3661ac56e033fb8948716fb29f1f9ed"
+      "sha256": "e69c733b366a900f7c06bd3a1c2186ca03137bd9cbe7e346f3371a508610737b"
     },
     {
       "id": "disruption_x_disruption_option_c",
@@ -588,7 +592,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_disruption_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "81ef2ebee6ff36ffbbc3eb87c2eb50c2414f33ce7d82a140ec1c9dca93519fa5"
+      "sha256": "414cbf1fd7559339b980835ae59663e00048b09b82b698f29f977cdc6236c4c3"
     },
     {
       "id": "disruption_x_reconnaissance_option_a",
@@ -607,7 +611,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_reconnaissance_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "b7cff07efa8902f8243c435075b980641fc439de381f380e137378e6a3c51f16"
+      "sha256": "547eea906590b659fe593d0ad54189c6c201cbc20422f1cf16bf1474f0b50c94"
     },
     {
       "id": "disruption_x_reconnaissance_option_b",
@@ -626,7 +630,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_reconnaissance_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "58c440deaa1782c4634d6369d45e3f438672c33cf3745eb8bbc517cccb5261c2"
+      "sha256": "77344f3c1e2db0f216bab3d2b222d8155b5494964dccc493053f7863f5a36e38"
     },
     {
       "id": "disruption_x_reconnaissance_option_c",
@@ -645,7 +649,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_reconnaissance_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "ed60ce99281655e20dbc746c641fe5f0844f9744d821d78074080a3dd62e60ff"
+      "sha256": "7b3381ac76478c16d68ae0f62a858a94e31e27ca47e597b8e76cde7769b5fed0"
     },
     {
       "id": "disruption_x_priority_assets_option_a",
@@ -664,7 +668,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_priority_assets_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "bb7c9f4d888c4a280c98bc619889a87516b23310a36cfc746b361cda673c1a9f"
+      "sha256": "efaa20a5cc94442695a4151739c3903c4a428f929a83aef3984098ca521a809c"
     },
     {
       "id": "disruption_x_priority_assets_option_b",
@@ -683,7 +687,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_priority_assets_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "f1a435e4006df4e07c3427e56a90ee3c3cd6ea94bbe385390fff6c70c230af7d"
+      "sha256": "d44352a0a6f1560677046a179bebf8af16ae0dde40c0cb375c85eb036a55c639"
     },
     {
       "id": "disruption_x_priority_assets_option_c",
@@ -702,7 +706,7 @@
       "image": "assets/11th/terrain-layouts/disruption_x_priority_assets_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "5159a900460c83bb5f55af2297b6c75336b3e131fda607dc9f6b30c49a7a7e2e"
+      "sha256": "b5354a9eee66fad3193f4710852d29aa0c7243eb4b98e51f68bc6aac6ba3ded2"
     },
     {
       "id": "reconnaissance_x_reconnaissance_option_a",
@@ -721,7 +725,7 @@
       "image": "assets/11th/terrain-layouts/reconnaissance_x_reconnaissance_option_a.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "566e8e4622486f8c807cf2d18e43b53f04d255f9528430bcd5493a0ad713cca7"
+      "sha256": "960a806511db872d57094c47e3c6aa8adba4c845edc7ab0a979c78215582218a"
     },
     {
       "id": "reconnaissance_x_reconnaissance_option_b",
@@ -740,7 +744,7 @@
       "image": "assets/11th/terrain-layouts/reconnaissance_x_reconnaissance_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "71db4a01844331bfba22ed399d4b80f7418c78b79a28ccd3f541cee2b1269da8"
+      "sha256": "1c3e9bc5ef09ec0859ee410e0bc8815f5d42598b340d237362165c67e07eab03"
     },
     {
       "id": "reconnaissance_x_reconnaissance_option_c",
@@ -759,7 +763,7 @@
       "image": "assets/11th/terrain-layouts/reconnaissance_x_reconnaissance_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "930370d1931068650f6d1746745ebd2e0a7c9305099bb5d026f51a7bcb47298e"
+      "sha256": "d9614ab08703f39bed3f05ff95baccf225a10b83bb30e7323e6aff37f8a82a93"
     },
     {
       "id": "reconnaissance_x_priority_assets_option_a",
@@ -797,7 +801,7 @@
       "image": "assets/11th/terrain-layouts/reconnaissance_x_priority_assets_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "c9df8875fe808f370de267f71904aecfbcc9155c3c47b793884f4f0c8813743b"
+      "sha256": "e5dc41b1a07a7388418216bb2c64c74bf74b5ca6e5129f95ba1cb5e5d4df04fd"
     },
     {
       "id": "reconnaissance_x_priority_assets_option_c",
@@ -854,7 +858,7 @@
       "image": "assets/11th/terrain-layouts/priority_assets_x_priority_assets_option_b.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "68a1c524dd7dd9022ff4f75bc7c685b87d68dd0e9c04b3d57817721ca7632166"
+      "sha256": "5991baf8a2b08af3c41da329d1dfb7e9b2ff93bf66fa11f3db97817567312b6b"
     },
     {
       "id": "priority_assets_x_priority_assets_option_c",
@@ -873,7 +877,7 @@
       "image": "assets/11th/terrain-layouts/priority_assets_x_priority_assets_option_c.webp",
       "width": 1641,
       "height": 1966,
-      "sha256": "24c55d57b69037a4e21207d34ace801c63e52fa024822042674f9db831823918"
+      "sha256": "29abd32f400e540d155ca4bf3901285ef3c82dc4f5db2b9521a10b94dfb9c83a"
     }
   ]
 }

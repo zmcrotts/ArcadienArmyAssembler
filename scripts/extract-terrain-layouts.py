@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pypdfium2 as pdfium
 
@@ -40,6 +42,8 @@ def slug(value: str, separator: str = "-") -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("pdf", type=Path)
+    parser.add_argument("--source-url")
+    parser.add_argument("--source-updated")
     parser.add_argument(
         "--output",
         type=Path,
@@ -52,6 +56,22 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=True)
 
     document = pdfium.PdfDocument(str(args.pdf))
+    text_page = document[0].get_textpage()
+    cover = text_page.get_text_range()
+    text_page.close()
+    version = re.search(r"VERSION\s+(\d+\.\d+)", cover, re.IGNORECASE)
+    normalize = lambda value: re.sub(r"[^A-Z0-9]", "", value.upper())
+    # Verify the full page-to-matchup mapping before replacing any assets.
+    for first_page, red_name, red_mission, blue_name, blue_mission in PAIRINGS:
+        for option_index, option in enumerate("ABC"):
+            page = document[first_page + option_index - 1]
+            text_page = page.get_textpage()
+            text = normalize(text_page.get_text_range())
+            text_page.close()
+            page.close()
+            for expected in (red_name, red_mission, blue_name, blue_mission, f"LAYOUT {option}"):
+                if normalize(expected) not in text:
+                    raise ValueError(f"Unexpected layout mapping on page {first_page + option_index}: {expected}")
     scale = DPI / 72
     crop = tuple(round(value * scale) for value in CROP_POINTS)
     layouts = []
@@ -93,7 +113,11 @@ def main() -> None:
 
     manifest = {
         "schemaVersion": 1,
-        "sourceDocument": args.pdf.name,
+        "sourceDocument": Path(urlparse(args.source_url).path).name if args.source_url else args.pdf.name,
+        "sourceVersion": version.group(1) if version else None,
+        "sourceUrl": args.source_url,
+        "sourceUpdatedAt": args.source_updated,
+        "sourceSha256": hashlib.sha256(args.pdf.read_bytes()).hexdigest(),
         "sourcePageRange": {"first": 9, "last": 53},
         "crop": {"dpi": DPI, "pdfPoints": list(CROP_POINTS)},
         "imageEncoding": {"format": "webp", "quality": WEBP_QUALITY, "method": WEBP_METHOD},
@@ -107,6 +131,7 @@ def main() -> None:
         newline="\n",
     )
     print(f"Extracted {len(layouts)} terrain layouts to {args.output}")
+    document.close()
 
 
 if __name__ == "__main__":

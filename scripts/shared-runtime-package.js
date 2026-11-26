@@ -13,6 +13,13 @@ const SHARED_RUNTIME_FILES = Object.freeze([
   ["node_modules/qrcode-generator/qrcode.js", "vendor/qrcode-generator.js"],
   ["src/domain/roster-qr.js", "domain/roster-qr.js"],
   ["src/domain/sheets.js", "domain/sheets.js"],
+  ["src/domain/crusade.js", "domain/crusade.js"],
+  ["src/domain/crusade-trackers.js", "domain/crusade-trackers.js"],
+  ["src/domain/crusade-death-guard.js", "domain/crusade-death-guard.js"],
+  ["src/domain/crusade-bookkeeping.js", "domain/crusade-bookkeeping.js"],
+  ["src/domain/crusade-eligibility.js", "domain/crusade-eligibility.js"],
+  ["src/domain/crusade-weapons.js", "domain/crusade-weapons.js"],
+  ["ui/crusade-data.js", "crusade-data.js"],
   ["data/manual-rules/40k-compactor-skippable-wargear.json", "data/40k-compactor-skippable-wargear.json"]
 ]);
 

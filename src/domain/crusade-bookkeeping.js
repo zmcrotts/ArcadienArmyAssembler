@@ -1,0 +1,112 @@
+"use strict";
+(function install(global){
+  const M=()=>global.ArcadienCrusadeModel||(typeof require==='function'?require('./crusade'):null);
+  const W=()=>global.ArcadienCrusadeWeapons||(typeof require==='function'?require('./crusade-weapons'):null);
+  const E=()=>global.ArcadienCrusadeEligibility||(typeof require==='function'?require('./crusade-eligibility'):null);
+  const copy=x=>JSON.parse(JSON.stringify(x)),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),normal=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const has=(u,key)=>(u.keywords||[]).some(k=>normal(k)===normal(key))||Object.entries(u.roles||{}).some(([k,v])=>v&&normal(k)===normal(key));
+  const immune=u=>['epichero','swarm','fortification','poxwalkers','plaguelegions'].some(k=>has(u,k))||/poxwalkers/i.test(u.unitType);
+  const honours=u=>u.awards.filter(a=>a.kind!=='scar'),scars=u=>u.awards.filter(a=>a.kind==='scar');
+  const limit=u=>has(u,'character')||u.progression?.legendaryVeterans?6:3;
+  const get=(f,id)=>[...f.units,...(f.retiredUnits||[])].find(u=>u.id===id)||(()=>{throw Error('Choose a unit in this Order of Battle.');})();
+  const claims=u=>u.progression?.claimedAdvancements||Array.from({length:Math.min(M().rankFor(u.xp).index,honours(u).length)},(_,i)=>i+1);
+  const pending=u=>immune(u)?[]:Array.from({length:has(u,'character')||u.progression?.legendaryVeterans?M().rankFor(u.xp).index:Math.min(2,M().rankFor(u.xp).index)},(_,i)=>i+1).filter(i=>!claims(u).includes(i));
+  function init(u){u.progression||={claimedAdvancements:claims(u)};u.progression.claimedAdvancements||=claims(u);return u.progression;}
+  function integer(v,label,min=0,max=1000000){if(v==null||v===''||!Number.isSafeInteger(Number(v))||Number(v)<min||Number(v)>max)throw Error(`${label} must be a whole number from ${min} to ${max}.`);return Number(v);}
+  function note(v,label='Reason'){if(typeof v!=='string'||!v.trim())throw Error(`Enter a ${label.toLowerCase()}.`);return v.trim();}
+  function event(u,category,name,extra={}){u.history.push({id:M().uid(),type:'event',at:new Date().toISOString(),category,name,...extra});}
+  function transact(force,label,fn){
+    M().validateForce(force);const n=copy(force);fn(n);const changes=[];
+    for(const key of ['units','retiredUnits','battles','requisitions']){const before=force[key]||[],after=n[key]||[];for(const id of new Set([...before.map(u=>u.id),...after.map(u=>u.id)])){const a=before.find(u=>u.id===id)||null,b=after.find(u=>u.id===id)||null;if(!same(a,b))changes.push({kind:'unit',field:key,id,before:a,after:b,index:before.findIndex(u=>u.id===id)});}}
+    for(const key of ['requisitionPoints','supplyLimit','builderDocument','name','packs','notes']){const a=force[key]??null,b=n[key]??null;if(!same(a,b))changes.push({kind:'field',field:key,before:a,after:b});}
+    if(!changes.length)throw Error('No changes to save.');n.bookkeeping||={version:1,history:[]};n.bookkeeping.history.push({id:M().uid(),at:new Date().toISOString(),label,changes:copy(changes)});n.updatedAt=new Date().toISOString();return M().validateForce(n);
+  }
+  function undo(force){
+    const n=copy(force),h=n.bookkeeping?.history.findLast(h=>!h.undoneAt);if(!h)throw Error('No bookkeeping action to undo.');
+    for(const c of h.changes){const current=c.kind==='unit'?(n[c.field]||[]).find(u=>u.id===c.id)||null:n[c.field]??null;if(!same(current,c.after))throw Error('Later changes affect this action. Undo those changes first so no newer records are overwritten.');}
+    for(const c of [...h.changes].reverse())if(c.kind==='unit'){n[c.field]=(n[c.field]||[]).filter(u=>u.id!==c.id);if(c.before)n[c.field].splice(Math.max(0,c.index??n[c.field].length),0,copy(c.before));}else if(c.before===null)delete n[c.field];else n[c.field]=copy(c.before);
+    h.undoneAt=new Date().toISOString();n.updatedAt=h.undoneAt;return M().validateForce(n);
+  }
+  function removeAward(u,id){const a=u.awards.find(a=>a.id===id);if(!a)throw Error('Choose an existing award.');u.awards=u.awards.filter(a=>a.id!==id);if(a.weaponModificationId)u.weaponModifications=(u.weaponModifications||[]).filter(w=>w.id!==a.weaponModificationId);return a;}
+  function remove(force,unitId,awardId){return transact(force,'Removed an award',n=>{const u=get(n,unitId),a=removeAward(u,awardId);if(a.advancementRank)init(u).claimedAdvancements=claims(u).filter(rank=>rank!==a.advancementRank);event(u,'award','Removed '+a.name);});}
+  function checkAward(f,u,a,options={},catalog){
+    if(!a?.id||!a.name||typeof a.description!=='string')throw Error('Choose an award.');const override=Boolean(options.overrideReason?.trim());
+    if(!override){if(immune(u)&&!(u.deathGuard?.spreadingHonourPending&&a.kind!=='scar'))throw Error('This unit cannot normally gain Honours or Scars. Use a documented house-rule override for an exception.');
+      if(catalog){const eligibility=E().assess(a,u,f,catalog);if(['foreign','restricted'].includes(eligibility.status))throw Error(eligibility.reason);if(eligibility.status==='review'&&!options.conditionsConfirmed)throw Error('Confirm the source conditions marked for review.');}
+      if(a.kind==='scar'&&scars(u).length>=3)throw Error('The unit already has three Battle Scars.');
+      if(a.kind!=='scar'&&honours(u).length>=limit(u)&&!honours(u).some(a=>a.id===options.replaceId))throw Error(`Honour limit ${limit(u)} reached. Select an existing Honour to replace.`);
+    }
+    if(u.awards.some(x=>x.id===a.id))throw Error('This unit already has that award.');
+  }
+  function entitlement(u,options){if(options.overrideReason?.trim())return;if(options.source&&!['advancement','bonus'].includes(options.source))throw Error('Choose a rank advancement or a confirmed bonus Honour.');const p=pending(u);if((options.source||'advancement')==='advancement'&&!p.length)throw Error('No unclaimed rank advancement. Select a confirmed bonus Honour or document a house-rule override.');if(options.source==='bonus'&&!options.bonusConfirmed)throw Error('Confirm the mission or faction rule granting this extra Honour.');}
+  function consume(u,options){if((options.source||'advancement')==='advancement'&&!options.overrideReason?.trim()){const p=pending(u);if(p.length){init(u).claimedAdvancements.push(p[0]);return p[0];}}return null;}
+  function grant(force,unitId,a,options={},catalog){return transact(force,'Assigned '+a?.name,n=>{const u=get(n,unitId);checkAward(n,u,a,options,catalog);if(a.kind!=='scar')entitlement(u,options);init(u);if(options.replaceId)removeAward(u,options.replaceId);u.awards.push({...copy(a),crusadePoints:a.kind==='scar'?-1:a.kind==='honour'?(has(u,'titanic')?2:1):Number(a.crusadePoints||1),...(options.overrideReason?{houseRule:note(options.overrideReason)}:{})});if(a.kind!=='scar'){const claimed=consume(u,options);if(claimed)u.awards.at(-1).advancementRank=claimed;}if(options.redemptionBonus){if(a.kind!=='honour'||!u.redemption?.additionalTraitUnclaimed)throw Error('No unclaimed Glorious Redemption Battle Trait.');u.redemption.additionalTraitUnclaimed=false;u.redemption.additionalTraitId=a.id;}if(u.deathGuard?.pendingHonours&&a.kind!=='scar')u.deathGuard.pendingHonours--;if(u.deathGuard?.pendingScars&&a.kind==='scar')u.deathGuard.pendingScars--;if(u.deathGuard?.spreadingHonourPending&&a.kind!=='scar')u.deathGuard.spreadingHonourPending=false;event(u,'award',`Gained ${a.name}${options.overrideReason?' · HOUSE RULE: '+options.overrideReason:''}`);});}
+  function modifyWeapon(force,unitId,target,choices,options={}){return transact(force,'Modified one weapon',n=>{let u=get(n,unitId);const placeholder={id:'new-weapon',name:'Weapon Modification',description:'One weapon',kind:'weapon'};checkAward(n,u,placeholder,options);entitlement(u,options);init(u);if(options.replaceId)removeAward(u,options.replaceId);const changed=W().assign(u,target,choices,options);const claimed=consume(changed,options);if(claimed)changed.awards.at(-1).advancementRank=claimed;if(options.overrideReason)changed.awards.at(-1).houseRule=note(options.overrideReason);n.units[n.units.findIndex(x=>x.id===unitId)]=changed;});}
+  function xpPreview(u,input){const kills=integer(input.kills??0,'Kills'),dealer=Math.floor((u.kills+kills)/3)-Math.floor(u.kills/3),battle=input.battleExperience===false?0:1,agenda=integer(input.agendaXP??0,'Agenda XP'),bonus=integer(input.bonusXP??0,'Bonus XP'),greatness=input.marked?3:0;return {battle,dealer,agenda,bonus,greatness,total:immune(u)?0:battle+dealer+agenda+bonus+greatness};}
+  function snapshot(force,ids,roster){const selected=new Set(ids),units=ids.map(id=>copy(get(force,id)));let doc=roster?copy(roster):M().toRosterDocument(force);
+    if(!roster){doc.rosterEntries=units.map(u=>({...copy(u.record),instanceId:u.id,configured:{...copy(u.record.configured||{}),weapons:W().profiles(u)}}));doc.enhancements=(doc.enhancements||[]).filter(e=>selected.has(e.bearerInstanceId));doc.crusade={forceId:force.id,forceName:force.name,unitIds:[...ids],units:units.map(u=>({id:u.id,name:u.name,unitType:u.unitType,points:u.points})),unitRecords:copy(units),agendas:[]};}
+    return {version:1,createdAt:new Date().toISOString(),roster:doc,unitRecords:copy(roster?.crusade?.unitRecords||units),crusadePoints:roster?.crusade?.crusadePoints??M().summary({...force,units}).crusadePoints};
+  }
+  function wrapUp(force,input,catalog){return transact(force,'Post-battle wrap-up',n=>{
+    if(!['Victory','Defeat','Draw'].includes(input.result)||!/^\d{4}-\d{2}-\d{2}$/.test(input.date)||!Number.isFinite(Date.parse(input.date)))throw Error('Choose a valid battle date and result.');
+    const entries=input.units;if(!Array.isArray(entries)||!entries.length||new Set(entries.map(x=>x.unitId)).size!==entries.length)throw Error('Select participating units without duplicates.');
+    if(input.sourceGameId&&n.battles?.some(b=>b.sourceGameId===input.sourceGameId))throw Error('This saved game has already been wrapped up.');
+    if(input.sourceRoster&&(input.sourceRoster.crusade?.forceId!==n.id||!same([...input.sourceRoster.crusade.unitIds].sort(),entries.map(x=>x.unitId).sort())))throw Error('Participating units must match the locked game snapshot.');
+    if(entries.filter(x=>x.marked).length>1&&!input.additionalGreatnessReason?.trim())throw Error('Enter the rule allowing additional Marked for Greatness units.');
+    const id=M().uid(),b={id,date:input.date,opponent:String(input.opponent||''),result:input.result,unitIds:entries.map(e=>e.unitId),survivedUnitIds:entries.filter(e=>!e.destroyed).map(e=>e.unitId),sourceGameId:input.sourceGameId||null,snapshot:snapshot(n,entries.map(e=>e.unitId),input.sourceRoster),wrapUp:[],agendaXPIncluded:true,additionalGreatnessReason:input.additionalGreatnessReason||''};
+    for(const entry of entries){const u=get(n,entry.unitId);init(u);const oldRank=M().rankFor(u.xp),xp=xpPreview(u,entry),oldXP=u.xp;u.kills+=integer(entry.kills??0,'Kills');u.games++;if(input.result==='Victory')u.wins++;if(!entry.destroyed)u.survived++;
+      u.xp=Math.min(immune(u)?u.xp:has(u,'character')||u.progression.legendaryVeterans?1000000:Math.max(30,u.xp),u.xp+xp.total);
+      const injury={result:'Not required'};if(entry.destroyed&&!immune(u)){
+        const roll=integer(entry.outOfActionRoll,'Out of Action D6',1,6);injury.roll=roll;injury.result=roll===1?'Failed':'Passed';
+        if(roll===1){const outcome=entry.injuryOutcome;
+          if(outcome==='scar'){const a=entry.scar;checkAward(n,u,a,{conditionsConfirmed:entry.conditionsConfirmed},catalog);if(a.kind!=='scar')throw Error('Select an eligible Battle Scar.');u.awards.push(copy(a));injury.scar=copy(a);}
+          else if(outcome==='honour-loss'){const a=u.awards.find(a=>a.id===entry.loseHonourId&&a.kind!=='scar');if(!a)throw Error('Devastating Blow requires an existing Battle Honour.');removeAward(u,a.id);injury.lostHonour=copy(a);}
+          else if(outcome==='xp-loss'){injury.houseRule=note(entry.overrideReason,'XP-loss house rule');injury.xpLost=Math.min(u.xp,integer(entry.xpLoss,'XP lost',1,6));u.xp-=injury.xpLost;}
+          else if(outcome==='retire'){if(scars(u).length<3||honours(u).length)throw Error('Forced retirement requires three Scars and no remaining Honours.');retireInPlace(n,u,'Destroyed after repeated failed Out of Action tests');injury.retired=true;}
+          else if(outcome==='defer'){u.progression.pendingInjury={battleId:id,roll};injury.pending=true;}
+          else throw Error('Choose the failed Out of Action result.');
+        }
+      }else if(entry.destroyed&&immune(u))injury.result='Automatically passed';
+      if(u.deathGuard)delete u.deathGuard.temporaryTrait;
+      event(u,'battle',`${input.result} vs ${b.opponent||'opponent'} · ${entry.kills||0} kills · ${u.xp-oldXP>=0?'+':''}${u.xp-oldXP} XP`,{battleId:id,xp:copy(xp),injury});const rank=M().rankFor(u.xp);if(rank.index>oldRank.index)event(u,'rank',`Promoted to ${rank.name}`,{battleId:id});b.wrapUp.push({unitId:u.id,name:u.name,kills:entry.kills||0,xp:copy(xp),xpApplied:u.xp-oldXP,marked:Boolean(entry.marked),destroyed:Boolean(entry.destroyed),injury});
+    }
+    n.battles||=[];n.battles.push(b);const before=n.requisitionPoints;n.requisitionPoints=Math.min(10,before+1);b.requisitionPointsGained=n.requisitionPoints-before;
+  });}
+  function retireInPlace(n,u,reason){n.units=n.units.filter(x=>x.id!==u.id);n.retiredUnits||=[];if(!n.retiredUnits.some(x=>x.id===u.id))n.retiredUnits.push(u);u.retiredAt=new Date().toISOString();u.retirementReason=reason;event(u,'retirement','Retired · '+reason);}
+  function retire(force,id,reason){return transact(force,'Retired a unit',n=>{const u=n.units.find(u=>u.id===id);if(!u)throw Error('Choose an active unit.');retireInPlace(n,u,note(reason,'retirement reason'));});}
+  function resolveInjury(force,id,input,catalog){return transact(force,'Resolved Out of Action result',n=>{const u=get(n,id),p=u.progression?.pendingInjury;if(!p)throw Error('No pending injury.');const result={result:'Failed',roll:p.roll};
+    if(input.injuryOutcome==='scar'){checkAward(n,u,input.scar,{conditionsConfirmed:input.conditionsConfirmed},catalog);if(input.scar.kind!=='scar')throw Error('Select a Battle Scar.');u.awards.push(copy(input.scar));result.scar=copy(input.scar);}
+    else if(input.injuryOutcome==='honour-loss'){const a=u.awards.find(a=>a.id===input.loseHonourId&&a.kind!=='scar');if(!a)throw Error('Choose an existing Honour.');result.lostHonour=removeAward(u,a.id);}
+    else if(input.injuryOutcome==='xp-loss'){result.houseRule=note(input.overrideReason,'XP-loss house rule');result.xpLost=Math.min(u.xp,integer(input.xpLoss,'XP lost',1,6));u.xp-=result.xpLost;}
+    else if(input.injuryOutcome==='retire'){if(scars(u).length<3||honours(u).length)throw Error('Forced retirement requires three Scars and no Honours.');retireInPlace(n,u,'Destroyed after repeated Out of Action failures');result.retired=true;}
+    else throw Error('Choose the injury outcome.');const battle=n.battles.find(b=>b.id===p.battleId),entry=battle?.wrapUp?.find(e=>e.unitId===id);if(entry)entry.injury=result;delete u.progression.pendingInjury;event(u,'injury','Out of Action resolved · '+(result.scar?.name||result.lostHonour?.name||result.xpLost+' XP lost'),{battleId:p.battleId});});}
+  function restore(force,id){return transact(force,'Restored a retired unit',n=>{const u=(n.retiredUnits||[]).find(u=>u.id===id);if(!u)throw Error('Choose a retired unit.');n.retiredUnits=n.retiredUnits.filter(x=>x.id!==id);n.units.push(u);delete u.retiredAt;event(u,'retirement','Returned to active service');});}
+  const REQUISITIONS=[['supply','Increase Supply Limit'],['repair','Repair and Recuperate'],['veterans','Legendary Veterans'],['rearm','Rearm and Resupply'],['recruits','Fresh Recruits'],['renowned','Renowned Heroes'],['custom','Other requisition / house rule']].map(([id,name])=>({id,name}));
+  function cost(f,key,u){const h=u?honours(u).length:0;return key==='repair'?Math.min(5,1+h):key==='recruits'?Math.min(4,1+Math.ceil(h/2)):key==='renowned'?Math.min(3,1+f.units.filter(x=>x.id!==u?.id).reduce((s,x)=>s+x.enhancements.length,0)):key==='veterans'?3:1;}
+  function requisition(force,input){return transact(force,'Purchased requisition',n=>{const def=REQUISITIONS.find(r=>r.id===input.key);if(!def)throw Error('Choose a requisition.');const u=input.unitId?get(n,input.unitId):null,c=input.key==='custom'?integer(input.cost,'RP cost',1,10):cost(n,input.key,u);if(n.requisitionPoints<c)throw Error('Not enough Requisition Points.');const record={id:M().uid(),key:input.key,name:input.key==='custom'?note(input.name,'requisition name'):def.name,cost:c,at:new Date().toISOString(),unitId:u?.id||null,notes:String(input.notes||''),state:'Completed',rpBefore:n.requisitionPoints};
+    if(input.key==='supply')n.supplyLimit+=200;
+    else if(input.key==='repair'){if(!n.battles?.length)throw Error('Repair and Recuperate is purchased after a battle.');if(!u||!scars(u).some(a=>a.id===input.scarId))throw Error('Choose the Battle Scar to remove.');record.removedScar=removeAward(u,input.scarId);}
+    else if(input.key==='veterans'){if(!u||has(u,'character')||u.xp<30||u.progression?.legendaryVeterans)throw Error('Legendary Veterans requires a non-Character at 30 XP without this requisition.');init(u).legendaryVeterans=true;}
+    else if(['rearm','recruits','renowned'].includes(input.key)){if(!u||!n.units.some(x=>x.id===u.id))throw Error('Choose an active unit.');if((n.requisitions||[]).some(r=>r.unitId===u.id&&r.state==='Awaiting catalogue change'))throw Error('Finish or undo the pending catalogue purchase for this unit first.');if(input.key==='renowned'){
+      const first=has(u,'character')&&u.games===0&&u.xp===0&&[...n.units,...(n.retiredUnits||[])].filter(x=>has(x,'character')).length===1;
+      if(has(u,'epichero')||u.enhancements.length||scars(u).some(a=>['disgraced','markofshame'].includes(normal(a.name)))||!input.timingConfirmed||(!first&&!pending(u).length))throw Error('Renowned Heroes requires the first new Character or an unclaimed rank advancement, no Enhancement, and neither Disgraced nor Mark of Shame.');
+      if(pending(u).length){init(u);consume(u,{source:'advancement'});record.advancementConsumed=true;}
+    }record.state='Awaiting catalogue change';record.beforeEquipment={record:copy(u.record),enhancements:copy(u.enhancements),points:u.points};}
+    n.requisitionPoints-=c;record.rpAfter=n.requisitionPoints;n.requisitions||=[];n.requisitions.push(record);if(u)event(u,'requisition',`${record.name} · ${c} RP${record.state==='Awaiting catalogue change'?' · configure in catalogue':''}`,{requisitionId:record.id});
+  });}
+  function reconcileBuilder(before,after){
+    for(const u of after.units){const old=before.units.find(x=>x.id===u.id);if(!old){event(u,'reinforcement','Added to the Order of Battle');continue;}const invalid=(u.weaponModifications||[]).filter(mod=>!W().baseProfiles(u).some(p=>W().key(p)===mod.weaponKey&&Number(p.count??1)>=mod.copy));for(const mod of invalid){const award=u.awards.find(a=>a.weaponModificationId===mod.id);if(award)removeAward(u,award.id);event(u,'equipment',`Lost modified weapon ${mod.name} after equipment change`);}
+      if(!same(old.record.configured,u.record.configured)||!same(old.enhancements,u.enhancements)||old.points!==u.points){event(u,'equipment','Equipment / reinforcements updated · progression retained');for(const r of (after.requisitions||[]).filter(r=>r.unitId===u.id&&r.state==='Awaiting catalogue change')){if(M().summary(after).points>after.supplyLimit)throw Error('This requisition change would exceed Supply Limit.');r.state='Completed';r.completedAt=new Date().toISOString();r.afterEquipment={record:copy(u.record),enhancements:copy(u.enhancements),points:u.points};}}
+    }
+  }
+  function recordBuilder(before,after){for(const u of (after.retiredUnits||[]))if(before.units.some(old=>old.id===u.id)&&!u.retiredAt){u.retiredAt=new Date().toISOString();u.retirementReason='Removed from catalogue · record retained';event(u,'retirement',u.retirementReason);}
+return !same(before.units,after.units)||!same(before.retiredUnits||[],after.retiredUnits||[])?transact(before,'Updated catalogue equipment / reinforcements',n=>Object.assign(n,after)):after;}
+  function blessings(yours,theirs){const a=integer(yours,'Your Crusade points',-1000000),b=integer(theirs,'Opponent Crusade points',-1000000),difference=Math.abs(a-b);return {yours:a,theirs:b,difference,underdog:a===b?'Neither':a<b?'You':'Opponent',blessings:difference>=20?4:difference>=10?2:difference>=5?1:0};}
+  function validate(f){
+    if(f.bookkeeping&&(f.bookkeeping.version!==1||!Array.isArray(f.bookkeeping.history)||f.bookkeeping.history.some(h=>!h.id||typeof h.label!=='string'||!Number.isFinite(Date.parse(h.at))||!Array.isArray(h.changes)||h.changes.some(c=>!c||!Object.hasOwn(c,'before')||!Object.hasOwn(c,'after')||(c.kind==='unit'?!['units','retiredUnits','battles','requisitions'].includes(c.field)||typeof c.id!=='string':c.kind==='field'?!['requisitionPoints','supplyLimit','builderDocument','name','packs','notes'].includes(c.field):true)))))throw Error('Invalid bookkeeping history.');
+    for(const u of [...f.units,...(f.retiredUnits||[])])if(u.progression&&(!Array.isArray(u.progression.claimedAdvancements)||new Set(u.progression.claimedAdvancements).size!==u.progression.claimedAdvancements.length||u.progression.claimedAdvancements.some(i=>!Number.isInteger(i)||i<1||i>4)))throw Error('Invalid advancement claims.');
+    for(const b of f.battles||[])if(b.snapshot){const s=b.snapshot;if(s.version!==1||!s.roster||!Array.isArray(s.unitRecords)||s.unitRecords.length!==b.unitIds.length||new Set(s.unitRecords.map(u=>u.id)).size!==b.unitIds.length||s.unitRecords.some(u=>!b.unitIds.includes(u.id)||typeof u.name!=='string'||!u.record||!Array.isArray(u.awards)||!Array.isArray(u.history)))throw Error('Invalid frozen battle roster.');}
+    if(f.requisitions&&(!Array.isArray(f.requisitions)||f.requisitions.some(r=>!r.id||typeof r.name!=='string'||!Number.isSafeInteger(r.cost)||r.cost<1||!['Completed','Awaiting catalogue change'].includes(r.state))))throw Error('Invalid requisition ledger.');
+  }
+  const api={has,immune,honours,scars,limit,pending,transact,undo,grant,remove,modifyWeapon,xpPreview,snapshot,wrapUp,retire,restore,resolveInjury,REQUISITIONS,cost,requisition,reconcileBuilder,recordBuilder,blessings,validate};global.ArcadienCrusadeBookkeeping=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof window!=='undefined'?window:globalThis);

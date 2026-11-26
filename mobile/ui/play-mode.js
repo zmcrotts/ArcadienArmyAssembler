@@ -78,7 +78,7 @@
   const nav = document.getElementById("playModeNav");
   const undoButton = document.getElementById("playModeUndo");
   const MAX_UNDO_ACTIONS = 5;
-  const UNDO_FIELDS = ["round", "turn", "phase", "cp", "cpAwarded", "cpHistory", "ledger", "stratagemUses", "abilityUses", "battleShockedGroups", "katahState", "katahCommandPhases", "decks", "modelState", "notes"];
+  const UNDO_FIELDS = ["round", "turn", "phase", "cp", "cpAwarded", "cpHistory", "ledger", "stratagemUses", "abilityUses", "battleShockedGroups", "katahState", "katahCommandPhases", "decks", "modelState", "notes", "agendaProgress", "deathGuardBattle"];
   let session = null;
   let currentView = "battle";
   let missionPlayer = "you";
@@ -321,7 +321,7 @@
           <label class="playSetupOpponent">Opponent faction<select name="opponentFaction">${factionOptions("")}</select></label>
           <label class="playSetupYou">Your disposition<select name="yourDisposition">${dispositionOptions(dispositions, ownDefault)}</select></label>
           <label class="playSetupOpponent">Opponent disposition<select name="opponentDisposition">${dispositionOptions(dispositions, opponentDefault)}</select></label>
-          <label class="playSetupYou">Your secondaries<select name="yourMissionMode"><option value="tactical">Tactical</option><option value="fixed">Fixed</option></select></label>
+          <label class="playSetupYou">Your missions<select name="yourMissionMode">${roster.crusade ? '<option value="agendas">Crusade agendas</option>' : ''}<option value="tactical">Tactical</option><option value="fixed">Fixed</option></select></label>
           <label class="playSetupOpponent">Opponent secondaries<select name="opponentMissionMode"><option value="tactical">Tactical</option><option value="fixed">Fixed</option></select></label>
           <fieldset class="playFixedSetup" data-fixed-setup="you" hidden><legend>Your Fixed missions</legend><label>Mission 1<select name="yourFixedOne">${fixedMissionOptions(0)}</select></label><label>Mission 2<select name="yourFixedTwo">${fixedMissionOptions(1)}</select></label></fieldset>
           <fieldset class="playFixedSetup" data-fixed-setup="opponent" hidden><legend>Opponent Fixed missions</legend><label>Mission 1<select name="opponentFixedOne">${fixedMissionOptions(0)}</select></label><label>Mission 2<select name="opponentFixedTwo">${fixedMissionOptions(1)}</select></label></fieldset>
@@ -400,6 +400,14 @@
     }).sort((left, right) => left.option.localeCompare(right.option));
   }
 
+  function terrainImageSource(layout) {
+    const current = TERRAIN_LAYOUTS.find(item => item.id === layout.id);
+    const image = current?.image || layout.image;
+    const digest = current?.sha256 || layout.imageSha256 || layout.sha256;
+    if (!digest) return image;
+    return `${String(image).split("?")[0]}?v=${digest.slice(0, 16)}`;
+  }
+
   function terrainPlayerSides(layout) {
     const yourDisposition = normalize(session.setup.yourDispositionName);
     const redDisposition = normalize(layout.redDisposition?.name);
@@ -433,7 +441,7 @@
         <span>Double-tap the map to shrink</span>
         <button type="button" data-layout-fullscreen-close aria-label="Close full-screen layout">Close</button>
       </div>
-      <img src="${escapeHtml(layout.image)}" alt="Full-screen battlefield layout ${escapeHtml(layout.option)}" data-layout-fullscreen-image>`;
+      <img src="${escapeHtml(terrainImageSource(layout))}" alt="Full-screen battlefield layout ${escapeHtml(layout.option)}" data-layout-fullscreen-image>`;
     viewer.hidden = false;
     const closeFullscreen = () => {
       viewer.hidden = true;
@@ -466,7 +474,7 @@
           <span class="blue"><b>Blue · ${escapeHtml(options[0].blueDisposition.name)}</b><small>${escapeHtml(options[0].blueDisposition.mission)}</small></span>
         </div>
         <div class="playLayoutChoices">
-          ${options.map(item => `<button type="button" class="playLayoutChoice" data-layout-id="${escapeHtml(item.id)}" aria-pressed="false"><strong>Layout ${escapeHtml(item.option)}</strong><img src="${escapeHtml(item.image)}" alt="${escapeHtml(matchup)} layout ${escapeHtml(item.option)}"></button>`).join("")}
+          ${options.map(item => `<button type="button" class="playLayoutChoice" data-layout-id="${escapeHtml(item.id)}" aria-pressed="false"><strong>Layout ${escapeHtml(item.option)}</strong><img src="${escapeHtml(terrainImageSource(item))}" alt="${escapeHtml(matchup)} layout ${escapeHtml(item.option)}"></button>`).join("")}
         </div>
         <p class="playLayoutZoomHint">Double-tap any map to view it full screen.</p>
         <div class="playModalActions"><button type="button" data-layout-back>Back to setup</button><button class="playPrimaryButton" type="submit" data-confirm-layout disabled>Enter Game</button></div>
@@ -496,7 +504,10 @@
       session.setup.terrainLayout = {
         id: selected.id,
         option: selected.option,
-        image: selected.image,
+        image: terrainImageSource(selected),
+        sourceDocument: window.ArcadienTerrainLayouts?.sourceDocument,
+        sourceVersion: window.ArcadienTerrainLayouts?.sourceVersion,
+        imageSha256: selected.sha256,
         sourcePage: selected.sourcePage,
         redDisposition: structuredClone(selected.redDisposition),
         blueDisposition: structuredClone(selected.blueDisposition),
@@ -529,7 +540,7 @@
         opponentDispositionId: opponentDisposition?.id || "",
         opponentDispositionName: opponentDisposition?.name || "",
         missionMode: {
-          you: setup.yourMissionMode === "fixed" ? "fixed" : "tactical",
+          you: roster.crusade && setup.yourMissionMode === "agendas" ? "agendas" : setup.yourMissionMode === "fixed" ? "fixed" : "tactical",
           opponent: setup.opponentMissionMode === "fixed" ? "fixed" : "tactical"
         }
       },
@@ -551,12 +562,14 @@
       },
       modelState: createModelState(roster),
       undoHistory: [],
+      agendaProgress: {},
       notes: ""
     };
     return state;
   }
 
   function createDeck(mode = "tactical", fixedIds = []) {
+    if (mode === "agendas") return { mode: "agendas", draw: [], hand: [], discard: [] };
     if (mode === "fixed") {
       const hand = fixedIds.filter((id, index, values) => FIXED_CARDS.some(item => item.id === id) && values.indexOf(id) === index).slice(0, 2);
       return { mode: "fixed", draw: [], hand, discard: [] };
@@ -620,6 +633,7 @@
     session.decks ||= { you: createDeck(), opponent: createDeck() };
     session.stratagemUses ||= [];
     session.abilityUses ||= [];
+    session.agendaProgress ||= {};
     const migratingKatah = !session.katahState;
     session.katahState ||= {};
     session.katahCommandPhases ||= [];
@@ -703,6 +717,7 @@
 
   function render() {
     if (!session) return;
+    const restoreView = window.ArcadienViewState?.capture(content);
     const endButton = document.getElementById("playModeEnd");
     if (endButton) endButton.textContent = session.status === "final" ? "Scorecard" : "End Game";
     pruneUndoHistory();
@@ -719,6 +734,44 @@
     if (currentView === "army") renderArmy();
     if (currentView === "stratagems") renderStratagemReview();
     if (currentView === "ledger") renderLedger();
+    if (session.roster?.crusade && ["battle", "army", "ledger"].includes(currentView)) {
+      content.insertAdjacentHTML("afterbegin", renderDeathGuardBattle()+renderCrusadeAgendas()); bindCrusadeAgendas();
+      const activate=content.querySelector("[data-pathogen-activate]");if(activate)activate.onclick=()=>{const next=window.ArcadienDeathGuard.activatePathogen(session);recordUndo("Activate Alchemical Pathogen");session.deathGuardBattle=next.deathGuardBattle;persist();render();};
+    }
+    restoreView?.();
+  }
+
+  function renderDeathGuardBattle() {
+    const recipe=session.roster?.crusade?.deathGuard,D=window.ArcadienDeathGuard;if(!recipe||!D)return '';
+    const active=D.pathogenActive(session),activation=session.deathGuardBattle?.activation,disabled=session.status!=='active'||session.turn!=='you'||session.phase!=='Command'||activation?.command===D.ownCommandIndex(session);
+    return `<section class="playCrusadeAgendas"><header><small>DEATH GUARD · LOCKED BATTLE RECIPE</small><h2>Alchemical Pathogen · ${active?'ACTIVE':'Inactive'}</h2></header><p>Duration ${recipe.duration} · Potency ${recipe.potency}/7${active?' · expires at the start of your Command phase '+(activation.command+activation.duration):''}</p><button data-pathogen-activate ${disabled?'disabled':''}>Activate in your Command phase</button>${(recipe.properties||[]).map(p=>`<details class="playCrusadeAgenda"><summary>${escapeHtml(p.name)}</summary><p>${escapeHtml(p.effect)}</p>${p.drawback?`<p>Drawback${p.suppressed?' (suppressed)':''}: ${escapeHtml(p.drawback)}</p>`:''}</details>`).join('')}${(recipe.temporaryTraits||[]).map(t=>`<details class="playCrusadeAgenda"><summary>Wretched Might · ${escapeHtml(session.roster.crusade.units.find(u=>u.id===t.unitId)?.name||'Poxwalkers')} · ${escapeHtml(t.name)}</summary><p>${escapeHtml(t.description)}</p></details>`).join('')}${(recipe.blessings||[]).map(b=>`<details class="playCrusadeAgenda"><summary>${escapeHtml(b.name)}</summary><p>${escapeHtml(b.description)}</p></details>`).join('')}</section>`;
+  }
+
+  function renderCrusadeAgendas() {
+    const crusade = session.roster.crusade;
+    if (!crusade) return "";
+    return `<section class="playCrusadeAgendas"><header><small>CRUSADE · ${escapeHtml(crusade.forceName)}</small><h2>Battle agendas</h2></header><p>Track each unit's tally and notes. Confirm XP in the Order of Battle after the game.</p>${(crusade.agendas || []).map(agenda => {
+      const progress = session.agendaProgress?.[agenda.id] || {}, disabled = session.status === "final" ? "disabled" : "";
+      return `<details class="playCrusadeAgenda"><summary>${escapeHtml(agenda.name)}<small>${escapeHtml(agenda.source || "Custom")}</small></summary>${window.ArcadienCrusades?.formatRules ? window.ArcadienCrusades.formatRules(agenda.blocks,agenda.description) : `<p>${escapeHtml(agenda.description)}</p>`}<div class="playAgendaTallies">${(crusade.units || []).map(unit=>`<label>${escapeHtml(unit.name)}<input aria-label="${escapeHtml(agenda.name)} tally for ${escapeHtml(unit.name)}" type="number" min="0" max="1000000" step="1" value="${Number(progress.tallies?.[unit.id] || 0)}" data-agenda="${escapeHtml(agenda.id)}" data-agenda-unit="${escapeHtml(unit.id)}" ${disabled}></label>`).join("")}</div><label>Agenda notes<textarea data-agenda="${escapeHtml(agenda.id)}" data-agenda-notes ${disabled}>${escapeHtml(progress.notes || "")}</textarea></label></details>`;
+    }).join("")}</section>`;
+  }
+
+  function bindCrusadeAgendas() {
+    for (const input of content.querySelectorAll("[data-agenda]")) input.oninput = input.onchange = () => {
+      if (session.status !== "active") return;
+      const agendaId = input.dataset.agenda;
+      if (!session.roster.crusade.agendas.some(item=>item.id===agendaId)) return;
+      const value = Number(input.value);
+      if (input.dataset.agendaUnit && (!Number.isSafeInteger(value) || value < 0 || value > 1000000)) { input.reportValidity(); return; }
+      const existing = session.agendaProgress?.[agendaId];
+      if (input.dataset.agendaUnit ? Number(existing?.tallies?.[input.dataset.agendaUnit] || 0) === value : (existing?.notes || "") === input.value) return;
+      recordUndo("Update agenda tally or notes");
+      session.agendaProgress ||= {};
+      const progress = session.agendaProgress[agendaId] ||= {tallies:{},notes:""};
+      if (input.dataset.agendaUnit) { progress.tallies ||= {}; progress.tallies[input.dataset.agendaUnit] = value; }
+      else progress.notes = input.value;
+      persist();
+    };
   }
 
   function renderBattle() {
@@ -887,6 +940,12 @@
   }
 
   function renderMissions() {
+    if (missionPlayer === "you" && session.decks.you.mode === "agendas") {
+      content.innerHTML = renderCrusadeAgendas() + `<button data-opponent-missions>Opponent missions</button>`;
+      bindCrusadeAgendas();
+      content.querySelector("[data-opponent-missions]").onclick = () => { missionPlayer = "opponent"; render(); };
+      return;
+    }
     const deck = session.decks[missionPlayer];
     const fixed = deck.mode === "fixed";
     content.innerHTML = `
@@ -1398,14 +1457,14 @@
         return savedWeapons;
       }
       const configured = window.RosterSheets?.applyWeaponEffectsToConfigured
-        ? window.RosterSheets.applyWeaponEffectsToConfigured(member.configured || {}, effects, {
+        ? window.RosterSheets.applyWeaponEffectsToConfigured({...member.configured, weapons:savedWeapons.map(weapon=>weapon.crusadeModified ? {...weapon,name:weapon.crusadeBaseName} : weapon)}, effects, {
             instanceId: member.instanceId,
             isBodyguard: member.instanceId === bodyguardInstanceId,
             unitNames,
             keywords
           })
         : member.configured || {};
-      return configured.weapons || [];
+      return (configured.weapons || []).map((weapon,index) => savedWeapons[index]?.crusadeModified ? {...weapon,name:savedWeapons[index].name} : weapon);
     });
   }
 
@@ -1644,14 +1703,14 @@
 
   function renderWeapon(weapon, models) {
     const name = String(weapon.name || "Weapon");
-    const weaponKey = normalize(name.split(/[–—]/)[0]);
+    const weaponKey = normalize(String(weapon.crusadeBaseName || name).split(/[–—]/)[0]);
     const originalCount = Math.max(1, Number(weapon.count || 1));
     const bearers = models.filter(model => model.equipment.some(label => equipmentMatchesWeapon(label, weaponKey)));
     const livingBearers = bearers.filter(model => model.current > 0).length;
     const displayedCount = bearers.length ? Math.round(originalCount * livingBearers / bearers.length) : originalCount;
     const dead = models.length > 0 && displayedCount <= 0;
     const stats = Object.entries(weapon.characteristics || {}).map(([key, value]) => `<span><small>${escapeHtml(key)}</small><b>${escapeHtml(value)}</b></span>`).join("");
-    return `<article class="playWeapon ${dead ? "dead" : ""}"><header><b>${displayedCount}× ${escapeHtml(name)}</b>${displayedCount !== originalCount && !dead ? `<em>${originalCount - displayedCount} LOST</em>` : dead ? `<em>MODEL DESTROYED</em>` : ""}</header><div>${stats}</div></article>`;
+    return `<article class="playWeapon ${dead ? "dead" : ""} ${weapon.crusadeModified ? "crModifiedWeapon" : ""}"><header><b>${displayedCount}× ${escapeHtml(name)}</b>${weapon.crusadeModified ? `<small class="crWeaponChangeLabel">MODIFIED · ${escapeHtml((weapon.crusadeChanges || []).join(" + "))}</small>` : ""}${displayedCount !== originalCount && !dead ? `<em>${originalCount - displayedCount} LOST</em>` : dead ? `<em>MODEL DESTROYED</em>` : ""}</header><div>${stats}</div></article>`;
   }
 
   function equipmentMatchesWeapon(label, weaponKey) {
@@ -1999,7 +2058,9 @@
         name: value.roster?.name || "Match",
         faction: value.roster?.faction || "",
         subfaction: value.roster?.subfaction || "",
-        rosterEntries: []
+        ...(value.roster?.crusade ? structuredClone(value.roster) : {}),
+        rosterEntries: value.roster?.crusade ? structuredClone(value.roster.rosterEntries || []) : [],
+        ...(value.roster?.crusade ? {crusade:structuredClone(value.roster.crusade)} : {})
       },
       setup: structuredClone(value.setup || {}),
       round: value.round,
@@ -2009,7 +2070,8 @@
       cpAwarded: structuredClone(value.cpAwarded || []),
       cpHistory: structuredClone(value.cpHistory || []),
       ledger: structuredClone(value.ledger || []),
-      notes: value.notes || ""
+      notes: value.notes || "",
+      ...(value.roster?.crusade ? {agendaProgress:structuredClone(value.agendaProgress || {}),...(value.deathGuardBattle?{deathGuardBattle:structuredClone(value.deathGuardBattle)}:{})} : {})
     };
   }
 
@@ -2171,7 +2233,7 @@
     const layout = session.setup.terrainLayout;
     if (!layout?.image) return;
     modal.hidden = false;
-    modal.innerHTML = `<div class="playTerrainLayoutViewer"><header><div><span class="playModeEyebrow">BATTLEFIELD LAYOUT</span><h2>Layout ${escapeHtml(layout.option)}</h2><p><b class="red">Red · ${escapeHtml(layout.redDisposition?.name || "")}</b> · ${escapeHtml(layout.redDisposition?.mission || "")}</p><p><b class="blue">Blue · ${escapeHtml(layout.blueDisposition?.name || "")}</b> · ${escapeHtml(layout.blueDisposition?.mission || "")}</p></div><button data-close>Close</button></header><img src="${escapeHtml(layout.image)}" alt="Selected battlefield layout ${escapeHtml(layout.option)}"></div>`;
+    modal.innerHTML = `<div class="playTerrainLayoutViewer"><header><div><span class="playModeEyebrow">BATTLEFIELD LAYOUT</span><h2>Layout ${escapeHtml(layout.option)}</h2><p><b class="red">Red · ${escapeHtml(layout.redDisposition?.name || "")}</b> · ${escapeHtml(layout.redDisposition?.mission || "")}</p><p><b class="blue">Blue · ${escapeHtml(layout.blueDisposition?.name || "")}</b> · ${escapeHtml(layout.blueDisposition?.mission || "")}</p></div><button data-close>Close</button></header><img src="${escapeHtml(terrainImageSource(layout))}" alt="Selected battlefield layout ${escapeHtml(layout.option)}"></div>`;
     modal.querySelector("[data-close]").onclick = closeModal;
   }
 

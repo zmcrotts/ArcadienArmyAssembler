@@ -311,6 +311,8 @@ const sidebarDisclosureState = {};
 const unitSectionDisclosureState = {};
 let appMode = "library";
 let libraryTab = "lists";
+let crusadeEditorId = null;
+let crusadeEditorSaveQueue = Promise.resolve();
 let savedRosterSearchText = "";
 let savedRosterFactionFilter = "";
 let savedRosterSortMode = "edited-desc";
@@ -1330,6 +1332,10 @@ function markRosterClean() {
 
 function autosaveCurrentRoster(options = {}) {
   if (appMode !== "builder" || !currentFaction || !armyState) return true;
+  if (crusadeEditorId) {
+    if (hasUnsavedRosterChanges()) void saveCrusadeEditor().catch(error => showTransientMessage(`Order of Battle save failed: ${error.message}`));
+    return !hasUnsavedRosterChanges();
+  }
   if (currentRosterSaveId && !hasUnsavedRosterChanges()) return true;
 
   window.clearTimeout(rosterAutosaveTimer);
@@ -1381,7 +1387,18 @@ function preserveCurrentRosterBeforeLeaving() {
   return autosaveCurrentRoster({ reportFailure: true });
 }
 
-function showLibrary() {
+async function showLibrary() {
+  if (crusadeEditorId) {
+    try { await saveCrusadeEditor(); }
+    catch (error) { alert(`Order of Battle was not saved: ${error.message}`); return; }
+    crusadeEditorId = null;
+    currentRosterSaveId = null;
+    libraryTab = "crusades";
+    appMode = "library";
+    selectedInstanceId = null;
+    render();
+    return;
+  }
   if (!preserveCurrentRosterBeforeLeaving()) return;
   appMode = "library";
   selectedInstanceId = null;
@@ -1391,6 +1408,81 @@ function showLibrary() {
 function showBuilder() {
   appMode = "builder";
   render();
+}
+
+async function openCrusadeCatalogue(forceId, unitId = null) {
+  if (crusadeEditorId) await saveCrusadeEditor();
+  else if (!preserveCurrentRosterBeforeLeaving()) return;
+  window.clearTimeout(rosterAutosaveTimer);
+  rosterAutosaveTimer = null;
+  const save = window.ArcadienCrusades.editorDocument(forceId);
+  // Old hand-entered prototypes cannot be hydrated as catalogue units.
+  if (save.rosterEntries.some(unit => !unit.selectionKey)) {
+    throw new Error("This prototype contains hand-entered units without catalogue data. Import its original list as a new Order of Battle to edit those units.");
+  }
+  crusadeEditorId = forceId;
+  currentRosterSaveId = null;
+  searchText = "";
+  unitSearch.value = "";
+  mobileAddSectionFilter = null;
+  mobileAddKeywordFilter = "";
+  try {
+    const loaded = await loadRosterDocument(save);
+    const loadedIds = new Set(loaded.roster.map(unit => unit.instanceId));
+    if (save.rosterEntries.some(unit => !loadedIds.has(unit.instanceId))) {
+      throw new Error("Some units could not be found in the catalogue. The Order of Battle has not been changed.");
+    }
+    const mobileLayout = Boolean(window.AndroidFiles) || window.navigator.standalone === true
+      || window.matchMedia("(max-width: 860px), (display-mode: standalone)").matches;
+    if (unitId && roster.some(unit => unit.instanceId === unitId)) {
+      selectedInstanceId = unitId;
+      selectedPanel = "unit";
+      render();
+      if (mobileLayout) openMobileDetailsSheet();
+    } else if (mobileLayout) openMobileAddSheet(null);
+  } catch (error) {
+    crusadeEditorId = null;
+    appMode = "library";
+    libraryTab = "crusades";
+    render();
+    throw error;
+  }
+}
+
+function saveCrusadeEditor() {
+  if (!crusadeEditorId || !armyState) return Promise.resolve();
+  window.clearTimeout(rosterAutosaveTimer);
+  rosterAutosaveTimer = null;
+  const forceId = crusadeEditorId;
+  const document = currentRosterDocument();
+  const snapshot = JSON.stringify(document);
+  const operation = crusadeEditorSaveQueue.catch(() => {}).then(async () => {
+    await window.ArcadienCrusades.saveEditorDocument(forceId, document);
+    if (crusadeEditorId === forceId && currentRosterSnapshot() === snapshot) lastSavedRosterSnapshot = snapshot;
+  });
+  crusadeEditorSaveQueue = operation;
+  return operation;
+}
+
+function renderCrusadeEditorControls() {
+  const active = Boolean(crusadeEditorId);
+  document.documentElement.dataset.crusadeEditor = String(active);
+  for (const id of ["duplicateRoster", "mobileDuplicateRoster", "openNewRoster", "mobileOpenMenu", "deleteRoster", "rosterSaves", "desktopPlayMode", "mobilePlayMode", "exportMenuToggle", "mobileExportRoster"]) {
+    const button = document.getElementById(id);
+    if (button) button.hidden = active;
+  }
+  const back = document.getElementById("showLibrary");
+  if (back) back.textContent = active ? "← Order of Battle" : "Lists";
+  const title = rosterList?.previousElementSibling;
+  if (title?.tagName === "H2") title.textContent = active ? "Order of Battle" : "Roster";
+  if (mobileShowLists) {
+    mobileShowLists.textContent = active ? "← OoB" : "Lists";
+    mobileShowLists.setAttribute("aria-label", active ? "Return to Order of Battle" : "Saved rosters");
+  }
+  for (const input of [rosterNameInput, mobileRosterName].filter(Boolean)) {
+    input.placeholder = active ? "Order of Battle name" : "List name";
+    input.setAttribute("aria-label", active ? "Order of Battle name" : "List name");
+  }
 }
 
 let rosterCalculationCache = null;
@@ -1421,10 +1513,13 @@ function resetConfigurationDisclosures() {
 }
 
 function render() {
-  return withRosterCalculationCache(renderUncached);
+  const restoreView = window.ArcadienViewState?.capture(appMode === "library" ? startScreen : builderShell);
+  try { return withRosterCalculationCache(renderUncached); }
+  finally { restoreView?.(); }
 }
 
 function renderUncached() {
+  renderCrusadeEditorControls();
   setRosterLayoutModeButtons();
   renderRosterSaveBrowser();
   const currentPlayLabel = currentRosterSaveId && window.ArcadienPlayMode?.hasActive?.(currentRosterSaveId) ? "Resume" : "Play Mode";
@@ -1447,6 +1542,7 @@ function renderUncached() {
   renderTotal();
   renderSelectedDetails();
   renderMobileShell();
+  renderCrusadeEditorControls();
   applyMobileSheetState();
   bindRulePopovers();
   scheduleRosterAutosave();
@@ -1506,6 +1602,7 @@ function closeMobileSheets() {
 }
 
 function handleNativeBack() {
+  if (window.ArcadienCrusades?.closeDialog?.()) return true;
   if (window.ArcadienPlayMode?.handleNativeBack?.()) {
     return true;
   }
@@ -1739,6 +1836,7 @@ function renderMobileEntryTitle(rosterEntry) {
   const unitSize = engine.getUnitSizeState(unit.definition, rosterEntry.entry);
   const sizePrefix = unitSize.current > 1 ? `${unitSize.current}x ` : "";
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
+  if (crusadeEditorId) return `<span data-cr-unit-name="${escapeHtml(rosterEntry.instanceId)}">${escapeHtml(nickname || configuredRosterUnitName(rosterEntry))}</span><small>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</small>`;
   return `${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}${nickname ? ` <small>"${escapeHtml(nickname)}"</small>` : ""}`;
 }
 
@@ -1854,6 +1952,7 @@ function renderSavedRosterCollection(saves) {
 }
 
 function renderStartScreen() {
+  const restoreView = window.ArcadienViewState?.capture(startScreen);
   const saves = sortedSavedRosterLibrary(savedRosterLibrary(), savedRosterSortMode);
   const games = window.ArcadienPlayMode?.listResults?.() || [];
   const factionOptions = savedRosterFactionOptions(saves);
@@ -1861,6 +1960,7 @@ function renderStartScreen() {
     ? null
     : window.OneDriveRosterSync?.available ? window.OneDriveRosterSync : window.desktopRosterSync;
   const syncLabel = syncStatus?.connected === false ? "Reconnect" : "Sync";
+  const homeThemeButtons = ["light", "dark", "custom"].map(theme => `<button type="button" data-home-theme="${theme}" class="${activeThemeName() === theme ? "active" : ""}" aria-pressed="${activeThemeName() === theme}">${theme[0].toUpperCase() + theme.slice(1)}</button>`).join("");
   startScreen.innerHTML = `
     <div class="startHeader">
       <div class="startHeaderLead">
@@ -1869,13 +1969,12 @@ function renderStartScreen() {
           <a class="startSupportLink" href="https://ko-fi.com/thearcadienwargamer">☕ Support development</a>
         </div>
         <div class="startIntro">
-          ${libraryTab === "lists" ? `<button class="startNewRoster primaryAction" id="startNewRoster">+ New Roster</button>` : `<p class="gameHistorySummary">${games.length} completed game${games.length === 1 ? "" : "s"} saved on this device</p>`}
+          ${libraryTab === "lists" ? `<button class="startNewRoster primaryAction" id="startNewRoster">+ New Roster</button>` : libraryTab === "crusades" ? `<p class="gameHistorySummary">Local Orders of Battle · lasting unit progression</p>` : `<p class="gameHistorySummary">${games.length} completed game${games.length === 1 ? "" : "s"} saved on this device</p>`}
         </div>
       </div>
       <div class="startHeaderActions">
         ${syncProvider ? `<button id="startSyncRosters">${syncLabel}</button>` : ""}
         ${syncProvider ? `<button id="startManageSync" title="Review and remove lists and games included in OneDrive Sync">Sync Data</button>` : ""}
-        ${canMoveToNewApp() ? `<button id="startMoveToNewApp" title="Copy saved lists and completed game history to the new app; originals stay here">Move to new app</button>` : ""}
         <button id="startImportRoster" title="Import a share code or JSON backup">Import</button>
         <button id="startCheckUpdates" title="Check for a newer app release"><span class="updateButtonWide">Check for Updates</span><span class="updateButtonNarrow">Updates</span></button>
       </div>
@@ -1885,14 +1984,16 @@ function renderStartScreen() {
     <nav class="startLibraryTabs" aria-label="Saved content">
       <button id="showListsTab" type="button" class="${libraryTab === "lists" ? "active" : ""}" aria-current="${libraryTab === "lists" ? "page" : "false"}">Lists <span>${saves.length}</span></button>
       <button id="showGamesTab" type="button" class="${libraryTab === "games" ? "active" : ""}" aria-current="${libraryTab === "games" ? "page" : "false"}">Games <span>${games.length}</span></button>
+      <button id="showCrusadesTab" type="button" class="${libraryTab === "crusades" ? "active" : ""}" aria-current="${libraryTab === "crusades" ? "page" : "false"}">Crusades <span>${window.ArcadienCrusades?.count() || 0}</span></button>
     </nav>
       <div class="segmentedControl themeToggle startThemeToggle" role="group" aria-label="Color theme">
-        ${["light", "dark", "custom"].map(theme => `<button type="button" data-home-theme="${theme}" class="${activeThemeName() === theme ? "active" : ""}" aria-pressed="${activeThemeName() === theme}">${theme[0].toUpperCase() + theme.slice(1)}</button>`).join("")}
+        ${homeThemeButtons}
       </div>
     </div>
-    ${libraryTab === "lists" ? `<details id="startRosterFilterPanel" class="startRosterFilterPanel" ${savedRosterFiltersOpen ? "open" : ""}>
-      <summary>Search, filter &amp; sort <span id="savedRosterFilterSummary" class="muted"></span></summary>
-      <div class="startRosterFilters">
+    <details id="startRosterFilterPanel" class="startRosterFilterPanel ${libraryTab === "lists" ? "" : "startMobileSettingsPanel"}" ${savedRosterFiltersOpen ? "open" : ""}>
+      <summary><b>Sort / Theme</b><span ${libraryTab === "lists" ? 'id="savedRosterFilterSummary"' : ''} class="muted">${libraryTab === "games" ? `${games.length} games` : libraryTab === "crusades" ? `${window.ArcadienCrusades?.count() || 0} forces` : ""}</span></summary>
+      <div class="segmentedControl themeToggle startFilterThemeToggle" role="group" aria-label="Color theme">${homeThemeButtons}</div>
+      ${libraryTab === "lists" ? `<div class="startRosterFilters">
         <label class="startRosterSearch">
           <span>Search lists</span>
           <input id="startRosterSearch" type="search" placeholder="Search list names" value="${escapeHtml(savedRosterSearchText)}">
@@ -1914,17 +2015,15 @@ function renderStartScreen() {
           </select>
         </label>
         <label class="startRosterGroupToggle"><input id="startRosterGroupByFaction" type="checkbox" ${savedRosterGroupByFaction ? "checked" : ""}> Group by faction</label>
-      </div>
+      </div>` : ""}
     </details>
-    <div class="savedRosterCards">
+    ${libraryTab === "lists" ? `<div class="savedRosterCards">
       ${saves.length ? renderSavedRosterCollection(saves) : `<p class="muted">No saved rosters yet.</p>`}
       <p id="savedRosterNoMatches" class="muted" hidden>No rosters match those filters.</p>
-    </div>` : renderGameHistory(games)}
+    </div>` : libraryTab === "crusades" ? window.ArcadienCrusades.render() : renderGameHistory(games)}
   `;
   document.getElementById("startImportRoster").onclick = openRosterShareCodeModal;
   document.getElementById("startCheckUpdates").onclick = checkForAppUpdate;
-  const moveButton = document.getElementById("startMoveToNewApp");
-  if (moveButton) moveButton.onclick = moveRostersToNewApp;
   const syncButton = document.getElementById("startSyncRosters");
   if (syncButton) syncButton.onclick = syncSavedRosters;
   const manageSyncButton = document.getElementById("startManageSync");
@@ -1936,6 +2035,23 @@ function renderStartScreen() {
   }
   document.getElementById("showListsTab").onclick = () => { libraryTab = "lists"; renderStartScreen(); };
   document.getElementById("showGamesTab").onclick = () => { libraryTab = "games"; renderStartScreen(); };
+  document.getElementById("showCrusadesTab").onclick = () => { libraryTab = "crusades"; renderStartScreen(); };
+  if (libraryTab === "crusades") window.ArcadienCrusades.bind(startScreen, {
+    rosters: savedRosterLibrary, refresh: renderStartScreen, openEditor: openCrusadeCatalogue,
+    listBattles: () => window.ArcadienPlayMode?.listResults?.() || [],
+    hasActiveBattle: forceId => window.ArcadienPlayMode?.hasActive?.(`crusade:${forceId}`),
+    openBattle: (forceId, document) => window.ArcadienPlayMode.open(`crusade:${forceId}`, document),
+    factions: () => (engineData.factionNavigation || []).flatMap(group => group.factions.flatMap(faction =>
+      (faction.modes?.length ? faction.modes : [{ id: faction.defaultMode || faction.id, label: faction.label }])
+        .map(mode => ({ id: mode.id, faction: faction.id, label: /^(generic|default)$/i.test(mode.label || mode.name || "") ? faction.label : mode.label || mode.name || faction.label })))),
+    decodeShareCode: decodeRosterShareCode,
+    importDocuments: async text => {
+      const records = importedRosterRecords(await normalizeImportedJsonPayload(JSON.parse(text)));
+      if (!records.length) throw new Error("No army lists were found in that file.");
+      for (let index = 0; index < records.length; index++) await validateImportedRosterHydration(records[index], index);
+      return records.map(record => record.document);
+    }
+  });
   const newRosterButton = document.getElementById("startNewRoster");
   if (newRosterButton) newRosterButton.onclick = openNewRosterModal;
   const rosterSearch = document.getElementById("startRosterSearch");
@@ -2005,6 +2121,7 @@ function renderStartScreen() {
     };
   }
   applySavedRosterFilters();
+  restoreView?.();
 }
 
 function renderGameHistory(games) {
@@ -2053,8 +2170,8 @@ function applySavedRosterFilters() {
   }
   const summary = document.getElementById("savedRosterFilterSummary");
   if (summary) summary.textContent = query || savedRosterFactionFilter
-    ? `${visibleCount} of ${cards.length} saved roster${cards.length === 1 ? "" : "s"}`
-    : `${cards.length} saved roster${cards.length === 1 ? "" : "s"} · newest first`;
+    ? `${visibleCount} of ${cards.length} roster${cards.length === 1 ? "" : "s"}`
+    : `${cards.length} roster${cards.length === 1 ? "" : "s"} · ${{"edited-desc":"newest first","name-asc":"A–Z","points-desc":"points ↓","points-asc":"points ↑"}[savedRosterSortMode] || "newest first"}`;
   const noMatches = document.getElementById("savedRosterNoMatches");
   if (noMatches) noMatches.hidden = cards.length === 0 || visibleCount > 0;
   for (const group of startScreen.querySelectorAll(".savedRosterFactionGroup")) {
@@ -3309,6 +3426,7 @@ function renderRosterUnitLabel(rosterEntry) {
   const nickname = rosterNicknameFor(rosterEntry.instanceId);
   const warningCount = entryLoadoutErrors(rosterEntry).length;
   const warning = renderListErrorBadge(warningCount);
+  if (crusadeEditorId) return `${renderOwnedMark(rosterEntry.instanceId)}<b data-cr-unit-name="${escapeHtml(rosterEntry.instanceId)}">${escapeHtml(nickname || configuredRosterUnitName(rosterEntry))}</b><small class="crusadeBuilderUnitType">${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</small>${warning} — ${formatEntryPoints(rosterEntry)}`;
   return `${renderOwnedMark(rosterEntry.instanceId)}<b>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))}</b>${renderRosterNickname(nickname, rosterEntry.instanceId)}${warning} — ${formatEntryPoints(rosterEntry)}`;
 }
 
@@ -3542,9 +3660,9 @@ function rosterUnitAttachmentStatus(rosterEntry) {
 
 function renderSidebarNicknameControl(rosterEntry) {
   return `
-    <label class="sidebarNicknameControl">
-      <span>Nickname</span>
-      <input id="unitNicknameInput" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="text" value="${escapeHtml(rosterNicknameFor(rosterEntry.instanceId))}" placeholder="Optional nickname">
+    <label class="sidebarNicknameControl${crusadeEditorId ? " crusadeUnitNameControl" : ""}">
+      <span>${crusadeEditorId ? "Unit Name" : "Nickname"}</span>
+      <input id="unitNicknameInput" data-instance-id="${escapeHtml(rosterEntry.instanceId)}" type="text" value="${escapeHtml(rosterNicknameFor(rosterEntry.instanceId) || (crusadeEditorId ? configuredRosterUnitName(rosterEntry) : ""))}" placeholder="${crusadeEditorId ? "Name this unit" : "Optional nickname"}">
     </label>
   `;
 }
@@ -3589,6 +3707,7 @@ function bindSidebarNicknameInput() {
       delete rosterDisplay.unitNicknames[instanceId];
     }
     updateNicknameDisplays(instanceId, nickname);
+    scheduleRosterAutosave();
   });
 }
 
@@ -3600,6 +3719,9 @@ function updateNicknameDisplays(instanceId, nickname) {
   }
   const rosterEntry = roster.find(item => item.instanceId === instanceId);
   if (!rosterEntry) return;
+  for (const title of document.querySelectorAll("[data-cr-unit-name]")) {
+    if (title.dataset.crUnitName === instanceId) title.textContent = nickname || configuredRosterUnitName(rosterEntry);
+  }
   refreshAssignmentSelectLabels();
 }
 
@@ -3748,8 +3870,9 @@ function showRosterEntry(rosterEntry) {
   const effectiveKeywords = armyEngine.effectiveKeywordsForEntry?.(rosterEntry, armyState) || unit.keywords || unit.definition.keywords || [];
 
   details.innerHTML = `
+    ${crusadeEditorId ? renderSidebarNicknameControl(rosterEntry) : ""}
     <h3>${sizePrefix}${escapeHtml(configuredRosterUnitName(rosterEntry))} <span class="pts">${formatEntryPoints(rosterEntry)}</span></h3>
-    ${renderSidebarNicknameControl(rosterEntry)}
+    ${crusadeEditorId ? "" : renderSidebarNicknameControl(rosterEntry)}
     ${renderSidebarOwnedControl(rosterEntry)}
     ${attachedGroup ? `<button id="backToAttachedUnit" class="sidebarBack">Back to attached unit</button>` : ""}
     <p><b>Faction:</b> ${escapeHtml(unit.faction)}</p>
@@ -4775,9 +4898,13 @@ function renderEntryValidation(loadoutErrors, pricingErrors) {
 }
 
 function renderConfigured(configured, effects = [], models = [], context = {}) {
-  const effectiveConfigured = rosterSheets.applyWeaponEffectsToConfigured
+  let effectiveConfigured = rosterSheets.applyWeaponEffectsToConfigured
     ? rosterSheets.applyWeaponEffectsToConfigured(configured, context.effectsAlreadyApplied ? [] : effects, context)
     : configured;
+  if (crusadeEditorId && context.instanceId) {
+    const unit = window.ArcadienCrusades.unitRecord(crusadeEditorId, context.instanceId);
+    if (unit) effectiveConfigured = { ...effectiveConfigured, weapons: window.ArcadienCrusadeWeapons.profiles(unit, effectiveConfigured.weapons || []) };
+  }
   const ruleLookup = context.ruleLookup || buildRuleLookup(configured, effects, currentArmyDefinition());
   return `
     ${renderConfiguredModels(models)}
@@ -4985,12 +5112,12 @@ function renderWeapons(title, weapons, typeName, ruleLookup = new Map()) {
           const c = w.characteristics || {};
           const keywordCell = renderWeaponKeywordCell(c.Keywords, ruleLookup);
           return `
-            <tr class="mobileWeaponNameRow">
-              <td colspan="8">${escapeHtml(formatWeaponNameLine(w.count ?? 1, w.name))}</td>
+            <tr class="mobileWeaponNameRow${w.crusadeModified ? " crModifiedWeapon" : ""}">
+              <td colspan="8">${escapeHtml(formatWeaponNameLine(w.count ?? 1, w.name))}${w.crusadeModified ? ` <small>MODIFIED · ${escapeHtml(w.crusadeChanges.join(" + "))}</small>` : ""}</td>
             </tr>
-            <tr class="weaponStatsRow">
+            <tr class="weaponStatsRow${w.crusadeModified ? " crModifiedWeapon" : ""}">
               <td class="weaponCountColumn">${escapeHtml(w.count ?? 1)}</td>
-              <td class="weaponNameColumn">${escapeHtml(w.name)}</td>
+              <td class="weaponNameColumn">${escapeHtml(w.name)}${w.crusadeModified ? `<small class="crWeaponChangeLabel">${escapeHtml(w.crusadeChanges.join(" + "))}</small>` : ""}</td>
               <td>${renderCharacteristicValue(w, "Range", c.Range, displayWeaponCell)}</td>
               <td>${renderCharacteristicValue(w, "A", c.A, displayWeaponCell)}</td>
               <td>${renderCharacteristicValue(w, skillKey, c[skillKey], displayWeaponCell)}</td>
@@ -5414,7 +5541,8 @@ function validateRoster() {
     .filter(item => item.code !== "SAVED_SELECTION_UNRESOLVED" || !item.affectedInstanceIds?.length || item.affectedInstanceIds.some(id => roster.some(entry => entry.instanceId === id)))
     .map(item => ({ ok: false, code: item.code, text: item.message || item.text }));
 
-  if (currentArmyDefinition()) {
+  if (crusadeEditorId && total > limit) messages.push({ ok: false, code: "CRUSADE_SUPPLY_EXCEEDED", text: `Supply limit exceeded by ${total - limit} points.` });
+  if (currentArmyDefinition() && !crusadeEditorId) {
     const legalityRoster = rosterWithPoints();
     const result = armyEngine.validateRosterLegality(currentArmyDefinition(), armyState, legalityRoster, { totalPoints: total, pointsLimit: limit });
     for (const item of result.warnings) {
@@ -5936,6 +6064,11 @@ async function duplicateRoster() {
 }
 
 async function saveRoster() {
+  if (crusadeEditorId) {
+    try { await saveCrusadeEditor(); showSaveButtonSuccess(); showTransientMessage("✓ Order of Battle saved."); }
+    catch (error) { alert(`Order of Battle save failed: ${error.message}`); }
+    return;
+  }
   const document = currentRosterDocument();
   document.name = document.name || `${currentSubfaction || currentFaction} roster`;
   const saves = savedRosterLibrary();

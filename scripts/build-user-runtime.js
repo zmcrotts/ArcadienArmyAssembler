@@ -17,6 +17,12 @@ const FILES = [
   ["mobile/ui/offline-app.js", "offline-app.js"],
   ["mobile/ui/play-mode.js", "play-mode.js"],
   ["mobile/ui/roster-storage.js", "roster-storage.js"],
+  ["mobile/ui/crusades.js", "crusades.js"],
+  ["mobile/ui/crusade-trackers-ui.js", "crusade-trackers-ui.js"],
+  ["mobile/ui/crusade-death-guard-ui.js", "crusade-death-guard-ui.js"],
+  ["mobile/ui/view-state.js", "view-state.js"],
+  ["mobile/ui/crusade-bookkeeping-ui.js", "crusade-bookkeeping-ui.js"],
+  ["mobile/ui/crusades.css", "crusades.css"],
   ["mobile/ui/app.webmanifest", "app.webmanifest"],
   ["mobile/android/app/src/main/res/drawable/crosshair.png", "app-icon-192.png"]
 ];
@@ -34,6 +40,13 @@ function buildIndex() {
   let html = fs.readFileSync(source, "utf8");
 
   html = html
+    .replace('../../src/domain/crusade.js?v=1', 'domain/crusade.js?v=1')
+    .replace('../../src/domain/crusade-trackers.js?v=1', 'domain/crusade-trackers.js?v=1')
+    .replace('../../src/domain/crusade-death-guard.js?v=1', 'domain/crusade-death-guard.js?v=1')
+    .replace('../../src/domain/crusade-bookkeeping.js?v=1', 'domain/crusade-bookkeeping.js?v=1')
+    .replace('../../src/domain/crusade-eligibility.js?v=1', 'domain/crusade-eligibility.js?v=1')
+    .replace('../../src/domain/crusade-weapons.js?v=1', 'domain/crusade-weapons.js?v=1')
+    .replace('../../ui/crusade-data.js?v=1', 'crusade-data.js?v=1')
     .replace(/<script(?:\s+defer)? src="engine-data-milestone15\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="engine-data-manifest\.js"><\/script>/, '<script defer src="engine-data-manifest.js"></script>')
     .replace(/<script(?:\s+defer)? src="(?:\.\.\/\.\.\/ui\/)?engine-runtime\.js\?v=[^"]+"><\/script>/, '<script defer src="engine-runtime.js"></script>')
@@ -73,6 +86,7 @@ function writeReadme() {
 }
 
 function main() {
+  require("./build-crusade-data").buildCrusadeData();
   fs.rmSync(OUT_DIR, { recursive: true, force: true });
   fs.mkdirSync(OUT_DIR, { recursive: true });
   for (const [source, target] of FILES) copyFile(source, target);

@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "edition": 10,
+  "sourceFile": "Death Guard - 10th Edition.html",
+  "sourceSha256": "8c0f9981cb6bd2ed7fa55ff2eafe88a01154678988ce3c106c4587c93a9dc0a5",
+  "sourceUrl": "https://wahapedia.ru/wh40k10ed/factions/death-guard/",
+  "sheetUrl": "https://wahapedia.ru/wh40k10ed/factions/death-guard/AGrandPlague.pdf",
+  "sheetSha256": "7d970ffb1c9bf00d25ffc550f7d61ac2007e129bcda52b823acd84e5dfc57dc5",
+  "presets": {
+    "Hive World": [
+      3,
+      5,
+      2
+    ],
+    "Agri World": [
+      5,
+      2,
+      3
+    ],
+    "Forge World": [
+      2,
+      3,
+      5
+    ]
+  },
+  "assets": [
+    {
+      "name": "512fbec781cc8bca20.png",
+      "sha256": "cc66b12d755dfb138a1ca122e6af7944dcc1d96f31e4d6f56e52acd3bf453ef3",
+      "bytes": 177052
+    },
+    {
+      "name": "4e155d4236681b1c59.png",
+      "sha256": "96b5e99310f66aee001331e3482564c50c5ac8b5c100864a08e39c2c215acab2",
+      "bytes": 694
+    },
+    {
+      "name": "fb9e65fcd4edfd1db9.png",
+      "sha256": "39b604f56a949ad3a7a1cdcba443c8b926081c0693166fca934116c3fa07337d",
+      "bytes": 728
+    },
+    {
+      "name": "d5fd574ea805cf85d3.png",
+      "sha256": "18307a0020b533915455d5d1673b7f982abc37ccdf9eb3b0fb9cdd211c590fdb",
+      "bytes": 747
+    },
+    {
+      "name": "f05cb70a053de40fc3.png",
+      "sha256": "a721a3c61dea1b443ec7329e31e1e93647b179a541e3b57a88d1d2660681ced9",
+      "bytes": 698
+    },
+    {
+      "name": "88c76ae3ece093e655.png",
+      "sha256": "39eb17430effc2ba1c63637557a830a19de92ad2f0c00635b75bfa01be5573ad",
+      "bytes": 728
+    },
+    {
+      "name": "3166638c045d1f4414.png",
+      "sha256": "9cbccccd9ee36da03248a303ef70d56b9513c7b22cb370a92d267e8ecf36f28a",
+      "bytes": 718
+    },
+    {
+      "name": "d9a30e411641a0b6af.png",
+      "sha256": "6fedd1e9955b69ce966e1c2e34a3e66a01cd7b92ea28efc56a365d46622a05e5",
+      "bytes": 18439
+    },
+    {
+      "name": "2f65105fa8e37e07a9.png",
+      "sha256": "30e4a81aa03f08843b438ee4bf118054ca6f6712ca5e15b27074d7d0ff15c8f8",
+      "bytes": 16788
+    },
+    {
+      "name": "328b4ff6abcf6b3947.png",
+      "sha256": "5d26f08a46771485f489dd1455592efabcd17f28adadd0a4736715ec407eeaa7",
+      "bytes": 18938
+    }
+  ]
+}
